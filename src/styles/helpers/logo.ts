@@ -4,6 +4,7 @@ import { LOGO } from "../../constants/ui/logo";
 export const logoStyles = StyleSheet.create({
   logoContainer: {
     //MOVER  A CONSTANTS NO HARDCODEAR
+    marginHorizontal: "auto",
     width: 265,
     height: 276,
     justifyContent: "center",

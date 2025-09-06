@@ -1,39 +1,48 @@
-import { View, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  Keyboard,
+} from "react-native";
 import React from "react";
 import { Button, Text, TextInput } from "react-native-paper";
+import Logo from "./Logo";
 
 const AuthForm = () => {
   return (
-    <View style={authStyles.container}>
-      <TextInput
-        onBlur={() => {
-          console.log("blur");
-        }}
-        label={"Correo electrónico"}
-        mode="outlined"
-      />
-      <TextInput
-        onBlur={() => {
-          console.log("blur");
-        }}
-        label={"Contraseña"}
-        mode="outlined"
-      />
+    <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={30}>
+      <View style={authStyles.container}>
+        <TextInput
+          onBlur={() => {
+            // Keyboard.dismiss();
+          }}
+          label={"Correo electrónico"}
+          mode="outlined"
+        />
+        <TextInput
+          onBlur={() => {
+            // Keyboard.dismiss();
+          }}
+          label={"Contraseña"}
+          mode="outlined"
+        />
 
-      <View style={authStyles.forgotPasswordContainer}>
-        <TouchableWithoutFeedback style={authStyles.forgotPassword}>
-          <Text
-            variant="labelSmall"
-            style={{ borderBottomColor: "black", borderBottomWidth: 1 }}
-          >
-            ¿Olvidaste tu contraseña ?
-          </Text>
-        </TouchableWithoutFeedback>
+        <View style={authStyles.forgotPasswordContainer}>
+          <TouchableWithoutFeedback style={authStyles.forgotPassword}>
+            <Text
+              variant="labelMedium"
+              style={{ borderBottomColor: "black", borderBottomWidth: 1 }}
+            >
+              ¿Olvidaste tu contraseña ?
+            </Text>
+          </TouchableWithoutFeedback>
+        </View>
+        <Button mode="contained" style={{ backgroundColor: "black" }}>
+          <Text style={{ color: "white" }}>Iniciar sesión</Text>
+        </Button>
       </View>
-      <Button mode="contained" style={{ backgroundColor: "black" }}>
-        <Text style={{ color: "white" }}>Iniciar sesión</Text>
-      </Button>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 const authStyles = StyleSheet.create({
