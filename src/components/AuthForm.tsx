@@ -11,7 +11,7 @@ import Logo from "./Logo";
 
 const AuthForm = () => {
   return (
-    <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={30}>
+    <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={30}>
       <View style={authStyles.container}>
         <TextInput
           onBlur={() => {
