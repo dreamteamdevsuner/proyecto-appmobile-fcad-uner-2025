@@ -2,9 +2,9 @@ import { View, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import React from "react";
 import { Button, Text, TextInput } from "react-native-paper";
 
-const InitialScreenLoginForm = () => {
+const AuthForm = () => {
   return (
-    <View style={initialScreenLoginForm.container}>
+    <View style={authStyles.container}>
       <TextInput
         onBlur={() => {
           console.log("blur");
@@ -19,8 +19,9 @@ const InitialScreenLoginForm = () => {
         label={"Contraseña"}
         mode="outlined"
       />
-      <View style={initialScreenLoginForm.forgotPasswordContainer}>
-        <TouchableWithoutFeedback>
+
+      <View style={authStyles.forgotPasswordContainer}>
+        <TouchableWithoutFeedback style={authStyles.forgotPassword}>
           <Text
             variant="labelSmall"
             style={{ borderBottomColor: "black", borderBottomWidth: 1 }}
@@ -35,9 +36,14 @@ const InitialScreenLoginForm = () => {
     </View>
   );
 };
-const initialScreenLoginForm = StyleSheet.create({
-  container: { flex: 3, flexDirection: "column", gap: 20 },
-  forgotPasswordContainer: {},
+const authStyles = StyleSheet.create({
+  container: { flexDirection: "column", gap: 20 },
+  forgotPasswordContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+  },
+  forgotPassword: {},
 });
 
-export default InitialScreenLoginForm;
+export default AuthForm;

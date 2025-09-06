@@ -1,32 +1,19 @@
 import { StyleSheet, View } from "react-native";
 import React from "react";
 import { Card, Text } from "react-native-paper";
+import { logoStyles } from "../styles/helpers/logo";
 
 const Logo = () => {
   return (
-    <View style={styles.logoContainer}>
-      <Card style={styles.logo}>
-        <Text variant="titleSmall" style={styles.logoText}>
+    <View style={logoStyles.logoContainer}>
+      <Card style={logoStyles.logo}>
+        <Text variant="titleSmall" style={logoStyles.logoText}>
           J
         </Text>
       </Card>
     </View>
   );
 };
-const styles = StyleSheet.create({
-  logoContainer: {
-    display: "flex",
-    flex: 1,
-  },
-  logo: {
-    backgroundColor: "black",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    height: "100%",
-    borderRadius: 40,
-  },
-  logoText: { color: "white" },
-});
+const styles = StyleSheet.create({});
 
 export default Logo;
