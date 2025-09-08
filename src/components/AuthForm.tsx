@@ -39,7 +39,7 @@ const AppSnackBar = ({ visible, handleHideSnackBar }: AppSnackProps) => {
       <Snackbar
         style={{
           justifyContent: "center",
-          alignItems: "center",
+          alignContent: "center",
           display: "flex",
           backgroundColor: "black",
         }}
