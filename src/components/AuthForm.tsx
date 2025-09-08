@@ -107,6 +107,7 @@ const AuthForm = () => {
             <View style={authStyles.container}>
               <TextInput
                 onBlur={handleBlur("email")}
+                autoCapitalize="none"
                 label={"Correo electrónico"}
                 placeholder="Escribí tu correo electrónico"
                 mode="outlined"
@@ -127,6 +128,7 @@ const AuthForm = () => {
                 label={"Contraseña"}
                 placeholder="Escribí tu contraseña"
                 mode="outlined"
+                autoCapitalize="none"
                 onChangeText={handleChange("password")}
                 onFocus={() => setFieldTouched("password", true)}
                 value={values.password}
