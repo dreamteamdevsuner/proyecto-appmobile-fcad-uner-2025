@@ -46,7 +46,7 @@ const AppSnackBar = ({ visible, handleHideSnackBar }: AppSnackProps) => {
         visible={visible}
         onDismiss={() => handleHideSnackBar()}
       >
-        <Text>Test</Text>
+        <Text>Test 1</Text>
         <Text style={{ color: "white" }}>Login Error</Text>
       </Snackbar>
     </Portal>
