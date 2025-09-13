@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog, Portal, Button, Text } from 'react-native-paper';
 
-type ConfirmDialogProps = {
+type ConfirmacionProps = {
   visible: boolean;
   title?: string;
   message: string;
@@ -9,7 +9,7 @@ type ConfirmDialogProps = {
   onCancel: () => void;
 };
 
-const Confirmacion: React.FC<ConfirmDialogProps> = ({
+const Confirmacion: React.FC<ConfirmacionProps> = ({
   visible,
   title = 'Confirmar acción',
   message,

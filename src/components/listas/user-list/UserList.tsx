@@ -1,24 +1,27 @@
 import React, { useState } from 'react';
 import { View, FlatList, StyleSheet, ListRenderItem } from 'react-native';
 import { List, Avatar, IconButton } from 'react-native-paper';
-import { Confirmacion } from '../../index';
-type User = {
-  id: number;
-  name: string;
-  avatarUrl?: string;
-  role: string;
-};
+import Confirmacion from '../../confirmacion/Confirmacion';
+import { UserItem } from '../../../types/UserItem';
 
 type Props = {
-  users: User[];
+  users: UserItem[];
+  showMessageIcon?: boolean;
+  onMessagePress?: (user: UserItem) => void;
+  onUserPress?: (user: UserItem) => void;
 };
 
-const UserList: React.FC<Props> = ({ users }) => {
+const UserList: React.FC<Props> = ({
+  users,
+  showMessageIcon = true,
+  onMessagePress,
+  onUserPress,
+}) => {
   const [pressedId, setPressedId] = useState<number | null>(null);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedUser, setSelectedUser] = useState<UserItem | null>(null);
   const [dialogVisible, setDialogVisible] = useState(false);
 
-  const openDialog = (user: User) => {
+  const openDialog = (user: UserItem) => {
     setSelectedUser(user);
     setDialogVisible(true);
   };
@@ -36,11 +39,14 @@ const UserList: React.FC<Props> = ({ users }) => {
     }
     closeDialog();
   };
-  const renderItem: ListRenderItem<User> = ({ item }) => {
+  const renderItem: ListRenderItem<UserItem> = ({ item }) => {
     return (
       <List.Item
         title={item.name}
-        style={{ paddingRight: 0 }}
+        style={[
+          { paddingRight: 0, paddingLeft: 10 },
+          pressedId === item.id && styles.selectedItem,
+        ]}
         contentStyle={{ paddingRight: 0 }}
         description={item.role}
         titleStyle={pressedId === item.id ? styles.selectedTitle : undefined}
@@ -51,14 +57,21 @@ const UserList: React.FC<Props> = ({ users }) => {
             <Avatar.Text size={40} label={item.name.charAt(0)} />
           )
         }
+        onPress={() => {
+          console.log(`Enviar mensaje a ${item.name}`);
+          if (onUserPress) onUserPress(item);
+        }}
         right={() => (
           <View style={styles.actions}>
-            <IconButton
-              icon='email'
-              onPress={() => {
-                console.log(`Enviar mensaje a ${item.name}`);
-              }}
-            />
+            {showMessageIcon && (
+              <IconButton
+                icon='email'
+                onPress={() => {
+                  console.log(`Enviar mensaje a ${item.name}`);
+                  if (onMessagePress) onMessagePress(item);
+                }}
+              />
+            )}
             <IconButton
               icon='delete'
               onPress={() => {
@@ -75,7 +88,7 @@ const UserList: React.FC<Props> = ({ users }) => {
   };
   return (
     <View style={styles.container}>
-      <FlatList<User>
+      <FlatList<UserItem>
         data={users}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString() + item.name}
@@ -105,6 +118,9 @@ const styles = StyleSheet.create({
   actions: {
     flexDirection: 'row',
     alignItems: 'flex-end',
+  },
+  selectedItem: {
+    backgroundColor: 'rgba(0,0,0,0.1)',
   },
 });
 

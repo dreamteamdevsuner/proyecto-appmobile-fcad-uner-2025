@@ -6,20 +6,14 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Avatar, List, Text } from 'react-native-paper';
-
-type Item = {
-  id: number;
-  name: string;
-  subtitle?: string;
-  avatarUrl?: string;
-};
+import { UserItem } from '../../../types/UserItem';
 
 type Props = {
-  items: Item[];
+  users: UserItem[];
 };
 
-const UserListHorizontal: React.FC<Props> = ({ items }) => {
-  const renderItem: ListRenderItem<Item> = ({ item }) => (
+const UserListHorizontal: React.FC<Props> = ({ users }) => {
+  const renderItem: ListRenderItem<UserItem> = ({ item }) => (
     <TouchableOpacity
       style={styles.card}
       // onPress={() => )} Acá debería llevar al perfil
@@ -37,8 +31,8 @@ const UserListHorizontal: React.FC<Props> = ({ items }) => {
   );
 
   return (
-    <FlatList<Item>
-      data={items}
+    <FlatList<UserItem>
+      data={users}
       renderItem={renderItem}
       keyExtractor={(item) => item.id.toString() + item.name}
       horizontal

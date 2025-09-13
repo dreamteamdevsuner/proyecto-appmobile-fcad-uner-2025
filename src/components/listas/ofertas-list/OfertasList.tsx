@@ -1,26 +1,22 @@
 import React, { useState } from 'react';
 import { View, FlatList, StyleSheet, ListRenderItem } from 'react-native';
 import { List } from 'react-native-paper';
-
-type Item = {
-  id: number;
-  title: string;
-  subtitle?: string;
-};
+import { OfertaItem } from '../../../types/OfertaItem';
 
 type Props = {
-  items: Item[];
+  ofertas: OfertaItem[];
   setSelectedId: (id: number | null) => void;
 };
 
-const OfertasList: React.FC<Props> = ({ items, setSelectedId }) => {
+const OfertasList: React.FC<Props> = ({ ofertas, setSelectedId }) => {
   const [pressedId, setPressedId] = useState<number | null>(null);
 
-  const renderItem: ListRenderItem<Item> = ({ item }) => {
+  const renderItem: ListRenderItem<OfertaItem> = ({ item }) => {
     return (
       <List.Item
         title={item.title}
         description={item.subtitle}
+        style={pressedId === item.id ? styles.selectedItem : undefined}
         titleStyle={pressedId === item.id ? styles.selectedTitle : undefined}
         onPress={() => setSelectedId(item.id)}
         onPressIn={() => setPressedId(item.id)}
@@ -32,8 +28,8 @@ const OfertasList: React.FC<Props> = ({ items, setSelectedId }) => {
 
   return (
     <View style={styles.container}>
-      <FlatList<Item>
-        data={items}
+      <FlatList<OfertaItem>
+        data={ofertas}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString() + item.title}
         showsVerticalScrollIndicator={false}
@@ -56,6 +52,9 @@ const styles = StyleSheet.create({
   },
   selectedTitle: {
     fontWeight: 'bold',
+  },
+  selectedItem: {
+    backgroundColor: 'rgba(0,0,0,0.1)',
   },
 });
 

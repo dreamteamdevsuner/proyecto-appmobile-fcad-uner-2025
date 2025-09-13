@@ -1,0 +1,8 @@
+export type UserItem = {
+  id: number;
+  name: string;
+  subtitle?: string;
+  avatarUrl?: string;
+  role?: string;
+  ofertaId?: number;
+};
