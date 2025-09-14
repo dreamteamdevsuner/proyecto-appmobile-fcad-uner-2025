@@ -11,7 +11,7 @@ export default function App() {
     //hardcodeando paleta custom , pasando blue como primary
     <AuthProvider>
       <NavigationContainer>
-        <PaperProvider theme={{ ...DefaultTheme, colors: { primary: "blue" } }}>
+        <PaperProvider theme={{ ...DefaultTheme, colors: {...DefaultTheme.colors, primary: 'blue'} }}>
           <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
             <Navigator></Navigator>
             {/* <View style={styles.contentWrapper}>
