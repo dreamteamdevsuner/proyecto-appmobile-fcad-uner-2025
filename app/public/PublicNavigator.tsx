@@ -1,5 +1,5 @@
 import React from "react";
-import ResetPasswordScreen from "../ResetPasswordScreen";
+import ResetPasswordScreen from "./ResetPasswordScreen";
 import Auth from "./Auth";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
