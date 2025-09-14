@@ -5,9 +5,9 @@ import {
   UserList,
   UserListHorizontal,
   OfertasList,
-} from '../../../../src/components/listas';
-import { UserItem } from '../../../../src/types/UserItem';
-import { OfertaItem } from '../../../../src/types/OfertaItem';
+} from '../../../../components/listas';
+import { UserItem } from '../../../../types/UserItem';
+import { OfertaItem } from '../../../../types/OfertaItem';
 
 const ofertas: OfertaItem[] = [
   { id: 1, title: 'UX Santender', subtitle: 'Subtítulo 1' },

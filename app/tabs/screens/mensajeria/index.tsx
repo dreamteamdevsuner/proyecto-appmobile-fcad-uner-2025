@@ -1,12 +1,12 @@
 import { FlatList, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
-import { UserList } from '../../../../src/components/listas';
+import { UserList } from '../../../../components/listas';
 import {
   ChatScreen,
   Message,
-} from '../../../../src/components/mensajeria/ChatScreen';
+} from '../../../../components/mensajeria/ChatScreen';
 import { useState } from 'react';
-import { UserItem } from '../../../../src/types/UserItem';
+import { UserItem } from '../../../../types/UserItem';
 
 type Item = {
   id: number;
