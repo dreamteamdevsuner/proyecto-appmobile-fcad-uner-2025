@@ -85,10 +85,12 @@ const AuthForm = () => {
     console.log("values", values);
     //MOCKUP LOGIN SUCCESS
 
-    login("dev@mail.com", "1");
+    const loginRes = login(values);
+    if (!loginRes) {
+      handleShowSnackbar();
+    }
     //MOCKUP FAILED LOGIN
     // Alert.alert("Login Error", "login error");
-    handleShowSnackbar();
   };
   return (
     <>

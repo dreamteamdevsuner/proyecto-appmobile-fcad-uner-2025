@@ -20,14 +20,20 @@ const userStateInitiaValues: UserState = {
 };
 export const AuthContext = createContext<{
   userState: UserState;
-  login: (email: string, password: string) => void;
+  login: ({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }) => void | false;
   logout: () => void;
 }>({
   userState: {
     isLogged: false,
     user: {},
   } as UserState,
-  login: function (email: string, password: string) {},
+  login: function ({ email, password }) {},
   logout: function () {},
 });
 
@@ -35,7 +41,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   const [userState, setUserState] = useState<UserState>(userStateInitiaValues);
 
   //MOCKUP LOGIN
-  const login = (email: string, password: string) => {
+  const login = ({ email, password }: { email: string; password: string }) => {
     if (email === "dev@mail.com") {
       setUserState({
         isLogged: true,
@@ -58,6 +64,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
         isLogged: false,
         user: {} as User,
       });
+      return false;
     }
   };
   //MOCKUP LOGOUT
