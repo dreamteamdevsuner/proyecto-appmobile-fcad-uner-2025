@@ -3,7 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
 import { Button, DefaultTheme, PaperProvider, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Navigator from "./src/navigator/Navigator";
+import Navigator from "./navigator/Navigator";
 
 export default function App() {
   return (

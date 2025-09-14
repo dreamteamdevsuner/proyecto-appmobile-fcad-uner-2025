@@ -1,8 +1,9 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-import InitialLoginScreen from "../screens/Auth";
-import ResetPasswordScreen from "../screens/ResetPasswordScreen";
-import HomeScreen from "../screens/HomeScreen";
+import HomeScreen from "../app/HomeScreen";
+import ResetPasswordScreen from "../app/ResetPasswordScreen";
+import AuthForm from "../components/AuthForm";
+import Auth from "../app/Auth";
 
 //Agregar Root Stack Params Luego
 const Stack = createNativeStackNavigator();
@@ -12,10 +13,7 @@ const Navigator = () => {
       initialRouteName="InitialLoginScreen"
       screenOptions={{ headerShown: false }}
     >
-      <Stack.Screen
-        name="InitialLoginScreen"
-        component={InitialLoginScreen}
-      ></Stack.Screen>
+      <Stack.Screen name="InitialLoginScreen" component={Auth}></Stack.Screen>
       <Stack.Screen
         name="ResetPasswordScreen"
         component={ResetPasswordScreen}
