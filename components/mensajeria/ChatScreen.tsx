@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { View, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
 import {
   Appbar,
@@ -8,12 +8,7 @@ import {
   Text,
 } from 'react-native-paper';
 import styled from 'styled-components/native';
-
-export type Message = {
-  id: string;
-  text: string;
-  sender: 'me' | 'other';
-};
+import { Message } from '../../types/Message';
 
 type ChatScreenProps = {
   title: string;
@@ -136,7 +131,6 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
 
   return (
     <Container>
-      {/* Header */}
       <Appbar.Header>
         <Appbar.BackAction onPress={onBack} />
         <Appbar.Content title={title} />
@@ -148,7 +142,6 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
         keyboardVerticalOffset={25}
         style={{ flex: 1 }}
       >
-        {/* Messages */}
         <FlatList
           ref={flatListRef}
           data={messages}
@@ -160,7 +153,6 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
           }}
         />
 
-        {/* Input */}
         <InputContainer>
           <StyledTextInput
             mode='outlined'

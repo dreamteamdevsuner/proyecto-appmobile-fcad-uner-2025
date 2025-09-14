@@ -6,23 +6,21 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 type PrivateStackParamList = {
   HomeScreen: undefined;
   Favoritos: undefined;
+  Mensajeria: undefined;
 };
 
-type HomeScreenNavigationProp = NativeStackNavigationProp<
-  PrivateStackParamList,
-  'HomeScreen'
->;
-
 type Props = {
-  navigation: HomeScreenNavigationProp;
+  navigation: NativeStackNavigationProp<PrivateStackParamList>;
 };
 
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <View>
-      <Text>HomeScreen</Text>
       <Button onPress={() => navigation.navigate('Favoritos')}>
         Favoritos
+      </Button>
+      <Button onPress={() => navigation.navigate('Mensajeria')}>
+        Mensajeria
       </Button>
     </View>
   );
