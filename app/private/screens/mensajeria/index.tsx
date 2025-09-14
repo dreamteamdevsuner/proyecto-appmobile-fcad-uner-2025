@@ -4,7 +4,7 @@ import { UserList } from '../../../../components/listas';
 import { useState } from 'react';
 import { UserItem } from '../../../../types/UserItem';
 import { OfertaItem } from '../../../../types/OfertaItem';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { PrivateStackParamList } from '../../../../navigator/types';
 
 const ofertas: OfertaItem[] = [
@@ -88,14 +88,7 @@ const users: UserItem[] = [
   { id: 12, name: 'Elba Gomez', role: 'UX /UI', ofertaId: 9 },
 ];
 
-type MensajeriaNavigationProp = NativeStackNavigationProp<
-  PrivateStackParamList,
-  'Mensajería'
->;
-
-type Props = {
-  navigation: MensajeriaNavigationProp;
-};
+type Props = NativeStackScreenProps<PrivateStackParamList, 'Mensajería'>;
 
 const Mensajeria: React.FC<Props> = ({ navigation }) => {
   const handleSelectUser = (user: UserItem) => {

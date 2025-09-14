@@ -8,4 +8,7 @@ export type PrivateStackParamList = {
     otherAvatarUrl?: string;
     myAvatarUrl?: string;
   };
+  FavoritosOferta: {
+    title: string;
+  };
 };

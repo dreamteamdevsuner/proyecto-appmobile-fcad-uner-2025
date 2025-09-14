@@ -6,6 +6,7 @@ import Favoritos from './screens/favoritos';
 import Mensajeria from './screens/mensajeria';
 import Conversacion from './screens/conversacion';
 import { PrivateStackParamList } from '../../navigator/types';
+import FavoritosOferta from './screens/favoritos-oferta';
 
 const PrivateNavigator = () => {
   const Stack = createNativeStackNavigator<PrivateStackParamList>();
@@ -17,6 +18,14 @@ const PrivateNavigator = () => {
       <Stack.Screen
         name='Conversación'
         component={Conversacion}
+        options={({ route }) => ({
+          title: route.params.title,
+          headerShown: true,
+        })}
+      ></Stack.Screen>
+      <Stack.Screen
+        name='FavoritosOferta'
+        component={FavoritosOferta}
         options={({ route }) => ({
           title: route.params.title,
           headerShown: true,

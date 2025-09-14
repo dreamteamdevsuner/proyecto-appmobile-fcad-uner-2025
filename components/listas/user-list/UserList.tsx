@@ -4,19 +4,28 @@ import { List, Avatar, IconButton } from 'react-native-paper';
 import Confirmacion from '../../confirmacion/Confirmacion';
 import { UserItem } from '../../../types/UserItem';
 
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { PrivateStackParamList } from '../../../navigator/types';
+
+type NavigationProp = NativeStackNavigationProp<
+  PrivateStackParamList,
+  'Mensajería'
+>;
+
 type Props = {
   users: UserItem[];
   showMessageIcon?: boolean;
-  onMessagePress?: (user: UserItem) => void;
   onUserPress?: (user: UserItem) => void;
 };
 
 const UserList: React.FC<Props> = ({
   users,
   showMessageIcon = true,
-  onMessagePress,
   onUserPress,
 }) => {
+  const navigation = useNavigation<NavigationProp>();
+
   const [pressedId, setPressedId] = useState<number | null>(null);
   const [selectedUser, setSelectedUser] = useState<UserItem | null>(null);
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -58,7 +67,6 @@ const UserList: React.FC<Props> = ({
           )
         }
         onPress={() => {
-          console.log(`Enviar mensaje a ${item.name}`);
           if (onUserPress) onUserPress(item);
         }}
         right={() => (
@@ -67,8 +75,12 @@ const UserList: React.FC<Props> = ({
               <IconButton
                 icon='email'
                 onPress={() => {
-                  console.log(`Enviar mensaje a ${item.name}`);
-                  if (onMessagePress) onMessagePress(item);
+                  navigation.navigate('Conversación', {
+                    title: item.name,
+                    myName: 'Renata',
+                    otherAvatarUrl: item.avatarUrl,
+                    myAvatarUrl: undefined,
+                  });
                 }}
               />
             )}

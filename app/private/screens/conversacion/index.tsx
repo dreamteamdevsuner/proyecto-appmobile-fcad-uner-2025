@@ -15,7 +15,7 @@ import { PrivateStackParamList } from '../../../../navigator/types';
 
 type Props = NativeStackScreenProps<PrivateStackParamList, 'Conversación'>;
 
-const Conversacion: React.FC<Props> = ({ route, navigation }) => {
+const Conversacion: React.FC<Props> = ({ route }) => {
   const {
     title,
     myName = 'Renata',
@@ -102,7 +102,7 @@ const Conversacion: React.FC<Props> = ({ route, navigation }) => {
     <Container>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={25}
+        keyboardVerticalOffset={100}
         style={{ flex: 1 }}
       >
         <FlatList

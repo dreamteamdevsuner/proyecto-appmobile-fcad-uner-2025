@@ -1,13 +1,11 @@
 import { StyleSheet, View } from 'react-native';
 import { useState } from 'react';
-import { Button, Text } from 'react-native-paper';
-import {
-  UserList,
-  UserListHorizontal,
-  OfertasList,
-} from '../../../../components/listas';
+import { Text } from 'react-native-paper';
+import { UserListHorizontal, OfertasList } from '../../../../components/listas';
 import { UserItem } from '../../../../types/UserItem';
 import { OfertaItem } from '../../../../types/OfertaItem';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { PrivateStackParamList } from '../../../../navigator/types';
 
 const ofertas: OfertaItem[] = [
   { id: 1, title: 'UX Santender', subtitle: 'Subtítulo 1' },
@@ -21,61 +19,6 @@ const ofertas: OfertaItem[] = [
   { id: 9, title: 'RRHH Santender', subtitle: 'Subtítulo 9' },
   { id: 10, title: 'RRHH Naranja', subtitle: 'Subtítulo 10' },
   { id: 11, title: 'RRHH Globant', subtitle: 'Subtítulo 11' },
-];
-
-const users: UserItem[] = [
-  {
-    id: 100,
-    name: 'Ana Lopez Gonzales',
-    avatarUrl: 'https://i.pravatar.cc/150?img=1',
-    role: 'UX /UI',
-  },
-  {
-    id: 2,
-    name: 'Juan Rio Bravo',
-    avatarUrl: 'https://i.pravatar.cc/150?img=2',
-    role: 'UX /UI',
-  },
-  { id: 3, name: 'Juana Costa', role: 'UX /UI' }, // sin avatar
-  {
-    id: 4,
-    name: 'Martín Peréz',
-    avatarUrl: 'https://i.pravatar.cc/150?img=1',
-    role: 'UX /UI',
-  },
-  {
-    id: 5,
-    name: 'Camilo Cuevas',
-    avatarUrl: 'https://i.pravatar.cc/150?img=2',
-    role: 'UX /UI',
-  },
-  {
-    id: 6,
-    name: 'Sofia Reyes',
-    avatarUrl: 'https://i.pravatar.cc/150?img=1',
-    role: 'UX /UI',
-  },
-  {
-    id: 7,
-    name: 'Rosa Ramos',
-    role: 'UX /UI',
-    avatarUrl: 'https://i.pravatar.cc/150?img=2',
-  },
-  { id: 8, name: 'John Doe', role: 'UX /UI' },
-  {
-    id: 9,
-    name: 'Jude Smith',
-    role: 'UX /UI',
-    avatarUrl: 'https://i.pravatar.cc/150?img=1',
-  },
-  {
-    id: 10,
-    name: 'Leonor Lewis',
-    role: 'UX /UI',
-    avatarUrl: 'https://i.pravatar.cc/150?img=2',
-  },
-  { id: 11, name: 'Luis García', role: 'UX /UI' },
-  { id: 12, name: 'Elba Gomez', role: 'UX /UI' },
 ];
 
 const matchs: UserItem[] = [
@@ -131,45 +74,35 @@ const matchs: UserItem[] = [
   },
 ];
 
-export default function Favoritos() {
-  const [selectedOfertaId, setSelectedOfertaId] = useState<number | null>(null);
+type Props = NativeStackScreenProps<PrivateStackParamList, 'Favoritos'>;
+
+const Favoritos: React.FC<Props> = ({ navigation }) => {
+  const handleSelectOferta = (oferta: OfertaItem) => {
+    navigation.navigate('FavoritosOferta', {
+      title: oferta.title,
+    });
+  };
 
   return (
     <View style={styles.container}>
-      {selectedOfertaId ? (
-        <>
-          <View style={styles.titleContainer}>
-            <Button onPress={() => setSelectedOfertaId(null)}>Volver</Button>
-            <Text style={styles.title}>
-              {ofertas.find((x) => x.id === selectedOfertaId)?.title}
-            </Text>
-          </View>
-          <View style={[styles.listContainer, styles.section]}>
-            <UserList users={users} showMessageIcon />
-          </View>
-        </>
-      ) : (
-        <>
-          <View style={styles.section}>
-            <View style={styles.titleContainer}>
-              <Text style={styles.title}>Matchs recientes</Text>
-            </View>
-            <UserListHorizontal users={matchs}></UserListHorizontal>
-          </View>
-          <View style={[styles.listContainer, styles.section]}>
-            <View style={styles.titleContainer}>
-              <Text style={styles.title}>Mis matchs</Text>
-            </View>
-            <OfertasList
-              ofertas={ofertas}
-              setSelectedId={setSelectedOfertaId}
-            ></OfertasList>
-          </View>
-        </>
-      )}
+      <View style={styles.section}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>Matchs recientes</Text>
+        </View>
+        <UserListHorizontal users={matchs}></UserListHorizontal>
+      </View>
+      <View style={[styles.listContainer, styles.section]}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>Mis matchs</Text>
+        </View>
+        <OfertasList
+          ofertas={ofertas}
+          onSelectOferta={handleSelectOferta}
+        ></OfertasList>
+      </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   section: {
@@ -197,3 +130,4 @@ const styles = StyleSheet.create({
     gap: 5,
   },
 });
+export default Favoritos;

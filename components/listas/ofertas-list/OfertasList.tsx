@@ -5,10 +5,10 @@ import { OfertaItem } from '../../../types/OfertaItem';
 
 type Props = {
   ofertas: OfertaItem[];
-  setSelectedId: (id: number | null) => void;
+  onSelectOferta: (oferta: OfertaItem) => void;
 };
 
-const OfertasList: React.FC<Props> = ({ ofertas, setSelectedId }) => {
+const OfertasList: React.FC<Props> = ({ ofertas, onSelectOferta }) => {
   const [pressedId, setPressedId] = useState<number | null>(null);
 
   const renderItem: ListRenderItem<OfertaItem> = ({ item }) => {
@@ -18,7 +18,7 @@ const OfertasList: React.FC<Props> = ({ ofertas, setSelectedId }) => {
         description={item.subtitle}
         style={pressedId === item.id ? styles.selectedItem : undefined}
         titleStyle={pressedId === item.id ? styles.selectedTitle : undefined}
-        onPress={() => setSelectedId(item.id)}
+        onPress={() => onSelectOferta(item)}
         onPressIn={() => setPressedId(item.id)}
         onPressOut={() => setPressedId(null)}
         right={(props) => <List.Icon {...props} icon='chevron-right' />}
