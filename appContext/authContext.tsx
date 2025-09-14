@@ -18,7 +18,7 @@ const userStateInitiaValues: UserState = {
   isLogged: false,
   user: {} as User,
 };
-const AuthContext = createContext<{
+export const AuthContext = createContext<{
   userState: UserState;
   login: (email: string, password: string) => void;
   logout: () => void;
@@ -36,14 +36,14 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
   //MOCKUP LOGIN
   const login = (email: string, password: string) => {
-    if (email === "dev@dev.com") {
+    if (email === "dev@mail.com") {
       setUserState({
         isLogged: true,
         user: { name: "dev", email: "dev@mail.com", role: Role.candidate },
       });
       return;
     }
-    if (email === "dev@dev.com") {
+    if (email === "recruiter@mail.com") {
       setUserState({
         isLogged: true,
         user: {

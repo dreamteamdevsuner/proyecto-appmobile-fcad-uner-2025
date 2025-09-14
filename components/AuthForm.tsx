@@ -5,7 +5,7 @@ import {
   KeyboardAvoidingView,
   Alert,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Button,
   Icon,
@@ -17,6 +17,7 @@ import {
 } from "react-native-paper";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import { AuthContext } from "../appContext/authContext";
 
 interface AppSnackProps {
   visible: boolean;
@@ -68,6 +69,8 @@ const formValidationSchema = Yup.object({
     .required("campo obligatorio"),
 });
 const AuthForm = () => {
+  const { userState, login } = useContext(AuthContext);
+
   const [showSnackbar, setShowSnackbar] = useState(false);
 
   const handleShowSnackbar = () => {
@@ -80,7 +83,9 @@ const AuthForm = () => {
   const handleLogin = (values: LoginForm) => {
     // console.log("handle login");
     console.log("values", values);
+    //MOCKUP LOGIN SUCCESS
 
+    login("dev@mail.com", "1");
     //MOCKUP FAILED LOGIN
     // Alert.alert("Login Error", "login error");
     handleShowSnackbar();

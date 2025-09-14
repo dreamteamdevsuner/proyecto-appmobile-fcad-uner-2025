@@ -7,8 +7,8 @@ import {
 } from "react-native";
 import React from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import Logo from "../components/Logo";
-import AuthForm from "../components/AuthForm";
+import Logo from "../../components/Logo";
+import AuthForm from "../../components/AuthForm";
 
 import { Button, Text } from "react-native-paper";
 //TODO move a su component

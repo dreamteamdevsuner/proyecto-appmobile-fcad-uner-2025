@@ -1,26 +1,22 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React from "react";
-import HomeScreen from "../app/HomeScreen";
+import React, { useContext } from "react";
+import HomeScreen from "../app/private/HomeScreen";
 import ResetPasswordScreen from "../app/ResetPasswordScreen";
 import AuthForm from "../components/AuthForm";
-import Auth from "../app/Auth";
+import Auth from "../app/public/Auth";
+import { AuthContext } from "../appContext/authContext";
+import PrivateNavigator from "../app/private/PrivateNavigator";
+import PublicNavigator from "../app/public/PublicNavigator";
 
 //Agregar Root Stack Params Luego
 const Stack = createNativeStackNavigator();
 const Navigator = () => {
-  return (
-    <Stack.Navigator
-      initialRouteName="InitialLoginScreen"
-      screenOptions={{ headerShown: false }}
-    >
-      <Stack.Screen name="InitialLoginScreen" component={Auth}></Stack.Screen>
-      <Stack.Screen
-        name="ResetPasswordScreen"
-        component={ResetPasswordScreen}
-      ></Stack.Screen>
-      <Stack.Screen name="HomeScreen" component={HomeScreen}></Stack.Screen>
-    </Stack.Navigator>
+  const { userState } = useContext(AuthContext);
+
+  return userState.isLogged ? (
+    <PrivateNavigator></PrivateNavigator>
+  ) : (
+    <PublicNavigator></PublicNavigator>
   );
 };
-
 export default Navigator;
