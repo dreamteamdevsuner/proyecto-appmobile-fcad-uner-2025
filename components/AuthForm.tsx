@@ -102,8 +102,10 @@ const AuthForm = () => {
             setFieldTouched,
             values,
             errors,
-
+            isValid,
+            dirty,
             touched,
+            initialTouched,
           }) => (
             <View style={authStyles.container}>
               <TextInput
@@ -156,10 +158,15 @@ const AuthForm = () => {
                   </Text>
                 </TouchableWithoutFeedback>
               </View>
+
               <Button
                 mode="contained"
-                style={{ backgroundColor: "black" }}
+                style={{
+                  backgroundColor: "black",
+                  opacity: (dirty && !isValid) || !dirty ? 0.5 : 1,
+                }}
                 onPress={() => handleSubmit()}
+                disabled={(dirty && !isValid) || !dirty}
               >
                 <Text style={{ color: "white" }}>Iniciar sesión</Text>
               </Button>
