@@ -4,23 +4,26 @@ import { StyleSheet, View } from "react-native";
 import { Button, DefaultTheme, PaperProvider, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Navigator from "./navigator/Navigator";
+import AuthProvider from "./appContext/authContext";
 
 export default function App() {
   return (
     //hardcodeando paleta custom , pasando blue como primary
-    <NavigationContainer>
-      <PaperProvider theme={{ ...DefaultTheme, colors: { primary: "blue" } }}>
-        <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
-          <Navigator></Navigator>
-          {/* <View style={styles.contentWrapper}>
+    <AuthProvider>
+      <NavigationContainer>
+        <PaperProvider theme={{ ...DefaultTheme, colors: { primary: "blue" } }}>
+          <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
+            <Navigator></Navigator>
+            {/* <View style={styles.contentWrapper}>
             <View style={styles.btnContainer}>
               <Button mode="outlined">Iniciar sesión</Button>
               <Button>Registrarse</Button>
             </View>
           </View> */}
-        </SafeAreaView>
-      </PaperProvider>
-    </NavigationContainer>
+          </SafeAreaView>
+        </PaperProvider>
+      </NavigationContainer>
+    </AuthProvider>
   );
 }
 
