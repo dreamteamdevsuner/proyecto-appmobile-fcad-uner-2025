@@ -1,11 +1,11 @@
 import { FlatList, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { UserList } from '../../../../components/listas';
-import { ChatScreen } from '../../../../components/mensajeria/ChatScreen';
 import { useState } from 'react';
 import { UserItem } from '../../../../types/UserItem';
 import { OfertaItem } from '../../../../types/OfertaItem';
-import { Message } from '../../../../types/Message';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { PrivateStackParamList } from '../../../../navigator/types';
 
 const ofertas: OfertaItem[] = [
   { id: 1, title: 'UX Santander' },
@@ -88,54 +88,25 @@ const users: UserItem[] = [
   { id: 12, name: 'Elba Gomez', role: 'UX /UI', ofertaId: 9 },
 ];
 
-export default function Mensajeria() {
-  const [selectedUser, setSelectedUser] = useState<UserItem | null>(null);
-  const [inputText, setInputText] = useState('');
-  const [messages, setMessages] = useState<Message[]>([]);
+type MensajeriaNavigationProp = NativeStackNavigationProp<
+  PrivateStackParamList,
+  'Mensajería'
+>;
 
+type Props = {
+  navigation: MensajeriaNavigationProp;
+};
+
+const Mensajeria: React.FC<Props> = ({ navigation }) => {
   const handleSelectUser = (user: UserItem) => {
-    setSelectedUser(user);
-
-    const initialMessages: Message[] = [
-      {
-        id: '1',
-        text: `Hola, ${user.name}. Tu perfil es interesante para nuestra propuesta, ¿podrías enviarme tu CV a esta dirección? renata@correo.com Gracias.`,
-        sender: 'me',
-      },
-      {
-        id: '2',
-        text: `¡Hola, Renata!`,
-        sender: 'other',
-      },
-    ];
-
-    setMessages(initialMessages);
+    navigation.navigate('Conversación', {
+      title: user.name,
+      myName: 'Renata',
+      otherAvatarUrl: user.avatarUrl,
+      myAvatarUrl: undefined,
+    });
   };
 
-  const handleSend = () => {
-    if (!inputText.trim()) return;
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now().toString(), text: inputText, sender: 'me' },
-    ]);
-    setInputText('');
-  };
-
-  if (selectedUser) {
-    return (
-      <ChatScreen
-        title={selectedUser.name}
-        myName={'Renata'}
-        messages={messages}
-        inputText={inputText}
-        otherAvatarUrl={selectedUser.avatarUrl}
-        myAvatarUrl={undefined}
-        onChangeText={setInputText}
-        onSend={handleSend}
-        onBack={() => setSelectedUser(null)}
-      />
-    );
-  }
   return (
     <View style={styles.container}>
       <FlatList
@@ -163,7 +134,7 @@ export default function Mensajeria() {
       />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -188,3 +159,5 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
 });
+
+export default Mensajeria;
