@@ -86,11 +86,10 @@ const AuthForm = () => {
     //MOCKUP LOGIN SUCCESS
 
     const loginRes = login(values);
+    //MOCKUP FAILED LOGIN
     if (!loginRes) {
       handleShowSnackbar();
     }
-    //MOCKUP FAILED LOGIN
-    // Alert.alert("Login Error", "login error");
   };
   return (
     <>

@@ -1,7 +1,7 @@
 import { createContext, PropsWithChildren, useState } from "react";
 //PROVISORIO HAY QUE VER QUE INFO DEVUELVE LA DB CUANDO SE LOGEA USUARIO
 
-enum Role {
+export enum Role {
   candidate = "candidate",
   recruiter = "recruiter",
 }

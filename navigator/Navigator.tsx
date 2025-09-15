@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { useContext } from "react";
 import HomeScreen from "../app/private/HomeScreen";
-import ResetPasswordScreen from "../app/ResetPasswordScreen";
+import ResetPasswordScreen from "../app/public/ResetPasswordScreen";
 import AuthForm from "../components/AuthForm";
 import Auth from "../app/public/Auth";
 import { AuthContext } from "../appContext/authContext";
