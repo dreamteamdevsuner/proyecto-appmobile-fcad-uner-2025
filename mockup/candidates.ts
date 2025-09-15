@@ -69,7 +69,7 @@ const candidates = [
   },
 ];
 
-const candidates2 = [
+export const candidates2 = [
   {
     firstName: "Tomás",
     lastName: "Navarro",

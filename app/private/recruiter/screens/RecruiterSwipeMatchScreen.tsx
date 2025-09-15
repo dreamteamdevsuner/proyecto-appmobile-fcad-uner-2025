@@ -1,16 +1,26 @@
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import React from "react";
 import { useSharedValue } from "react-native-reanimated";
 import Carousel, {
   ICarouselInstance,
   Pagination,
 } from "react-native-reanimated-carousel";
-const data = [...new Array(6).keys()];
+import { candidates2 } from "../../../../mockup/candidates";
+import CandidateCard from "../../../../components/ui/CandidateCard";
+import { Button, Card } from "react-native-paper";
+const data = candidates2;
 const width = Dimensions.get("window").width;
 const RecruiterSwipeMatchScreen = () => {
   const ref = React.useRef<ICarouselInstance>(null);
   const progress = useSharedValue<number>(0);
-
+  const imageLink = require("../../../../assets/images/recruiter.png");
   const onPressPagination = (index: number) => {
     ref.current?.scrollTo({
       /**
@@ -23,38 +33,46 @@ const RecruiterSwipeMatchScreen = () => {
   };
   return (
     <View style={styles.container}>
-      <View style={{ flex: 1 }}>
+      <View>
         <Carousel
           ref={ref}
           width={width}
           height={width / 2}
           data={data}
           onProgressChange={progress}
-          renderItem={({ index }) => {
-            console.log("idx", index);
+          renderItem={({ item, index }) => {
             return (
-              <View
-                style={{
-                  flex: 1,
-                  borderWidth: 1,
-                  justifyContent: "center",
-                }}
-              >
-                <Text style={{ textAlign: "center", fontSize: 30 }}>
-                  {index}
-                </Text>
-              </View>
+              <CandidateCard key={index} candidate={item}>
+                <Card.Cover source={imageLink}></Card.Cover>
+              </CandidateCard>
             );
           }}
         />
 
-        <Pagination.Basic
-          progress={progress}
-          data={data}
-          dotStyle={{ backgroundColor: "rgba(0,0,0,0.2)", borderRadius: 50 }}
-          containerStyle={{ gap: 5, marginTop: 10 }}
-          onPress={onPressPagination}
-        />
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity activeOpacity={0.6}>
+            <View>
+              <Button
+                icon="close"
+                mode="contained"
+                buttonColor="white"
+                textColor="black"
+                children
+              />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={0.6}>
+            <View style={{ backgroundColor: "white" }}>
+              <Button
+                icon="heart-outline"
+                mode="contained"
+                children
+                buttonColor="white"
+                textColor="black"
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -63,8 +81,9 @@ const RecruiterSwipeMatchScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    opacity: 0.7,
-    backgroundColor: "black",
+
+    backgroundColor: "rgba(50,50,50,.4)",
   },
+  buttonsContainer: { flexDirection: "row", justifyContent: "space-between" },
 });
 export default RecruiterSwipeMatchScreen;
