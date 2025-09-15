@@ -5,25 +5,29 @@ import { Button, DefaultTheme, PaperProvider, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Navigator from "./navigator/Navigator";
 import AuthProvider from "./appContext/authContext";
-
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 export default function App() {
   return (
     //hardcodeando paleta custom , pasando blue como primary
-    <AuthProvider>
-      <NavigationContainer>
-        <PaperProvider theme={{ ...DefaultTheme, colors: { primary: "blue" } }}>
-          <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
-            <Navigator></Navigator>
-            {/* <View style={styles.contentWrapper}>
+    <GestureHandlerRootView>
+      <AuthProvider>
+        <NavigationContainer>
+          <PaperProvider
+            theme={{ ...DefaultTheme, colors: { primary: "blue" } }}
+          >
+            <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
+              <Navigator></Navigator>
+              {/* <View style={styles.contentWrapper}>
             <View style={styles.btnContainer}>
               <Button mode="outlined">Iniciar sesión</Button>
               <Button>Registrarse</Button>
             </View>
           </View> */}
-          </SafeAreaView>
-        </PaperProvider>
-      </NavigationContainer>
-    </AuthProvider>
+            </SafeAreaView>
+          </PaperProvider>
+        </NavigationContainer>
+      </AuthProvider>
+    </GestureHandlerRootView>
   );
 }
 
