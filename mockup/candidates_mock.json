@@ -1,0 +1,650 @@
+[
+  {
+    "firstName": "Tomás",
+    "lastName": "Navarro",
+    "profession": "Tester QA",
+    "country": "México",
+    "skills": [
+      "Redes",
+      "TypeScript",
+      "Investigación de Usuarios",
+      "Google Ads",
+      "SQL",
+      "Prototipado"
+    ]
+  },
+  {
+    "firstName": "Natalia",
+    "lastName": "Morales",
+    "profession": "Project Manager",
+    "country": "Uruguay",
+    "skills": [
+      "Excel",
+      "Big Data",
+      "Terraform",
+      "Laravel",
+      "NoSQL",
+      "Vue"
+    ]
+  },
+  {
+    "firstName": "Andrés",
+    "lastName": "Mendoza",
+    "profession": "Consultor de Negocios",
+    "country": "Paraguay",
+    "skills": [
+      "Facebook Ads",
+      "HTML",
+      "React",
+      "Docker",
+      "Python",
+      "MongoDB"
+    ]
+  },
+  {
+    "firstName": "Juan",
+    "lastName": "Fernández",
+    "profession": "Ingeniero de Software",
+    "country": "Ecuador",
+    "skills": [
+      "Analytics",
+      "Docker",
+      "Deep Learning",
+      "Gestión de Equipos",
+      "Power BI"
+    ]
+  },
+  {
+    "firstName": "Ricardo",
+    "lastName": "Chávez",
+    "profession": "Ingeniero de Software",
+    "country": "Paraguay",
+    "skills": [
+      "HTML",
+      "C#",
+      "NoSQL",
+      "Investigación de Usuarios",
+      "Deep Learning",
+      "PHP"
+    ]
+  },
+  {
+    "firstName": "Daniela",
+    "lastName": "Cruz",
+    "profession": "Especialista en Marketing Digital",
+    "country": "Perú",
+    "skills": [
+      "Jenkins",
+      "HTML",
+      "Linux",
+      "Kanban",
+      "C#",
+      "Machine Learning"
+    ]
+  },
+  {
+    "firstName": "Diego",
+    "lastName": "López",
+    "profession": "Ingeniero de Software",
+    "country": "Argentina",
+    "skills": [
+      "NoSQL",
+      "Spring Boot",
+      "Redes",
+      "Scrum"
+    ]
+  },
+  {
+    "firstName": "Luis",
+    "lastName": "Pérez",
+    "profession": "Ingeniero de Software",
+    "country": "Colombia",
+    "skills": [
+      "Email Marketing",
+      "PostgreSQL",
+      "Jira",
+      "Jenkins"
+    ]
+  },
+  {
+    "firstName": "Isabel",
+    "lastName": "Santos",
+    "profession": "Tester QA",
+    "country": "Colombia",
+    "skills": [
+      "Email Marketing",
+      "Flask",
+      "Big Data",
+      "Spring Boot"
+    ]
+  },
+  {
+    "firstName": "Javier",
+    "lastName": "Aguilar",
+    "profession": "Soporte Técnico",
+    "country": "México",
+    "skills": [
+      "Flask",
+      "PHP",
+      ".NET",
+      "Analytics"
+    ]
+  },
+  {
+    "firstName": "Javier",
+    "lastName": "Acosta",
+    "profession": "Ingeniero DevOps",
+    "country": "Colombia",
+    "skills": [
+      "Facebook Ads",
+      "Linux",
+      "HTML",
+      "NoSQL",
+      "Azure"
+    ]
+  },
+  {
+    "firstName": "Juan",
+    "lastName": "Guerrero",
+    "profession": "Administrador de Sistemas",
+    "country": "España",
+    "skills": [
+      "Swift",
+      "Kanban",
+      "Gestión de Equipos",
+      "Node.js"
+    ]
+  },
+  {
+    "firstName": "María",
+    "lastName": "Guerrero",
+    "profession": "Tester QA",
+    "country": "Colombia",
+    "skills": [
+      "Spring Boot",
+      "Python",
+      "C#",
+      "Flask",
+      "Deep Learning"
+    ]
+  },
+  {
+    "firstName": "Juan",
+    "lastName": "Fernández",
+    "profession": "Analista de Datos",
+    "country": "Colombia",
+    "skills": [
+      "Node.js",
+      "Power BI",
+      "Laravel",
+      "Python",
+      "Kotlin"
+    ]
+  },
+  {
+    "firstName": "Paula",
+    "lastName": "Silva",
+    "profession": "Soporte Técnico",
+    "country": "Argentina",
+    "skills": [
+      "Kubernetes",
+      "Python",
+      "C#",
+      "Analytics",
+      "Gestión de Equipos",
+      "SEO"
+    ]
+  },
+  {
+    "firstName": "Tomás",
+    "lastName": "Reyes",
+    "profession": "Ingeniero de Software",
+    "country": "Argentina",
+    "skills": [
+      "Terraform",
+      "Machine Learning",
+      "Java",
+      "AWS",
+      "Go",
+      "Confluence"
+    ]
+  },
+  {
+    "firstName": "Paula",
+    "lastName": "Silva",
+    "profession": "Especialista en Marketing Digital",
+    "country": "Bolivia",
+    "skills": [
+      "Node.js",
+      "Investigación de Usuarios",
+      "Kotlin",
+      "Prototipado"
+    ]
+  },
+  {
+    "firstName": "Lucía",
+    "lastName": "Mendoza",
+    "profession": "Diseñador UX/UI",
+    "country": "Argentina",
+    "skills": [
+      "SEO",
+      "Gestión de Equipos",
+      "Flask",
+      "Spring Boot",
+      "AWS"
+    ]
+  },
+  {
+    "firstName": "Florencia",
+    "lastName": "López",
+    "profession": "Diseñador UX/UI",
+    "country": "España",
+    "skills": [
+      "Laravel",
+      ".NET",
+      "Deep Learning",
+      "Windows Server"
+    ]
+  },
+  {
+    "firstName": "Luis",
+    "lastName": "Hernández",
+    "profession": "Tester QA",
+    "country": "España",
+    "skills": [
+      "JavaScript",
+      "CSS",
+      "Scrum",
+      "HTML",
+      "Spring Boot",
+      "Swift"
+    ]
+  },
+  {
+    "firstName": "Patricia",
+    "lastName": "Ibarra",
+    "profession": "Arquitecto de Software",
+    "country": "México",
+    "skills": [
+      "MongoDB",
+      "Python",
+      "PostgreSQL",
+      "Docker",
+      "Deep Learning"
+    ]
+  },
+  {
+    "firstName": "Roberto",
+    "lastName": "Martínez",
+    "profession": "Desarrollador Backend",
+    "country": "España",
+    "skills": [
+      "Deep Learning",
+      "Analytics",
+      "Redes",
+      "Scrum",
+      "Jira",
+      "Node.js"
+    ]
+  },
+  {
+    "firstName": "Diego",
+    "lastName": "Reyes",
+    "profession": "Ingeniero DevOps",
+    "country": "Chile",
+    "skills": [
+      "Linux",
+      "PostgreSQL",
+      ".NET",
+      "SEO"
+    ]
+  },
+  {
+    "firstName": "Luis",
+    "lastName": "Pérez",
+    "profession": "Diseñador UX/UI",
+    "country": "Chile",
+    "skills": [
+      "Swift",
+      "CSS",
+      "PostgreSQL",
+      "Redes",
+      "Kanban"
+    ]
+  },
+  {
+    "firstName": "Tomás",
+    "lastName": "Aguilar",
+    "profession": "Tester QA",
+    "country": "España",
+    "skills": [
+      "PHP",
+      "Scrum",
+      "Linux",
+      "Flask"
+    ]
+  },
+  {
+    "firstName": "Florencia",
+    "lastName": "González",
+    "profession": "Ingeniero de Software",
+    "country": "Bolivia",
+    "skills": [
+      "Confluence",
+      "Kanban",
+      "Gestión de Equipos",
+      "Ruby"
+    ]
+  },
+  {
+    "firstName": "Natalia",
+    "lastName": "Martínez",
+    "profession": "Analista de Datos",
+    "country": "Colombia",
+    "skills": [
+      "Flask",
+      "Deep Learning",
+      "Kubernetes",
+      ".NET"
+    ]
+  },
+  {
+    "firstName": "Miguel",
+    "lastName": "Fernández",
+    "profession": "Ingeniero de Software",
+    "country": "Chile",
+    "skills": [
+      "AWS",
+      "TypeScript",
+      "Email Marketing",
+      "SEO",
+      "Facebook Ads"
+    ]
+  },
+  {
+    "firstName": "Rocío",
+    "lastName": "Morales",
+    "profession": "Ingeniero DevOps",
+    "country": "Argentina",
+    "skills": [
+      "Gestión de Equipos",
+      "Terraform",
+      "Kotlin",
+      "Investigación de Usuarios",
+      "NoSQL",
+      "Azure"
+    ]
+  },
+  {
+    "firstName": "Javier",
+    "lastName": "Chávez",
+    "profession": "Administrador de Sistemas",
+    "country": "Paraguay",
+    "skills": [
+      "Kanban",
+      "Big Data",
+      "Jenkins",
+      ".NET",
+      "Redes"
+    ]
+  },
+  {
+    "firstName": "Daniela",
+    "lastName": "López",
+    "profession": "Analista de Datos",
+    "country": "Colombia",
+    "skills": [
+      "Figma",
+      "Machine Learning",
+      "Kanban",
+      "PostgreSQL",
+      "Vue",
+      ".NET"
+    ]
+  },
+  {
+    "firstName": "Miguel",
+    "lastName": "Hernández",
+    "profession": "Tester QA",
+    "country": "Argentina",
+    "skills": [
+      "PostgreSQL",
+      "NoSQL",
+      "Adobe XD",
+      "Azure"
+    ]
+  },
+  {
+    "firstName": "Diego",
+    "lastName": "Suárez",
+    "profession": "Arquitecto de Software",
+    "country": "Argentina",
+    "skills": [
+      "Google Ads",
+      "Kotlin",
+      "Flask",
+      "Linux"
+    ]
+  },
+  {
+    "firstName": "María",
+    "lastName": "Pérez",
+    "profession": "Especialista en Marketing Digital",
+    "country": "España",
+    "skills": [
+      "Power BI",
+      "Big Data",
+      "Azure",
+      "MongoDB"
+    ]
+  },
+  {
+    "firstName": "María",
+    "lastName": "Mendoza",
+    "profession": "Administrador de Sistemas",
+    "country": "España",
+    "skills": [
+      "Scrum",
+      "Node.js",
+      "Analytics",
+      "PHP",
+      "MongoDB",
+      "Adobe XD"
+    ]
+  },
+  {
+    "firstName": "Carlos",
+    "lastName": "Medina",
+    "profession": "Soporte Técnico",
+    "country": "Bolivia",
+    "skills": [
+      "Kubernetes",
+      "Django",
+      "Vue",
+      "PHP",
+      "Ruby",
+      "Jenkins"
+    ]
+  },
+  {
+    "firstName": "Sofía",
+    "lastName": "Domínguez",
+    "profession": "Project Manager",
+    "country": "Colombia",
+    "skills": [
+      "Facebook Ads",
+      "Machine Learning",
+      "Java",
+      "JavaScript",
+      "Ruby",
+      "Jenkins"
+    ]
+  },
+  {
+    "firstName": "Diego",
+    "lastName": "Martínez",
+    "profession": "Consultor de Negocios",
+    "country": "España",
+    "skills": [
+      "AWS",
+      "Vue",
+      "Laravel",
+      "Confluence",
+      "Excel",
+      "Facebook Ads"
+    ]
+  },
+  {
+    "firstName": "Diego",
+    "lastName": "Paredes",
+    "profession": "Ingeniero DevOps",
+    "country": "Colombia",
+    "skills": [
+      "Confluence",
+      "TypeScript",
+      "Google Ads",
+      "Jenkins"
+    ]
+  },
+  {
+    "firstName": "Patricia",
+    "lastName": "Domínguez",
+    "profession": "Científica de Datos",
+    "country": "Bolivia",
+    "skills": [
+      "Kotlin",
+      "NoSQL",
+      ".NET",
+      "Excel"
+    ]
+  },
+  {
+    "firstName": "Paula",
+    "lastName": "Guerrero",
+    "profession": "Project Manager",
+    "country": "Chile",
+    "skills": [
+      "Jenkins",
+      "PHP",
+      "Terraform",
+      "Power BI",
+      "Investigación de Usuarios"
+    ]
+  },
+  {
+    "firstName": "Carlos",
+    "lastName": "Mendoza",
+    "profession": "Soporte Técnico",
+    "country": "Chile",
+    "skills": [
+      "Python",
+      "Kanban",
+      "Jira",
+      "MongoDB",
+      "NoSQL",
+      "AWS"
+    ]
+  },
+  {
+    "firstName": "Pablo",
+    "lastName": "Castro",
+    "profession": "Analista de Datos",
+    "country": "Chile",
+    "skills": [
+      "Facebook Ads",
+      "Email Marketing",
+      "Redes",
+      "CSS"
+    ]
+  },
+  {
+    "firstName": "Javier",
+    "lastName": "Vargas",
+    "profession": "Científica de Datos",
+    "country": "Paraguay",
+    "skills": [
+      "CSS",
+      "Ruby",
+      "Machine Learning",
+      "MongoDB"
+    ]
+  },
+  {
+    "firstName": "Daniela",
+    "lastName": "Aguilar",
+    "profession": "Científica de Datos",
+    "country": "Uruguay",
+    "skills": [
+      "Email Marketing",
+      "Machine Learning",
+      "NoSQL",
+      "Vue"
+    ]
+  },
+  {
+    "firstName": "Javier",
+    "lastName": "Navarro",
+    "profession": "Soporte Técnico",
+    "country": "Chile",
+    "skills": [
+      "SEO",
+      ".NET",
+      "Scrum",
+      "Docker",
+      "Spring Boot"
+    ]
+  },
+  {
+    "firstName": "Camila",
+    "lastName": "Guerrero",
+    "profession": "Ingeniero de Software",
+    "country": "México",
+    "skills": [
+      "React",
+      "Figma",
+      "Azure",
+      "Jenkins",
+      "PostgreSQL"
+    ]
+  },
+  {
+    "firstName": "Sofía",
+    "lastName": "Rojas",
+    "profession": "Product Owner",
+    "country": "Perú",
+    "skills": [
+      "Deep Learning",
+      "Azure",
+      "React",
+      "Machine Learning",
+      "Big Data",
+      "Prototipado"
+    ]
+  },
+  {
+    "firstName": "Carolina",
+    "lastName": "Pérez",
+    "profession": "Especialista en Marketing Digital",
+    "country": "España",
+    "skills": [
+      "PHP",
+      "Swift",
+      "Prototipado",
+      "PostgreSQL"
+    ]
+  },
+  {
+    "firstName": "Diego",
+    "lastName": "Pérez",
+    "profession": "Diseñador UX/UI",
+    "country": "Paraguay",
+    "skills": [
+      "Jenkins",
+      "Swift",
+      "Email Marketing",
+      "C#",
+      "Redes",
+      "Confluence"
+    ]
+  }
+]
