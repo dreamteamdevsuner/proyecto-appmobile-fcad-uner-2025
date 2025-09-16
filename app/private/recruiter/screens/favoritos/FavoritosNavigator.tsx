@@ -3,6 +3,7 @@ import { PrivateStackParamList } from '../../navigator/types';
 import Favoritos from '.';
 import FavoritosOferta from '../favoritos-oferta';
 import ROUTES from '../../navigator/routes';
+import Conversacion from '../conversacion';
 
 const FavoritosStack = createNativeStackNavigator<PrivateStackParamList>();
 
@@ -15,6 +16,10 @@ const FavoritosNavigator = () => (
     <FavoritosStack.Screen
       name={ROUTES.RECRUITER_FAVORITOS_OFERTA}
       component={FavoritosOferta}
+    />
+    <FavoritosStack.Screen
+      name={ROUTES.RECRUITER_CONVERSACION}
+      component={Conversacion}
     />
   </FavoritosStack.Navigator>
 );
