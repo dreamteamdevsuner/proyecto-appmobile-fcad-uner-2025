@@ -1,6 +1,9 @@
 import { StyleSheet, View } from 'react-native';
-import { UserList } from '../../../../components/listas';
-import { UserItem } from '../../../../types/UserItem';
+import { UserList } from '../../../../../components/listas';
+import { UserItem } from '../../../../../types/UserItem';
+import ROUTES from '../../navigator/routes';
+import { PrivateStackParamList } from '../../navigator/types';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 const users: UserItem[] = [
   {
@@ -57,12 +60,25 @@ const users: UserItem[] = [
   { id: 12, name: 'Elba Gomez', role: 'UX /UI' },
 ];
 
-const handleSelectUser = () => {
-  console.log('Navegar a perfil de usuario');
-  // Navegar a perfil de usuario
-};
+type Props = NativeStackScreenProps<
+  PrivateStackParamList,
+  ROUTES.RECRUITER_FAVORITOS_OFERTA
+>;
 
-const FavoritosOferta: React.FC = () => {
+const FavoritosOferta: React.FC<Props> = ({ navigation }) => {
+  const handleSelectUser = () => {
+    console.log('Navegar a perfil de usuario');
+    // Navegar a perfil de usuario
+  };
+
+  const handleSelectConversation = (user: UserItem) => {
+    navigation.navigate(ROUTES.RECRUITER_CONVERSACION, {
+      title: user.name,
+      myName: 'Renata',
+      otherAvatarUrl: user.avatarUrl,
+      myAvatarUrl: undefined,
+    });
+  };
   return (
     <View style={styles.container}>
       <View style={[styles.listContainer, styles.section]}>
@@ -70,6 +86,7 @@ const FavoritosOferta: React.FC = () => {
           users={users}
           showMessageIcon
           onUserPress={handleSelectUser}
+          onMessagePress={handleSelectConversation}
         />
       </View>
     </View>

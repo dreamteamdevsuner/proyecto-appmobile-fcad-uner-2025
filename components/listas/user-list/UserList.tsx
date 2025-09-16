@@ -6,23 +6,26 @@ import { UserItem } from '../../../types/UserItem';
 
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { PrivateStackParamList } from '../../../navigator/types';
+import { PrivateStackParamList } from '../../../app/private/recruiter/navigator/types';
+import ROUTES from '../../../app/private/recruiter/navigator/routes';
 
 type NavigationProp = NativeStackNavigationProp<
   PrivateStackParamList,
-  'Mensajería'
+  ROUTES.RECRUITER_MENSAJERIA
 >;
 
 type Props = {
   users: UserItem[];
   showMessageIcon?: boolean;
   onUserPress?: (user: UserItem) => void;
+  onMessagePress?: (user: UserItem) => void;
 };
 
 const UserList: React.FC<Props> = ({
   users,
   showMessageIcon = true,
   onUserPress,
+  onMessagePress,
 }) => {
   const navigation = useNavigation<NavigationProp>();
 
@@ -75,12 +78,9 @@ const UserList: React.FC<Props> = ({
               <IconButton
                 icon='email'
                 onPress={() => {
-                  navigation.navigate('Conversación', {
-                    title: item.name,
-                    myName: 'Renata',
-                    otherAvatarUrl: item.avatarUrl,
-                    myAvatarUrl: undefined,
-                  });
+                  console.log(onMessagePress);
+
+                  if (onMessagePress) onMessagePress(item);
                 }}
               />
             )}

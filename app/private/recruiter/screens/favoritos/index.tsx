@@ -1,11 +1,15 @@
 import { StyleSheet, View } from 'react-native';
 import { useState } from 'react';
 import { Text } from 'react-native-paper';
-import { UserListHorizontal, OfertasList } from '../../../../components/listas';
-import { UserItem } from '../../../../types/UserItem';
-import { OfertaItem } from '../../../../types/OfertaItem';
+import {
+  UserListHorizontal,
+  OfertasList,
+} from '../../../../../components/listas';
+import { UserItem } from '../../../../../types/UserItem';
+import { OfertaItem } from '../../../../../types/OfertaItem';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { PrivateStackParamList } from '../../../../navigator/types';
+import { PrivateStackParamList } from '../../navigator/types';
+import ROUTES from '../../navigator/routes';
 
 const ofertas: OfertaItem[] = [
   { id: 1, title: 'UX Santender', subtitle: 'Subtítulo 1' },
@@ -74,11 +78,14 @@ const matchs: UserItem[] = [
   },
 ];
 
-type Props = NativeStackScreenProps<PrivateStackParamList, 'Favoritos'>;
+type Props = NativeStackScreenProps<
+  PrivateStackParamList,
+  ROUTES.RECRUITER_FAVORITOS
+>;
 
 const Favoritos: React.FC<Props> = ({ navigation }) => {
   const handleSelectOferta = (oferta: OfertaItem) => {
-    navigation.navigate('FavoritosOferta', {
+    navigation.navigate(ROUTES.RECRUITER_FAVORITOS_OFERTA, {
       title: oferta.title,
     });
   };

@@ -7,7 +7,12 @@ import TestRecruiter from "../screens/TestRecruiter";
 import RecruiterSwipeMatchScreen from "../screens/RecruiterSwipeMatchScreen";
 import { Icon, MD3Colors } from "react-native-paper";
 
-const Tab = createBottomTabNavigator();
+import { PrivateStackParamList } from './types';
+import FavoritosNavigator from '../screens/favoritos/FavoritosNavigator';
+import MensajeriaNavigator from '../screens/mensajeria/MensajeriaNavigator';
+
+const Tab = createBottomTabNavigator<PrivateStackParamList>();
+
 const RecruiterNavigator = () => {
   return (
     <Tab.Navigator
@@ -47,6 +52,14 @@ const RecruiterNavigator = () => {
       <Tab.Screen
         name={ROUTES.RECRUITER_TEST}
         component={TestRecruiter}
+      ></Tab.Screen>
+      <Tab.Screen
+        name={ROUTES.RECRUITER_FAVORITOS}
+        component={FavoritosNavigator}
+      ></Tab.Screen>
+      <Tab.Screen
+        name={ROUTES.RECRUITER_MENSAJERIA}
+        component={MensajeriaNavigator}
       ></Tab.Screen>
     </Tab.Navigator>
   );

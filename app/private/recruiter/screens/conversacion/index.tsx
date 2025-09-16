@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform } from 'react-native';
-import { Appbar, Avatar, IconButton } from 'react-native-paper';
-import { Message } from '../../../../types/Message';
+import { Avatar, IconButton } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
   Container,
@@ -11,9 +10,14 @@ import {
   InputContainer,
   StyledTextInput,
 } from './styles';
-import { PrivateStackParamList } from '../../../../navigator/types';
+import { PrivateStackParamList } from '../../navigator/types';
+import { Message } from '../../../../../types/Message';
+import ROUTES from '../../navigator/routes';
 
-type Props = NativeStackScreenProps<PrivateStackParamList, 'Conversación'>;
+type Props = NativeStackScreenProps<
+  PrivateStackParamList,
+  ROUTES.RECRUITER_CONVERSACION
+>;
 
 const Conversacion: React.FC<Props> = ({ route }) => {
   const {

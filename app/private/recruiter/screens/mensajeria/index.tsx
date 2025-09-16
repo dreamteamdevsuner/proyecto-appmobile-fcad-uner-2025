@@ -1,11 +1,10 @@
 import { FlatList, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
-import { UserList } from '../../../../components/listas';
-import { useState } from 'react';
-import { UserItem } from '../../../../types/UserItem';
-import { OfertaItem } from '../../../../types/OfertaItem';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { PrivateStackParamList } from '../../../../navigator/types';
+import { OfertaItem, UserItem } from '../../../../../types';
+import { PrivateStackParamList } from '../../navigator/types';
+import { UserList } from '../../../../../components/listas';
+import ROUTES from '../../navigator/routes';
 
 const ofertas: OfertaItem[] = [
   { id: 1, title: 'UX Santander' },
@@ -88,11 +87,14 @@ const users: UserItem[] = [
   { id: 12, name: 'Elba Gomez', role: 'UX /UI', ofertaId: 9 },
 ];
 
-type Props = NativeStackScreenProps<PrivateStackParamList, 'Mensajería'>;
+type Props = NativeStackScreenProps<
+  PrivateStackParamList,
+  ROUTES.RECRUITER_MENSAJERIA
+>;
 
 const Mensajeria: React.FC<Props> = ({ navigation }) => {
   const handleSelectUser = (user: UserItem) => {
-    navigation.navigate('Conversación', {
+    navigation.navigate(ROUTES.RECRUITER_CONVERSACION, {
       title: user.name,
       myName: 'Renata',
       otherAvatarUrl: user.avatarUrl,
