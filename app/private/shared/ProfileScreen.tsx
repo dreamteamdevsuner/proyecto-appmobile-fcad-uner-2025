@@ -12,6 +12,7 @@ import {
 import { Button, Surface, Chip, Avatar } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { MaterialDesignIcons } from '@react-native-vector-icons/material-design-icons';
 
 export const ProfileScreen = (): React.JSX.Element => {
   const user: User = {
@@ -174,6 +175,7 @@ export const ProfileScreen = (): React.JSX.Element => {
               </Text>
             </View>
             <Text numberOfLines={1} ellipsizeMode="tail">
+              <MaterialDesignIcons name="map-marker" size={14} />
               {user.city}
             </Text>
           </View>
