@@ -73,6 +73,7 @@ export const ProfileScreen = (): React.JSX.Element => {
     { key: 'whatIDo', title: 'Lo que hago' },
   ]);
 
+  // TODO: separar en componentes
   const AboutMeRoute = () => (
     <ScrollView contentContainerStyle={styles.tabContent}>
       <Surface mode="flat" elevation={2} style={styles.surfaceDescription}>
@@ -132,6 +133,7 @@ export const ProfileScreen = (): React.JSX.Element => {
     </ScrollView>
   );
 
+  // TODO: Separar
   const WhatIDoRoute = () => (
     <ScrollView contentContainerStyle={styles.tabContent}>
       <Surface mode="flat" elevation={2} style={styles.surfaceDescription}>
@@ -147,7 +149,7 @@ export const ProfileScreen = (): React.JSX.Element => {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
-      {/* Header con imagen y datos */}
+      {/* Header con imagen y datos - puede ser otro componente */}
       <View style={{ alignItems: 'center', paddingVertical: 8 }}>
         <Surface style={styles.surface} mode="flat" elevation={4}>
           <Image
@@ -181,7 +183,7 @@ export const ProfileScreen = (): React.JSX.Element => {
           </View>
         </Surface>
 
-        {/* Chips de habilidades */}
+        {/* Chips de habilidades - Hacerlo componente aparte*/}
         <FlatList
           data={user.skills}
           keyExtractor={(item, index) => index.toString()}
@@ -196,7 +198,7 @@ export const ProfileScreen = (): React.JSX.Element => {
         />
       </View>
 
-      {/* Tabs - ¡Aquí NO hay ScrollView! */}
+      {/* Tabs - separar cada componente*/}
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -279,7 +281,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     gap: 8,
     marginVertical: 8,
-    alignSelf: 'center', // Centra los chips horizontalmente
+    alignSelf: 'center',
   },
   chip: {
     backgroundColor: '#2c2c2c',
