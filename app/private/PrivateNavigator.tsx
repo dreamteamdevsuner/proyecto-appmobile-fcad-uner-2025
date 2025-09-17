@@ -1,10 +1,11 @@
-import { View, Text } from "react-native";
-import React, { useContext } from "react";
-import HomeScreen from "./HomeScreen";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { AuthContext, Role } from "../../appContext/authContext";
-import RecruiterNavigator from "./recruiter/navigator/RecruiterNavigator";
-import CandidateNavigator from "./candidates/navigator/CandidateNavigator";
+import { View, Text } from 'react-native';
+import React, { useContext } from 'react';
+import HomeScreen from './HomeScreen';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { AuthContext, Role } from '../../appContext/authContext';
+import RecruiterNavigator from './recruiter/navigator/RecruiterNavigator';
+import CandidateNavigator from './candidates/navigator/CandidateNavigator';
+import { ProfileScreen } from './shared/ProfileScreen';
 const Stack = createNativeStackNavigator();
 const PrivateNavigator = () => {
   const { userState } = useContext(AuthContext);
@@ -21,6 +22,10 @@ const PrivateNavigator = () => {
             ? CandidateNavigator
             : RecruiterNavigator
         }
+      ></Stack.Screen>
+      <Stack.Screen
+        name="ProfileScreen"
+        component={ProfileScreen}
       ></Stack.Screen>
     </Stack.Navigator>
   );

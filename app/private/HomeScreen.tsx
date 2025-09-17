@@ -3,7 +3,8 @@ import React from "react";
 
 const HomeScreen = () => {
   return (
-    <View>
+    <View> 
+ 
       <Text>Home Screen</Text>
     </View>
   );

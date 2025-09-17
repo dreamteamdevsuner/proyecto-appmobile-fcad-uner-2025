@@ -1,9 +1,10 @@
-import { View, Text } from "react-native";
-import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import ROUTES from "../routes";
-import CandidateHomeScreen from "../screens/CandidateHomeScreen";
-import CandidateTestScreen from "../screens/CandidateTestScreen";
+import { View, Text } from 'react-native';
+import React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import ROUTES from '../routes';
+import CandidateHomeScreen from '../screens/CandidateHomeScreen';
+import CandidateTestScreen from '../screens/CandidateTestScreen';
+import { ProfileScreen } from '../../shared/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
 const CandidateNavigator = () => {
@@ -17,6 +18,7 @@ const CandidateNavigator = () => {
         name={ROUTES.CANDIDATE_TEST}
         component={CandidateTestScreen}
       ></Tab.Screen>
+      <Tab.Screen name="ProfileScreen" component={ProfileScreen}></Tab.Screen>
     </Tab.Navigator>
   );
 };
