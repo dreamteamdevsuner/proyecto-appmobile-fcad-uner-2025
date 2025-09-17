@@ -6,5 +6,6 @@ enum ROUTES {
   RECRUITER_FAVORITOS_OFERTA = 'RecruiterFavoritosOferta',
   RECRUITER_MENSAJERIA = 'RecruiterMensajeria',
   RECRUITER_CONVERSACION = 'RecruiterConversacion',
+  PROFILE = 'ProfileScreen',
 }
 export default ROUTES;

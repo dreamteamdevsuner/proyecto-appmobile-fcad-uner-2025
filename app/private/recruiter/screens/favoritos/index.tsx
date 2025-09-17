@@ -89,6 +89,9 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
       title: oferta.title,
     });
   };
+  const handleSelectUser = (user: UserItem) => {
+    navigation.navigate(ROUTES.PROFILE);
+  };
 
   return (
     <View style={styles.container}>
@@ -96,7 +99,10 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Matchs recientes</Text>
         </View>
-        <UserListHorizontal users={matchs}></UserListHorizontal>
+        <UserListHorizontal
+          users={matchs}
+          onSelectUser={handleSelectUser}
+        ></UserListHorizontal>
       </View>
       <View style={[styles.listContainer, styles.section]}>
         <View style={styles.titleContainer}>

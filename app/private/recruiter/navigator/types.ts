@@ -13,4 +13,5 @@ export type PrivateStackParamList = {
     otherAvatarUrl?: string;
     myAvatarUrl?: string;
   };
+  [ROUTES.PROFILE]: undefined;
 };
