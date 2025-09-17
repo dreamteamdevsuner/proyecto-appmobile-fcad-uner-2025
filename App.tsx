@@ -12,9 +12,7 @@ export default function App() {
     <GestureHandlerRootView>
       <AuthProvider>
         <NavigationContainer>
-          <PaperProvider
-            theme={{ ...DefaultTheme, colors: { primary: "blue" } }}
-          >
+            <PaperProvider theme={{ ...DefaultTheme, colors: {...DefaultTheme.colors, primary: 'blue'} }}>
             <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
               <Navigator></Navigator>
               {/* <View style={styles.contentWrapper}>
