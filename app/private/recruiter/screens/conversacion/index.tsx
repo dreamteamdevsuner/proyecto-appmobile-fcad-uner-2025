@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { FlatList, KeyboardAvoidingView, Platform } from 'react-native';
+import { FlatList } from 'react-native';
 import { Avatar, IconButton } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
@@ -103,33 +103,27 @@ const Conversacion: React.FC<Props> = ({ route }) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={100}
-      style={{ flex: 1 }}
-    >
-      <Container>
-        <FlatList
-          ref={flatListRef}
-          data={messages}
-          keyExtractor={(item) => item.id}
-          renderItem={renderItem}
-          contentContainerStyle={{ padding: 10 }}
-          onContentSizeChange={() => {
-            flatListRef.current?.scrollToEnd({ animated: true });
-          }}
-        />
+    <Container>
+      <FlatList
+        ref={flatListRef}
+        data={messages}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        contentContainerStyle={{ padding: 10 }}
+        onContentSizeChange={() => {
+          flatListRef.current?.scrollToEnd({ animated: true });
+        }}
+      />
 
-        <InputContainer>
-          <StyledTextInput
-            placeholder="Escribe un mensaje..."
-            value={inputText}
-            onChangeText={setInputText}
-          />
-          <IconButton icon="send" onPress={handleSend} />
-        </InputContainer>
-      </Container>
-    </KeyboardAvoidingView>
+      <InputContainer>
+        <StyledTextInput
+          placeholder="Escribe un mensaje..."
+          value={inputText}
+          onChangeText={setInputText}
+        />
+        <IconButton icon="send" onPress={handleSend} />
+      </InputContainer>
+    </Container>
   );
 };
 
