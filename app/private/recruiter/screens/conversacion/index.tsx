@@ -79,7 +79,7 @@ const Conversacion: React.FC<Props> = ({ route }) => {
             selectable={true}
             isMe={isMe}
             numberOfLines={0}
-            ellipsizeMode='clip'
+            ellipsizeMode="clip"
           >
             {item.text}
           </MessageText>
@@ -103,12 +103,12 @@ const Conversacion: React.FC<Props> = ({ route }) => {
   };
 
   return (
-    <Container>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={100}
-        style={{ flex: 1 }}
-      >
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={100}
+      style={{ flex: 1 }}
+    >
+      <Container>
         <FlatList
           ref={flatListRef}
           data={messages}
@@ -122,14 +122,14 @@ const Conversacion: React.FC<Props> = ({ route }) => {
 
         <InputContainer>
           <StyledTextInput
-            placeholder='Escribe un mensaje...'
+            placeholder="Escribe un mensaje..."
             value={inputText}
             onChangeText={setInputText}
           />
-          <IconButton icon='send' onPress={handleSend} />
+          <IconButton icon="send" onPress={handleSend} />
         </InputContainer>
-      </KeyboardAvoidingView>
-    </Container>
+      </Container>
+    </KeyboardAvoidingView>
   );
 };
 

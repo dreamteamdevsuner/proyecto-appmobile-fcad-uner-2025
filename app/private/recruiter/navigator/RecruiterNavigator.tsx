@@ -54,11 +54,11 @@ const RecruiterNavigator = () => {
         component={TestRecruiter}
       ></Tab.Screen>
       <Tab.Screen
-        name={ROUTES.RECRUITER_FAVORITOS}
+        name={ROUTES.RECRUITER_FAVORITOS_TAB}
         component={FavoritosNavigator}
       ></Tab.Screen>
       <Tab.Screen
-        name={ROUTES.RECRUITER_MENSAJERIA}
+        name={ROUTES.RECRUITER_MENSAJERIA_TAB}
         component={MensajeriaNavigator}
       ></Tab.Screen>
     </Tab.Navigator>

@@ -10,13 +10,16 @@ import { UserItem } from '../../../types/UserItem';
 
 type Props = {
   users: UserItem[];
+  onSelectUser?: (user: UserItem) => void;
 };
 
-const UserListHorizontal: React.FC<Props> = ({ users }) => {
+const UserListHorizontal: React.FC<Props> = ({ users, onSelectUser }) => {
   const renderItem: ListRenderItem<UserItem> = ({ item }) => (
     <TouchableOpacity
       style={styles.card}
-      // onPress={() => )} Acá debería llevar al perfil
+      onPress={() => {
+        if (onSelectUser) onSelectUser(item);
+      }}
     >
       {item.avatarUrl ? (
         <Avatar.Image size={60} source={{ uri: item.avatarUrl }} />
@@ -40,8 +43,8 @@ const UserListHorizontal: React.FC<Props> = ({ users }) => {
       contentContainerStyle={styles.container}
       ListEmptyComponent={
         <List.Item
-          title='No hay elementos'
-          left={(props) => <List.Icon {...props} icon='alert-circle-outline' />}
+          title="No hay elementos"
+          left={(props) => <List.Icon {...props} icon="alert-circle-outline" />}
         />
       }
     />

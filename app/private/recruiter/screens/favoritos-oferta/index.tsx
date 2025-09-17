@@ -66,9 +66,8 @@ type Props = NativeStackScreenProps<
 >;
 
 const FavoritosOferta: React.FC<Props> = ({ navigation }) => {
-  const handleSelectUser = () => {
-    console.log('Navegar a perfil de usuario');
-    // Navegar a perfil de usuario
+  const handleSelectUser = (user: UserItem) => {
+    navigation.navigate(ROUTES.PROFILE);
   };
 
   const handleSelectConversation = (user: UserItem) => {

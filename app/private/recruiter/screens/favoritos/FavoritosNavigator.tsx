@@ -12,14 +12,21 @@ const FavoritosNavigator = () => (
     <FavoritosStack.Screen
       name={ROUTES.RECRUITER_FAVORITOS}
       component={Favoritos}
+      options={{ title: 'Favoritos' }}
     />
     <FavoritosStack.Screen
       name={ROUTES.RECRUITER_FAVORITOS_OFERTA}
       component={FavoritosOferta}
+      options={({ route }) => ({
+        title: route.params?.title ?? 'Oferta',
+      })}
     />
     <FavoritosStack.Screen
       name={ROUTES.RECRUITER_CONVERSACION}
       component={Conversacion}
+      options={({ route }) => ({
+        title: route.params?.title ?? 'Conversación',
+      })}
     />
   </FavoritosStack.Navigator>
 );
