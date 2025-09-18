@@ -5,6 +5,8 @@ import ROUTES from '../routes';
 import CandidateHomeScreen from '../screens/CandidateHomeScreen';
 import CandidateTestScreen from '../screens/CandidateTestScreen';
 import { ProfileScreen } from '../../shared/ProfileScreen';
+import Mensajeria from '../screens/mensajeria';
+import MensajeriaNavigator from '../screens/mensajeria/MensajeriaNavigator';
 
 const Tab = createBottomTabNavigator();
 const CandidateNavigator = () => {
@@ -13,6 +15,11 @@ const CandidateNavigator = () => {
       <Tab.Screen
         name={ROUTES.CANDIDATE_HOME}
         component={CandidateHomeScreen}
+      ></Tab.Screen>
+      <Tab.Screen
+        name={ROUTES.CANDIDATE_MENSAJERIA_TAB}
+        component={MensajeriaNavigator}
+        options={{ headerShown: false }}
       ></Tab.Screen>
       <Tab.Screen
         name={ROUTES.CANDIDATE_TEST}
