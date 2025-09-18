@@ -1,6 +1,6 @@
 enum ROUTES {
-  CANDIDATE_HOME = "CandidateHomeScreen",
-  CANDIDATE_TEST = "CandidateTestScreen",
+  CANDIDATE_HOME = 'Descubrir',
+  CANDIDATE_TEST = 'Favoritos',
 }
 
 export default ROUTES;
