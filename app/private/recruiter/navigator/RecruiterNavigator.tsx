@@ -11,6 +11,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { PrivateStackParamList } from './types';
 import FavoritosNavigator from '../screens/favoritos/FavoritosNavigator';
 import MensajeriaNavigator from '../screens/mensajeria/MensajeriaNavigator';
+import { ProfileScreen } from '../screens/perfil';
+import ProfileNavigator from '../screens/perfil/ProfileNavigator';
 
 const Tab = createBottomTabNavigator<PrivateStackParamList>();
 
@@ -75,7 +77,7 @@ const RecruiterNavigator = () => {
       ></Tab.Screen>
       <Tab.Screen
         name={ROUTES.RECRUITER_TEST}
-        component={TestRecruiter}
+        component={ProfileNavigator}
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons

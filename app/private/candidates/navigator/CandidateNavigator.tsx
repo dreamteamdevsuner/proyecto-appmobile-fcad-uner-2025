@@ -7,7 +7,8 @@ import CandidateHomeScreen from '../screens/CandidateHomeScreen';
 import CandidateTestScreen from '../screens/CandidateTestScreen';
 import { Icon } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { ProfileScreen } from '../../shared/ProfileScreen';
+import { ProfileScreen } from '../../recruiter/screens/perfil';
+import ProfileNavigator from '../../recruiter/screens/perfil/ProfileNavigator';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -43,7 +44,7 @@ const CandidateNavigator = () => {
       ></Tab.Screen>
       <Tab.Screen
         name="Perfil"
-        component={ProfileScreen}
+        component={ProfileNavigator}
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
