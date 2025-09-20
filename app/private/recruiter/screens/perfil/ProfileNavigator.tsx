@@ -12,7 +12,9 @@ const ProfileNavigator = () => (
       <ProfileStack.Screen
         name={ROUTES.PROFILE}
         component={ProfileScreen}
-        options={{ title: 'Perfil' }}
+        options={{ title: 'Perfil',
+           headerShown: false
+         }}
       />
     </ProfileStack.Navigator>
   </KeyboardAvoidingView>

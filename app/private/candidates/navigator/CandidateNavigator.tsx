@@ -19,8 +19,8 @@ function ProfileStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name={ROUTES.CANDIDATE_TEST_TAB}
-        component={CandidateTestScreen}
+        name={ROUTES.PROFILE}
+        component={ProfileScreen}
         options={({ navigation }) => ({
           headerShown: true,
           headerRight: () => (
@@ -77,7 +77,7 @@ const CandidateNavigator = () => {
         }}
       ></Tab.Screen>
       <Tab.Screen
-        name="Perfil"
+        name={ROUTES.CANDIDATE_PROFILE_TAB}
         component={ProfileStack}
         options={{
           headerShown: false,

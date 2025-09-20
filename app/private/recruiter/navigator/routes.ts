@@ -8,6 +8,6 @@ enum ROUTES {
   RECRUITER_MENSAJERIA_TAB = 'Mensajes',
   RECRUITER_MENSAJERIA = 'RecruiterMensajeria',
   RECRUITER_CONVERSACION = 'RecruiterConversacion',
-  PROFILE = 'ProfileScreen',
+  PROFILE = 'Mi perfil',
 }
 export default ROUTES;
