@@ -3,7 +3,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import RecruiterHomeScreen from '../screens/RecruiterHomeScreen';
 import ROUTES from './routes';
-import TestRecruiter from '../screens/TestRecruiter';
+import RecruiterProfileScreen from '../screens/RecruiterProfileScreen';
 import RecruiterSwipeMatchScreen from '../screens/RecruiterSwipeMatchScreen';
 import { Icon, MD3Colors } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -26,6 +26,13 @@ const RecruiterNavigator = () => {
         options={{
           headerShown: true,
           headerTitle: 'Jobsy',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="account-group-outline"
+              size={size}
+              color={color}
+            />
+          ),
 
           //MOVE THIS TO COMPONENT
           header: ({ options }) => {
@@ -47,15 +54,6 @@ const RecruiterNavigator = () => {
         //MOVE THIS TO COMPONENT
         name={ROUTES.RECRUITER_SWIPE_MATCH}
         component={RecruiterSwipeMatchScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons
-              name="account-group-outline"
-              size={size}
-              color={color}
-            />
-          ),
-        }}
       ></Tab.Screen>
       <Tab.Screen
         name={ROUTES.RECRUITER_HOME}
@@ -81,7 +79,7 @@ const RecruiterNavigator = () => {
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
-              name="account-outline"
+              name="account-circle-outline"
               size={size}
               color={color}
             />
