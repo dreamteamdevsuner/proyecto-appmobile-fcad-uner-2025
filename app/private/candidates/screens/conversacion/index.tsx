@@ -12,7 +12,7 @@ import {
 } from './styles';
 import { PrivateStackParamList } from '../../navigator/types';
 import { Message } from '../../../../../types/Message';
-import ROUTES from '../../routes';
+import ROUTES from '../../navigator/routes';
 
 type Props = NativeStackScreenProps<
   PrivateStackParamList,

@@ -20,7 +20,7 @@ const ofertas: OfertaItem[] = [
   { id: 11, title: 'RRHH Globant', subtitle: 'Subtítulo 11' },
 ];
 
-const users: UserItem[] = [
+var users: UserItem[] = [
   {
     id: 100,
     name: 'Ana Lopez Gonzales',
@@ -86,6 +86,13 @@ const users: UserItem[] = [
   { id: 11, name: 'Luis García', role: 'UX /UI', ofertaId: 11 },
 ];
 
+users.map(
+  (user) =>
+    (user.ofertaName = ofertas.find(
+      (oferta) => oferta.id === user.ofertaId,
+    )?.title),
+);
+
 type Props = NativeStackScreenProps<
   PrivateStackParamList,
   ROUTES.CANDIDATE_MENSAJERIA
@@ -103,28 +110,13 @@ const Mensajeria: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={ofertas}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => {
-          // Filtrar los usuarios que se postularon a esta oferta
-          const postulantes = users.filter((u) => u.ofertaId === item.id);
+      <Text style={styles.title}>Todos mis chats</Text>
 
-          return (
-            <View style={styles.section}>
-              <Text style={styles.title}>{item.title}</Text>
-              {postulantes.length > 0 ? (
-                <UserList
-                  users={postulantes}
-                  showMessageIcon={false}
-                  onUserPress={handleSelectUser}
-                />
-              ) : (
-                <Text style={styles.noUsers}>No hay postulantes aún</Text>
-              )}
-            </View>
-          );
-        }}
+      <UserList
+        showOferta={true}
+        users={users}
+        showMessageIcon={false}
+        onUserPress={handleSelectUser}
       />
     </View>
   );
@@ -142,8 +134,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   title: {
-    fontWeight: 'bold',
-    fontSize: 22,
+    fontSize: 20,
     marginBottom: 10,
   },
   noUsers: {

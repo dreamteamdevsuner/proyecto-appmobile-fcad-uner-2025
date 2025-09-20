@@ -5,4 +5,5 @@ export type UserItem = {
   avatarUrl?: string;
   role?: string;
   ofertaId?: number;
+  ofertaName?: string;
 };

@@ -102,6 +102,7 @@ const CandidateNavigator = () => {
         component={MensajeriaNavigator}
         options={{
           headerShown: false,
+          title: 'Mensajería',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="message-outline"

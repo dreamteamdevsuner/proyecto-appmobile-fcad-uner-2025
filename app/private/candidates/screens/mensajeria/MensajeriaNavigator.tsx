@@ -17,7 +17,7 @@ const MensajeriaNavigator = () => (
       <MensajeriaStack.Screen
         name={ROUTES.CANDIDATE_MENSAJERIA}
         component={Mensajeria}
-        options={{ title: 'Mensajería' }}
+        options={{ title: 'Chats' }}
       />
       <MensajeriaStack.Screen
         name={ROUTES.CANDIDATE_CONVERSACION}
