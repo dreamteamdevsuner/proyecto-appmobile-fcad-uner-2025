@@ -1,12 +1,12 @@
 import { View, Text } from "react-native";
 import React from "react";
 
-const TestRecruiter = () => {
+const RecruiterProfileScreen = () => {
   return (
     <View>
-      <Text>TestRecruiter</Text>
+      <Text>RecruiterPerfil</Text>
     </View>
   );
 };
 
-export default TestRecruiter;
+export default RecruiterProfileScreen;
