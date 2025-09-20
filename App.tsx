@@ -15,7 +15,7 @@ export default function App() {
           <PaperProvider
             theme={{
               ...DefaultTheme,
-              colors: { ...DefaultTheme.colors, primary: 'blue' },
+              colors: { ...DefaultTheme.colors, primary: '#b58df1' },
             }}
           >
             <SafeAreaView style={{ flex: 1, justifyContent: 'center' }}>
