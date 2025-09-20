@@ -4,7 +4,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { OfertaItem, UserItem } from '../../../../../types';
 import { PrivateStackParamList } from '../../navigator/types';
 import { UserList } from '../../../../../components/listas';
-import ROUTES from '../../routes';
+import ROUTES from '../../navigator/routes';
 
 const ofertas: OfertaItem[] = [
   { id: 1, title: 'UX Santander' },
