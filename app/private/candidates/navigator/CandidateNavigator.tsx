@@ -6,17 +6,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ROUTES from './routes';
 import CandidateHomeScreen from '../screens/CandidateHomeScreen';
 import CandidateTestScreen from '../screens/CandidateTestScreen';
-import CandidateProfileScreen from '../screens/CandidateProfileScreen';
 import MensajeriaNavigator from '../screens/mensajeria/MensajeriaNavigator';
-
-import { Icon } from 'react-native-paper';
-import {
-  MaterialCommunityIcons,
-  MaterialIcons,
-  Ionicons,
-} from '@expo/vector-icons';
 import { ProfileScreen } from '../../shared/ProfileScreen';
 import SettingProfile from '../../shared/SettingProfile';
+
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 const Stack = createNativeStackNavigator();
@@ -26,7 +20,7 @@ function ProfileStack() {
     <Stack.Navigator>
       <Stack.Screen
         name="Mi Perfil"
-        component={CandidateProfileScreen}
+        component={ProfileScreen}
         options={({ navigation }) => ({
           headerShown: true,
           headerRight: () => (
