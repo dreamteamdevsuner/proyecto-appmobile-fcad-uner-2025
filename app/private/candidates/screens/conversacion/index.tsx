@@ -108,6 +108,7 @@ const Conversacion: React.FC<Props> = ({ route }) => {
         ref={flatListRef}
         data={messages}
         keyExtractor={(item) => item.id}
+        showsVerticalScrollIndicator={false}
         renderItem={renderItem}
         contentContainerStyle={{ padding: 10 }}
         onContentSizeChange={() => {

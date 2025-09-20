@@ -107,6 +107,7 @@ const Mensajeria: React.FC<Props> = ({ navigation }) => {
       <FlatList
         data={ofertas}
         keyExtractor={(item) => item.id.toString()}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item }) => {
           // Filtrar los usuarios que se postularon a esta oferta
           const postulantes = users.filter((u) => u.ofertaId === item.id);
