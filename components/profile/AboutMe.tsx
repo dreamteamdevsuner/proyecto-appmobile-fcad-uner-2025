@@ -1,13 +1,4 @@
-import {
-  View,
-  Text,
-  Image,
-  FlatList,
-  Dimensions,
-  ScrollView,
-  Pressable,
-  Linking,
-} from 'react-native';
+import { Text, FlatList, ScrollView, Pressable, Linking } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { Surface, Avatar } from 'react-native-paper';
 import { User } from '../../app/private/recruiter/screens/perfil';
