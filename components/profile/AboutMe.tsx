@@ -1,9 +1,9 @@
 import { Text, FlatList, ScrollView, Pressable, Linking } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { Surface, Avatar } from 'react-native-paper';
-import { User } from '../../app/private/recruiter/screens/perfil';
+import { ProfileUser } from '../../types/ProfileUser';
 
-export const AboutMe = (user: User) => {
+export const AboutMe = (user: ProfileUser) => {
   return (
     <ScrollView contentContainerStyle={styles.tabContent}>
       <Surface mode="flat" elevation={2} style={styles.surfaceDescription}>

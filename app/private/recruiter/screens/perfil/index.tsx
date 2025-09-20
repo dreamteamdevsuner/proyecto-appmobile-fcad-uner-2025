@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { View, Dimensions } from 'react-native';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import CustomProfileTabBar from '../../../../../components/profile/CustomProfileTabBar';
@@ -9,96 +9,46 @@ import {
   ProfileScreenType,
 } from '../../../../../components/profile/ProfileHeader';
 import { HorizontalChips } from '../../../../../components/ui/HorizontalChips';
-import { Role } from '../../../../../appContext/authContext';
-import ActiveOffers from '../../../../../components/profile/ActiveOffers';
-import ClosedOffers from '../../../../../components/profile/ClosedOffers';
-import PausedOffers from '../../../../../components/profile/PausedOffers';
+import { Role, AuthContext } from '../../../../../appContext/authContext';
+import { RouteProp } from '@react-navigation/native';
+import { PrivateStackParamList } from '../../navigator/types';
+import ROUTES from '../../navigator/routes';
+import { ProfileUser } from '../../../../../types/ProfileUser';
+import { fetchUserByEmailMock } from '../../../../../utils/mockUsers';
+import OffersTab from '../../../../../components/profile/OffersTab';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-export const ProfileScreen = (): React.JSX.Element => {
-  const user: User = {
-    id: '1',
-    name: 'Juana',
-    lastName: 'Costa',
-    email: 'johndoe@test.com',
-    role: Role.recruiter,
-    avatarUrl: 'https://i.pravatar.cc/400?img=43',
-    ocupation: 'Diseañdora UX/UI',
-    phoneNumber: '+1234567890',
-    address: '123 Main St, City, Country',
-    city: 'Argentina',
-    bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. \n\nSed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    skills: [
-      'JavaScript',
-      'React',
-      'React Native',
-      'Node.js',
-      'TypeScript',
-      'NestJS',
-    ],
-    socialLinks: [
-      {
-        name: 'LinkedIn',
-        url: 'https://linkedin.com/in/johndoe',
-      },
-      {
-        name: 'GitHub',
-        url: 'https://github.com',
-      },
-      {
-        name: 'Twitter',
-        url: 'https://twitter.com/johndoe',
-      },
-      {
-        name: 'Instagram',
-        url: 'https://instagram.com/johndoe',
-      },
-    ],
-    studies: [
-      'B.Sc. in Computer Science from XYZ University',
-      'M.Sc. in Software Engineering from ABC University',
-    ],
-    otherStudies: [
-      'Mar. 2025 - Jun. 2025: Lorem Ipsum Lalala la',
-      'Sep. 2022 - Ene. 2023: Curso de React Native - Coderhouse',
-    ],
-    experience: [
-      'Software Developer at ABC Corp (2019-Present)',
-      'Intern at XYZ Ltd (2018-2019)',
-      'Freelance Developer (2017-2018)',
-    ],
-    offers: [
-      {
-        name: 'UX Santander',
-        status: OfferStatus.ACTIVE,
-        description: 'Lorem ipsum dolor sit amet.',
-      },
-      {
-        name: 'UX Santander',
-        status: OfferStatus.ACTIVE,
-        description: 'Lorem ipsum dolor sit amet.',
-      },
-      {
-        name: 'UX Santander',
-        status: OfferStatus.PAUSED,
-        description: 'Lorem ipsum dolor sit amet.',
-      },
-      {
-        name: 'UX Santander',
-        status: OfferStatus.PAUSED,
-        description: 'Lorem ipsum dolor sit amet.',
-      },
-      {
-        name: 'UX Santander',
-        status: OfferStatus.CLOSED,
-        description: 'Lorem ipsum dolor sit amet.',
-      },
-    ],
+type Props = NativeStackScreenProps<PrivateStackParamList, ROUTES.PROFILE>;
+
+const ProfileScreen: React.FC<Props> = ({ route }) => {
+  // const { userId } = route.params;
+  const { userState } = useContext(AuthContext);
+
+  // TODO: usar route.params?.user para ver el perfil de otro usuario
+  const paramUserId = route?.params?.userId as string | undefined;
+  const [profileUser, setProfileUser] = useState<ProfileUser | undefined>(
+    undefined,
+  );
+
+  const isOwnProfile = () => {
+    return !paramUserId;
   };
+
+  useEffect(() => {
+    const load = async () => {
+      // TODO: obtener usuario a mostrar, por ahora mockeado y obtenido por email
+      const fetched = await fetchUserByEmailMock(userState.user.email);
+      setProfileUser(fetched);
+    };
+    load();
+  }, []);
 
   const layout = Dimensions.get('window');
   const [index, setIndex] = useState(0);
+
+  //TODO: Revisar si las rutas funcionan cuando vemos el perfil de otro user
   const [routes] = useState(
-    user.role === Role.candidate
+    ((profileUser?.role ?? userState.user.role) as Role) === Role.candidate
       ? [
           { key: 'aboutMe', title: 'Quien soy' },
           { key: 'whatIDo', title: 'Lo que hago' },
@@ -111,30 +61,44 @@ export const ProfileScreen = (): React.JSX.Element => {
   );
 
   const renderScene =
-    user.role === Role.candidate
+    ((profileUser?.role ?? userState.user.role) as Role) === Role.candidate
       ? SceneMap({
-          aboutMe: AboutMe.bind(null, user),
-          whatIDo: WhatIDo.bind(null, user),
+          aboutMe: AboutMe.bind(null, profileUser ?? (userState.user as any)),
+          whatIDo: WhatIDo.bind(null, profileUser ?? (userState.user as any)),
         })
       : SceneMap({
-          activeOffers: ActiveOffers,
-          closedOffers: ClosedOffers,
-          pausedOffers: PausedOffers,
+          activeOffers: OffersTab.bind(
+            null,
+            profileUser?.offers?.filter((item) => item.status === 'Activa'),
+          ),
+          closedOffers: OffersTab.bind(
+            null,
+            profileUser?.offers?.filter((item) => item.status === 'Pausada'),
+          ),
+          pausedOffers: OffersTab.bind(
+            null,
+            profileUser?.offers?.filter((item) => item.status === 'Cerrada'),
+          ),
         });
 
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={{ paddingVertical: 8 }}>
         <ProfileHeader
-          name={user.name}
-          ocupation={user.ocupation}
-          avatarUrl={user.avatarUrl}
-          city={user.city}
-          profileScreenType={ProfileScreenType.RECRUITER_HOME_PROFILE}
+          name={profileUser?.name ?? (userState.user as any).name}
+          ocupation={profileUser?.ocupation ?? ''}
+          avatarUrl={profileUser?.avatarUrl ?? ''}
+          city={profileUser?.city ?? ''}
+          profileScreenType={
+            isOwnProfile()
+              ? ProfileScreenType.RECRUITER_HOME_PROFILE
+              : ProfileScreenType.OTHER_PROFILE
+          }
         ></ProfileHeader>
 
-        {user.role === Role.candidate && (
-          <HorizontalChips skills={user.skills ?? []}></HorizontalChips>
+        {((profileUser?.role ?? userState.user.role) as Role) ===
+          Role.candidate && (
+          <HorizontalChips skills={profileUser?.skills ?? []}></HorizontalChips>
         )}
       </View>
 
@@ -150,32 +114,4 @@ export const ProfileScreen = (): React.JSX.Element => {
   );
 };
 
-export interface User {
-  id: string;
-  name: string;
-  lastName: string;
-  email: string;
-  avatarUrl?: string;
-  ocupation?: string;
-  phoneNumber?: string;
-  address?: string;
-  city: string;
-  bio?: string;
-  skills?: string[];
-  socialLinks?: { name: string; url: string }[];
-  studies?: string[];
-  otherStudies?: string[];
-  experience?: string[];
-  role: Role;
-  offers: {
-    name: string;
-    status: OfferStatus;
-    description: string;
-  }[];
-}
-
-enum OfferStatus {
-  ACTIVE = 'Activa',
-  CLOSED = 'Cerrada',
-  PAUSED = 'Pausada',
-}
+export default ProfileScreen;

@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { PrivateStackParamList } from '../../navigator/types';
 import { KeyboardAvoidingView } from 'react-native';
 import ROUTES from '../../navigator/routes';
-import { ProfileScreen } from '.';
+import ProfileScreen from '.';
 
 const ProfileStack = createNativeStackNavigator<PrivateStackParamList>();
 

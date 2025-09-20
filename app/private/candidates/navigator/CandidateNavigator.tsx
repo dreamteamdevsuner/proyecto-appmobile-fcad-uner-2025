@@ -14,7 +14,6 @@ import {
   MaterialIcons,
   Ionicons,
 } from '@expo/vector-icons';
-import { ProfileScreen } from '../../shared/ProfileScreen';
 import SettingProfile from '../../shared/SettingProfile';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 

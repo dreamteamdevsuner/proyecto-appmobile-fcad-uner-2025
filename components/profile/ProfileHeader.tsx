@@ -1,7 +1,7 @@
 import MaterialDesignIcons from '@react-native-vector-icons/material-design-icons';
 import { View, Image, Text, StyleSheet } from 'react-native';
 import { Surface } from 'react-native-paper';
-import { User } from '../../app/private/recruiter/screens/perfil';
+import { ProfileUser } from '../../types/ProfileUser';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Octicons from '@expo/vector-icons/Octicons';
 
@@ -9,7 +9,7 @@ interface ProfileHeaderProps {
   name: string;
   avatarUrl?: string;
   ocupation?: string;
-  city: string;
+  city?: string;
   profileScreenType: ProfileScreenType;
 }
 

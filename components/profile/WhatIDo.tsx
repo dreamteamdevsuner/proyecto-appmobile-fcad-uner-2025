@@ -1,8 +1,8 @@
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Surface } from 'react-native-paper';
-import { User } from '../../app/private/recruiter/screens/perfil';
+import { ProfileUser } from '../../types/ProfileUser';
 
-export const WhatIDo = (user: User) => {
+export const WhatIDo = (user: ProfileUser) => {
   return (
     <ScrollView contentContainerStyle={styles.tabContent}>
       <Surface mode="flat" elevation={2} style={styles.surfaceDescription}>

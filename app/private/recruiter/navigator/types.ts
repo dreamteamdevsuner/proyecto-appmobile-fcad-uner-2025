@@ -1,5 +1,4 @@
 import ROUTES from './routes';
-
 export type PrivateStackParamList = {
   [ROUTES.RECRUITER_HOME]: undefined;
   [ROUTES.RECRUITER_TEST]: undefined;
@@ -15,5 +14,5 @@ export type PrivateStackParamList = {
     otherAvatarUrl?: string;
     myAvatarUrl?: string;
   };
-  [ROUTES.PROFILE]: undefined;
+  [ROUTES.PROFILE]: { userId?: string } | undefined;
 };
