@@ -1,7 +1,7 @@
 import ROUTES from './routes';
 export type PrivateStackParamList = {
   [ROUTES.RECRUITER_HOME]: undefined;
-  [ROUTES.RECRUITER_TEST]: undefined;
+  [ROUTES.RECRUITER_PERFIL_TAB]: undefined;
   [ROUTES.RECRUITER_SWIPE_MATCH]: undefined;
   [ROUTES.RECRUITER_MENSAJERIA_TAB]: undefined;
   [ROUTES.RECRUITER_MENSAJERIA]: undefined;

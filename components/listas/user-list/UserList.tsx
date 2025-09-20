@@ -15,6 +15,7 @@ type NavigationProp = NativeStackNavigationProp<
 >;
 
 type Props = {
+  showOferta: boolean;
   users: UserItem[];
   showMessageIcon?: boolean;
   onUserPress?: (user: UserItem) => void;
@@ -22,6 +23,7 @@ type Props = {
 };
 
 const UserList: React.FC<Props> = ({
+  showOferta = false,
   users,
   showMessageIcon = true,
   onUserPress,
@@ -60,7 +62,7 @@ const UserList: React.FC<Props> = ({
           pressedId === item.id && styles.selectedItem,
         ]}
         contentStyle={{ paddingRight: 0 }}
-        description={item.role}
+        description={showOferta ? `De oferta ${item.ofertaName}` : item.role}
         titleStyle={pressedId === item.id ? styles.selectedTitle : undefined}
         left={() =>
           item.avatarUrl ? (
@@ -76,7 +78,7 @@ const UserList: React.FC<Props> = ({
           <View style={styles.actions}>
             {showMessageIcon && (
               <IconButton
-                icon='email'
+                icon="email"
                 onPress={() => {
                   console.log(onMessagePress);
 
@@ -85,7 +87,7 @@ const UserList: React.FC<Props> = ({
               />
             )}
             <IconButton
-              icon='delete'
+              icon="delete"
               onPress={() => {
                 console.log(`Eliminar a ${item.name}`);
                 openDialog(item);
@@ -106,12 +108,12 @@ const UserList: React.FC<Props> = ({
         keyExtractor={(item) => item.id.toString() + item.name}
         showsVerticalScrollIndicator={false}
         scrollEnabled={true}
-        ListEmptyComponent={<List.Item title='No hay usuarios' />}
+        ListEmptyComponent={<List.Item title="No hay usuarios" />}
       />
 
       <Confirmacion
         visible={dialogVisible}
-        title='Confirmar acción'
+        title="Confirmar acción"
         message={`¿Seguro que deseas eliminar a ${selectedUser?.name}?`}
         onConfirm={confirmAction}
         onCancel={closeDialog}

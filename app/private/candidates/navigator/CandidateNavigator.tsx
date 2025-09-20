@@ -6,15 +6,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ROUTES from './routes';
 import CandidateHomeScreen from '../screens/CandidateHomeScreen';
 import CandidateTestScreen from '../screens/CandidateTestScreen';
-import CandidateProfileScreen from '../screens/CandidateProfileScreen';
-
-import { Icon } from 'react-native-paper';
-import {
-  MaterialCommunityIcons,
-  MaterialIcons,
-  Ionicons,
-} from '@expo/vector-icons';
+import MensajeriaNavigator from '../screens/mensajeria/MensajeriaNavigator';
+import { ProfileScreen } from '../../shared/ProfileScreen';
 import SettingProfile from '../../shared/SettingProfile';
+
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 const Stack = createNativeStackNavigator();
@@ -24,7 +20,7 @@ function ProfileStack() {
     <Stack.Navigator>
       <Stack.Screen
         name="Mi Perfil"
-        component={CandidateProfileScreen}
+        component={ProfileScreen}
         options={({ navigation }) => ({
           headerShown: true,
           headerRight: () => (
@@ -89,6 +85,21 @@ const CandidateNavigator = () => {
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="account-circle-outline"
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      ></Tab.Screen>
+      <Tab.Screen
+        name={ROUTES.CANDIDATE_MENSAJERIA_TAB}
+        component={MensajeriaNavigator}
+        options={{
+          headerShown: false,
+          title: 'Mensajería',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="message-outline"
               size={size}
               color={color}
             />
