@@ -1,8 +1,8 @@
-import { View, StyleSheet, StyleProp, ViewStyle, FlatList } from "react-native";
-import React, { PropsWithChildren } from "react";
-import { Card, Chip, Text } from "react-native-paper";
-import { Candidate } from "../../interfaces/Candidate";
-import { Pressable } from "react-native-gesture-handler";
+import { View, StyleSheet, StyleProp, ViewStyle, FlatList } from 'react-native';
+import React, { PropsWithChildren } from 'react';
+import { Button, Card, Chip, Text } from 'react-native-paper';
+import { Candidate } from '../../interfaces/Candidate';
+import { Pressable } from 'react-native-gesture-handler';
 interface CandidateCardProps extends PropsWithChildren {
   candidate: Candidate;
   styles?: StyleProp<ViewStyle>;
@@ -19,20 +19,30 @@ const CandidateCard = ({
 
       <Card.Title
         title={
-          <Text variant="headlineSmall" style={{ textAlign: "center" }}>
-            {candidate.firstName + " " + candidate.lastName}{" "}
+          <Text
+            variant="headlineSmall"
+            style={{
+              fontWeight: 'bold',
+              textAlign: 'center',
+            }}
+          >
+            {candidate.firstName + ' ' + candidate.lastName}{' '}
           </Text>
         }
       ></Card.Title>
 
       <Card.Content>
-        <Text style={{ textAlign: "center" }} variant="titleLarge">
+        <Text
+          style={{
+            textAlign: 'center',
+            marginTop: -10,
+          }}
+          variant="titleMedium"
+        >
           {candidate.profession}
         </Text>
-
         <FlatList
           data={candidate.skills}
-
           onTouchStart={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -49,7 +59,7 @@ const CandidateCard = ({
           renderItem={({ item, index }) => (
             <Chip
               mode="outlined"
-              textStyle={{ color: "white" }}
+              textStyle={{ color: 'white' }}
               style={styles.chip}
               key={index}
             >
@@ -57,19 +67,27 @@ const CandidateCard = ({
             </Chip>
           )}
         ></FlatList>
+        <View>
+          <Button children icon="camera" mode="contained"></Button>
+        </View>
       </Card.Content>
     </Card>
   );
 };
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "white",
-    width: "90%",
-    marginHorizontal: "auto",
+    width: '90%',
+    marginHorizontal: 'auto',
     marginTop: 20,
-    textAlign: "center",
+    paddingBottom: 40,
+    textAlign: 'center',
     flex: 1,
-    borderRadius: 20,
+    justifyContent: 'center',
+    borderRadius: 50,
+  },
+  contentWrapper: {
+    backgroundColor: 'blue',
+    width: '100%',
   },
   chipContainer: {
     flexDirection: 'row',
@@ -83,8 +101,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#2c2c2c',
     color: 'white',
     borderRadius: 20,
+    fontSize: 10,
     //POR QUE LOS ESTILOS DE LEO NO ME FUNCIONAN SI ES EL MISMO COMPONENT Y TENGO QUE AGREGAR MR = 5 ??!
-    marginRight: 5
+    marginRight: 5,
   },
 });
 export default CandidateCard;
