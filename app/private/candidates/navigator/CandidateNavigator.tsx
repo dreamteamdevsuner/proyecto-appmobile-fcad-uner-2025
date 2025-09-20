@@ -7,9 +7,14 @@ import ROUTES from './routes';
 import CandidateHomeScreen from '../screens/CandidateHomeScreen';
 import CandidateTestScreen from '../screens/CandidateTestScreen';
 import CandidateProfileScreen from '../screens/CandidateProfileScreen';
+import MensajeriaNavigator from '../screens/mensajeria/MensajeriaNavigator';
 
 import { Icon } from 'react-native-paper';
-import { MaterialCommunityIcons, MaterialIcons, Ionicons } from '@expo/vector-icons';
+import {
+  MaterialCommunityIcons,
+  MaterialIcons,
+  Ionicons,
+} from '@expo/vector-icons';
 import { ProfileScreen } from '../../shared/ProfileScreen';
 import SettingProfile from '../../shared/SettingProfile';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -22,13 +27,17 @@ function ProfileStack() {
       <Stack.Screen
         name="Mi Perfil"
         component={CandidateProfileScreen}
-        options={({ navigation } ) => ({
+        options={({ navigation }) => ({
           headerShown: true,
           headerRight: () => (
-            <TouchableOpacity onPress={() => navigation.navigate("Perfil", { screen: "Ajustes"})}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('Perfil', { screen: 'Ajustes' })
+              }
+            >
               <Ionicons name="settings-outline" size={24} color="black" />
             </TouchableOpacity>
-          ),        
+          ),
         })}
       />
       <Stack.Screen name="Ajustes" component={SettingProfile} />
@@ -82,6 +91,21 @@ const CandidateNavigator = () => {
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="account-circle-outline"
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      ></Tab.Screen>
+      <Tab.Screen
+        name={ROUTES.CANDIDATE_MENSAJERIA_TAB}
+        component={MensajeriaNavigator}
+        options={{
+          headerShown: false,
+          title: 'Mensajería',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="message-outline"
               size={size}
               color={color}
             />
