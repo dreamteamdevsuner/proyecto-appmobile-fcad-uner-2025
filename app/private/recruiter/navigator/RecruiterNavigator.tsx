@@ -1,23 +1,56 @@
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import RecruiterHomeScreen from '../screens/RecruiterHomeScreen';
-import ROUTES from './routes';
-import RecruiterProfileScreen from '../screens/RecruiterProfileScreen';
-import RecruiterSwipeMatchScreen from '../screens/RecruiterSwipeMatchScreen';
-import { Icon, MD3Colors } from 'react-native-paper';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { PrivateStackParamList } from './types';
+import ROUTES from './routes';
+import RecruiterHomeScreen from '../screens/RecruiterHomeScreen';
+import RecruiterSwipeMatchScreen from '../screens/RecruiterSwipeMatchScreen';
 import FavoritosNavigator from '../screens/favoritos/FavoritosNavigator';
 import MensajeriaNavigator from '../screens/mensajeria/MensajeriaNavigator';
+import { ProfileScreen } from '../../shared/ProfileScreen';
+import SettingProfile from '../../shared/SettingProfile';
+
+import { Icon, MD3Colors } from 'react-native-paper';
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+
+import { PrivateStackParamList } from './types';
+
+const Stack = createNativeStackNavigator();
+
+function ProfileStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Mi Perfil"
+        component={ProfileScreen}
+        options={({ navigation }) => ({
+          headerShown: true,
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('Perfil', { screen: 'Ajustes' })
+              }
+            >
+              <Ionicons name="settings-outline" size={24} color="black" />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+      <Stack.Screen name="Ajustes" component={SettingProfile} />
+    </Stack.Navigator>
+  );
+}
 
 const Tab = createBottomTabNavigator<PrivateStackParamList>();
 
 const RecruiterNavigator = () => {
   return (
     <Tab.Navigator
-      screenOptions={{ headerShown: false }}
+      screenOptions={{ headerShown: false,
+        tabBarActiveTintColor: '#6750A4',
+        tabBarInactiveTintColor: 'gray',
+      }}
       initialRouteName={ROUTES.RECRUITER_SWIPE_MATCH}
     >
       <Tab.Screen
@@ -72,9 +105,10 @@ const RecruiterNavigator = () => {
         }}
       ></Tab.Screen>
       <Tab.Screen
-        name={ROUTES.RECRUITER_TEST}
-        component={RecruiterProfileScreen}
+        name={ROUTES.RECRUITER_PERFIL_TAB}
+        component={ProfileStack}
         options={{
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="account-circle-outline"
