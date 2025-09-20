@@ -23,7 +23,7 @@ function ProfileStack() {
     <Stack.Navigator>
       <Stack.Screen
         name={ROUTES.PROFILE}
-        component={ProfileScreen}
+        component={ProfileNavigator}
         options={({ navigation }) => ({
           headerShown: true,
           headerRight: () => (
@@ -108,8 +108,8 @@ const RecruiterNavigator = () => {
         }}
       ></Tab.Screen>
       <Tab.Screen
-        name={ROUTES.PROFILE}
-        component={ProfileNavigator}
+        name={ROUTES.RECRUITER_PERFIL_TAB}
+        component={ProfileStack}
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
