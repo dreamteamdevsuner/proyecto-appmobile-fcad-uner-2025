@@ -32,6 +32,7 @@ const CandidateCard = ({
 
         <FlatList
           data={candidate.skills}
+
           onTouchStart={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -43,13 +44,13 @@ const CandidateCard = ({
           onScrollEndDrag={() => {
             handleScrollEnabled(true);
           }}
-          style={{ gap: 20, marginVertical: 20 }}
+          style={styles.chipContainer}
           horizontal={true}
           renderItem={({ item, index }) => (
             <Chip
               mode="outlined"
               textStyle={{ color: "white" }}
-              style={{ backgroundColor: "black", marginRight: 10 }}
+              style={styles.chip}
               key={index}
             >
               {item}
@@ -70,9 +71,20 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 20,
   },
-  chipList: {
-    display: "flex",
-    flexDirection: "row",
+  chipContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    gap: 8,
+    marginVertical: 8,
+    alignSelf: 'center',
+  },
+  chip: {
+    backgroundColor: '#2c2c2c',
+    color: 'white',
+    borderRadius: 20,
+    //POR QUE LOS ESTILOS DE LEO NO ME FUNCIONAN SI ES EL MISMO COMPONENT Y TENGO QUE AGREGAR MR = 5 ??!
+    marginRight: 5
   },
 });
 export default CandidateCard;

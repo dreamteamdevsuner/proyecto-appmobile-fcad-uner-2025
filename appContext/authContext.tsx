@@ -1,9 +1,9 @@
-import { createContext, PropsWithChildren, useState } from "react";
+import { createContext, PropsWithChildren, useState } from 'react';
 //PROVISORIO HAY QUE VER QUE INFO DEVUELVE LA DB CUANDO SE LOGEA USUARIO
 
 export enum Role {
-  candidate = "candidate",
-  recruiter = "recruiter",
+  candidate = 'candidate',
+  recruiter = 'recruiter',
 }
 interface User {
   name: string;
@@ -42,19 +42,19 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
   //MOCKUP LOGIN
   const login = ({ email, password }: { email: string; password: string }) => {
-    if (email === "dev@mail.com") {
+    if (email === 'dev@mail.com') {
       setUserState({
         isLogged: true,
-        user: { name: "dev", email: "dev@mail.com", role: Role.candidate },
+        user: { name: 'dev', email: 'dev@mail.com', role: Role.candidate },
       });
       return;
     }
-    if (email === "recruiter@mail.com") {
+    if (email === 'recruiter@mail.com') {
       setUserState({
         isLogged: true,
         user: {
-          name: "dev",
-          email: "recruiter@mail.com",
+          name: 'recruiter',
+          email: 'recruiter@mail.com',
           role: Role.recruiter,
         },
       });

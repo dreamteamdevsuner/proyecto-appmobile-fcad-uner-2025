@@ -5,6 +5,7 @@ import {
   Dimensions,
   Image,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import React, { useState } from "react";
 import { useSharedValue } from "react-native-reanimated";
@@ -14,7 +15,7 @@ import Carousel, {
 } from "react-native-reanimated-carousel";
 import { candidates2 } from "../../../../mockup/candidates";
 import CandidateCard from "../../../../components/ui/CandidateCard";
-import { Button, Card, Icon } from "react-native-paper";
+import { Button, Card, Icon, TouchableRipple } from "react-native-paper";
 import { ElevationLevels } from "react-native-paper/lib/typescript/types";
 const data = candidates2;
 const width = Dimensions.get("window").width;
@@ -23,10 +24,16 @@ const RecruiterSwipeMatchScreen = () => {
   const ref = React.useRef<ICarouselInstance>(null);
   const progress = useSharedValue<number>(0);
   const imageLink = require("../../../../assets/images/recruiter.png");
+  const [isBeingPressed, setIsBeingPress] = useState(false)
   const [enabledScroll, setEnabledScroll] = useState(true);
   const handleScrollEnabled = (val: boolean) => {
     setEnabledScroll(val);
   };
+
+  const handleLike = (like: boolean) => {
+    console.log("like res", like)
+    ref.current?.next()
+  }
   return (
     <View style={styles.container}>
       <View style={styles.carouselContainer}>
@@ -66,6 +73,7 @@ const RecruiterSwipeMatchScreen = () => {
                 </View>
               )}
               mode="contained"
+              onPress={() => handleLike(false)}
               style={{
                 borderRadius: 100,
                 height: 80,
@@ -81,30 +89,34 @@ const RecruiterSwipeMatchScreen = () => {
             ></Button>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.6}>
-          <View>
-            <Button
-              icon={() => (
-                <View style={{ marginLeft: 15 }}>
-                  <Icon size={70} color="black" source={"heart-outline"}></Icon>
-                </View>
-              )}
-              mode="contained"
-              style={{
-                borderRadius: 100,
-                height: 100,
-                width: 100,
-                justifyContent: "center",
-                alignItems: "center",
-                display: "flex",
-                elevation: 9,
-              }}
-              buttonColor="white"
-              textColor="black"
-              children
-            ></Button>
-          </View>
-        </TouchableOpacity>
+
+        <TouchableRipple android_ripple={{ color: 'blue' }} onPressIn={() => setIsBeingPress(true)} onPressOut={() => setIsBeingPress(false)}  >
+
+          <Button
+            icon={() => (
+              <View style={{ marginLeft: 15 }}>
+                <Icon size={70} color="black" source={"heart-outline"}></Icon>
+              </View>
+            )}
+            mode="contained"
+
+            style={{
+              borderRadius: 100,
+              height: 100,
+              width: 100,
+              justifyContent: "center",
+              alignItems: "center",
+              display: "flex",
+              elevation: 9,
+            }}
+
+            onPress={() => handleLike(true)}
+            buttonColor="white"
+            textColor="black"
+            children
+          ></Button>
+
+        </TouchableRipple>
       </View>
     </View>
   );
