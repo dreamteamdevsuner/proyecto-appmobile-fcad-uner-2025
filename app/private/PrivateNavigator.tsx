@@ -5,7 +5,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthContext, Role } from '../../appContext/authContext';
 import RecruiterNavigator from './recruiter/navigator/RecruiterNavigator';
 import CandidateNavigator from './candidates/navigator/CandidateNavigator';
-import { ProfileScreen } from './recruiter/screens/perfil';
 const Stack = createNativeStackNavigator();
 const PrivateNavigator = () => {
   const { userState } = useContext(AuthContext);

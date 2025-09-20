@@ -8,7 +8,7 @@ import RecruiterHomeScreen from '../screens/RecruiterHomeScreen';
 import RecruiterSwipeMatchScreen from '../screens/RecruiterSwipeMatchScreen';
 import FavoritosNavigator from '../screens/favoritos/FavoritosNavigator';
 import MensajeriaNavigator from '../screens/mensajeria/MensajeriaNavigator';
-import { ProfileScreen } from '../../shared/ProfileScreen';
+
 import SettingProfile from '../../shared/SettingProfile';
 
 import { Icon, MD3Colors } from 'react-native-paper';
@@ -22,7 +22,7 @@ function ProfileStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Mi Perfil"
+        name={ROUTES.PROFILE}
         component={ProfileScreen}
         options={({ navigation }) => ({
           headerShown: true,
@@ -42,6 +42,7 @@ function ProfileStack() {
   );
 }
 import ProfileNavigator from '../screens/perfil/ProfileNavigator';
+import ProfileScreen from '../screens/perfil';
 
 const Tab = createBottomTabNavigator<PrivateStackParamList>();
 

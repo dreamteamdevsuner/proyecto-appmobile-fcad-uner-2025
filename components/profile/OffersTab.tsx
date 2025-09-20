@@ -4,8 +4,6 @@ import { Offer, OfferStatus } from '../../types';
 import { Divider, List } from 'react-native-paper';
 
 const OffersTab = (offers: Offer[] | undefined): React.JSX.Element => {
-  console.log(offers);
-
   const renderItem: ListRenderItem<Offer> = ({ item }) => {
     return (
       <List.Item
