@@ -15,7 +15,14 @@ const CandidateCard = ({
 }: CandidateCardProps) => {
   return (
     <Card style={styles.card}>
-      {children}
+      <View
+        style={{
+          overflow: 'hidden',
+          maxHeight: 380,
+        }}
+      >
+        {children}
+      </View>
       <View style={{ marginTop: -20 }}>
         <Card.Title
           title={
@@ -91,6 +98,7 @@ const CandidateCard = ({
 const styles = StyleSheet.create({
   card: {
     width: '90%',
+    position: 'relative',
     marginHorizontal: 'auto',
     marginTop: 20,
     paddingBottom: 40,
