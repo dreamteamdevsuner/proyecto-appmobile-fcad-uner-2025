@@ -1,7 +1,6 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text } from 'react-native';
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import ROUTES from './routes';
 import RecruiterHomeScreen from '../screens/RecruiterHomeScreen';
@@ -9,40 +8,12 @@ import RecruiterSwipeMatchScreen from '../screens/RecruiterSwipeMatchScreen';
 import FavoritosNavigator from '../screens/favoritos/FavoritosNavigator';
 import MensajeriaNavigator from '../screens/mensajeria/MensajeriaNavigator';
 
-import SettingProfile from '../../shared/SettingProfile';
+import ProfileNavigator from '../screens/perfil/ProfileNavigator';
 
-import { Icon, MD3Colors } from 'react-native-paper';
-import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import { Icon } from 'react-native-paper';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { PrivateStackParamList } from './types';
-
-const Stack = createNativeStackNavigator();
-
-function ProfileStack() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name={ROUTES.PROFILE}
-        component={ProfileNavigator}
-        options={({ navigation }) => ({
-          headerShown: true,
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('Perfil', { screen: 'Ajustes' })
-              }
-            >
-              <Ionicons name="settings-outline" size={24} color="black" />
-            </TouchableOpacity>
-          ),
-        })}
-      />
-      <Stack.Screen name="Ajustes" component={SettingProfile} />
-    </Stack.Navigator>
-  );
-}
-import ProfileNavigator from '../screens/perfil/ProfileNavigator';
-import ProfileScreen from '../screens/perfil';
 
 const Tab = createBottomTabNavigator<PrivateStackParamList>();
 
@@ -109,7 +80,7 @@ const RecruiterNavigator = () => {
       ></Tab.Screen>
       <Tab.Screen
         name={ROUTES.RECRUITER_PERFIL_TAB}
-        component={ProfileStack}
+        component={ProfileNavigator}
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (

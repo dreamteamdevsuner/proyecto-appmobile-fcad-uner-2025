@@ -67,7 +67,7 @@ type Props = NativeStackScreenProps<
 
 const FavoritosOferta: React.FC<Props> = ({ navigation }) => {
   const handleSelectUser = (user: UserItem) => {
-    navigation.navigate(ROUTES.PROFILE);
+    navigation.navigate(ROUTES.RECRUITER_PROFILE, { userId: String(user.id) });
   };
 
   const handleSelectConversation = (user: UserItem) => {
@@ -83,6 +83,7 @@ const FavoritosOferta: React.FC<Props> = ({ navigation }) => {
       <View style={[styles.listContainer, styles.section]}>
         <UserList
           users={users}
+          showOferta={true}
           showMessageIcon
           onUserPress={handleSelectUser}
           onMessagePress={handleSelectConversation}

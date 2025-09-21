@@ -20,7 +20,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 type Props = NativeStackScreenProps<
   PrivateStackParamList,
-  ROUTES.RECRUITER_PROFILE
+  ROUTES.CANDIDATE_PROFILE
 >;
 
 const ProfileScreen: React.FC<Props> = ({ route }) => {

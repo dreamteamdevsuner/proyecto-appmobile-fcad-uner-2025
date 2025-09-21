@@ -3,14 +3,14 @@ import { ProfileUser } from '../types/ProfileUser';
 const MOCK_USERS: ProfileUser[] = [
   {
     id: '1',
-    name: 'Juana',
+    name: 'Juan',
     lastName: 'Costa',
     email: 'recruiter@mail.com',
     role: 'recruiter',
-    avatarUrl: 'https://i.pravatar.cc/400?img=43',
-    ocupation: 'Diseañdora UX/UI',
+    avatarUrl: 'https://i.pravatar.cc/400?img=12',
+    ocupation: 'Diseañdor UX/UI',
     city: 'Argentina',
-    bio: 'Perfil de Juana (mock)',
+    bio: 'Perfil de Juan (mock)',
     skills: ['UX', 'Figma'],
     offers: [
       {
@@ -32,16 +32,25 @@ const MOCK_USERS: ProfileUser[] = [
   },
   {
     id: '2',
-    name: 'Pedro',
-    lastName: 'Gonzalez',
+    name: 'Juana',
+    lastName: 'Costa',
     email: 'dev@mail.com',
     role: 'candidate',
-    avatarUrl: 'https://i.pravatar.cc/400?img=12',
-    ocupation: 'Desarrollador Frontend',
-    city: 'Uruguay',
-    bio: 'Perfil de Pedro (mock)',
-    skills: ['React', 'React Native'],
+    avatarUrl: 'https://i.pravatar.cc/400?img=43',
+    ocupation: 'Diseñadora UX/UI',
+    city: 'Argentina',
+    bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+    skills: ['Figma', 'Illustrator', 'Whimsical', 'Miro', 'Hotjar'],
     offers: [],
+    studies: ['2010 - 2040 | Ingeniería en Informática - UNER'],
+    otherStudies: ['Curso de Desarrollador Fullstack de SoyDalto'],
+    experience: ['Atención al público'],
+    socialLinks: [
+      {
+        name: 'LinkedIn',
+        url: 'https://linkedin.com',
+      },
+    ],
   },
 ];
 

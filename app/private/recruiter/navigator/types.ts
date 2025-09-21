@@ -14,5 +14,6 @@ export type PrivateStackParamList = {
     otherAvatarUrl?: string;
     myAvatarUrl?: string;
   };
-  [ROUTES.PROFILE]: { userId?: string } | undefined;
+  [ROUTES.RECRUITER_PROFILE]: { userId?: string } | undefined;
+  [ROUTES.RECRUITER_SETTINGS]: undefined;
 };
