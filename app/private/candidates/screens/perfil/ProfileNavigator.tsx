@@ -13,7 +13,7 @@ const ProfileNavigator = () => (
   <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
     <ProfileStack.Navigator>
       <ProfileStack.Screen
-        name={ROUTES.RECRUITER_PROFILE}
+        name={ROUTES.CANDIDATE_PROFILE}
         component={ProfileScreen}
         options={({ navigation }) => ({
           title: 'Perfil',
@@ -21,7 +21,7 @@ const ProfileNavigator = () => (
           headerRight: () => (
             <TouchableOpacity
               style={{ marginRight: 12 }}
-              onPress={() => navigation.navigate(ROUTES.RECRUITER_SETTINGS)}
+              onPress={() => navigation.navigate(ROUTES.CANDIDATE_SETTING)}
             >
               <Ionicons name="settings-outline" size={24} color="black" />
             </TouchableOpacity>
@@ -29,7 +29,7 @@ const ProfileNavigator = () => (
         })}
       />
       <ProfileStack.Screen
-        name={ROUTES.RECRUITER_SETTINGS}
+        name={ROUTES.CANDIDATE_SETTING}
         component={SettingProfile}
         options={{ title: 'Ajustes' }}
       />
