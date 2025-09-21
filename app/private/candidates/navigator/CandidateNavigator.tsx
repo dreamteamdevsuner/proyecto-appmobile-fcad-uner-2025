@@ -7,11 +7,11 @@ import ROUTES from './routes';
 import CandidateHomeScreen from '../screens/CandidateHomeScreen';
 import CandidateTestScreen from '../screens/CandidateTestScreen';
 import MensajeriaNavigator from '../screens/mensajeria/MensajeriaNavigator';
-import { ProfileScreen } from '../../shared/ProfileScreen';
 import SettingProfile from '../../shared/SettingProfile';
 
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import ProfileScreen from '../../recruiter/screens/perfil';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,7 +19,7 @@ function ProfileStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Mi Perfil"
+        name={ROUTES.PROFILE}
         component={ProfileScreen}
         options={({ navigation }) => ({
           headerShown: true,
@@ -77,7 +77,7 @@ const CandidateNavigator = () => {
         }}
       ></Tab.Screen>
       <Tab.Screen
-        name="Perfil"
+        name={ROUTES.CANDIDATE_PROFILE_TAB}
         component={ProfileStack}
         options={{
           headerShown: false,
