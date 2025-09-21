@@ -18,7 +18,7 @@ const CandidateCard = ({
       <View
         style={{
           overflow: 'hidden',
-          maxHeight: 320,
+          maxHeight: 340,
         }}
       >
         {children}
