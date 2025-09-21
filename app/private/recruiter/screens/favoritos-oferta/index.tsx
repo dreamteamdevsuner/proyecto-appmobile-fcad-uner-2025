@@ -1,9 +1,12 @@
 import { StyleSheet, View } from 'react-native';
 import { UserList } from '../../../../../components/listas';
 import { UserItem } from '../../../../../types/UserItem';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { PrivateStackParamList as RecruiterStackParamList } from '../../navigator/types';
+import { PrivateStackParamList as CandidateStackParamList } from '../../../candidates/navigator/types';
 import ROUTES from '../../navigator/routes';
-import { PrivateStackParamList } from '../../navigator/types';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import CAND_ROUTES from '../../../candidates/navigator/routes';
+import { CompositeNavigationProp } from '@react-navigation/native';
 
 const users: UserItem[] = [
   {
@@ -59,15 +62,23 @@ const users: UserItem[] = [
   { id: 11, name: 'Luis García', role: 'UX /UI' },
   { id: 12, name: 'Elba Gomez', role: 'UX /UI' },
 ];
-
-type Props = NativeStackScreenProps<
-  PrivateStackParamList,
-  ROUTES.RECRUITER_FAVORITOS_OFERTA
+type PrivateNav = NativeStackNavigationProp<
+  RecruiterStackParamList,
+  ROUTES.RECRUITER_FAVORITOS
 >;
+type CandidateNav = NativeStackNavigationProp<
+  CandidateStackParamList,
+  CAND_ROUTES.CANDIDATE_PROFILE
+>;
+type Props = {
+  navigation: CompositeNavigationProp<PrivateNav, CandidateNav>;
+};
 
 const FavoritosOferta: React.FC<Props> = ({ navigation }) => {
   const handleSelectUser = (user: UserItem) => {
-    navigation.navigate(ROUTES.RECRUITER_PROFILE, { userId: String(user.id) });
+    navigation.navigate(CAND_ROUTES.CANDIDATE_PROFILE, {
+      userId: String(user.id),
+    });
   };
 
   const handleSelectConversation = (user: UserItem) => {

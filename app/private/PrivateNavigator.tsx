@@ -12,7 +12,7 @@ const PrivateNavigator = () => {
   return (
     <Stack.Navigator
       initialRouteName="HomeScreen"
-      screenOptions={{ headerShown: false }}
+      screenOptions={{ headerShown: false, orientation: 'portrait' }}
     >
       <Stack.Screen
         name="HomeScreen"

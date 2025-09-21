@@ -1,5 +1,4 @@
 import { StyleSheet, View } from 'react-native';
-import { useState } from 'react';
 import { Text } from 'react-native-paper';
 import {
   UserListHorizontal,
@@ -7,9 +6,12 @@ import {
 } from '../../../../../components/listas';
 import { UserItem } from '../../../../../types/UserItem';
 import { OfertaItem } from '../../../../../types/OfertaItem';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { PrivateStackParamList } from '../../navigator/types';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { PrivateStackParamList as RecruiterStackParamList } from '../../navigator/types';
+import { PrivateStackParamList as CandidateStackParamList } from '../../../candidates/navigator/types';
 import ROUTES from '../../navigator/routes';
+import CAND_ROUTES from '../../../candidates/navigator/routes';
+import { CompositeNavigationProp } from '@react-navigation/native';
 
 const ofertas: OfertaItem[] = [
   { id: 1, title: 'UX Santender', subtitle: 'Subtítulo 1' },
@@ -78,11 +80,17 @@ const matchs: UserItem[] = [
   },
 ];
 
-type Props = NativeStackScreenProps<
-  PrivateStackParamList,
+type PrivateNav = NativeStackNavigationProp<
+  RecruiterStackParamList,
   ROUTES.RECRUITER_FAVORITOS
 >;
-
+type CandidateNav = NativeStackNavigationProp<
+  CandidateStackParamList,
+  CAND_ROUTES.CANDIDATE_PROFILE
+>;
+type Props = {
+  navigation: CompositeNavigationProp<PrivateNav, CandidateNav>;
+};
 const Favoritos: React.FC<Props> = ({ navigation }) => {
   const handleSelectOferta = (oferta: OfertaItem) => {
     navigation.navigate(ROUTES.RECRUITER_FAVORITOS_OFERTA, {
@@ -90,7 +98,9 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
     });
   };
   const handleSelectUser = (user: UserItem) => {
-    navigation.navigate(ROUTES.RECRUITER_PROFILE, { userId: String(user.id) });
+    navigation.navigate(CAND_ROUTES.CANDIDATE_PROFILE, {
+      userId: String(user.id),
+    });
   };
 
   return (
