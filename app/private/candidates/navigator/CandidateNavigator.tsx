@@ -1,43 +1,13 @@
-import { TouchableOpacity } from 'react-native';
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import ROUTES from './routes';
 import CandidateHomeScreen from '../screens/CandidateHomeScreen';
 import CandidateTestScreen from '../screens/CandidateTestScreen';
 import MensajeriaNavigator from '../screens/mensajeria/MensajeriaNavigator';
-import SettingProfile from '../../shared/SettingProfile';
+import ProfileNavigator from '../screens/perfil/ProfileNavigator';
 
-import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import ProfileScreen from '../../recruiter/screens/perfil';
-
-const Stack = createNativeStackNavigator();
-
-function ProfileStack() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name={ROUTES.PROFILE}
-        component={ProfileScreen}
-        options={({ navigation }) => ({
-          headerShown: true,
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('Perfil', { screen: 'Ajustes' })
-              }
-            >
-              <Ionicons name="settings-outline" size={24} color="black" />
-            </TouchableOpacity>
-          ),
-        })}
-      />
-      <Stack.Screen name="Ajustes" component={SettingProfile} />
-    </Stack.Navigator>
-  );
-}
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
@@ -77,8 +47,8 @@ const CandidateNavigator = () => {
         }}
       ></Tab.Screen>
       <Tab.Screen
-        name={ROUTES.CANDIDATE_PROFILE_TAB}
-        component={ProfileStack}
+        name={ROUTES.CANDIDATE_PROFILE}
+        component={ProfileNavigator}
         options={{
           headerShown: false,
           headerTitle: 'Perfil',

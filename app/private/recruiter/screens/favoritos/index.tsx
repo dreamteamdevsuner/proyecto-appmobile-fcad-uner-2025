@@ -90,7 +90,7 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
     });
   };
   const handleSelectUser = (user: UserItem) => {
-    navigation.navigate(ROUTES.PROFILE);
+    navigation.navigate(ROUTES.RECRUITER_PROFILE, { userId: String(user.id) });
   };
 
   return (

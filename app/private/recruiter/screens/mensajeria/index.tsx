@@ -117,6 +117,7 @@ const Mensajeria: React.FC<Props> = ({ navigation }) => {
               {postulantes.length > 0 ? (
                 <UserList
                   users={postulantes}
+                  showOferta={false}
                   showMessageIcon={false}
                   onUserPress={handleSelectUser}
                 />
