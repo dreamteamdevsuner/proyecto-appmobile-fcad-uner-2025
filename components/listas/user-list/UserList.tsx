@@ -15,7 +15,7 @@ type NavigationProp = NativeStackNavigationProp<
 >;
 
 type Props = {
-  showOferta: boolean;
+  showOferta?: boolean;
   users: UserItem[];
   showMessageIcon?: boolean;
   onUserPress?: (user: UserItem) => void;

@@ -17,13 +17,14 @@ const MensajeriaNavigator = () => (
       <MensajeriaStack.Screen
         name={ROUTES.RECRUITER_MENSAJERIA}
         component={Mensajeria}
-        options={{ title: 'Mensajería' }}
+        options={{ title: 'Mensajería', orientation: 'default' }}
       />
       <MensajeriaStack.Screen
         name={ROUTES.RECRUITER_CONVERSACION}
         component={Conversacion}
         options={({ route }) => ({
           title: route.params?.title ?? 'Conversación',
+          orientation: 'default',
         })}
       />
     </MensajeriaStack.Navigator>

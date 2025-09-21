@@ -1,12 +1,17 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { PrivateStackParamList } from '../../navigator/types';
 import Favoritos from '.';
 import FavoritosOferta from '../favoritos-oferta';
 import ROUTES from '../../navigator/routes';
+import CAND_ROUTES from '../../../candidates/navigator/routes';
 import Conversacion from '../conversacion';
 import { KeyboardAvoidingView, Platform } from 'react-native';
+import ProfileScreen from '../../../candidates/screens/perfil';
+import { PrivateStackParamList as RecruiterStackParamList } from '../../navigator/types';
+import { PrivateStackParamList as CandidateStackParamList } from '../../../candidates/navigator/types';
 
-const FavoritosStack = createNativeStackNavigator<PrivateStackParamList>();
+type CombinedStackParamList = RecruiterStackParamList & CandidateStackParamList;
+
+const FavoritosStack = createNativeStackNavigator<CombinedStackParamList>();
 
 const FavoritosNavigator = () => (
   <KeyboardAvoidingView
@@ -25,6 +30,7 @@ const FavoritosNavigator = () => (
         component={FavoritosOferta}
         options={({ route }) => ({
           title: route.params?.title ?? 'Oferta',
+          orientation: 'default',
         })}
       />
       <FavoritosStack.Screen
@@ -32,7 +38,15 @@ const FavoritosNavigator = () => (
         component={Conversacion}
         options={({ route }) => ({
           title: route.params?.title ?? 'Conversación',
+          orientation: 'default',
         })}
+      />
+      <FavoritosStack.Screen
+        name={CAND_ROUTES.CANDIDATE_PROFILE}
+        component={ProfileScreen}
+        options={{
+          title: 'Perfil',
+        }}
       />
     </FavoritosStack.Navigator>
   </KeyboardAvoidingView>

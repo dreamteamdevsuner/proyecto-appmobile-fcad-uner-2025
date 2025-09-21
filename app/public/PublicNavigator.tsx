@@ -9,7 +9,7 @@ const PublicNavigator = () => {
   return (
     <Stack.Navigator
       initialRouteName="Auth"
-      screenOptions={{ headerShown: false }}
+      screenOptions={{ headerShown: false, orientation: 'portrait' }}
     >
       <Stack.Screen name="Auth" component={Auth}></Stack.Screen>
       <Stack.Screen
