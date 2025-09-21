@@ -16,61 +16,75 @@ const CandidateCard = ({
   return (
     <Card style={styles.card}>
       {children}
+      <View style={{ marginTop: -20 }}>
+        <Card.Title
+          title={
+            <Text
+              variant="headlineSmall"
+              style={{
+                fontWeight: 'bold',
+                textAlign: 'center',
+              }}
+            >
+              {candidate.firstName + ' ' + candidate.lastName}{' '}
+            </Text>
+          }
+        ></Card.Title>
 
-      <Card.Title
-        title={
+        <Card.Content>
           <Text
-            variant="headlineSmall"
             style={{
-              fontWeight: 'bold',
               textAlign: 'center',
+              marginTop: -10,
+            }}
+            variant="titleMedium"
+          >
+            {candidate.profession}
+          </Text>
+          <FlatList
+            data={candidate.skills}
+            onTouchStart={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleScrollEnabled(false);
+              return;
+            }}
+            onTouchEnd={(e) => handleScrollEnabled(false)}
+            onScrollBeginDrag={(e) => handleScrollEnabled(false)}
+            onScrollEndDrag={() => {
+              handleScrollEnabled(true);
+            }}
+            style={styles.chipContainer}
+            horizontal={true}
+            renderItem={({ item, index }) => (
+              <Chip
+                mode="outlined"
+                textStyle={{ color: 'white' }}
+                style={styles.chip}
+                key={index}
+              >
+                {item}
+              </Chip>
+            )}
+          ></FlatList>
+          <View
+            style={{
+              alignContent: 'center',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
           >
-            {candidate.firstName + ' ' + candidate.lastName}{' '}
-          </Text>
-        }
-      ></Card.Title>
-
-      <Card.Content>
-        <Text
-          style={{
-            textAlign: 'center',
-            marginTop: -10,
-          }}
-          variant="titleMedium"
-        >
-          {candidate.profession}
-        </Text>
-        <FlatList
-          data={candidate.skills}
-          onTouchStart={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            handleScrollEnabled(false);
-            return;
-          }}
-          onTouchEnd={(e) => handleScrollEnabled(false)}
-          onScrollBeginDrag={(e) => handleScrollEnabled(false)}
-          onScrollEndDrag={() => {
-            handleScrollEnabled(true);
-          }}
-          style={styles.chipContainer}
-          horizontal={true}
-          renderItem={({ item, index }) => (
-            <Chip
-              mode="outlined"
-              textStyle={{ color: 'white' }}
-              style={styles.chip}
-              key={index}
-            >
-              {item}
-            </Chip>
-          )}
-        ></FlatList>
-        <View>
-          <Button children icon="camera" mode="contained"></Button>
-        </View>
-      </Card.Content>
+            <Button
+              style={{ width: 20 }}
+              children
+              buttonColor="transparent"
+              textColor="black"
+              icon="plus-circle-outline"
+              mode="contained"
+            ></Button>
+          </View>
+        </Card.Content>
+      </View>
     </Card>
   );
 };
@@ -91,10 +105,10 @@ const styles = StyleSheet.create({
   },
   chipContainer: {
     flexDirection: 'row',
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
     paddingVertical: 8,
     gap: 8,
-    marginVertical: 8,
+
     alignSelf: 'center',
   },
   chip: {
