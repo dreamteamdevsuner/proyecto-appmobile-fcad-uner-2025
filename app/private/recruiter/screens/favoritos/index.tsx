@@ -99,7 +99,8 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
   };
   const handleSelectUser = (user: UserItem) => {
     navigation.navigate(CAND_ROUTES.CANDIDATE_PROFILE, {
-      userId: String(user.id),
+      userId: user.id,
+      title: user.name,
     });
   };
 

@@ -6,6 +6,7 @@ export enum Role {
   recruiter = 'recruiter',
 }
 interface User {
+  id: number;
   name: string;
   email: string;
   role: Role;
@@ -45,7 +46,12 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     if (email === 'dev@mail.com') {
       setUserState({
         isLogged: true,
-        user: { name: 'dev', email: 'dev@mail.com', role: Role.candidate },
+        user: {
+          id: 222,
+          name: 'dev',
+          email: 'dev@mail.com',
+          role: Role.candidate,
+        },
       });
       return;
     }
@@ -53,6 +59,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
       setUserState({
         isLogged: true,
         user: {
+          id: 111,
           name: 'recruiter',
           email: 'recruiter@mail.com',
           role: Role.recruiter,

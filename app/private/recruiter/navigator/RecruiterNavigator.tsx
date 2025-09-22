@@ -90,6 +90,7 @@ const RecruiterNavigator = () => {
               color={color}
             />
           ),
+          title: 'Perfil',
         }}
       ></Tab.Screen>
       <Tab.Screen

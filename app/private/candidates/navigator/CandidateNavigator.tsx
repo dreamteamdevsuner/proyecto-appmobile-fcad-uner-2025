@@ -59,6 +59,7 @@ const CandidateNavigator = () => {
               color={color}
             />
           ),
+          title: 'Perfil',
         }}
       ></Tab.Screen>
       <Tab.Screen
