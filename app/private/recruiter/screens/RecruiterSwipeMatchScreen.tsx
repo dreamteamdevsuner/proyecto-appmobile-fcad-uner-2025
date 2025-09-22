@@ -17,6 +17,7 @@ import { candidates2 } from '../../../../mockup/candidates';
 import CandidateCard from '../../../../components/ui/CandidateCard';
 import { Button, Card, Icon, TouchableRipple } from 'react-native-paper';
 import { ElevationLevels } from 'react-native-paper/lib/typescript/types';
+import SwipeMatchButton from '../../shared/swipe_match/SwipeMatchButton';
 const data = candidates2;
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -88,63 +89,19 @@ const RecruiterSwipeMatchScreen = () => {
         />
       </View>
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity activeOpacity={0.6}>
-          <View>
-            <Button
-              icon={() => (
-                <View style={{ marginLeft: 15 }}>
-                  <Icon size={20.75} color="black" source={'close'}></Icon>
-                </View>
-              )}
-              mode="contained"
-              onPress={() => handleLike(false)}
-              style={{
-                borderRadius: 100,
-                height: 80,
-                width: 80,
-                justifyContent: 'center',
-                alignItems: 'center',
-                display: 'flex',
-                elevation: 9,
-              }}
-              buttonColor="white"
-              textColor="black"
-              children
-            ></Button>
-          </View>
-        </TouchableOpacity>
-
-        <TouchableRipple
-          android_ripple={{ color: 'blue' }}
-          onPressIn={() => setIsBeingPress(true)}
-          onPressOut={() => setIsBeingPress(false)}
-        >
-          <Button
-            icon={() => (
-              <View style={{ marginLeft: 15 }}>
-                <Icon
-                  size={65.69}
-                  color="black"
-                  source={'heart-outline'}
-                ></Icon>
-              </View>
-            )}
-            mode="contained"
-            style={{
-              borderRadius: 100,
-              height: 100,
-              width: 100,
-              justifyContent: 'center',
-              alignItems: 'center',
-              display: 'flex',
-              elevation: 9,
-            }}
-            onPress={() => handleLike(true)}
-            buttonColor="white"
-            textColor="black"
-            children
-          ></Button>
-        </TouchableRipple>
+        <SwipeMatchButton
+          iconSize={20.75}
+          iconColor="black"
+          iconSource={'close'}
+          onPress={() => handleLike(false)}
+          styles={{ width: 80, height: 80 }}
+        ></SwipeMatchButton>
+        <SwipeMatchButton
+          iconSize={65.69}
+          iconColor="black"
+          iconSource={'heart-outline'}
+          onPress={() => handleLike(true)}
+        ></SwipeMatchButton>
       </View>
     </View>
   );

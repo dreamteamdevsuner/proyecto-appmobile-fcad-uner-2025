@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native';
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 
-const Swipe = () => {
+const Swipe = ({ children }: PropsWithChildren) => {
   return (
     <View>
       <Text>Swipe</Text>
