@@ -3,7 +3,7 @@ import React, { PropsWithChildren } from 'react';
 import { Button, Card, Chip, Text } from 'react-native-paper';
 import { Candidate } from '../../interfaces/Candidate';
 import { Pressable } from 'react-native-gesture-handler';
-interface CandidateCardProps extends PropsWithChildren {
+export interface CandidateCardProps extends PropsWithChildren {
   candidate: Candidate;
   styles?: StyleProp<ViewStyle>;
   handleScrollEnabled: (val: boolean) => void;
@@ -69,6 +69,7 @@ const CandidateCard = ({
                 textStyle={{ color: 'white' }}
                 style={styles.chip}
                 key={index}
+                onPress={() => handleScrollEnabled(false)}
               >
                 {item}
               </Chip>
@@ -82,7 +83,7 @@ const CandidateCard = ({
             }}
           >
             <Button
-              style={{ width: 20 }}
+              style={{ width: 24 }}
               children
               buttonColor="transparent"
               textColor="black"
