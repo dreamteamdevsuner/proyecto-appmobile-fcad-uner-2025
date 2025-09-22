@@ -28,7 +28,6 @@ type Props = {
 
 const ProfileScreenShared: React.FC<Props> = ({ route }) => {
   const { userState } = useContext(AuthContext);
-  // route.params can be different shapes depending on the route; guard before reading userId
   const paramUserId =
     route?.params &&
     typeof route.params === 'object' &&
@@ -67,7 +66,6 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
   const layout = Dimensions.get('window');
   const [index, setIndex] = useState(0);
 
-  // build routes based on role (recompute when profileUser.role or current user role changes)
   const routes = React.useMemo(() => {
     const role = (profileUser?.role ?? userState.user.role) as Role;
     if (role === Role.candidate) {
@@ -83,7 +81,6 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
     ];
   }, [profileUser?.role, userState.user.role]);
 
-  // reset index when routes change (e.g., viewing different profile)
   React.useEffect(() => {
     setIndex(0);
   }, [routes.length]);
