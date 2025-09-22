@@ -144,12 +144,6 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
           }
         />
 
-        <View style={{ paddingHorizontal: 12, paddingTop: 6 }}>
-          <Text style={{ color: '#333' }}>
-            ID usuario: {paramUserId ?? (userState.user as any).id}
-          </Text>
-        </View>
-
         {((profileUser?.role ?? userState.user.role) as Role) ===
           Role.candidate && (
           <HorizontalChips skills={profileUser?.skills ?? []} />
