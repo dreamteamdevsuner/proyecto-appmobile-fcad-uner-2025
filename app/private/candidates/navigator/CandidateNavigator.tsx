@@ -47,7 +47,7 @@ const CandidateNavigator = () => {
         }}
       />
       <Tab.Screen
-        name={ROUTES.CANDIDATE_PROFILE}
+        name={ROUTES.CANDIDATE_PROFILE_TAB}
         component={ProfileNavigator}
         options={{
           headerShown: false,

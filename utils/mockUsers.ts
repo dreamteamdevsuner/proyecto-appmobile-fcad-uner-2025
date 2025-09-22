@@ -50,6 +50,14 @@ const MOCK_USERS: ProfileUser[] = [
         name: 'LinkedIn',
         url: 'https://linkedin.com',
       },
+      {
+        name: 'GitHub',
+        url: 'https://github.com',
+      },
+      {
+        name: 'Pinterest',
+        url: 'https://pinterest.com',
+      },
     ],
   },
   {
@@ -89,6 +97,14 @@ const MOCK_USERS: ProfileUser[] = [
         name: 'LinkedIn',
         url: 'https://linkedin.com',
       },
+      {
+        name: 'GitHub',
+        url: 'https://github.com',
+      },
+      {
+        name: 'Pinterest',
+        url: 'https://pinterest.com',
+      },
     ],
   },
   {
@@ -113,7 +129,7 @@ const MOCK_USERS: ProfileUser[] = [
   {
     id: 10,
     name: 'Leonor Lewis',
-    role: 'candidate',
+    role: 'recruiter',
     avatarUrl: 'https://i.pravatar.cc/150?img=2',
   },
   { id: 11, name: 'Luis García', role: 'candidate' },
@@ -125,7 +141,7 @@ export const fetchUserByIdMock = async (
 ): Promise<ProfileUser | undefined> => {
   if (!id) return undefined;
   // Simular retardo de request, quitar luego
-  await new Promise((r) => setTimeout(r, 100));
+  // await new Promise((r) => setTimeout(r, 100));
   return MOCK_USERS.find((user) => user.id === id);
 };
 
@@ -133,6 +149,6 @@ export const fetchUserByEmailMock = async (
   email?: string,
 ): Promise<ProfileUser | undefined> => {
   if (!email) return undefined;
-  await new Promise((r) => setTimeout(r, 100));
+  // await new Promise((r) => setTimeout(r, 100));
   return MOCK_USERS.find((user) => user.email === email);
 };

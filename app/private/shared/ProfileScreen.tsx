@@ -1,7 +1,7 @@
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { View, Dimensions, Text, ActivityIndicator } from 'react-native';
-import { TabView, SceneMap } from 'react-native-tab-view';
-import { useFocusEffect, RouteProp } from '@react-navigation/native';
+import { TabView } from 'react-native-tab-view';
+import { RouteProp } from '@react-navigation/native';
 import { PrivateStackParamList as RecruiterStackParamList } from '../recruiter/navigator/types';
 import { PrivateStackParamList as CandidateStackParamList } from '../candidates/navigator/types';
 import CustomProfileTabBar from '../../../components/profile/CustomProfileTabBar';
@@ -14,10 +14,7 @@ import {
 import { HorizontalChips } from '../../../components/ui/HorizontalChips';
 import { Role, AuthContext } from '../../../appContext/authContext';
 import { ProfileUser } from '../../../types/ProfileUser';
-import {
-  fetchUserByEmailMock,
-  fetchUserByIdMock,
-} from '../../../utils/mockUsers';
+import { fetchUserByIdMock } from '../../../utils/mockUsers';
 import OffersTab from '../../../components/profile/OffersTab';
 
 type CombinedParamList = RecruiterStackParamList & CandidateStackParamList;
@@ -28,40 +25,33 @@ type Props = {
 
 const ProfileScreenShared: React.FC<Props> = ({ route }) => {
   const { userState } = useContext(AuthContext);
-  const paramUserId =
+  const userId =
     route?.params &&
     typeof route.params === 'object' &&
     'userId' in route.params
       ? (route.params as { userId?: number }).userId
-      : undefined;
+      : userState.user.id;
 
   const [profileUser, setProfileUser] = useState<ProfileUser | undefined>();
   const [loading, setLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
 
-  const loadProfile = useCallback(async () => {
+  useEffect(() => {
     setLoading(true);
     setNotFound(false);
-    try {
-      if (paramUserId) {
-        const fetched = await fetchUserByIdMock(paramUserId);
+    const load = async () => {
+      try {
+        const fetched = await fetchUserByIdMock(userId);
         setProfileUser(fetched);
         setNotFound(!fetched);
-      } else {
-        const fetched = await fetchUserByEmailMock(userState.user.email);
-        setProfileUser(fetched);
-        setNotFound(!fetched);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [paramUserId, userState.user.email]);
-
-  useFocusEffect(
-    useCallback(() => {
-      loadProfile();
-    }, [loadProfile]),
-  );
+    };
+    load();
+  }, []);
 
   const layout = Dimensions.get('window');
   const [index, setIndex] = useState(0);
@@ -108,7 +98,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
     }
   };
 
-  const isOwnProfile = () => !paramUserId;
+  const isOwnProfile = () => !userId;
 
   if (loading) {
     return (
