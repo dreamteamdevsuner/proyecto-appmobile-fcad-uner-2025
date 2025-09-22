@@ -51,10 +51,7 @@ export const AboutMe = (user: ProfileUser) => {
                 await Linking.openURL(item.url);
               }}
             >
-              <Avatar.Image
-                size={45}
-                source={{ uri: '../../../assets/skeleton-view.png' }}
-              />
+              <Avatar.Text size={45} label={item.name.slice(0, 1)} />
               <Text style={styles.textContent}>{item.name}</Text>
             </Pressable>
           )}
