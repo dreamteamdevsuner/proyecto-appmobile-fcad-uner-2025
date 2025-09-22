@@ -20,7 +20,7 @@ const FavoritosNavigator = () => (
       <FavoritosStack.Screen
         name={ROUTES.CANDIDATE_FAVORITOS}
         component={Favoritos}
-        options={{ title: 'Favoritos' }}
+        options={{ headerShown: false }}
       />
       <FavoritosStack.Screen
         name={ROUTES.CANDIDATE_FAVORITOS_MATCHS}
