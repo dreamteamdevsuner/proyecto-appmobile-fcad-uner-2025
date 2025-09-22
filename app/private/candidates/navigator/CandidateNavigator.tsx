@@ -3,9 +3,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import ROUTES from './routes';
 import CandidateHomeScreen from '../screens/CandidateHomeScreen';
-import CandidateTestScreen from '../screens/CandidateTestScreen';
 import MensajeriaNavigator from '../screens/mensajeria/MensajeriaNavigator';
 import ProfileNavigator from '../screens/perfil/ProfileNavigator';
+import FavoritosNavigator from '../screens/favoritos/FavoritosNavigator';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -32,10 +32,10 @@ const CandidateNavigator = () => {
             />
           ),
         }}
-      ></Tab.Screen>
+      />
       <Tab.Screen
-        name={ROUTES.CANDIDATE_TEST_TAB}
-        component={CandidateTestScreen}
+        name={ROUTES.CANDIDATE_FAVORITOS_TAB}
+        component={FavoritosNavigator}
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
@@ -45,7 +45,7 @@ const CandidateNavigator = () => {
             />
           ),
         }}
-      ></Tab.Screen>
+      />
       <Tab.Screen
         name={ROUTES.CANDIDATE_PROFILE}
         component={ProfileNavigator}

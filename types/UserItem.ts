@@ -6,4 +6,5 @@ export type UserItem = {
   role?: string;
   ofertaId?: number;
   ofertaName?: string;
+  lugar?: string;
 };

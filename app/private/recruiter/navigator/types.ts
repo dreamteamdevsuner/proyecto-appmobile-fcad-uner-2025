@@ -16,4 +16,7 @@ export type PrivateStackParamList = {
   };
   [ROUTES.RECRUITER_PROFILE]: { userId?: number; title?: string };
   [ROUTES.RECRUITER_SETTINGS]: undefined;
+
+  [ROUTES.RECRUITER_CREAR_OFERTA]: undefined;
+  [ROUTES.RECRUITER_CREAR_OFERTA_PREVIEW]: undefined;
 };

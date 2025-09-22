@@ -10,5 +10,8 @@ enum ROUTES {
   RECRUITER_CONVERSACION = 'RecruiterConversacion',
   RECRUITER_PROFILE = 'RecruiterProfile',
   RECRUITER_SETTINGS = 'Ajustes',
+  RECRUITER_CREAR_OFERTA_TAB = 'NuevaOfertaTab',
+  RECRUITER_CREAR_OFERTA = 'NuevaOferta',
+  RECRUITER_CREAR_OFERTA_PREVIEW = 'NuevaOfertaPreview',
 }
 export default ROUTES;
