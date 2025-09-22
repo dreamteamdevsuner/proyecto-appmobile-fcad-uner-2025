@@ -16,7 +16,7 @@ const ProfileNavigator = () => (
         name={ROUTES.RECRUITER_PROFILE}
         component={ProfileScreen}
         options={({ navigation }) => ({
-          title: 'Perfil',
+          title: 'Mi perfil',
           headerShown: true,
           headerRight: () => (
             <TouchableOpacity
