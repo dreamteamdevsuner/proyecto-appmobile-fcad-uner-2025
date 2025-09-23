@@ -7,7 +7,7 @@ export type Offer = {
 };
 
 export type ProfileUser = {
-  id: string;
+  id: number;
   name: string;
   lastName?: string;
   email?: string;
