@@ -24,11 +24,7 @@ function JobOfferCard({
   return (
     <Card style={styles.card}>
       <View style={styles.recruiter}>
-        {/* <Card.Cover
-          style={{ objectFit: 'fill', marginLeft: 40 }}
-          source={imageLink}
-          height={20}
-        ></Card.Cover> */}
+
         <View>
           <Text>{item.recruiterFirstName + ' ' + item.recruiterLastName}</Text>
         </View>
@@ -56,7 +52,7 @@ function JobOfferCard({
                 size={20}
                 color="black"
               ></Icon>
-              {/*    <Text> {item.country.slice(0, 2).toUpperCase() + '.'}</Text> */}
+
             </View>
             <Text style={{ opacity: 0.3 }}> REMOTO</Text>
           </View>

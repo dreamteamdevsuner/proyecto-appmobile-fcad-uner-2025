@@ -12,33 +12,49 @@ import useSwipeMatch from '../../../../hooks/useSwipeMatch';
 
 const data = candidates2;
 const width = Dimensions.get('window').width;
-
-
+/**
+ * Propiedades que se pasan a cada componente de elemento del carrusel.
+ *
+ * @template T – El tipo del dato que se muestra en el carrusel.
+ */
 export interface CarouselItemProps<T> extends PropsWithChildren {
+  /** El dato que será renderizado. */
   item: T,
+  /**
+    * Callback opcional que permite al componente padre habilitar o deshabilitar el desplazamiento.
+    *
+    * @param val – `true` para habilitar el scroll, `false` para deshabilitarlo.
+    */
   handleScrollEnabled?: (val: boolean) => void,
+  /** Hijos opcionales que pueden renderizarse dentro del elemento. */
   children?: React.ReactNode
 }
+
 /**
  * Generic interface for the component rendered inside the carousel.
  *
- * @template T - Type of the data item.
+ * @template T – Type of the data items supplied to the carousel.
  */
-
 const SwipeMatch = <T,>({
   data,
 
   renderItem,
 }: {
+  /** Arreglo de objetos de datos que el carrusel iterará. */
   data: T[];
-  //Render the list items
+  /**
+    * Función de renderizado para cada elemento del carrusel.
+    *
+    * @param props – Props que cumplen con {@link CarouselItemProps}.
+    * @returns Un elemento JSX que representa el ítem renderizado.
+    */
   renderItem: (props: CarouselItemProps<T>) => React.JSX.Element;
 
 }): React.JSX.Element => {
   // Reference to the carousel instance – allows programmatic control.
   const ref = React.useRef<ICarouselInstance>(null);
   const progress = useSharedValue<number>(0);
-
+  // Hook personalizado que agrupa la lógica de swipe‑match (habilitar scroll, manejar likes, etc.).
   const { enabledScroll, handleLike, handleScrollEnabled } = useSwipeMatch({
     ref,
   });
@@ -90,136 +106,3 @@ const styles = StyleSheet.create({
   },
 });
 export default SwipeMatch;
-/* 
-return (
-  <View style={styles.container}>
-    <View style={styles.carouselContainer}>
-      <Carousel
-        ref={ref}
-        width={width}
-        data={data}
-        style={styles.carousel}
-        onProgressChange={progress}
-        enabled={enabledScroll}
-        renderItem={({ item, index }) => {
-          return (
-            <CandidateCard
-              {...{ handleScrollEnabled }}
-              key={index}
-              candidate={item}
-            >
-              <View
-                style={{
-                  paddingVertical: 25,
-                  paddingHorizontal: 35,
-                  flexDirection: 'row',
-                  gap: 20,
-                  maxHeight: '70%',
-                }}
-              >
-                <View style={{ flexBasis: '80%' }}>
-                  <Card.Cover
-                    style={{ objectFit: 'fill', marginLeft: 40 }}
-                    source={imageLink}
-                    height={50}
-                  ></Card.Cover>
-                </View>
-                <View>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Icon
-                      source={'map-marker-outline'}
-                      size={20}
-                      color="black"
-                    ></Icon>
-                    <Text> {item.country.slice(0, 2).toUpperCase() + '.'}</Text>
-                  </View>
-                  <Text style={{ opacity: 0.3 }}> REMOTO</Text>
-                </View>
-              </View>
-            </CandidateCard>
-          );
-        }}
-      />
-    </View>
-    <SwipeMatchButtons {...{ handleLike }}></SwipeMatchButtons>
-  </View>
-); */
-/*    renderItem={function ({ item, index }) {
-            return ItemComponent({
-              handleScrollEnabled,
-              candidate: item,
-              children: (
-                <View
-                  style={{
-                    paddingVertical: 25,
-                    paddingHorizontal: 35,
-                    flexDirection: 'row',
-                    gap: 20,
-                    maxHeight: '70%',
-                  }}
-                >
-                  <View style={{ flexBasis: '80%' }}>
-                    <Card.Cover
-                      style={{ objectFit: 'fill', marginLeft: 40 }}
-                      source={imageLink}
-                      height={50}
-                    ></Card.Cover>
-                  </View>
-                  <View>
-                    <View style={{ flexDirection: 'row' }}>
-                      <Icon
-                        source={'map-marker-outline'}
-                        size={20}
-                        color="black"
-                      ></Icon>
-                      <Text>
-                        {' '}
-                        {item.country.slice(0, 2).toUpperCase() + '.'}
-                      </Text>
-                    </View>
-                    <Text style={{ opacity: 0.3 }}> REMOTO</Text>
-                  </View>
-                </View>
-              ),
-            });
-          }} */
-
-/*     return ItemComponent({
-              item,
-              handleScrollEnabled,
-
-              children: (
-                <View
-                  style={{
-                    paddingVertical: 25,
-                    paddingHorizontal: 35,
-                    flexDirection: 'row',
-                    gap: 20,
-                    maxHeight: '70%',
-                  }}
-                >
-                  <View style={{ flexBasis: '80%' }}>
-                    <Card.Cover
-                      style={{ objectFit: 'fill', marginLeft: 40 }}
-                      source={imageLink}
-                      height={50}
-                    ></Card.Cover>
-                  </View>
-                  <View>
-                    <View style={{ flexDirection: 'row' }}>
-                      <Icon
-                        source={'map-marker-outline'}
-                        size={20}
-                        color="black"
-                      ></Icon>
-                      <Text>
-                        {' '}
-                        {item.country.slice(0, 2).toUpperCase() + '.'}
-                      </Text>
-                    </View>
-                    <Text style={{ opacity: 0.3 }}> REMOTO</Text>
-                  </View>
-                </View>
-              ),
-            });
-          }} */
