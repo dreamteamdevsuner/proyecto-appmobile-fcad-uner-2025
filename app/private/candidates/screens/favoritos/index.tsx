@@ -10,6 +10,8 @@ import { OfertaItem } from '../../../../../types/OfertaItem';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import ROUTES from '../../../candidates/navigator/routes';
 import { PrivateStackParamList } from '../../../candidates/navigator/types';
+import OfertasList2 from '../../../../../components/listas/ofertas-list/OfertasList2';
+import OfertasList3 from '../../../../../components/listas/ofertas-list/OfertasList3';
 
 // Matchs recientes
 const matchs: UserItem[] = [
@@ -85,7 +87,7 @@ const ofertasInteresantes: OfertaItem[] = [
     id: 12, // id de la oferta
     title: 'UI Designer - Lovelace Agency',
     subtitle: 'Publicado por Ann Lynn Parker',
-  }, 
+  },
   {
     id: 11,
     title: 'Visual Designer - Lovelace Agency',
@@ -142,19 +144,23 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
       <View style={[styles.listContainer, styles.section]}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Mis matchs</Text>
-          <TouchableOpacity onPress={handleViewAllMatchs} style={styles.moreButton}>
+          <TouchableOpacity
+            onPress={handleViewAllMatchs}
+            style={styles.moreButton}
+          >
             <Icon source="plus-circle" size={24} color="#666" />
           </TouchableOpacity>
         </View>
-        <OfertasList ofertas={ofertas} 
-        onSelectOferta={handleSelectOferta} 
-        />
+        <OfertasList2 ofertas={ofertas} onSelectOferta={handleSelectOferta} />
       </View>
 
       <View style={[styles.listContainer, styles.section]}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Me interesan</Text>
-          <TouchableOpacity onPress={handleViewAllInteresantes} style={styles.moreButton}>
+          <TouchableOpacity
+            onPress={handleViewAllInteresantes}
+            style={styles.moreButton}
+          >
             <Icon source="plus-circle" size={24} color="#666" />
           </TouchableOpacity>
         </View>
