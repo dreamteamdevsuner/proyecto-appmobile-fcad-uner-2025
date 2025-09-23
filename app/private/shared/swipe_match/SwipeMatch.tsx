@@ -1,34 +1,62 @@
 import { View, Text, Dimensions, StyleSheet } from 'react-native';
-import React, { PropsWithChildren, useState } from 'react';
-import Carousel, {
-  CarouselRenderItem,
-  ICarouselInstance,
-} from 'react-native-reanimated-carousel';
+import React, { PropsWithChildren } from 'react';
+import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 import { useSharedValue } from 'react-native-reanimated';
 import { candidates2 } from '../../../../mockup/candidates';
-import CandidateCard, {
-  CandidateCardProps,
-} from '../../../../components/ui/CandidateCard';
-import { Card, Icon } from 'react-native-paper';
+
 import SwipeMatchButtons from './SwipeMatchButtons';
 import useSwipeMatch from '../../../../hooks/useSwipeMatch';
+
 const data = candidates2;
 const width = Dimensions.get('window').width;
-interface SwipeMatchProps {
-  ItemComponent: ({
-    candidate,
-    children,
-    handleScrollEnabled,
-  }: CandidateCardProps) => React.JSX.Element;
+
+/**
+ * Generic interface for the component rendered inside the carousel.
+ *
+ * @template T - Type of the data item.
+ */
+interface ComponentProps<T> extends PropsWithChildren {
+  /** The data item to be rendered. */
+  item: T;
+  /**
+   * Callback that enables or disables scrolling of the parent carousel.
+   *
+   * @param val - `true` to enable scrolling, `false` to disable.
+   */
+  handleScrollEnabled: (val: boolean) => void;
 }
-const SwipeMatch = ({ ItemComponent }: SwipeMatchProps) => {
+/**
+ * SwipeMatch – a reusable carousel wrapper that integrates swipe‑match logic.
+ *
+ * @template T - Shape of each element in the `data` array.
+ *
+ * @param {Object} props
+ * @param {T[]} props.data - Array of items to feed the carousel.
+ * @param {(props: ComponentProps<T>) => JSX.Element} props.component
+ *        Render function that receives an individual `item` and a scroll‑control
+ *        callback, returning the JSX for that slide.
+ *
+ * @returns {JSX.Element} The fully composed view containing the carousel and
+ *          the match‑action buttons.
+ */
+const SwipeMatch = <T,>({
+  data,
+  component,
+}: {
+  data: T[];
+  component: (
+    this: any,
+    { item, handleScrollEnabled }: ComponentProps<T>,
+  ) => React.JSX.Element;
+}): React.JSX.Element => {
+  // Reference to the carousel instance – allows programmatic control.
   const ref = React.useRef<ICarouselInstance>(null);
   const progress = useSharedValue<number>(0);
-  const imageLink = require('../../../../assets/images/avatarCandidatePlaceholder.jpg');
 
   const { enabledScroll, handleLike, handleScrollEnabled } = useSwipeMatch({
     ref,
   });
+
   return (
     <View style={styles.container}>
       <View style={styles.carouselContainer}>
@@ -40,42 +68,9 @@ const SwipeMatch = ({ ItemComponent }: SwipeMatchProps) => {
           onProgressChange={progress}
           enabled={enabledScroll}
           renderItem={({ item, index }) => {
-            return ItemComponent({
+            return component({
+              item,
               handleScrollEnabled,
-              candidate: item,
-              children: (
-                <View
-                  style={{
-                    paddingVertical: 25,
-                    paddingHorizontal: 35,
-                    flexDirection: 'row',
-                    gap: 20,
-                    maxHeight: '70%',
-                  }}
-                >
-                  <View style={{ flexBasis: '80%' }}>
-                    <Card.Cover
-                      style={{ objectFit: 'fill', marginLeft: 40 }}
-                      source={imageLink}
-                      height={50}
-                    ></Card.Cover>
-                  </View>
-                  <View>
-                    <View style={{ flexDirection: 'row' }}>
-                      <Icon
-                        source={'map-marker-outline'}
-                        size={20}
-                        color="black"
-                      ></Icon>
-                      <Text>
-                        {' '}
-                        {item.country.slice(0, 2).toUpperCase() + '.'}
-                      </Text>
-                    </View>
-                    <Text style={{ opacity: 0.3 }}> REMOTO</Text>
-                  </View>
-                </View>
-              ),
             });
           }}
         />
@@ -166,3 +161,82 @@ return (
     <SwipeMatchButtons {...{ handleLike }}></SwipeMatchButtons>
   </View>
 ); */
+/*    renderItem={function ({ item, index }) {
+            return ItemComponent({
+              handleScrollEnabled,
+              candidate: item,
+              children: (
+                <View
+                  style={{
+                    paddingVertical: 25,
+                    paddingHorizontal: 35,
+                    flexDirection: 'row',
+                    gap: 20,
+                    maxHeight: '70%',
+                  }}
+                >
+                  <View style={{ flexBasis: '80%' }}>
+                    <Card.Cover
+                      style={{ objectFit: 'fill', marginLeft: 40 }}
+                      source={imageLink}
+                      height={50}
+                    ></Card.Cover>
+                  </View>
+                  <View>
+                    <View style={{ flexDirection: 'row' }}>
+                      <Icon
+                        source={'map-marker-outline'}
+                        size={20}
+                        color="black"
+                      ></Icon>
+                      <Text>
+                        {' '}
+                        {item.country.slice(0, 2).toUpperCase() + '.'}
+                      </Text>
+                    </View>
+                    <Text style={{ opacity: 0.3 }}> REMOTO</Text>
+                  </View>
+                </View>
+              ),
+            });
+          }} */
+
+/*     return ItemComponent({
+              item,
+              handleScrollEnabled,
+
+              children: (
+                <View
+                  style={{
+                    paddingVertical: 25,
+                    paddingHorizontal: 35,
+                    flexDirection: 'row',
+                    gap: 20,
+                    maxHeight: '70%',
+                  }}
+                >
+                  <View style={{ flexBasis: '80%' }}>
+                    <Card.Cover
+                      style={{ objectFit: 'fill', marginLeft: 40 }}
+                      source={imageLink}
+                      height={50}
+                    ></Card.Cover>
+                  </View>
+                  <View>
+                    <View style={{ flexDirection: 'row' }}>
+                      <Icon
+                        source={'map-marker-outline'}
+                        size={20}
+                        color="black"
+                      ></Icon>
+                      <Text>
+                        {' '}
+                        {item.country.slice(0, 2).toUpperCase() + '.'}
+                      </Text>
+                    </View>
+                    <Text style={{ opacity: 0.3 }}> REMOTO</Text>
+                  </View>
+                </View>
+              ),
+            });
+          }} */

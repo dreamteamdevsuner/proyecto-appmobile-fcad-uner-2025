@@ -11,15 +11,19 @@ import React, { useState } from 'react';
 import { useSharedValue } from 'react-native-reanimated';
 
 import { candidates2 } from '../../../../mockup/candidates';
-import CandidateCard from '../../../../components/ui/CandidateCard';
+import CandidateCard, {
+  CandidateCardProps,
+} from '../../../../components/ui/CandidateCard';
 
 import SwipeMatch from '../../shared/swipe_match/SwipeMatch';
+import { Candidate } from '../../../../interfaces/Candidate';
 const data = candidates2;
 const width = Dimensions.get('window').width;
 
 const RecruiterSwipeMatchScreen = () => {
-  const imageLink = require('../../../../assets/images/avatarCandidatePlaceholder.jpg');
-  return <SwipeMatch ItemComponent={CandidateCard}></SwipeMatch>;
+  return (
+    <SwipeMatch<Candidate> data={data} component={CandidateCard}></SwipeMatch>
+  );
 };
 
 export default RecruiterSwipeMatchScreen;

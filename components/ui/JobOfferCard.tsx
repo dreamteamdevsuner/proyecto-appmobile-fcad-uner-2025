@@ -1,21 +1,37 @@
-import { View, StyleSheet, StyleProp, ViewStyle, FlatList } from 'react-native';
+import {
+  View,
+  StyleProp,
+  ViewStyle,
+  StyleSheet,
+  FlatList,
+  Image,
+} from 'react-native';
 import React, { PropsWithChildren } from 'react';
+import { JobOffer } from '../../interfaces/JobOffer';
 import { Button, Card, Chip, Icon, Text } from 'react-native-paper';
-import { Candidate } from '../../interfaces/Candidate';
-import { Pressable } from 'react-native-gesture-handler';
-export interface CandidateCardProps extends PropsWithChildren {
-  item: Candidate;
+export interface JobOfferCardProps extends PropsWithChildren {
+  item: JobOffer;
   styles?: StyleProp<ViewStyle>;
   handleScrollEnabled: (val: boolean) => void | undefined;
 }
-function CandidateCard(
-  //CHECK THIS I THINK SHOULD BE REMOVED
+function JobOfferCard(
   this: any,
-  { item, children, handleScrollEnabled }: CandidateCardProps,
+  { item, children, handleScrollEnabled }: JobOfferCardProps,
 ) {
   const imageLink = require('../../assets/images/avatarCandidatePlaceholder.jpg');
+  console.log('ITEM', item);
   return (
     <Card style={styles.card}>
+      <View style={styles.recruiter}>
+        {/* <Card.Cover
+          style={{ objectFit: 'fill', marginLeft: 40 }}
+          source={imageLink}
+          height={20}
+        ></Card.Cover> */}
+        <View>
+          <Text>{item.recruiterFirstName + ' ' + item.recruiterLastName}</Text>
+        </View>
+      </View>
       <View
         style={{
           overflow: 'hidden',
@@ -31,13 +47,7 @@ function CandidateCard(
             maxHeight: '70%',
           }}
         >
-          <View style={{ flexBasis: '80%' }}>
-            <Card.Cover
-              style={{ objectFit: 'fill', marginLeft: 40 }}
-              source={imageLink}
-              height={50}
-            ></Card.Cover>
-          </View>
+          <View style={{ flexBasis: '80%' }}></View>
           <View>
             <View style={{ flexDirection: 'row' }}>
               <Icon
@@ -45,7 +55,7 @@ function CandidateCard(
                 size={20}
                 color="black"
               ></Icon>
-              <Text> {item.country.slice(0, 2).toUpperCase() + '.'}</Text>
+              {/*    <Text> {item.country.slice(0, 2).toUpperCase() + '.'}</Text> */}
             </View>
             <Text style={{ opacity: 0.3 }}> REMOTO</Text>
           </View>
@@ -55,19 +65,20 @@ function CandidateCard(
         <Card.Title
           title={
             <Text
+              children
               variant="headlineSmall"
               style={{
                 fontWeight: 'bold',
                 textAlign: 'center',
               }}
             >
-              {item.firstName + ' ' + item.lastName}{' '}
+              {/* {item.firstName + ' ' + item.lastName}{' '} */}
             </Text>
           }
         ></Card.Title>
 
         <Card.Content>
-          <Text
+          {/*   <Text
             style={{
               textAlign: 'center',
               marginTop: -10,
@@ -75,8 +86,8 @@ function CandidateCard(
             variant="titleMedium"
           >
             {item.profession}
-          </Text>
-          <FlatList
+          </Text> */}
+          {/*      <FlatList
             data={item.skills}
             onTouchStart={(e) => {
               e.preventDefault();
@@ -102,7 +113,7 @@ function CandidateCard(
                 {item}
               </Chip>
             )}
-          ></FlatList>
+          ></FlatList> */}
           <View
             style={{
               alignContent: 'center',
@@ -124,6 +135,7 @@ function CandidateCard(
     </Card>
   );
 }
+
 const styles = StyleSheet.create({
   card: {
     width: '90%',
@@ -148,6 +160,11 @@ const styles = StyleSheet.create({
 
     alignSelf: 'center',
   },
+  recruiter: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+
   chip: {
     backgroundColor: '#2c2c2c',
     color: 'white',
@@ -157,4 +174,5 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
 });
-export default CandidateCard;
+
+export default JobOfferCard;
