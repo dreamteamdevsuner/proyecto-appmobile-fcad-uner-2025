@@ -37,6 +37,7 @@ const CandidateNavigator = () => {
         name={ROUTES.CANDIDATE_FAVORITOS_TAB}
         component={FavoritosNavigator}
         options={{
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="heart-outline"
