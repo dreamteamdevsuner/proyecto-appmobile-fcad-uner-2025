@@ -1,6 +1,9 @@
 import { View, Text, Dimensions, StyleSheet } from 'react-native';
 import React, { PropsWithChildren } from 'react';
-import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
+import Carousel, {
+  CarouselRenderItem,
+  ICarouselInstance,
+} from 'react-native-reanimated-carousel';
 import { useSharedValue } from 'react-native-reanimated';
 import { candidates2 } from '../../../../mockup/candidates';
 
@@ -25,29 +28,15 @@ interface ComponentProps<T> extends PropsWithChildren {
    */
   handleScrollEnabled: (val: boolean) => void;
 }
-/**
- * SwipeMatch – a reusable carousel wrapper that integrates swipe‑match logic.
- *
- * @template T - Shape of each element in the `data` array.
- *
- * @param {Object} props
- * @param {T[]} props.data - Array of items to feed the carousel.
- * @param {(props: ComponentProps<T>) => JSX.Element} props.component
- *        Render function that receives an individual `item` and a scroll‑control
- *        callback, returning the JSX for that slide.
- *
- * @returns {JSX.Element} The fully composed view containing the carousel and
- *          the match‑action buttons.
- */
+
 const SwipeMatch = <T,>({
   data,
-  component,
+
+  renderItem,
 }: {
   data: T[];
-  component: (
-    this: any,
-    { item, handleScrollEnabled }: ComponentProps<T>,
-  ) => React.JSX.Element;
+  //Render the list items
+  renderItem: (item: T,) => React.JSX.Element;
 }): React.JSX.Element => {
   // Reference to the carousel instance – allows programmatic control.
   const ref = React.useRef<ICarouselInstance>(null);
@@ -60,19 +49,16 @@ const SwipeMatch = <T,>({
   return (
     <View style={styles.container}>
       <View style={styles.carouselContainer}>
-        <Carousel
+        <Carousel<T>
           ref={ref}
           width={width}
           data={data}
           style={styles.carousel}
           onProgressChange={progress}
           enabled={enabledScroll}
-          renderItem={({ item, index }) => {
-            return component({
-              item,
-              handleScrollEnabled,
-            });
-          }}
+          renderItem={({ item }) => renderItem(item)
+
+          }
         />
       </View>
       <SwipeMatchButtons {...{ handleLike }}></SwipeMatchButtons>

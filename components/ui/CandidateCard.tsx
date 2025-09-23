@@ -6,13 +6,13 @@ import { Pressable } from 'react-native-gesture-handler';
 export interface CandidateCardProps extends PropsWithChildren {
   item: Candidate;
   styles?: StyleProp<ViewStyle>;
-  handleScrollEnabled: (val: boolean) => void | undefined;
+  handleScrollEnabled?: (val: boolean) => void | undefined;
 }
-function CandidateCard(
-  //CHECK THIS I THINK SHOULD BE REMOVED
-  this: any,
-  { item, children, handleScrollEnabled }: CandidateCardProps,
-) {
+function CandidateCard({
+  item,
+  children,
+  handleScrollEnabled,
+}: CandidateCardProps) {
   const imageLink = require('../../assets/images/avatarCandidatePlaceholder.jpg');
   return (
     <Card style={styles.card}>
@@ -81,13 +81,17 @@ function CandidateCard(
             onTouchStart={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              handleScrollEnabled(false);
+              handleScrollEnabled && handleScrollEnabled(false);
               return;
             }}
-            onTouchEnd={(e) => handleScrollEnabled(false)}
-            onScrollBeginDrag={(e) => handleScrollEnabled(false)}
+            onTouchEnd={(e) =>
+              handleScrollEnabled && handleScrollEnabled(false)
+            }
+            onScrollBeginDrag={(e) =>
+              handleScrollEnabled && handleScrollEnabled(false)
+            }
             onScrollEndDrag={() => {
-              handleScrollEnabled(true);
+              handleScrollEnabled && handleScrollEnabled(true);
             }}
             style={styles.chipContainer}
             horizontal={true}
@@ -97,7 +101,9 @@ function CandidateCard(
                 textStyle={{ color: 'white' }}
                 style={styles.chip}
                 key={index}
-                onPress={() => handleScrollEnabled(false)}
+                onPress={() =>
+                  handleScrollEnabled && handleScrollEnabled(false)
+                }
               >
                 {item}
               </Chip>

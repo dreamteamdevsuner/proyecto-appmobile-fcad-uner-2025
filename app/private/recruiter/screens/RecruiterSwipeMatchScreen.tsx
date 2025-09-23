@@ -22,7 +22,21 @@ const width = Dimensions.get('window').width;
 
 const RecruiterSwipeMatchScreen = () => {
   return (
-    <SwipeMatch<Candidate> data={data} component={CandidateCard}></SwipeMatch>
+    <SwipeMatch<Candidate>
+      data={data}
+      renderItem={(
+        item: Candidate,
+
+        handleScrollEnabled?: (val: boolean) => void,
+      ) => {
+        return (
+          <CandidateCard
+
+            {...{ item, handleScrollEnabled }}
+          ></CandidateCard>
+        );
+      }}
+    ></SwipeMatch>
   );
 };
 

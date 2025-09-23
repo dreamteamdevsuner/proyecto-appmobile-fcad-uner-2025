@@ -12,12 +12,13 @@ import { Button, Card, Chip, Icon, Text } from 'react-native-paper';
 export interface JobOfferCardProps extends PropsWithChildren {
   item: JobOffer;
   styles?: StyleProp<ViewStyle>;
-  handleScrollEnabled: (val: boolean) => void | undefined;
+  handleScrollEnabled?: (val: boolean) => void | undefined;
 }
-function JobOfferCard(
-  this: any,
-  { item, children, handleScrollEnabled }: JobOfferCardProps,
-) {
+function JobOfferCard({
+  item,
+  children,
+  handleScrollEnabled,
+}: JobOfferCardProps) {
   const imageLink = require('../../assets/images/avatarCandidatePlaceholder.jpg');
   console.log('ITEM', item);
   return (
