@@ -11,7 +11,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import ROUTES from '../../../candidates/navigator/routes';
 import { PrivateStackParamList } from '../../../candidates/navigator/types';
 import OfertasList2 from '../../../../../components/listas/ofertas-list/OfertasList2';
-import OfertasList3 from '../../../../../components/listas/ofertas-list/OfertasList3';
 
 // Matchs recientes
 const matchs: UserItem[] = [
@@ -113,12 +112,6 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
       company: oferta.subtitle || 'Empresa',
     });
   };
-  const handleSelectOfertaInteresante = (oferta: OfertaItem) => {
-    navigation.navigate(ROUTES.CANDIDATE_TEST, {
-      title: oferta.title,
-      company: oferta.subtitle || 'Empresa',
-    });
-  };
 
   const handleViewAllMatchs = () => {
     navigation.navigate(ROUTES.CANDIDATE_FAVORITOS_MATCHS, {
@@ -130,6 +123,29 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
     navigation.navigate(ROUTES.CANDIDATE_FAVORITOS_INTERESANTES, {
       title: 'Me interesan',
     });
+  };
+
+  const handleSelectOfertaInteresante = (oferta: OfertaItem) => {
+    navigation.navigate(ROUTES.CANDIDATE_TEST, {
+      title: oferta.title,
+      company: oferta.subtitle || 'Empresa',
+    });
+  };
+
+  const handleMessageInteresante = (oferta: OfertaItem) => {
+    // Navegar a conversación con la oferta interesante
+    navigation.navigate(ROUTES.CANDIDATE_CONVERSACION, {
+      title: oferta.title,
+      myName: 'Yo',
+      otherAvatarUrl: undefined,
+      myAvatarUrl: undefined,
+    });
+  };
+
+  const handleDeleteInteresante = (oferta: OfertaItem) => {
+    // Aquí implementarías la lógica para eliminar de interesantes
+    console.log('Eliminando de interesantes:', oferta.title);
+    // TODO: Implementar eliminación de la lista de interesantes
   };
 
   return (
@@ -164,9 +180,11 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
             <Icon source="plus-circle" size={24} color="#666" />
           </TouchableOpacity>
         </View>
-        <OfertasList
+        <OfertasList2
           ofertas={ofertasInteresantes}
           onSelectOferta={handleSelectOfertaInteresante}
+          onMessageOferta={handleMessageInteresante}
+          onDeleteOferta={handleDeleteInteresante}
         />
       </View>
     </View>
