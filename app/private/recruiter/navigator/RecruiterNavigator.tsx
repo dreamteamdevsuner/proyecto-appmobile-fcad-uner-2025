@@ -7,7 +7,7 @@ import RecruiterHomeScreen from '../screens/RecruiterHomeScreen';
 import RecruiterSwipeMatchScreen from '../screens/RecruiterSwipeMatchScreen';
 import FavoritosNavigator from '../screens/favoritos/FavoritosNavigator';
 import MensajeriaNavigator from '../screens/mensajeria/MensajeriaNavigator';
-
+import CrearOfertaNavigator from '../screens/crear-oferta/CrearOfertaNavigator';
 import ProfileNavigator from '../screens/perfil/ProfileNavigator';
 
 import { Icon } from 'react-native-paper';
@@ -61,11 +61,6 @@ const RecruiterNavigator = () => {
         component={RecruiterSwipeMatchScreen}
       ></Tab.Screen>
       <Tab.Screen
-        name={ROUTES.RECRUITER_HOME}
-        component={RecruiterHomeScreen}
-      ></Tab.Screen>
-
-      <Tab.Screen
         name={ROUTES.RECRUITER_FAVORITOS_TAB}
         component={FavoritosNavigator}
         options={{
@@ -90,6 +85,7 @@ const RecruiterNavigator = () => {
               color={color}
             />
           ),
+          title: 'Perfil',
         }}
       ></Tab.Screen>
       <Tab.Screen
@@ -102,6 +98,16 @@ const RecruiterNavigator = () => {
               size={size}
               color={color}
             />
+          ),
+        }}
+      ></Tab.Screen>
+      <Tab.Screen
+        name={ROUTES.RECRUITER_CREAR_OFERTA}
+        component={CrearOfertaNavigator}
+        options={{
+          title: 'Nueva Oferta',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="plus" size={size} color={color} />
           ),
         }}
       ></Tab.Screen>

@@ -69,23 +69,29 @@ export const ProfileHeader = ({
             </Text>
           </View>
         )}
-        {profileScreenType ===
-        ProfileScreenType.RECRUITER_HOME_PROFILE ? null : (
+        {profileScreenType === ProfileScreenType.OTHER_PROFILE && (
           <View
             style={{
-              alignItems: 'center',
-              flexDirection: 'row',
               gap: 4,
+              flexDirection: 'column',
+              alignContent: 'space-evenly',
+              justifyContent: 'space-between',
+              paddingVertical: 8,
+              height: '100%',
+              width: '100%',
+              maxWidth: 180,
             }}
           >
-            <Octicons name="location" size={20} color="#49454F" />
-            <Text
-              numberOfLines={1}
-              ellipsizeMode="tail"
-              style={{ fontWeight: 600, color: '#49454F' }}
-            >
-              {city}
-            </Text>
+            <View>
+              <Text style={{ fontSize: 24 }}>{name}</Text>
+              <Text style={{ fontSize: 16, flexShrink: 1 }}>{ocupation}</Text>
+            </View>
+            <View style={{ flexDirection: 'row', gap: 4 }}>
+              <Octicons name="location" size={20} color="#49454F" />
+              <Text numberOfLines={1} ellipsizeMode="tail">
+                {city}
+              </Text>
+            </View>
           </View>
         )}
       </View>

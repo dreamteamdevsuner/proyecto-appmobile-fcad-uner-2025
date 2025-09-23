@@ -55,7 +55,10 @@ const ofertasInteresantes: OfertaItem[] = [
   },
 ];
 
-const FavoritosInteresantesScreen: React.FC<Props> = ({ route, navigation }) => {
+const FavoritosInteresantesScreen: React.FC<Props> = ({
+  route,
+  navigation,
+}) => {
   const { title } = route.params;
 
   const handleSelectOferta = (oferta: OfertaItem) => {
@@ -68,7 +71,10 @@ const FavoritosInteresantesScreen: React.FC<Props> = ({ route, navigation }) => 
   return (
     <View style={styles.container}>
       <View style={[styles.listContainer, styles.section]}>
-        <OfertasList ofertas={ofertasInteresantes} onSelectOferta={handleSelectOferta} />
+        <OfertasList
+          ofertas={ofertasInteresantes}
+          onSelectOferta={handleSelectOferta}
+        />
       </View>
     </View>
   );

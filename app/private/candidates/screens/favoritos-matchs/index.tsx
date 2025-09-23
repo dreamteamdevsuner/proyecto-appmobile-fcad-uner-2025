@@ -6,6 +6,7 @@ import ROUTES from '../../../candidates/navigator/routes';
 import { PrivateStackParamList } from '../../../candidates/navigator/types';
 import { OfertaItem } from '../../../../../types/OfertaItem';
 import { OfertasList } from '../../../../../components/listas';
+import OfertasList2 from '../../../../../components/listas/ofertas-list/OfertasList2';
 
 type Props = NativeStackScreenProps<
   PrivateStackParamList,
@@ -69,7 +70,7 @@ const FavoritosMatchsScreen: React.FC<Props> = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <View style={[styles.listContainer, styles.section]}>
-        <OfertasList ofertas={allMatchs} onSelectOferta={handleSelectMatch} />
+        <OfertasList2 ofertas={allMatchs} onSelectOferta={handleSelectMatch} />
       </View>
     </View>
   );
