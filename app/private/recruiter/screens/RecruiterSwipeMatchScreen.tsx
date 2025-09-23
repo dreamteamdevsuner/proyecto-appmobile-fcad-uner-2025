@@ -15,7 +15,7 @@ import CandidateCard, {
   CandidateCardProps,
 } from '../../../../components/ui/CandidateCard';
 
-import SwipeMatch from '../../shared/swipe_match/SwipeMatch';
+import SwipeMatch, { CarouselItemProps } from '../../shared/swipe_match/SwipeMatch';
 import { Candidate } from '../../../../interfaces/Candidate';
 const data = candidates2;
 const width = Dimensions.get('window').width;
@@ -25,19 +25,27 @@ const RecruiterSwipeMatchScreen = () => {
     <SwipeMatch<Candidate>
       data={data}
       renderItem={(
-        item: Candidate,
+        { item,
+          handleScrollEnabled
+        }
 
-        handleScrollEnabled?: (val: boolean) => void,
+
       ) => {
         return (
           <CandidateCard
-
-            {...{ item, handleScrollEnabled }}
+            item={item}
+            {...{ handleScrollEnabled }}
           ></CandidateCard>
         );
       }}
     ></SwipeMatch>
   );
-};
+
+
+
+
+
+}
+
 
 export default RecruiterSwipeMatchScreen;

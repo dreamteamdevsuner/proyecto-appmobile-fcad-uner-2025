@@ -13,21 +13,17 @@ import useSwipeMatch from '../../../../hooks/useSwipeMatch';
 const data = candidates2;
 const width = Dimensions.get('window').width;
 
+
+export interface CarouselItemProps<T> extends PropsWithChildren {
+  item: T,
+  handleScrollEnabled?: (val: boolean) => void,
+  children?: React.ReactNode
+}
 /**
  * Generic interface for the component rendered inside the carousel.
  *
  * @template T - Type of the data item.
  */
-interface ComponentProps<T> extends PropsWithChildren {
-  /** The data item to be rendered. */
-  item: T;
-  /**
-   * Callback that enables or disables scrolling of the parent carousel.
-   *
-   * @param val - `true` to enable scrolling, `false` to disable.
-   */
-  handleScrollEnabled: (val: boolean) => void;
-}
 
 const SwipeMatch = <T,>({
   data,
@@ -36,7 +32,8 @@ const SwipeMatch = <T,>({
 }: {
   data: T[];
   //Render the list items
-  renderItem: (item: T,) => React.JSX.Element;
+  renderItem: (props: CarouselItemProps<T>) => React.JSX.Element;
+
 }): React.JSX.Element => {
   // Reference to the carousel instance – allows programmatic control.
   const ref = React.useRef<ICarouselInstance>(null);
@@ -56,7 +53,7 @@ const SwipeMatch = <T,>({
           style={styles.carousel}
           onProgressChange={progress}
           enabled={enabledScroll}
-          renderItem={({ item }) => renderItem(item)
+          renderItem={({ item }) => renderItem({ item, handleScrollEnabled })
 
           }
         />

@@ -68,15 +68,15 @@ const CandidateHomeScreen = () => {
   return (
     <SwipeMatch<JobOffer>
       data={ofertasDeTrabajo}
-      renderItem={(
-        item: JobOffer,
-        key: string | number | undefined,
-        handleScrollEnabled?: (val: boolean) => void,
+      renderItem={({
+        item,
+
+      }
       ) => {
         return (
           <JobOfferCard
-            key={key}
-            {...{ item, handleScrollEnabled }}
+
+            {...{ item }}
           ></JobOfferCard>
         );
       }}
