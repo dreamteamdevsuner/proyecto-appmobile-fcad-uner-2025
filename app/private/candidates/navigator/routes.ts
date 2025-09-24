@@ -8,6 +8,7 @@ enum ROUTES {
   CANDIDATE_PROFILE_TAB = 'CandidateProfileTab',
   CANDIDATE_PROFILE = 'CandidateProfile',
   CANDIDATE_SETTING = 'Ajustes',
+  CANDIDATE_NOTIFICATIONS = 'Notificaciones',
   CANDIDATE_MENSAJERIA = 'CandidateMensajeria',
   CANDIDATE_CONVERSACION = 'CandidateConversacion',
   CANDIDATE_MENSAJERIA_TAB = 'CandidateMensajeriaTab',
