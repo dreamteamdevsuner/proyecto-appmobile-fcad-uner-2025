@@ -67,10 +67,23 @@ const FavoritosMatchsScreen: React.FC<Props> = ({ route, navigation }) => {
     });
   };
 
+  const handleMessage = (oferta: OfertaItem) => {
+    navigation.navigate(ROUTES.CANDIDATE_CONVERSACION, {
+      title: oferta.title,
+      myName: 'Juana',
+      otherAvatarUrl: undefined,
+      myAvatarUrl: undefined,
+    });
+  };
+
   return (
     <View style={styles.container}>
       <View style={[styles.listContainer, styles.section]}>
-        <OfertasList2 ofertas={allMatchs} onSelectOferta={handleSelectMatch} />
+        <OfertasList2
+          ofertas={allMatchs}
+          onSelectOferta={handleSelectMatch}
+          onMessageOferta={handleMessage}
+        />
       </View>
     </View>
   );
