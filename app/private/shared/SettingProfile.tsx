@@ -43,7 +43,7 @@ export default function SettingProfileScreen() {
           title="Editar perfil"
           left={(props) => <List.Icon {...props} icon="pencil-outline" />}
           right={(props) => <List.Icon {...props} icon="chevron-right" />}
-          onPress={() => {}}
+          onPress={() => navigation.navigate('EditarPerfil')}
         />
         <Divider />
         <List.Item

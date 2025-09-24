@@ -8,6 +8,7 @@ import CandidateNavigator from './candidates/navigator/CandidateNavigator';
 import SeguridadScreen from './shared/perfil/SeguridadScreen';
 import DatosCuentaScreen from './shared/perfil/DatosCuentaScreen';
 import CambiarContrasenaScreen from './shared/perfil/CambiarContasenaScreen';
+import EditarPerfilScreen from './shared/perfil/EditarPerfilScreen';
 const Stack = createNativeStackNavigator();
 const PrivateNavigator = () => {
   const { userState } = useContext(AuthContext);
@@ -25,6 +26,13 @@ const PrivateNavigator = () => {
             : RecruiterNavigator
         }
       ></Stack.Screen>
+      <Stack.Screen
+        name="EditarPerfil"
+        component={EditarPerfilScreen}
+        options={{headerShown: true,
+        title: 'Editar perfil'
+        }}
+      />
       <Stack.Screen 
         name='Seguridad'
         component={SeguridadScreen}
