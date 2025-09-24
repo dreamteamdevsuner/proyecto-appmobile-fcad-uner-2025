@@ -106,6 +106,7 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
       company: user.subtitle || 'Empresa',
     });
   };
+
   const handleSelectOferta = (oferta: OfertaItem) => {
     navigation.navigate(ROUTES.CANDIDATE_TEST, {
       title: oferta.title,
@@ -132,11 +133,10 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
     });
   };
 
-  const handleMessageInteresante = (oferta: OfertaItem) => {
-    // Navegar a conversación con la oferta interesante
+  const handleMessage = (oferta: OfertaItem) => {
     navigation.navigate(ROUTES.CANDIDATE_CONVERSACION, {
       title: oferta.title,
-      myName: 'Yo',
+      myName: 'Juana',
       otherAvatarUrl: undefined,
       myAvatarUrl: undefined,
     });
@@ -167,7 +167,11 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
             <Icon source="plus-circle" size={24} color="#666" />
           </TouchableOpacity>
         </View>
-        <OfertasList2 ofertas={ofertas} onSelectOferta={handleSelectOferta} />
+        <OfertasList2
+          ofertas={ofertas}
+          onSelectOferta={handleSelectOferta}
+          onMessageOferta={handleMessage}
+        />
       </View>
 
       <View style={[styles.listContainer, styles.section]}>
@@ -180,11 +184,9 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
             <Icon source="plus-circle" size={24} color="#666" />
           </TouchableOpacity>
         </View>
-        <OfertasList2
+        <OfertasList
           ofertas={ofertasInteresantes}
           onSelectOferta={handleSelectOfertaInteresante}
-          onMessageOferta={handleMessageInteresante}
-          onDeleteOferta={handleDeleteInteresante}
         />
       </View>
     </View>
