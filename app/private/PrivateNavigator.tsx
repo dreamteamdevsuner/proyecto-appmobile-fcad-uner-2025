@@ -5,6 +5,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthContext, Role } from '../../appContext/authContext';
 import RecruiterNavigator from './recruiter/navigator/RecruiterNavigator';
 import CandidateNavigator from './candidates/navigator/CandidateNavigator';
+import SeguridadScreen from './shared/perfil/SeguridadScreen';
+import DatosCuentaScreen from './shared/perfil/DatosCuentaScreen';
+import CambiarContrasenaScreen from './shared/perfil/CambiarContasenaScreen';
 const Stack = createNativeStackNavigator();
 const PrivateNavigator = () => {
   const { userState } = useContext(AuthContext);
@@ -22,6 +25,30 @@ const PrivateNavigator = () => {
             : RecruiterNavigator
         }
       ></Stack.Screen>
+      <Stack.Screen 
+        name='Seguridad'
+        component={SeguridadScreen}
+        options={{ 
+          headerShown: true,
+          title: 'Seguridad'
+        }}
+        />
+      <Stack.Screen 
+        name='DatosCuenta'
+        component={DatosCuentaScreen}
+        options={{ 
+          headerShown: true,
+          title: 'Datos de la cuenta'
+        }}
+        /> 
+      <Stack.Screen
+        name='CambiarContrasena'
+        component={CambiarContrasenaScreen}
+        options={{ 
+          headerShown: true,
+          title: 'Cambiar contraseña'
+        }}
+        />
     </Stack.Navigator>
   );
 };

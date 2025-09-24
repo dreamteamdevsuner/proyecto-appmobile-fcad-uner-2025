@@ -9,11 +9,17 @@ import {
   Button,
 } from 'react-native-paper';
 import { AuthContext } from '../../../appContext/authContext';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../types';
+import { useNavigation } from '@react-navigation/native';
 
+type NavigationProp = StackNavigationProp<RootStackParamList>;
 
 export default function SettingProfileScreen() {
   const [dialogVisible, setDialogVisible] = useState(false);
   const { logout } = useContext(AuthContext);
+  const navigation = useNavigation<NavigationProp>();
+
 
   const showDialog = () => setDialogVisible(true);
   const hideDialog = () => setDialogVisible(false);
@@ -44,7 +50,7 @@ export default function SettingProfileScreen() {
           title="Seguridad"
           left={(props) => <List.Icon {...props} icon="shield-outline" />}
           right={(props) => <List.Icon {...props} icon="chevron-right" />}
-          onPress={() => {}}
+          onPress={() => navigation.navigate('Seguridad')}
         />
       </View>
 
