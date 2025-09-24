@@ -13,7 +13,6 @@ type Props = NativeStackScreenProps<
   ROUTES.CANDIDATE_FAVORITOS_MATCHS
 >;
 
-// Datos de ejemplo para todos los matchs
 const allMatchs: OfertaItem[] = [
   {
     id: 1,
@@ -83,6 +82,7 @@ const FavoritosMatchsScreen: React.FC<Props> = ({ route, navigation }) => {
           ofertas={allMatchs}
           onSelectOferta={handleSelectMatch}
           onMessageOferta={handleMessage}
+          onDeleteOferta={undefined}
         />
       </View>
     </View>
