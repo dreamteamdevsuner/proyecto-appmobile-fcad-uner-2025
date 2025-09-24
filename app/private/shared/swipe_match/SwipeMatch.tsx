@@ -9,6 +9,7 @@ import { candidates2 } from '../../../../mockup/candidates';
 
 import SwipeMatchButtons from './SwipeMatchButtons';
 import useSwipeMatch from '../../../../hooks/useSwipeMatch';
+import AppCarousel from '../swipe/AppCarousel';
 
 const data = candidates2;
 const width = Dimensions.get('window').width;
@@ -62,17 +63,8 @@ const SwipeMatch = <T,>({
   return (
     <View style={styles.container}>
       <View style={styles.carouselContainer}>
-        <Carousel<T>
-          ref={ref}
-          width={width}
-          data={data}
-          style={styles.carousel}
-          onProgressChange={progress}
-          enabled={enabledScroll}
-          renderItem={({ item }) => renderItem({ item, handleScrollEnabled })
+        <AppCarousel  {...{ data, ref, width, enabledScroll, handleScrollEnabled, renderItem }}  ></AppCarousel>
 
-          }
-        />
       </View>
       <SwipeMatchButtons {...{ handleLike }}></SwipeMatchButtons>
     </View>
