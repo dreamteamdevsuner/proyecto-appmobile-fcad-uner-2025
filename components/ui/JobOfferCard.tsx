@@ -9,6 +9,34 @@ import {
 import React, { PropsWithChildren } from 'react';
 import { JobOffer } from '../../interfaces/JobOffer';
 import { Button, Card, Chip, Icon, Text } from 'react-native-paper';
+import { lightBlue400 } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
+
+
+
+//aca va la info de RRHH que publica
+const HrAbout = ({ firstName, lastName, location }: { firstName: string, lastName: string, location: string }) => {
+  const hrPic = require("../../assets/images/hrPlaceholder.jpg")
+
+  return (<View style={{ display: 'flex', marginBottom: 10, marginHorizontal: 10, flexDirection: 'row', width: '100%', padding: 10, borderTopRightRadius: 50, borderTopLeftRadius: 50, marginTop: 10 }}>
+    <View style={{ flex: 1, flexGrow: 1, flexBasis: '5%', maxWidth: 50, justifyContent: 'center', }}>
+      <Card.Cover source={hrPic} style={{ width: 48, height: 48 }}  ></Card.Cover>
+    </View>
+    <View style={{ flex: 6, flexDirection: 'column', justifyContent: 'flex-start', paddingLeft: 10 }}>
+      <View style={{ flexDirection: 'row', marginLeft: 2 }}>
+
+        <Text>{firstName} </Text>
+        <Text>{lastName} </Text>
+      </View>
+      <View>
+        <Text variant='labelSmall'> Talent Acquisition - Freelancer</Text>
+        <Text variant='labelSmall'> {location}</Text>
+
+      </View>
+
+    </View>
+  </View >)
+}
+
 export interface JobOfferCardProps extends PropsWithChildren {
   item: JobOffer;
   styles?: StyleProp<ViewStyle>;
@@ -16,117 +44,66 @@ export interface JobOfferCardProps extends PropsWithChildren {
 }
 function JobOfferCard({
   item,
-  children,
-  handleScrollEnabled,
+
 }: JobOfferCardProps) {
-  const imageLink = require('../../assets/images/avatarCandidatePlaceholder.jpg');
-  console.log('ITEM', item);
+
+
+  const { recruiterFirstName, recruiterLastName } = item
   return (
     <Card style={styles.card}>
       <View style={styles.recruiter}>
-
-        <View>
-          <Text>{item.recruiterFirstName + ' ' + item.recruiterLastName}</Text>
-        </View>
+        <HrAbout firstName={recruiterFirstName} location={item.location} lastName={recruiterLastName}  ></HrAbout>
       </View>
-      <View
-        style={{
-          overflow: 'hidden',
-          maxHeight: 340,
-        }}
-      >
-        <View
-          style={{
-            paddingVertical: 25,
-            paddingHorizontal: 35,
-            flexDirection: 'row',
-            gap: 20,
-            maxHeight: '70%',
-          }}
-        >
-          <View style={{ flexBasis: '80%' }}></View>
+
+      <View style={{ marginTop: -20 }}>
+
+
+        <Card.Content style={{ marginVertical: 10, paddingVertical: 10, borderTopWidth: 1, borderTopColor: 'black', gap: 10, minHeight: '70%' }}>
           <View>
-            <View style={{ flexDirection: 'row' }}>
-              <Icon
-                source={'map-marker-outline'}
-                size={20}
-                color="black"
-              ></Icon>
+
+            <Text variant='headlineSmall'>{item.title}</Text>
+            <Text variant='labelMedium'>{item.company}</Text>
+          </View>
+          <View style={{
+            flexDirection: 'row'
+          }}>
+            <Icon
+
+              source={'map-marker-outline'}
+              size={20}
+              color="black"
+            ></Icon>
+            <Text >
+              {item.location}
+            </Text>
+          </View>
+          <View style={{ display: 'flex', flexDirection: 'row' }} >
+            <View style={{ flex: 1 }}>
+              <Text variant='labelSmall'>{item.jobType}</Text>
 
             </View>
-            <Text style={{ opacity: 0.3 }}> REMOTO</Text>
-          </View>
-        </View>
-      </View>
-      <View style={{ marginTop: -20 }}>
-        <Card.Title
-          title={
-            <Text
-              children
-              variant="headlineSmall"
-              style={{
-                fontWeight: 'bold',
-                textAlign: 'center',
-              }}
-            >
-              {/* {item.firstName + ' ' + item.lastName}{' '} */}
-            </Text>
-          }
-        ></Card.Title>
+            <View style={{ flex: 1 }}>
+              <Text variant='labelSmall'>{item.jobTime}</Text>
 
-        <Card.Content>
-          {/*   <Text
-            style={{
-              textAlign: 'center',
-              marginTop: -10,
-            }}
-            variant="titleMedium"
-          >
-            {item.profession}
-          </Text> */}
-          {/*      <FlatList
-            data={item.skills}
-            onTouchStart={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              handleScrollEnabled(false);
-              return;
-            }}
-            onTouchEnd={(e) => handleScrollEnabled(false)}
-            onScrollBeginDrag={(e) => handleScrollEnabled(false)}
-            onScrollEndDrag={() => {
-              handleScrollEnabled(true);
-            }}
-            style={styles.chipContainer}
-            horizontal={true}
-            renderItem={({ item, index }) => (
-              <Chip
-                mode="outlined"
-                textStyle={{ color: 'white' }}
-                style={styles.chip}
-                key={index}
-                onPress={() => handleScrollEnabled(false)}
-              >
-                {item}
-              </Chip>
-            )}
-          ></FlatList> */}
-          <View
-            style={{
-              alignContent: 'center',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Button
-              style={{ width: 24 }}
-              children
-              buttonColor="transparent"
-              textColor="black"
-              icon="plus-circle-outline"
-              mode="contained"
-            ></Button>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text variant='labelSmall'>Inmediato</Text>
+            </View>
+            <View>
+              <Text >
+                <Text>
+                  Acerca del empleo:
+                  {"\n"}
+                </Text>
+                {item.about}
+              </Text>
+            </View>
+
           </View>
+
+
+
+
         </Card.Content>
       </View>
     </Card>
@@ -138,12 +115,14 @@ const styles = StyleSheet.create({
     width: '90%',
     position: 'relative',
     marginHorizontal: 'auto',
-    marginTop: 20,
-    paddingBottom: 40,
+    marginTop: 10,
+    paddingBottom: 20,
     textAlign: 'center',
     flex: 1,
-    justifyContent: 'center',
+
     borderRadius: 50,
+
+
   },
   contentWrapper: {
     backgroundColor: 'blue',
