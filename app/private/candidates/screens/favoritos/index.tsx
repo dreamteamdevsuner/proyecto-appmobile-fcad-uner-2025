@@ -11,6 +11,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import ROUTES from '../../../candidates/navigator/routes';
 import { PrivateStackParamList } from '../../../candidates/navigator/types';
 import OfertasList2 from '../../../../../components/listas/ofertas-list/OfertasList2';
+import OfertasList3 from '../../../../../components/listas/ofertas-list/OfertasList3';
 
 // Matchs recientes
 const matchs: UserItem[] = [
@@ -184,9 +185,10 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
             <Icon source="plus-circle" size={24} color="#666" />
           </TouchableOpacity>
         </View>
-        <OfertasList
+        <OfertasList3
           ofertas={ofertasInteresantes}
           onSelectOferta={handleSelectOfertaInteresante}
+          onDeleteOferta={handleDeleteInteresante}
         />
       </View>
     </View>
