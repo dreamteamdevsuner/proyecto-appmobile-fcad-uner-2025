@@ -1,5 +1,5 @@
 import React from 'react';
-import ProfileScreenShared from '../../../shared/ProfileScreen';
+import ProfileScreenShared from '../../../shared/perfil/ProfileScreen';
 import { RouteProp } from '@react-navigation/native';
 import { PrivateStackParamList as RecruiterStackParamList } from '../../navigator/types';
 import ROUTES from '../../navigator/routes';

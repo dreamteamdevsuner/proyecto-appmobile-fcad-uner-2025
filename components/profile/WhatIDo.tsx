@@ -1,12 +1,16 @@
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Surface } from 'react-native-paper';
 import { ProfileUser } from '../../types/ProfileUser';
+import Portfolio from '../../app/private/shared/perfil/Portfolio';
 
 export const WhatIDo = (user: ProfileUser) => {
   return (
-    <ScrollView contentContainerStyle={styles.tabContent}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={styles.tabContent}
+    >
       <Surface mode="flat" elevation={2} style={styles.surfaceDescription}>
-        <View style={{ width: '100%', alignItems: 'center', gap: 16 }}></View>
+        <Portfolio></Portfolio>
       </Surface>
     </ScrollView>
   );
@@ -20,7 +24,7 @@ const styles = StyleSheet.create({
   },
   surfaceDescription: {
     paddingTop: 16,
-    paddingHorizontal: 32,
+    paddingHorizontal: 12,
     paddingBottom: 32,
     backgroundColor: '#FEF7FF',
   },

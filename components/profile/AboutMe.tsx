@@ -5,7 +5,10 @@ import { ProfileUser } from '../../types/ProfileUser';
 
 export const AboutMe = (user: ProfileUser) => {
   return (
-    <ScrollView contentContainerStyle={styles.tabContent}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={styles.tabContent}
+    >
       <Surface mode="flat" elevation={2} style={styles.surfaceDescription}>
         <Text style={styles.title}>Sobre mí:</Text>
         <Text style={styles.textContent}>{user.bio}</Text>

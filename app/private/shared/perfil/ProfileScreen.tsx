@@ -2,20 +2,20 @@ import React, { useState, useContext, useEffect } from 'react';
 import { View, Dimensions, Text, ActivityIndicator } from 'react-native';
 import { TabView } from 'react-native-tab-view';
 import { RouteProp } from '@react-navigation/native';
-import { PrivateStackParamList as RecruiterStackParamList } from '../recruiter/navigator/types';
-import { PrivateStackParamList as CandidateStackParamList } from '../candidates/navigator/types';
-import CustomProfileTabBar from '../../../components/profile/CustomProfileTabBar';
-import { AboutMe } from '../../../components/profile/AboutMe';
-import { WhatIDo } from '../../../components/profile/WhatIDo';
+import { PrivateStackParamList as RecruiterStackParamList } from '../../recruiter/navigator/types';
+import { PrivateStackParamList as CandidateStackParamList } from '../../candidates/navigator/types';
+import { ProfileScreenType } from '../../../../components/profile/ProfileHeader';
+import { HorizontalChips } from '../../../../components/ui/HorizontalChips';
+import { Role, AuthContext } from '../../../../appContext/authContext';
+import { ProfileUser } from '../../../../types/ProfileUser';
+import { fetchUserByIdMock } from '../../../../utils/mockUsers';
 import {
+  AboutMe,
+  CustomProfileTabBar,
+  OffersTab,
   ProfileHeader,
-  ProfileScreenType,
-} from '../../../components/profile/ProfileHeader';
-import { HorizontalChips } from '../../../components/ui/HorizontalChips';
-import { Role, AuthContext } from '../../../appContext/authContext';
-import { ProfileUser } from '../../../types/ProfileUser';
-import { fetchUserByIdMock } from '../../../utils/mockUsers';
-import OffersTab from '../../../components/profile/OffersTab';
+  WhatIDo,
+} from '../../../../components/profile/index';
 
 type CombinedParamList = RecruiterStackParamList & CandidateStackParamList;
 
