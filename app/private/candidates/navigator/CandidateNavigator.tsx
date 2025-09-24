@@ -8,6 +8,7 @@ import ProfileNavigator from '../screens/perfil/ProfileNavigator';
 import FavoritosNavigator from '../screens/favoritos/FavoritosNavigator';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import JobsyHeader from '../../../../components/ui/JobsyHeader';
 
 const Tab = createBottomTabNavigator();
 
@@ -23,15 +24,21 @@ const CandidateNavigator = () => {
       <Tab.Screen
         name={ROUTES.CANDIDATE_HOME_TAB}
         component={CandidateHomeScreen}
+
         options={{
+          headerTitle: 'Jobsy',
           tabBarIcon: ({ color, size }) => (
+
             <MaterialCommunityIcons
               name="account-group-outline"
               size={size}
               color={color}
             />
           ),
+
+          header: ({ options }) => <JobsyHeader headerTitle={options.headerTitle?.toString() ?? 'placeholder title'}></JobsyHeader>
         }}
+
       />
       <Tab.Screen
         name={ROUTES.CANDIDATE_FAVORITOS_TAB}

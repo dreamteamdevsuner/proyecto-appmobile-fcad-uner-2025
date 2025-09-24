@@ -14,6 +14,7 @@ import { Icon } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { PrivateStackParamList } from './types';
+import JobsyHeader from '../../../../components/ui/JobsyHeader';
 
 const Tab = createBottomTabNavigator<PrivateStackParamList>();
 
@@ -40,21 +41,9 @@ const RecruiterNavigator = () => {
           ),
 
           //MOVE THIS TO COMPONENT
-          header: ({ options }) => {
-            return (
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  padding: 20,
-                }}
-              >
-                <Icon size={15} source={'star-circle'} color={'black'}></Icon>
-                <Text> {options.headerTitle?.toString()} </Text>
-              </View>
-            );
-          },
+          header: ({ options }) => <JobsyHeader headerTitle={options.headerTitle?.toString() ?? 'placeholder title'}></JobsyHeader>
+
+
         }}
         //MOVE THIS TO COMPONENT
         name={ROUTES.RECRUITER_SWIPE_MATCH}
