@@ -3,7 +3,8 @@ export const PAISES_LIST = [
   { label: "Argentina", value: "argentina" },
   { label: "Chile", value: "chile" },
   { label: "Colombia", value: "colombia" },
-  // ... agrega más países si los necesitas
+  { label: 'Uruguay', value: 'uruguay' },
+  { label: 'Estados Unidos', value: 'eeuu' },
 ];
 
 export const HERRAMIENTAS_LIST = [
@@ -11,14 +12,18 @@ export const HERRAMIENTAS_LIST = [
   { label: "Adobe XD", value: "adobe_xd" },
   { label: "Sketch", value: "sketch" },
   { label: "Illustrator", value: "illustrator" },
-  // ...
+  { label: "VSCode", value: "vscode" },
+  { label: "Android", value: "android" },
+  { label: "Postman", value: "postman" },
 ];
 
 export const HABILIDADES_LIST = [
   { label: "Comunicación", value: "comunicacion" },
   { label: "Trabajo en equipo", value: "trabajo_en_equipo" },
   { label: "Resolución de problemas", value: "resolucion_de_problemas" },
-  // ...
+  { label: "Proactivo", value: "proactivo" },
+  { label: "FrontEnd", value: "frontend" },
+  { label: "BackEnd", value: "backend" },
 ];
 
 export const IDIOMAS_LIST = [
@@ -68,6 +73,7 @@ export const CONTRATOS_LIST = [
 export const REDES_LIST = [
   { label: "LinkedIn", value: "linkedin" },
   { label: "Behance", value: "behance" },
-  { label: "Dribbble", value: "dribbble" },
-  // ...
+  { label: "GitHub", value: "github" },
+  { label: "Instagram", value: "instagram" },
+  { label: "Web", value: "web" },
 ];
