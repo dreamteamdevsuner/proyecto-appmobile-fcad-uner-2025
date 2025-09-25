@@ -31,6 +31,7 @@ export default function DatosCuentaScreen() {
               style={styles.input}
               mode="outlined"
               theme={{ roundness: 30 }}
+              keyboardType="email-address"
             />
             <TextInput
               label="Correo asociado"
@@ -39,7 +40,7 @@ export default function DatosCuentaScreen() {
               style={styles.input}
               mode="outlined"
               theme={{ roundness: 30 }}
-
+              keyboardType="email-address"
             />
             <TextInput
               label="Teléfono"

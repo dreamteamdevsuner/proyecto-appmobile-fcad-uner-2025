@@ -5,7 +5,7 @@ import { List, Divider } from 'react-native-paper';
 
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../types';
+import { RootStackParamList } from './types';
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
