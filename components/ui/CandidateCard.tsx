@@ -109,22 +109,7 @@ function CandidateCard({
               </Chip>
             )}
           ></FlatList>
-          <View
-            style={{
-              alignContent: 'center',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Button
-              style={{ width: 24 }}
-              children
-              buttonColor="transparent"
-              textColor="black"
-              icon="plus-circle-outline"
-              mode="contained"
-            ></Button>
-          </View>
+          {children}
         </Card.Content>
       </View>
     </Card>

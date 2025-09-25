@@ -8,6 +8,7 @@ interface AppCarouselProps<T> extends PropsWithChildren {
   children?: React.ReactNode,
   ref?: React.RefObject<ICarouselInstance | null>,
   width: number;
+  loop?: boolean;
   data: T[];
   enabledScroll: boolean;
   handleScrollEnabled?: (val: boolean) => void
@@ -20,12 +21,13 @@ const AppCarousel = <T,>(props: AppCarouselProps<T>) => {
   const { ref, data, enabledScroll, renderItem, handleScrollEnabled } = props
   const progress = useSharedValue<number>(0);
   const width = props?.width ?? screenWidth / 2
+
   return (
     <Carousel<T>
       ref={ref}
       width={width}
       data={data}
-
+      loop={props.loop ?? false}
       style={props.styles}
       onProgressChange={progress}
       enabled={enabledScroll}

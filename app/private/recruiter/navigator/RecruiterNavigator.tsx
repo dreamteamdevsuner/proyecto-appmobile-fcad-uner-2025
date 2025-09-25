@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import ROUTES from './routes';
 import RecruiterHomeScreen from '../screens/RecruiterHomeScreen';
-import RecruiterSwipeMatchScreen from '../screens/RecruiterSwipeMatchScreen';
+import RecruiterSwipeMatchScreen, { SwipeStack } from '../screens/RecruiterSwipeMatchScreen';
 import FavoritosNavigator from '../screens/favoritos/FavoritosNavigator';
 import MensajeriaNavigator from '../screens/mensajeria/MensajeriaNavigator';
 import CrearOfertaNavigator from '../screens/crear-oferta/CrearOfertaNavigator';
@@ -40,14 +40,15 @@ const RecruiterNavigator = () => {
             />
           ),
 
-          //MOVE THIS TO COMPONENT
+
           header: ({ options }) => <JobsyHeader headerTitle={options.headerTitle?.toString() ?? 'placeholder title'}></JobsyHeader>
 
 
         }}
-        //MOVE THIS TO COMPONENT
+
         name={ROUTES.RECRUITER_SWIPE_MATCH}
-        component={RecruiterSwipeMatchScreen}
+        // component={RecruiterSwipeMatchScreen}
+        component={SwipeStack}
       ></Tab.Screen>
       <Tab.Screen
         name={ROUTES.RECRUITER_FAVORITOS_TAB}

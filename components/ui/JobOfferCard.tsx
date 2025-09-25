@@ -34,6 +34,7 @@ const HrAbout = ({ firstName, lastName, location }: { firstName: string, lastNam
       </View>
 
     </View>
+
   </View >)
 }
 
@@ -102,9 +103,25 @@ function JobOfferCard({
           </View>
 
 
-
+          <View
+            style={{
+              alignContent: 'center',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Button
+              style={{ width: 24 }}
+              children
+              buttonColor="transparent"
+              textColor="black"
+              icon="plus-circle-outline"
+              mode="contained"
+            ></Button>
+          </View>
 
         </Card.Content>
+
       </View>
     </Card>
   );
