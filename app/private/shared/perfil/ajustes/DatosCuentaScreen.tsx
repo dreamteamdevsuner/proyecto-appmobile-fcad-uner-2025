@@ -3,20 +3,25 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import { TextInput, Button, Text, Dialog, Portal } from "react-native-paper";
 import { StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 export default function DatosCuentaScreen() {
   const [dialogVisible, setDialogVisible] = useState(false);
+  const navigation = useNavigation();
+
+  const userDatosCuenta = {
+      email: "juanac@ejemplo.com",
+      correoAsociado: "juanacosta25@mail.com",
+      telefono: "+549258159322"
+    };
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.sectionTitle}>Mantené siempre actualizados tus datos</Text>
 
       <Formik
-        initialValues={{ 
-          email: "", 
-          correoAsociado: "",
-          telefono: "",
-        }}
+        initialValues={userDatosCuenta}
+        enableReinitialize
         onSubmit={(values) => {
           console.log("Datos guardados: ", values);
           setDialogVisible(true);
@@ -65,7 +70,12 @@ export default function DatosCuentaScreen() {
                   <Text>Los datos de tu cuenta han sido actualizados correctamente.</Text>
                 </Dialog.Content>
                 <Dialog.Actions>
-                  <Button onPress={() => setDialogVisible(false)}>OK</Button>
+                  <Button onPress={() => { 
+                    setDialogVisible(false);
+                    navigation.goBack(); 
+                  }}                               
+                >
+                  OK</Button>
                 </Dialog.Actions>
               </Dialog>
             </Portal>
