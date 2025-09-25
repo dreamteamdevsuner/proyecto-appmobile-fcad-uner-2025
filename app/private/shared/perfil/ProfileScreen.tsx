@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Dimensions, Text, ActivityIndicator } from 'react-native';
 import { TabView } from 'react-native-tab-view';
 import { RouteProp } from '@react-navigation/native';
@@ -6,7 +6,7 @@ import { PrivateStackParamList as RecruiterStackParamList } from '../../recruite
 import { PrivateStackParamList as CandidateStackParamList } from '../../candidates/navigator/types';
 import { ProfileScreenType } from '../../../../components/profile/ProfileHeader';
 import { HorizontalChips } from '../../../../components/ui/HorizontalChips';
-import { Role, AuthContext } from '../../../../appContext/authContext';
+import { Role, useAuth } from '../../../../appContext/authContext';
 import { ProfileUser } from '../../../../types/ProfileUser';
 import { fetchUserByIdMock } from '../../../../utils/mockUsers';
 import {
@@ -24,13 +24,13 @@ type Props = {
 };
 
 const ProfileScreenShared: React.FC<Props> = ({ route }) => {
-  const { userState } = useContext(AuthContext);
+  const { state } = useAuth();
   const userId =
     route?.params &&
     typeof route.params === 'object' &&
     'userId' in route.params
       ? (route.params as { userId?: number }).userId
-      : userState.user.id;
+      : state.user!.id;
 
   const [profileUser, setProfileUser] = useState<ProfileUser | undefined>();
   const [loading, setLoading] = useState(false);
@@ -44,6 +44,8 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
         const fetched = await fetchUserByIdMock(userId);
         setProfileUser(fetched);
         setNotFound(!fetched);
+        console.log(fetched);
+        console.log(state);
       } catch (error) {
         console.error(error);
       } finally {
@@ -57,7 +59,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
   const [index, setIndex] = useState(0);
 
   const routes = React.useMemo(() => {
-    const role = (profileUser?.role ?? userState.user.role) as Role;
+    const role = profileUser?.role as Role;
     if (role === Role.candidate) {
       return [
         { key: 'aboutMe', title: 'Quien soy' },
@@ -69,7 +71,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
       { key: 'pausedOffers', title: 'Pausadas' },
       { key: 'closedOffers', title: 'Cerradas' },
     ];
-  }, [profileUser?.role, userState.user.role]);
+  }, [profileUser?.role]);
 
   React.useEffect(() => {
     setIndex(0);
@@ -78,9 +80,9 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
   const renderScene = ({ route }: { route: { key: string } }) => {
     switch (route.key) {
       case 'aboutMe':
-        return AboutMe(profileUser ?? (userState.user as any));
+        return AboutMe(profileUser ?? (state.user! as any));
       case 'whatIDo':
-        return WhatIDo(profileUser ?? (userState.user as any));
+        return WhatIDo(profileUser ?? (state.user! as any));
       case 'activeOffers':
         return OffersTab(
           profileUser?.offers?.filter((item) => item.status === 'Activa'),
@@ -120,7 +122,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={{ paddingVertical: 8 }}>
         <ProfileHeader
-          name={profileUser?.name ?? (userState.user as any).name}
+          name={profileUser?.name ?? (state.user! as any).name}
           ocupation={profileUser?.ocupation ?? ''}
           avatarUrl={profileUser?.avatarUrl ?? ''}
           city={profileUser?.city ?? ''}
@@ -131,7 +133,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
           }
         />
 
-        {((profileUser?.role ?? userState.user.role) as Role) ===
+        {((profileUser?.role ?? state.user!.role) as Role) ===
           Role.candidate && (
           <HorizontalChips skills={profileUser?.skills ?? []} />
         )}

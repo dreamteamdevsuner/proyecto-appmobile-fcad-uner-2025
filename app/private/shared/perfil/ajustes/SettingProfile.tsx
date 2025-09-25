@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { List, Divider, Portal, Dialog, Button } from 'react-native-paper';
-import { AuthContext } from '../../../../../appContext/authContext';
+import { AUTH_ACTIONS, useAuth } from '../../../../../appContext/authContext';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from './types';
 import { useNavigation } from '@react-navigation/native';
@@ -11,7 +11,7 @@ type NavigationProp = StackNavigationProp<RootStackParamList>;
 
 export default function SettingProfileScreen() {
   const [dialogVisible, setDialogVisible] = useState(false);
-  const { logout } = useContext(AuthContext);
+  const { logout } = useAuth();
   const navigation = useNavigation<NavigationProp>();
 
   const showDialog = () => setDialogVisible(true);

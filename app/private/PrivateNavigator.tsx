@@ -1,8 +1,6 @@
-import { View, Text } from 'react-native';
-import React, { useContext } from 'react';
-import HomeScreen from './HomeScreen';
+import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AuthContext, Role } from '../../appContext/authContext';
+import { Role, useAuth } from '../../appContext/authContext';
 import RecruiterNavigator from './recruiter/navigator/RecruiterNavigator';
 import CandidateNavigator from './candidates/navigator/CandidateNavigator';
 import SeguridadScreen from './shared/perfil/ajustes/SeguridadScreen';
@@ -11,7 +9,7 @@ import CambiarContrasenaScreen from './shared/perfil/ajustes/CambiarContasenaScr
 import EditarPerfilScreen from './shared/perfil/ajustes/EditarPerfilScreen';
 const Stack = createNativeStackNavigator();
 const PrivateNavigator = () => {
-  const { userState } = useContext(AuthContext);
+  const { state } = useAuth();
 
   return (
     <Stack.Navigator
@@ -21,7 +19,7 @@ const PrivateNavigator = () => {
       <Stack.Screen
         name="HomeScreen"
         component={
-          userState.user.role === Role.candidate
+          state.user?.role === Role.candidate
             ? CandidateNavigator
             : RecruiterNavigator
         }
