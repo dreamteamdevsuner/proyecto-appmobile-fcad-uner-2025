@@ -1,3 +1,5 @@
+import { Item } from "react-native-paper/lib/typescript/components/Drawer/Drawer";
+
 // genericList.js
 export const PAISES_LIST = [
   { label: "Argentina", value: "argentina" },
@@ -14,7 +16,7 @@ export const HERRAMIENTAS_LIST = [
   { label: "Illustrator", value: "illustrator" },
   { label: 'React native', value: 'react_native' },
   { label: 'Python', value: 'python' },
-  { label: 'Figma', value: 'figma' },
+  { label: 'Whinshical', value: 'whinshical' },
   { label: 'Miro', value: 'miro' },
   { label: 'Expo', value: 'expo' },
 ];
@@ -23,7 +25,8 @@ export const HABILIDADES_LIST = [
   { label: "Comunicación", value: "comunicacion" },
   { label: "Trabajo en equipo", value: "trabajo_en_equipo" },
   { label: "Resolución de problemas", value: "resolucion_de_problemas" },
-  // ...
+  { label: "Prototipado", value: "prototipado"},
+  { label: "UI", value: "ui"}
 ];
 
 export const IDIOMAS_LIST = [

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -9,12 +9,15 @@ import {
   KeyboardAvoidingView,
   Keyboard,
 } from 'react-native';
-import { TextInput, Button, Text } from 'react-native-paper';
+import { TextInput, Button, Text, Dialog, Portal } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Formik } from 'formik';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { useNavigation } from '@react-navigation/native';
 
-// Importamos las listas del archivo de constantes
+import { PerfilValues } from '../../../../../interfaces/EditarPerfil';
+import { userEditarPerfil } from '../../../../../mockup/userEditarPerfil';
+import { perfilValidacionSchema } from './validacion';
 import {
   PAISES_LIST,
   HERRAMIENTAS_LIST,
@@ -26,70 +29,99 @@ import {
   REDES_LIST,
 } from '../../constants/GenericList';
 
-interface PerfilValues {
-  nombre: string;
-  apellido: string;
-  profesion: string;
-  localizacion: string;
-  herramientas: string[];
-  habilidades: string[];
-  aboutMe: string;
-  estudiosFormales: string;
-  otrosEstudios: string;
-  idiomasSeleccionados: string[];
-  modalidadSeleccionada: string;
-  jornadaSeleccionada: string;
-  contratoSeleccionado: string;
-  email: string;
-  redes: { tipo: string; url: string }[];
-}
 
-const initialValues: PerfilValues = {
-  nombre: '',
-  apellido: '',
-  profesion: '',
-  localizacion: '',
-  herramientas: [],
-  habilidades: [],
-  aboutMe: '',
-  estudiosFormales: '',
-  otrosEstudios: '',
-  idiomasSeleccionados: [],
-  modalidadSeleccionada: '',
-  jornadaSeleccionada: '',
-  contratoSeleccionado: '',
-  email: '',
-  redes: [],
+const getUserData = () => {
+  const userData = userEditarPerfil.find(user => user.id === 222);
+  if (!userData) return null;
+  
+  return {
+    nombre: userData.nombre,
+    apellido: userData.apellido,
+    profesion: userData.profesion,
+    localizacion: userData.localizacion.toLowerCase(),
+    herramientas: userData.herramientas,
+    habilidades: userData.habilidades,
+    aboutMe: userData.aboutMe,
+    estudiosFormales: userData.estudiosFormales,
+    otrosEstudios: userData.otrosEstudios,
+    idiomasSeleccionados: userData.idiomas,
+    modalidadSeleccionada: userData.modalidad,
+    jornadaSeleccionada: userData.jornada,
+    contratoSeleccionado: userData.contrato,
+    email: userData.email,
+    redes: userData.redes,
+  };
 };
 
-const EditarPerfilScreen = () => {
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+const SectionTitle = ({ children }: { children: string }) => (
+  <Text style={styles.sectionTitle}>{children}</Text>
+);
 
-  const handleSubmit = (values: PerfilValues) => {
-    console.log('Perfil actualizado:', values);
+const EditarPerfilScreen = () => {
+  const navigation = useNavigation();
+
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState({ title: '', message: '', type: '' });
+  const userData = getUserData();
+
+  const handleSubmit = async(values: PerfilValues, { setSubmitting }: any) => {
+    try {
+      console.log('Datos a guardar: ', values);
+      // console.log('Perfil actualizado:', values);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    setDialogMessage({
+      title: '',
+      message: 'Perfil actualizado correctamente',
+      type: 'success'
+    });
+  } catch (error) {
+    console.log('Error:', error);
+    setDialogMessage({
+      title: '',
+      message: 'Error al actualizar el perfil',
+      type: 'error'
+    });
+    } finally {
+      setDialogVisible(true);
+      setSubmitting(false);
+    }
   };
+
+  if (!userData) {
+    return <Text>Error al cargar los datos del usuario</Text>;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 40}
+        enabled
       >
         <ScrollView
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
-          keyboardDismissMode="on-drag"
+          keyboardDismissMode="interactive"
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ paddingBottom: 100 }}
         >
-          <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+          <Formik initialValues={userData} validationSchema={perfilValidacionSchema} 
+                       onSubmit={handleSubmit} enableReinitialize>
             {({
               handleChange,
               handleBlur,
               handleSubmit,
               values,
               setFieldValue,
+              errors,
+              touched,
+              isSubmitting
             }) => (
               <View>
                 {/* DATOS PERSONALES */}
+                <SectionTitle>Datos Personales</SectionTitle>
                 <Text style={styles.titulo}>Nombre</Text>
                 <TextInput
                   mode="outlined"
@@ -141,7 +173,22 @@ const EditarPerfilScreen = () => {
                   zIndex={6000}
                   listMode="SCROLLVIEW"
                 />
+                
+                {/* SOBRE MÍ */}
+                <Text style={styles.titulo}>Sobre mí</Text>
+                <TextInput
+                  mode="outlined"
+                  style={styles.input}
+                  onChangeText={handleChange('aboutMe')}
+                  onBlur={handleBlur('aboutMe')}
+                  value={values.aboutMe}
+                  placeholder="Cuéntanos sobre ti"
+                  multiline
+                  contentStyle={{ paddingHorizontal: 20, paddingVertical: 15 }}
+                  theme={{ roundness: 30 }}
+                />
 
+                <SectionTitle>Perfil Profesional</SectionTitle>
                 {/* HERRAMIENTAS */}
                 <Text style={styles.titulo}>Herramientas</Text>
                 <DropDownPicker
@@ -159,7 +206,7 @@ const EditarPerfilScreen = () => {
                   placeholder="Selecciona herramientas"
                   style={styles.dropdown}
                   multiple={true}
-                  min={0}
+                  min={1}
                   max={HERRAMIENTAS_LIST.length}
                   mode="BADGE"
                   listMode="SCROLLVIEW"
@@ -183,27 +230,14 @@ const EditarPerfilScreen = () => {
                   placeholder="Selecciona habilidades"
                   style={styles.dropdown}
                   multiple={true}
-                  min={0}
+                  min={1}
                   max={HABILIDADES_LIST.length}
                   mode="BADGE"
                   listMode="SCROLLVIEW"
                   zIndex={4000}
                 />
 
-                {/* SOBRE MÍ */}
-                <Text style={styles.titulo}>Sobre mí</Text>
-                <TextInput
-                  mode="outlined"
-                  style={styles.input}
-                  onChangeText={handleChange('aboutMe')}
-                  onBlur={handleBlur('aboutMe')}
-                  value={values.aboutMe}
-                  placeholder="Cuéntanos sobre ti"
-                  multiline
-                  contentStyle={{ paddingHorizontal: 20, paddingVertical: 15 }}
-                  theme={{ roundness: 30 }}
-                />
-
+                <SectionTitle>Formación</SectionTitle>
                 {/* ESTUDIOS */}
                 <Text style={styles.titulo}>Estudios formales</Text>
                 <TextInput
@@ -249,14 +283,15 @@ const EditarPerfilScreen = () => {
                   placeholder="Selecciona tu nivel de idiomas"
                   style={styles.dropdown}
                   multiple={true}
-                  min={0}
+                  min={1}
                   max={IDIOMAS_LIST.length}
                   mode="BADGE"
                   listMode="SCROLLVIEW"
                   zIndex={3000}
                 />
 
-                {/* PREFERENCIAS (AHORA SEPARADAS) */}
+                <SectionTitle>Mis preferencias</SectionTitle>
+                {/* PREFERENCIAS SEPARADAS */}
                 <Text style={styles.titulo}>Modalidad</Text>
                 <DropDownPicker
                   open={openDropdown === 'modalidad'}
@@ -323,6 +358,7 @@ const EditarPerfilScreen = () => {
                   listMode="SCROLLVIEW"
                 />
 
+                <SectionTitle>Contactos</SectionTitle>       
                 {/* CONTACTO */}
                 <Text style={styles.titulo}>Correo electrónico</Text>
                 <TextInput
@@ -330,14 +366,17 @@ const EditarPerfilScreen = () => {
                   onChangeText={handleChange('email')}
                   onBlur={handleBlur('email')}
                   value={values.email}
-                  placeholder="Escribe tu correo"
-                  style={styles.input}
+                  placeholder="Escribe tu correo aquí"
+                  style={[styles.input, touched.email && errors.email && styles.inputError]}
                   theme={{ roundness: 30 }}
                   keyboardType="email-address"
                 />
+                {touched.email && errors.email && (
+                  <Text style={styles.errorText}>{errors.email}</Text>
+                )}
 
                 {/* REDES */}
-                <RNText style={styles.titulo}>Redes</RNText>
+                <Text style={styles.titulo}>Redes</Text>
                 <DropDownPicker
                   open={openDropdown === 'redes'}
                   setOpen={() =>
@@ -350,15 +389,17 @@ const EditarPerfilScreen = () => {
                   style={styles.dropdown}
                   listMode="SCROLLVIEW"
                   zIndex={1700}
-                  onChangeValue={(value) => {
-                    const nuevasRedes = [...values.redes];
-                    if (value && !nuevasRedes.find((r) => r.tipo === value)) {
+                  onSelectItem={(item) => {
+                    if (item) {
+                      const nuevasRedes = [...values.redes];
+                      if(!nuevasRedes.find((r) => r.tipo === item.value)) {
                       setFieldValue('redes', [
                         ...nuevasRedes,
-                        { tipo: value, url: '' },
+                        { tipo: item.value, url: '' },
                       ]);
                     }
-                  }}
+                  }
+                }}
                 />
 
                 {values.redes.length > 0 && (
@@ -369,44 +410,70 @@ const EditarPerfilScreen = () => {
                           mode="outlined"
                           label={red.tipo}
                           value={red.url}
-                          placeholder={`Pegá acá la URL de tu ${red.tipo}`}
+                          placeholder={`Añade la URL de ${red.tipo} aquí...`}
                           onChangeText={(text) => {
-                            const nuevasRedes = values.redes.map((r) =>
-                              r.tipo === red.tipo ? { ...r, url: text } : r,
-                            );
+                            const nuevasRedes = [...values.redes];
+                            nuevasRedes[idx] = {...red, url: text};
                             setFieldValue('redes', nuevasRedes);
                           }}
-                          style={[styles.input, { flex: 1, marginBottom: 0 }]}
                           theme={{ roundness: 30 }}
                         />
-                        <Button
-                          compact
-                          mode="text"
+                        <TouchableOpacity
                           onPress={() => {
-                            const nuevasRedes = values.redes.filter(
-                              (r) => r.tipo !== red.tipo,
-                            );
+                            const nuevasRedes = values.redes.filter((_, i) => i !== idx);
                             setFieldValue('redes', nuevasRedes);
-                          }}
+                          }}                        
+                          style={styles.removeButton}
                         >
-                          Quitar
-                        </Button>
+                          <Text style={styles.removeButtonText}>Quitar</Text>
+                        </TouchableOpacity>
                       </View>
                     ))}
                   </View>
                 )}
                 <Button
-                  onPress={handleSubmit as any}
+                  onPressIn={() => handleSubmit()}
                   mode="contained"
                   style={styles.boton}
+                  disabled={isSubmitting}
+                  loading={isSubmitting}
                 >
-                  Guardar cambios
+                  {isSubmitting ? 'Guardando...' : 'Guardar cambios'}
                 </Button>
               </View>
             )}
           </Formik>
         </ScrollView>
       </KeyboardAvoidingView>
+      <Portal>
+        <Dialog 
+          visible={dialogVisible}
+          onDismiss={() => setDialogVisible(false)}
+          style={styles.dialog}
+        >
+          <Dialog.Icon 
+            icon={dialogMessage.type === 'success' ? 'check-circle' : 'alert-circle'} 
+            size={40} 
+            color={dialogMessage.type === 'success' ? '#3ea83e' : '#B22222'}
+          />
+          <Dialog.Title style={styles.dialogTitle}>
+            {dialogMessage.message}
+          </Dialog.Title>
+          <Dialog.Actions>
+            <Button 
+              mode="text"
+              onPress={() => { setDialogVisible(false);
+                if (dialogMessage.type === 'success') {
+                  navigation.goBack();
+                }
+              }}
+              textColor={dialogMessage.type === 'success' ? '#228B22' : '#B22222'}
+            >
+              Aceptar
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </SafeAreaView>
   );
 };
@@ -424,16 +491,28 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: 'white',
   },
+  inputError: {
+    borderColor: '#B22222',
+    borderWidth: 0.5,
+  },
+  errorText: {
+    color: '#B22222',
+    fontSize: 12,
+    marginLeft: 15,
+    marginTop: -5,
+    marginBottom: 10,
+  },
   dropdown: {
     borderRadius: 30,
     marginBottom: 10,
   },
   boton: {
     marginTop: 20,
+    color: 'white',
     backgroundColor: '#000',
   },
   titulo: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     marginBottom: 5,
     marginTop: 10,
@@ -444,9 +523,43 @@ const styles = StyleSheet.create({
   redItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     marginBottom: 10,
   },
+  sectionTitle: {
+    fontWeight: "bold",
+    fontSize: 20,
+    marginTop: 15,  
+    marginBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    paddingBottom: 5,
+  },
+   removeButton: {
+    borderRadius: 20,
+    backgroundColor: '#b58df1',
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    marginLeft: 10,
+    padding: 8,
+  },
+  removeButtonText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  dialog: {
+  backgroundColor: 'white',
+  borderRadius: 30,
+  alignItems: 'center',
+  padding: 20,
+},
+dialogTitle: {
+  textAlign: 'center',
+  fontSize: 16,
+},
 });
+
+
 
 export default EditarPerfilScreen;
