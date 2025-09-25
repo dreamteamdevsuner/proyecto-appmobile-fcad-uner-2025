@@ -1,36 +1,91 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../../shared/perfil/ajustes/types';
+import { OfertaItem } from '../../../../../types/OfertaItem';
+import { OfertasList } from '../../../../../components/listas';
+import ROUTES from '../../navigator/routes';
+import { useNavigation } from '@react-navigation/native';
 
-type NavigationProp = StackNavigationProp<RootStackParamList>;
+const data: OfertaItem[] = [
+  {
+    id: 1,
+    title: 'Diseñador UX/UI - Banco Santander',
+    subtitle: '¡Felicitaciones tenés un nuevo match!',
+  },
+  {
+    id: 2,
+    title: 'Diseñador UX/UI Senior - Mercado Libre',
+    subtitle: '¡Felicitaciones tenés un nuevo match!',
+  },
+  {
+    id: 3,
+    title: 'Diseñador UX/UI - Proyecto Freelance',
+    subtitle: '¡Felicitaciones tenés un nuevo match!',
+  },
+  {
+    id: 4,
+    title: 'UI Designer - Globant Gut',
+    subtitle: '¡Felicitaciones tenés un nuevo match!',
+  },
+];
 
-export default function NotificationsProfileScreen() {
+const dato: OfertaItem[] = [
+  {
+    id: 1,
+    title: 'Diseñador UX/UI - Banco Santander',
+    subtitle: 'Renata Scheneider te ha enviado un mensaje.',
+  },
+  {
+    id: 2,
+    title: 'Diseñador UX/UI Senior - Mercado Libre',
+    subtitle: 'Mayra Roa te ha enviado un mensaje.',
+  },
+];
+
+const NotificacionesProfile = () => {
+  const navigation = useNavigation();
+
+  const handleSelectOferta = (oferta: OfertaItem) => {
+    (navigation.navigate(ROUTES.CANDIDATE_FAVORITOS_MATCHS),
+      oferta.id,
+      oferta.title);
+  };
+
   return (
-    <SafeAreaView style={styles.safe}>
-      <View style={styles.card}>
-        <Text>Notificaciones</Text>
-        <Text>CANDIDATES</Text>
+    <View style={styles.container}>
+      <View style={styles.section}>
+        <Text style={styles.title}>Matchs</Text>
+        <OfertasList ofertas={data} onSelectOferta={handleSelectOferta} />
       </View>
-    </SafeAreaView>
+      <View style={styles.section}>
+        <Text style={styles.title}>Mensajes</Text>
+        <OfertasList ofertas={dato} onSelectOferta={handleSelectOferta} />
+      </View>
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  safe: {
+  container: {
+    padding: 10,
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
-  card: {
-    margin: 16,
-    padding: 16,
-    backgroundColor: 'white',
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+  section: {
+    backgroundColor: '#cdc7ceff',
+    borderRadius: 15,
+    padding: 10,
+    marginBottom: 10,
+  },
+  title: {
+    fontWeight: 'regular',
+    fontSize: 22,
+    marginBottom: 10,
+  },
+  noUsers: {
+    fontSize: 14,
+    marginLeft: 15,
+    fontStyle: 'italic',
+    color: 'gray',
   },
 });
+
+export default NotificacionesProfile;
