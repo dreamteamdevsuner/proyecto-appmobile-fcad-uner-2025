@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from './perfil/ajustes/types';
+import { RootStackParamList } from '../../../shared/perfil/ajustes/types';
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
@@ -11,6 +11,7 @@ export default function NotificationsProfileScreen() {
     <SafeAreaView style={styles.safe}>
       <View style={styles.card}>
         <Text>Notificaciones</Text>
+        <Text>RECRUITER</Text>
       </View>
     </SafeAreaView>
   );
