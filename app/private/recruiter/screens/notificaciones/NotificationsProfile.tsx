@@ -1,36 +1,92 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../../shared/perfil/ajustes/types';
+import ROUTES from '../../navigator/routes';
+import { useNavigation } from '@react-navigation/native';
+import { UserItem } from '../../../../../types/UserItem';
+import { UserList } from '../../../../../components/listas';
 
-type NavigationProp = StackNavigationProp<RootStackParamList>;
+const interesados: UserItem[] = [
+  {
+    id: 1,
+    name: 'Juana Costa',
+    subtitle: 'Le interesa tu oferta!',
+    avatarUrl: '',
+  },
+  {
+    id: 2,
+    name: 'Martín Pérez',
+    subtitle: 'Le interesa tu oferta!',
+    avatarUrl: '',
+  },
+  {
+    id: 3,
+    name: 'Sofía Reyes',
+    subtitle: 'Le interesa tu oferta!',
+    avatarUrl: '',
+  },
+];
 
-export default function NotificationsProfileScreen() {
+const respondieron: UserItem[] = [
+  {
+    id: 4,
+    name: 'Juana Costa',
+    subtitle: 'Ha respondido a tu mensaje.',
+    avatarUrl: '',
+  },
+  {
+    id: 5,
+    name: 'Carolina Gómez',
+    subtitle: 'Ha respondido a tu mensaje.',
+    avatarUrl: '',
+  },
+];
+
+const NotificacionesProfile = () => {
+  const navigation = useNavigation();
+
+  const handleSelectUser = (user: UserItem) => {
+    navigation.navigate(ROUTES.RECRUITER_FAVORITOS_OFERTA, {
+      userId: user.id,
+      userName: user.name,
+    });
+  };
+
   return (
-    <SafeAreaView style={styles.safe}>
-      <View style={styles.card}>
-        <Text>Notificaciones</Text>
-        <Text>RECRUITER</Text>
+    <View style={styles.container}>
+      <View style={styles.section}>
+        <Text style={styles.title}>Mensajes</Text>
+        <UserList users={respondieron} onUserPress={handleSelectUser} />
       </View>
-    </SafeAreaView>
+      <View style={styles.section}>
+        <Text style={styles.title}>Profesionales interesados</Text>
+        <UserList users={interesados} onUserPress={handleSelectUser} />
+      </View>
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  safe: {
+  container: {
+    padding: 10,
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
-  card: {
-    margin: 16,
-    padding: 16,
-    backgroundColor: 'white',
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+  section: {
+    backgroundColor: '#cdc7ceff',
+    borderRadius: 15,
+    padding: 10,
+    marginBottom: 10,
+  },
+  title: {
+    fontWeight: 'regular',
+    fontSize: 22,
+    marginBottom: 10,
+  },
+  noUsers: {
+    fontSize: 14,
+    marginLeft: 15,
+    fontStyle: 'italic',
+    color: 'gray',
   },
 });
+
+export default NotificacionesProfile;
