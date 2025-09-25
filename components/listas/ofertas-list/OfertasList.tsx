@@ -21,7 +21,7 @@ const OfertasList: React.FC<Props> = ({ ofertas, onSelectOferta }) => {
         onPress={() => onSelectOferta(item)}
         onPressIn={() => setPressedId(item.id)}
         onPressOut={() => setPressedId(null)}
-        right={(props) => <List.Icon {...props} icon='chevron-right' />}
+        right={(props) => <List.Icon {...props} icon="chevron-right" />}
       />
     );
   };
@@ -35,9 +35,9 @@ const OfertasList: React.FC<Props> = ({ ofertas, onSelectOferta }) => {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <List.Item
-            title='No hay elementos'
+            title="No hay elementos"
             left={(props) => (
-              <List.Icon {...props} icon='alert-circle-outline' />
+              <List.Icon {...props} icon="alert-circle-outline" />
             )}
           />
         }

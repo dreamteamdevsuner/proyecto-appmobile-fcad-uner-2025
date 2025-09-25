@@ -1,11 +1,12 @@
 import React from 'react';
-import { TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { TouchableOpacity, KeyboardAvoidingView, View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { PrivateStackParamList } from '../../navigator/types';
 import ROUTES from '../../navigator/routes';
 import ProfileScreen from '.';
-import SettingProfile from '../../../shared/SettingProfile';
+import SettingProfile from '../../../shared/perfil/ajustes/SettingProfile';
 import { Ionicons } from '@expo/vector-icons';
+import NotificationsProfile from '../notificaciones/NotificationsProfile';
 
 const ProfileStack = createNativeStackNavigator<PrivateStackParamList>();
 
@@ -16,15 +17,34 @@ const ProfileNavigator = () => (
         name={ROUTES.RECRUITER_PROFILE}
         component={ProfileScreen}
         options={({ navigation }) => ({
-          title: 'Perfil',
+          title: 'Mi perfil',
           headerShown: true,
           headerRight: () => (
-            <TouchableOpacity
-              style={{ marginRight: 12 }}
-              onPress={() => navigation.navigate(ROUTES.RECRUITER_SETTINGS)}
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginRight: 12,
+              }}
             >
-              <Ionicons name="settings-outline" size={24} color="black" />
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={{ marginRight: 16 }}
+                onPress={() => {
+                  navigation.navigate(ROUTES.RECRUITER_NOTIFICATIONS);
+                }}
+              >
+                <Ionicons
+                  name="notifications-outline"
+                  size={24}
+                  color="black"
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate(ROUTES.RECRUITER_SETTINGS)}
+              >
+                <Ionicons name="settings-outline" size={24} color="black" />
+              </TouchableOpacity>
+            </View>
           ),
         })}
       />
@@ -32,6 +52,11 @@ const ProfileNavigator = () => (
         name={ROUTES.RECRUITER_SETTINGS}
         component={SettingProfile}
         options={{ title: 'Ajustes' }}
+      />
+      <ProfileStack.Screen
+        name={ROUTES.RECRUITER_NOTIFICATIONS}
+        component={NotificationsProfile}
+        options={{ title: 'Notificaciones' }}
       />
     </ProfileStack.Navigator>
   </KeyboardAvoidingView>

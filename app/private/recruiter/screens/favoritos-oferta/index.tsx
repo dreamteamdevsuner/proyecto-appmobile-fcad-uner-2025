@@ -76,8 +76,11 @@ type Props = {
 
 const FavoritosOferta: React.FC<Props> = ({ navigation }) => {
   const handleSelectUser = (user: UserItem) => {
+    console.log(user);
+
     navigation.navigate(CAND_ROUTES.CANDIDATE_PROFILE, {
-      userId: String(user.id),
+      userId: user.id,
+      title: user.name,
     });
   };
 

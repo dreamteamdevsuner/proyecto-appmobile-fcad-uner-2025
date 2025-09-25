@@ -6,13 +6,13 @@ import ROUTES from '../../../candidates/navigator/routes';
 import { PrivateStackParamList } from '../../../candidates/navigator/types';
 import { OfertaItem } from '../../../../../types/OfertaItem';
 import { OfertasList } from '../../../../../components/listas';
+import OfertasList2 from '../../../../../components/listas/ofertas-list/OfertasList2';
 
 type Props = NativeStackScreenProps<
   PrivateStackParamList,
   ROUTES.CANDIDATE_FAVORITOS_MATCHS
 >;
 
-// Datos de ejemplo para todos los matchs
 const allMatchs: OfertaItem[] = [
   {
     id: 1,
@@ -66,10 +66,24 @@ const FavoritosMatchsScreen: React.FC<Props> = ({ route, navigation }) => {
     });
   };
 
+  const handleMessage = (oferta: OfertaItem) => {
+    navigation.navigate(ROUTES.CANDIDATE_CONVERSACION, {
+      title: oferta.title,
+      myName: 'Juana',
+      otherAvatarUrl: undefined,
+      myAvatarUrl: undefined,
+    });
+  };
+
   return (
     <View style={styles.container}>
       <View style={[styles.listContainer, styles.section]}>
-        <OfertasList ofertas={allMatchs} onSelectOferta={handleSelectMatch} />
+        <OfertasList2
+          ofertas={allMatchs}
+          onSelectOferta={handleSelectMatch}
+          onMessageOferta={handleMessage}
+          onDeleteOferta={undefined}
+        />
       </View>
     </View>
   );

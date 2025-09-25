@@ -61,11 +61,6 @@ const RecruiterNavigator = () => {
         component={RecruiterSwipeMatchScreen}
       ></Tab.Screen>
       <Tab.Screen
-        name={ROUTES.RECRUITER_HOME}
-        component={RecruiterHomeScreen}
-      ></Tab.Screen>
-
-      <Tab.Screen
         name={ROUTES.RECRUITER_FAVORITOS_TAB}
         component={FavoritosNavigator}
         options={{
@@ -90,6 +85,7 @@ const RecruiterNavigator = () => {
               color={color}
             />
           ),
+          title: 'Perfil',
         }}
       ></Tab.Screen>
       <Tab.Screen

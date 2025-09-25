@@ -37,6 +37,7 @@ const CandidateNavigator = () => {
         name={ROUTES.CANDIDATE_FAVORITOS_TAB}
         component={FavoritosNavigator}
         options={{
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="heart-outline"
@@ -47,7 +48,7 @@ const CandidateNavigator = () => {
         }}
       />
       <Tab.Screen
-        name={ROUTES.CANDIDATE_PROFILE}
+        name={ROUTES.CANDIDATE_PROFILE_TAB}
         component={ProfileNavigator}
         options={{
           headerShown: false,
@@ -59,6 +60,7 @@ const CandidateNavigator = () => {
               color={color}
             />
           ),
+          title: 'Perfil',
         }}
       ></Tab.Screen>
       <Tab.Screen

@@ -1,18 +1,19 @@
 import { View, StyleSheet, StyleProp, ViewStyle, FlatList } from 'react-native';
 import React, { PropsWithChildren } from 'react';
-import { Button, Card, Chip, Text } from 'react-native-paper';
+import { Button, Card, Chip, Icon, Text } from 'react-native-paper';
 import { Candidate } from '../../interfaces/Candidate';
 import { Pressable } from 'react-native-gesture-handler';
-interface CandidateCardProps extends PropsWithChildren {
-  candidate: Candidate;
+export interface CandidateCardProps extends PropsWithChildren {
+  item: Candidate;
   styles?: StyleProp<ViewStyle>;
-  handleScrollEnabled: (val: boolean) => void;
+  handleScrollEnabled?: (val: boolean) => void | undefined;
 }
-const CandidateCard = ({
-  candidate,
+function CandidateCard({
+  item,
   children,
   handleScrollEnabled,
-}: CandidateCardProps) => {
+}: CandidateCardProps) {
+  const imageLink = require('../../assets/images/avatarCandidatePlaceholder.jpg');
   return (
     <Card style={styles.card}>
       <View
@@ -21,7 +22,34 @@ const CandidateCard = ({
           maxHeight: 340,
         }}
       >
-        {children}
+        <View
+          style={{
+            paddingVertical: 25,
+            paddingHorizontal: 35,
+            flexDirection: 'row',
+            gap: 20,
+            maxHeight: '70%',
+          }}
+        >
+          <View style={{ flexBasis: '80%' }}>
+            <Card.Cover
+              style={{ objectFit: 'fill', marginLeft: 40 }}
+              source={imageLink}
+              height={50}
+            ></Card.Cover>
+          </View>
+          <View>
+            <View style={{ flexDirection: 'row' }}>
+              <Icon
+                source={'map-marker-outline'}
+                size={20}
+                color="black"
+              ></Icon>
+              <Text> {item.country.slice(0, 2).toUpperCase() + '.'}</Text>
+            </View>
+            <Text style={{ opacity: 0.3 }}> REMOTO</Text>
+          </View>
+        </View>
       </View>
       <View style={{ marginTop: -20 }}>
         <Card.Title
@@ -33,7 +61,7 @@ const CandidateCard = ({
                 textAlign: 'center',
               }}
             >
-              {candidate.firstName + ' ' + candidate.lastName}{' '}
+              {item.firstName + ' ' + item.lastName}{' '}
             </Text>
           }
         ></Card.Title>
@@ -46,20 +74,24 @@ const CandidateCard = ({
             }}
             variant="titleMedium"
           >
-            {candidate.profession}
+            {item.profession}
           </Text>
           <FlatList
-            data={candidate.skills}
+            data={item.skills}
             onTouchStart={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              handleScrollEnabled(false);
+              handleScrollEnabled && handleScrollEnabled(false);
               return;
             }}
-            onTouchEnd={(e) => handleScrollEnabled(false)}
-            onScrollBeginDrag={(e) => handleScrollEnabled(false)}
+            onTouchEnd={(e) =>
+              handleScrollEnabled && handleScrollEnabled(false)
+            }
+            onScrollBeginDrag={(e) =>
+              handleScrollEnabled && handleScrollEnabled(false)
+            }
             onScrollEndDrag={() => {
-              handleScrollEnabled(true);
+              handleScrollEnabled && handleScrollEnabled(true);
             }}
             style={styles.chipContainer}
             horizontal={true}
@@ -69,6 +101,9 @@ const CandidateCard = ({
                 textStyle={{ color: 'white' }}
                 style={styles.chip}
                 key={index}
+                onPress={() =>
+                  handleScrollEnabled && handleScrollEnabled(false)
+                }
               >
                 {item}
               </Chip>
@@ -82,7 +117,7 @@ const CandidateCard = ({
             }}
           >
             <Button
-              style={{ width: 20 }}
+              style={{ width: 24 }}
               children
               buttonColor="transparent"
               textColor="black"
@@ -94,7 +129,7 @@ const CandidateCard = ({
       </View>
     </Card>
   );
-};
+}
 const styles = StyleSheet.create({
   card: {
     width: '90%',

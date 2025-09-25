@@ -1,174 +1,45 @@
 import {
-  View,
-  Text,
-  StyleSheet,
+
   Dimensions,
-  Image,
-  TouchableOpacity,
-  Pressable,
+
 } from 'react-native';
-import React, { useState } from 'react';
-import { useSharedValue } from 'react-native-reanimated';
-import Carousel, {
-  ICarouselInstance,
-  Pagination,
-} from 'react-native-reanimated-carousel';
+import React from 'react';
+
+
 import { candidates2 } from '../../../../mockup/candidates';
 import CandidateCard from '../../../../components/ui/CandidateCard';
-import { Button, Card, Icon, TouchableRipple } from 'react-native-paper';
-import { ElevationLevels } from 'react-native-paper/lib/typescript/types';
+
+import SwipeMatch from '../../shared/swipe_match/SwipeMatch';
+import { Candidate } from '../../../../interfaces/Candidate';
 const data = candidates2;
 const width = Dimensions.get('window').width;
-const height = Dimensions.get('window').height;
+
 const RecruiterSwipeMatchScreen = () => {
-  const ref = React.useRef<ICarouselInstance>(null);
-  const progress = useSharedValue<number>(0);
-  const imageLink = require('../../../../assets/images/avatarCandidatePlaceholder.jpg');
-  const [isBeingPressed, setIsBeingPress] = useState(false);
-  const [enabledScroll, setEnabledScroll] = useState(true);
-  const handleScrollEnabled = (val: boolean) => {
-    setEnabledScroll(val);
-  };
-
-  const handleLike = (like: boolean) => {
-    console.log('like res', like);
-    ref.current?.next();
-  };
   return (
-    <View style={styles.container}>
-      <View style={styles.carouselContainer}>
-        <Carousel
-          ref={ref}
-          width={width}
-          height={height / 2}
-          data={data}
-          onProgressChange={progress}
-          enabled={enabledScroll}
-          renderItem={({ item, index }) => {
-            return (
-              <CandidateCard
-                {...{ handleScrollEnabled }}
-                key={index}
-                candidate={item}
-              >
-                <View
-                  style={{
-                    paddingVertical: 25,
-                    paddingHorizontal: 35,
-                    flexDirection: 'row',
-                    gap: 20,
-                    maxHeight: '70%',
-                  }}
-                >
-                  <View style={{ flexBasis: '80%' }}>
-                    <Card.Cover
-                      style={{ objectFit: 'fill', marginLeft: 40 }}
-                      source={imageLink}
-                      height={50}
-                    ></Card.Cover>
-                  </View>
-                  <View>
-                    <View style={{ flexDirection: 'row' }}>
-                      <Icon
-                        source={'map-marker-outline'}
-                        size={20}
-                        color="black"
-                      ></Icon>
-                      <Text>
-                        {' '}
-                        {item.country.slice(0, 2).toUpperCase() + '.'}
-                      </Text>
-                    </View>
-                    <Text style={{ opacity: 0.3 }}> REMOTO</Text>
-                  </View>
-                </View>
-              </CandidateCard>
-            );
-          }}
-        />
-      </View>
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity activeOpacity={0.6}>
-          <View>
-            <Button
-              icon={() => (
-                <View style={{ marginLeft: 15 }}>
-                  <Icon size={20.75} color="black" source={'close'}></Icon>
-                </View>
-              )}
-              mode="contained"
-              onPress={() => handleLike(false)}
-              style={{
-                borderRadius: 100,
-                height: 80,
-                width: 80,
-                justifyContent: 'center',
-                alignItems: 'center',
-                display: 'flex',
-                elevation: 9,
-              }}
-              buttonColor="white"
-              textColor="black"
-              children
-            ></Button>
-          </View>
-        </TouchableOpacity>
+    <SwipeMatch<Candidate>
+      data={data}
+      renderItem={(
+        { item,
+          handleScrollEnabled
+        }
 
-        <TouchableRipple
-          android_ripple={{ color: 'blue' }}
-          onPressIn={() => setIsBeingPress(true)}
-          onPressOut={() => setIsBeingPress(false)}
-        >
-          <Button
-            icon={() => (
-              <View style={{ marginLeft: 15 }}>
-                <Icon
-                  size={65.69}
-                  color="black"
-                  source={'heart-outline'}
-                ></Icon>
-              </View>
-            )}
-            mode="contained"
-            style={{
-              borderRadius: 100,
-              height: 100,
-              width: 100,
-              justifyContent: 'center',
-              alignItems: 'center',
-              display: 'flex',
-              elevation: 9,
-            }}
-            onPress={() => handleLike(true)}
-            buttonColor="white"
-            textColor="black"
-            children
-          ></Button>
-        </TouchableRipple>
-      </View>
-    </View>
+
+      ) => {
+        return (
+          <CandidateCard
+            item={item}
+            {...{ handleScrollEnabled }}
+          ></CandidateCard>
+        );
+      }}
+    ></SwipeMatch>
   );
-};
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'rgba(50,50,50,.4)',
-    flex: 1,
-    flexDirection: 'column',
-  },
-  buttonsContainer: {
-    flexDirection: 'row',
-    flex: 1,
 
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 20,
-  },
-  carouselContainer: { paddingBottom: 10 },
-  carousel: {},
 
-  matchButton: {
-    fontSize: 30,
-  },
-});
+
+
+}
+
+
 export default RecruiterSwipeMatchScreen;
