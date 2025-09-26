@@ -10,7 +10,6 @@ import {
   Keyboard,
 } from 'react-native';
 import { TextInput, Button, Text, Dialog, Portal } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Formik } from 'formik';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useNavigation } from '@react-navigation/native';
@@ -93,7 +92,7 @@ const EditarPerfilScreen = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -119,7 +118,7 @@ const EditarPerfilScreen = () => {
               touched,
               isSubmitting
             }) => (
-              <View>
+              <View style={styles.formContainer}>
                 {/* DATOS PERSONALES */}
                 <SectionTitle>Datos Personales</SectionTitle>
                 <Text style={styles.titulo}>Nombre</Text>
@@ -184,7 +183,8 @@ const EditarPerfilScreen = () => {
                   value={values.aboutMe}
                   placeholder="Cuéntanos sobre ti"
                   multiline
-                  contentStyle={{ paddingHorizontal: 20, paddingVertical: 15 }}
+                  textAlignVertical='top'
+                  contentStyle={{ paddingHorizontal: 20, paddingVertical: 15, paddingBottom: 15 }}
                   theme={{ roundness: 30 }}
                 />
 
@@ -474,22 +474,36 @@ const EditarPerfilScreen = () => {
           </Dialog.Actions>
         </Dialog>
       </Portal>
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 30,
+    padding: 20,
     backgroundColor: '#fff',
   },
+  formContainer: {
+    margin: 10,
+    padding: 10,
+    borderRadius: 20,
+    paddingVertical: 10,
+    marginBottom: 20,
+    backgroundColor: '#fff',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    borderWidth: 1,
+    borderColor: '#4b4a4aff',
+},
   input: {
-    borderWidth: 0.5,
+    borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 30,
     marginBottom: 10,
-    backgroundColor: 'white',
   },
   inputError: {
     borderColor: '#B22222',
@@ -504,15 +518,14 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     borderRadius: 30,
-    marginBottom: 10,
   },
   boton: {
     marginTop: 20,
-    color: 'white',
     backgroundColor: '#000',
+    marginBottom: 20,
   },
   titulo: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
     marginTop: 10,
@@ -523,7 +536,7 @@ const styles = StyleSheet.create({
   redItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    // justifyContent: 'space-between',
+    justifyContent: 'space-between',
     marginBottom: 10,
   },
   sectionTitle: {
@@ -538,8 +551,8 @@ const styles = StyleSheet.create({
    removeButton: {
     borderRadius: 20,
     backgroundColor: '#b58df1',
-    // justifyContent: 'center',
-    // alignItems: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginLeft: 10,
     padding: 8,
   },
@@ -553,11 +566,11 @@ const styles = StyleSheet.create({
   borderRadius: 30,
   alignItems: 'center',
   padding: 20,
-},
-dialogTitle: {
-  textAlign: 'center',
-  fontSize: 16,
-},
+  },
+  dialogTitle: {
+    textAlign: 'center',
+    fontSize: 16,
+  },
 });
 
 

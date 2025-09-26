@@ -16,7 +16,7 @@ export const userEditarPerfil = [
     contrato: "permanente",
     email: "juanac@ejemplo.com",
     redes: [
-      { tipo: "LinkedIn", url: "https://linkedin.com/in/juanacosta" },
+      { tipo: "LinkedIn", url: "https://linkedin.com/j.costa" },
       { tipo: "Behance", url: "https://behance.net/juana" }
     ]
   }
