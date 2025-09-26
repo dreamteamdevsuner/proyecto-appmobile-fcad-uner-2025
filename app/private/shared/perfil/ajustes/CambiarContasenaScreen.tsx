@@ -3,6 +3,7 @@ import { View, StyleSheet, Text } from "react-native";
 import { TextInput, Button, Dialog, Portal } from "react-native-paper";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import { useNavigation } from "@react-navigation/native";
 
 const validationSchema = Yup.object().shape({
   actual: Yup.string().required("La contraseña actual es obligatoria"),
@@ -14,6 +15,7 @@ const validationSchema = Yup.object().shape({
 
 export default function CambiarContrasenaScreen() {
   const [dialogVisible, setDialogVisible] = useState(false);
+  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
@@ -76,7 +78,10 @@ export default function CambiarContrasenaScreen() {
                   <Text>La contraseña de tu cuenta ha sido actualizados correctamente.</Text>
                 </Dialog.Content>
                 <Dialog.Actions>
-                  <Button onPress={() => setDialogVisible(false)}>OK</Button>
+                  <Button onPress={() => { setDialogVisible(false);
+                    navigation.goBack();
+                  }}
+                  >OK</Button>
                 </Dialog.Actions>
               </Dialog>
             </Portal>

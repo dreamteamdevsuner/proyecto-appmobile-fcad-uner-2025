@@ -1051,7 +1051,7 @@
     postcss "~8.4.32"
     resolve-from "^5.0.0"
 
-"@expo/metro-runtime@ ~6.1.2", "@expo/metro-runtime@*":
+"@expo/metro-runtime@*", "@expo/metro-runtime@~6.1.2":
   version "6.1.2"
   resolved "https://registry.npmjs.org/@expo/metro-runtime/-/metro-runtime-6.1.2.tgz"
   integrity sha512-nvM+Qv45QH7pmYvP8JB1G8JpScrWND3KrMA6ZKe62cwwNiX/BjHU28Ear0v/4bQWXlOY0mv6B8CDIm8JxXde9g==
