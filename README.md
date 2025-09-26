@@ -92,7 +92,7 @@ Explorar las funcionalidades principales.
   </tr>
 </table>
 
-### Favoritos
+### Favoritos - reclutadores
 
 <table>
   <tr>
@@ -106,6 +106,26 @@ Explorar las funcionalidades principales.
       La sección Favoritos posee una sección destacada con los 10 últimos match con profesionales, desde allí se puede acceder al perfil de los mismos.
       También tiene una lista de las ofertas que tienen Match odenados por oferta, al entrar a una oferta se accede al listado de profesionales, desde allí se puede acceder al perfil del profesional o a la mensajería además de poder eliminarlo de la lista.
     </td>
+  </tr>
+</table>
+
+### Favoritos - profesionales
+
+<table>
+  <tr>
+    <td><img src="./public/img/favoritos_profesionales_1.png" width="100%"/></td>
+    <td><img src="./public/img/favoritos_profesionales_2.png" width="100%"/></td>
+    <td><img src="./public/img/favoritos_profesionales_3.png" width="100%"/></td>
+    
+  </tr>
+  <tr>
+    <td colspan="3" align="center">
+    La pantalla Favoritos presenta 3 secciones: 
+      1- Matchs recientes: muestra los últimos 10 matchs con acceso a su detalle.
+      2- Mis matchs: previsualiza las 2 últimas coincidencias y permite ir a la lista completa.
+      3- Me interesan: previsualiza las 2 últimas postulaciones y permite acceder a la lista completa.
+  </td>
+
   </tr>
 </table>
 
