@@ -97,7 +97,7 @@ const FavoritosOferta: React.FC<Props> = ({ navigation }) => {
       <View style={[styles.listContainer, styles.section]}>
         <UserList
           users={users}
-          showOferta={true}
+          showOferta={false}
           showMessageIcon
           onUserPress={handleSelectUser}
           onMessagePress={handleSelectConversation}
