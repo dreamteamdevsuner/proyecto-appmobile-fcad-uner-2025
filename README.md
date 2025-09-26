@@ -46,13 +46,38 @@ Explorar las funcionalidades principales.
 
 <table>
   <tr>
-    <td><img src="./public/img/" width="100%"/></td>
-    <td><img src="./public/img/" width="100%"/></td>
-    <td><img src="./public/img/" width="100%"/></td>
+    <td><img src="./public/img/login-1.jpeg" width="100%"/></td>
+    <td><img src="./public/img/login-2.jpeg" width="100%"/></td>
+    <td><img src="./public/img/login-3.jpeg" width="100%"/></td>
   </tr>
+</table>
+
+### Pantalla Swipe
+
+#### Reclutador
+
+<table>
   <tr>
+    <td><img src="./public/img/swipe-recruiter.jpeg" width="30%"/></td>
+   
+   </tr>
+   <tr>
     <td colspan="3" align="center">
-    La pantalla de inicio permite .....
+     Permite al reclutador evaluar perfiles y matchear con los postulantes que le interesan 
+    </td>
+  </tr>
+</table>
+
+#### Profesional
+
+<table>
+  <tr>
+    <td><img src="./public/img/swipe-candidate.jpeg" width="30%"/></td>
+   
+   </tr>
+   <tr>
+    <td colspan="3" align="center">
+     Permite al profesional evaluar propuestas  y matchear con las ofertas que le interesan 
     </td>
   </tr>
 </table>
