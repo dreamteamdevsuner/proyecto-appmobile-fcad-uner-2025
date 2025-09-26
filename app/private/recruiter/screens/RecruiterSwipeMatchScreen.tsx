@@ -80,10 +80,68 @@ const RecruiterSwipeMatchScreen = ({ navigation }: RecruiterSwipeMatchScreen) =>
 }
 interface CandidatePortfolioScreenProps extends NativeStackScreenProps<RootStackParams, ROUTES.RECRUITER_CANDIDATE_PROFILE> { }
 const width = Dimensions.get("screen").width
+/* const CandidatePortfolioScreen = ({ navigation, route }: CandidatePortfolioScreenProps) => {
+
+  // console.log("Navigation", navigation)
+  // console.log("Route", route)
+  const carouselData = [
+    {
+      link: require(`../../../../assets/images/mockupCandidatePortfolio/candidatePortfolio-1.jpg`)
+
+    },
+    {
+      link: require(`../../../../assets/images/mockupCandidatePortfolio/candidatePortfolio-2.jpg`)
+
+    },
+    {
+      link: require(`../../../../assets/images/mockupCandidatePortfolio/candidatePortfolio-3.jpg`)
+
+    },
+
+  ]
+  return (
+    <SwipeMatch<Candidate>
+      data={data}
+      renderItem={(
+        { item,
+          handleScrollEnabled
+        }
+
+
+      ) => {
+        return (
+          <CandidateCard
+            item={item}
+            {...{ handleScrollEnabled }}
+          >
+            <TouchableOpacity onPress={() => navigation.navigate(ROUTES.RECRUITER_CANDIDATE_PROFILE, { id: 1 })}>
+              <View
+                style={{
+                  alignContent: 'center',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Button
+                  style={{ width: 24 }}
+                  children
+                  buttonColor="transparent"
+                  textColor="black"
+                  icon="plus-circle-outline"
+                  mode="contained"
+                ></Button>
+              </View>
+            </TouchableOpacity>
+          </CandidateCard>
+        );
+      }}
+    ></SwipeMatch>
+  )
+} */
 const CandidatePortfolioScreen = ({ navigation, route }: CandidatePortfolioScreenProps) => {
 
-  console.log("Navigation", navigation)
-  console.log("Route", route)
+  // console.log("Navigation", navigation)
+  // console.log("Route", route)
   const carouselData = [
     {
       link: require(`../../../../assets/images/mockupCandidatePortfolio/candidatePortfolio-1.jpg`)
@@ -104,7 +162,7 @@ const CandidatePortfolioScreen = ({ navigation, route }: CandidatePortfolioScree
     <AppCarousel< {
       link:
       any;
-    }  > width={width} data={carouselData} enabledScroll={true} styles={{ flex: 1 }} renderItem={({ item }) => {
+    }  > width={width} data={carouselData} enabledScroll={true} styles={{ flex: 1, }} renderItem={({ item }) => {
 
       return (<View {...{ item }} style={{ width: '100%', flex: 1 }} >
 
@@ -113,10 +171,11 @@ const CandidatePortfolioScreen = ({ navigation, route }: CandidatePortfolioScree
         <View style={{ width: '100%', flex: 1 }}>
           <Image
             source={item.link}
-            style={{ height: '100%', width: '100%', objectFit: 'cover' }} ></Image>
+            style={{ height: '100%', width: '100%', resizeMode: 'cover' }} ></Image>
         </View>
       </View>)
     }}></AppCarousel>
+
   )
 }
 

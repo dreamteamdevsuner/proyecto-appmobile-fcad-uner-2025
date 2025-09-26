@@ -15,17 +15,18 @@ interface AppCarouselProps<T> extends PropsWithChildren {
   renderItem: (props: CarouselItemProps<T>) => React.JSX.Element;
 
 }
-
+const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width;
 const AppCarousel = <T,>(props: AppCarouselProps<T>) => {
   const { ref, data, enabledScroll, renderItem, handleScrollEnabled } = props
   const progress = useSharedValue<number>(0);
-  const width = props?.width ?? screenWidth / 2
-
+  const width = screenWidth
   return (
+
     <Carousel<T>
       ref={ref}
       width={width}
+
       data={data}
       loop={props.loop ?? false}
       style={props.styles}
