@@ -61,13 +61,18 @@ Explorar las funcionalidades principales.
 
 <table>
   <tr>
-    <td><img src="./public/img/" width="100%"/></td>
-    <td><img src="./public/img/" width="100%"/></td>
-    <td><img src="./public/img/" width="100%"/></td>
+    <td><img src="./public/img/Perfil-propio-profesional-1.png" width="100%"/></td>
+    <td><img src="./public/img/Perfil-propio-profesional-2.png" width="100%"/></td>
+    <td><img src="./public/img/Perfil-ajeno-profesional-portfolio.png" width="100%"/></td>
+  </tr>
+  <tr>
+    <td><img src="./public/img/Perfil-propio-reclutador-1.png" width="100%"/></td>
+    <td><img src="./public/img/Perfil-ajeno-profesional-1.png" width="100%"/></td>
+    <td><img src="./public/img/Perfil-ajeno-profesional-2.png" width="100%"/></td>
   </tr>
   <tr>
     <td colspan="3" align="center">
-     En la sección de perfil, los usuarios pueden ...
+     En la sección de perfil, los usuarios profesionales pueden brindar una breve descripción de sí mismos, sus habilidades, experiencia laboral, estudios realizados e información de contacto. Además pueden compartir imágenes de su portfolio mostrando sus trabajos realizados, intereses o capturas de su día a día. En cuanto a los usuarios reclutadores mostráran un resumen de las ofertas laborales que hayan disponibilizado en la plataforma, tanto búsquedas activas como cerradas a modo de historial.
     </td>
   </tr>
 </table>
