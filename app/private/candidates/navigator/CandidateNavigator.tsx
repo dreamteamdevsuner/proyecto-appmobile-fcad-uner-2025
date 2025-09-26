@@ -8,6 +8,7 @@ import ProfileNavigator from '../screens/perfil/ProfileNavigator';
 import FavoritosNavigator from '../screens/favoritos/FavoritosNavigator';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import CustomNavBar from '../../../../components/ui/custom-bottom-bar/CustomNavBar';
 
 const Tab = createBottomTabNavigator();
 
@@ -16,9 +17,10 @@ const CandidateNavigator = () => {
     <Tab.Navigator
       initialRouteName={ROUTES.CANDIDATE_HOME_TAB}
       screenOptions={{
-        tabBarActiveTintColor: '#6750A4',
+        tabBarActiveTintColor: 'black',
         tabBarInactiveTintColor: 'gray',
       }}
+      tabBar={(props) => <CustomNavBar {...props}></CustomNavBar>}
     >
       <Tab.Screen
         name={ROUTES.CANDIDATE_HOME_TAB}

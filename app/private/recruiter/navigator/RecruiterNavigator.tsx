@@ -14,6 +14,7 @@ import { Icon } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { PrivateStackParamList } from './types';
+import CustomNavBar from '../../../../components/ui/custom-bottom-bar/CustomNavBar';
 
 const Tab = createBottomTabNavigator<PrivateStackParamList>();
 
@@ -22,10 +23,11 @@ const RecruiterNavigator = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#6750A4',
+        tabBarActiveTintColor: 'black',
         tabBarInactiveTintColor: 'gray',
       }}
       initialRouteName={ROUTES.RECRUITER_SWIPE_MATCH}
+      tabBar={(props) => <CustomNavBar {...props}></CustomNavBar>}
     >
       <Tab.Screen
         options={{
