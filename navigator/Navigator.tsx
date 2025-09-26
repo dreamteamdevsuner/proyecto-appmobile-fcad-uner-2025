@@ -1,16 +1,17 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useContext } from 'react';
+import React from 'react';
 
-import { AuthContext } from '../appContext/authContext';
+import { useAuth } from '../appContext/authContext';
 import PrivateNavigator from '../app/private/PrivateNavigator';
 import PublicNavigator from '../app/public/PublicNavigator';
 
 //Agregar Root Stack Params Luego
 const Stack = createNativeStackNavigator();
 const Navigator = () => {
-  const { userState } = useContext(AuthContext);
+  const { state } = useAuth();
+  console.log(state);
 
-  return userState.isLogged ? (
+  return state.user ? (
     <PrivateNavigator></PrivateNavigator>
   ) : (
     <PublicNavigator></PublicNavigator>

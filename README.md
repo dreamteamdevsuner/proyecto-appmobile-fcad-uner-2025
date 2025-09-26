@@ -76,13 +76,53 @@ Explorar las funcionalidades principales.
 
 <table>
   <tr>
-    <td><img src="./public/img/jobsy.PNG" width="100%"/></td>
-    <td><img src="./public/img/jobsy.PNG" width="100%"/></td>
-    <td><img src= "./public/img/jobsy.PNG" width="100%"/></td>
+    <td><img src="./public/img/mensajes_1.png" width="100%"/></td>
+    <td><img src="./public/img/mensajes_2.png" width="100%"/></td>
+    <td><img src="./public/img/mensajes_3.png" width="100%"/></td>
+     <td><img src="./public/img/mensajes_4.png" width="100%"/></td>
+
   </tr>
   <tr>
     <td colspan="3" align="center">
       La sección de mensajería permite la comunicación entre usuarios, con diseño limpio y burbujas de chat intuitivas.
+      Los chats para el reclutador estan agrupados por oferta, permitiendo de esta manera que todo este ordenado de forma visual.
+      Los chats para el profesional están todos juntos, debajo del nombre del reclutador se encuentra el nombre de la oferta por la que se esta comunicando.
+      También permite eliminar contactos de la mensajería.
+    </td>
+  </tr>
+</table>
+
+### Favoritos
+
+<table>
+  <tr>
+    <td><img src="./public/img/favoritos_1.png" width="100%"/></td>
+    <td><img src="./public/img/favoritos_2.png" width="100%"/></td>
+    <td><img src="./public/img/favoritos_3.png" width="100%"/></td>
+    
+  </tr>
+  <tr>
+    <td colspan="3" align="center">
+      La sección Favoritos posee una sección destacada con los 10 últimos match con profesionales, desde allí se puede acceder al perfil de los mismos.
+      También tiene una lista de las ofertas que tienen Match odenados por oferta, al entrar a una oferta se accede al listado de profesionales, desde allí se puede acceder al perfil del profesional o a la mensajería además de poder eliminarlo de la lista.
+    </td>
+  </tr>
+</table>
+
+### Nueva Oferta
+
+<table>
+  <tr>
+    <td><img src="./public/img/nueva_oferta_1.png" width="100%"/></td>
+    <td><img src="./public/img/nueva_oferta_2.png" width="100%"/></td>
+    <td><img src="./public/img/nueva_oferta_3.png" width="100%"/></td>
+    <td><img src="./public/img/nueva_oferta_4.png" width="100%"/></td>
+   
+    
+  </tr>
+  <tr>
+    <td colspan="3" align="center">
+      La sección Nueva oferta permite a los recruiters publicar nuevas ofertas de trabajo de forma sencilla, además de poder previsualizar la oferta antes de publicarla.
     </td>
   </tr>
 </table>

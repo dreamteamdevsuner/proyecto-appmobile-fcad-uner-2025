@@ -1,16 +1,15 @@
-import { View, Text } from 'react-native';
-import React, { useContext } from 'react';
-import HomeScreen from './HomeScreen';
+import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AuthContext, Role } from '../../appContext/authContext';
+import { Role, useAuth } from '../../appContext/authContext';
 import RecruiterNavigator from './recruiter/navigator/RecruiterNavigator';
 import CandidateNavigator from './candidates/navigator/CandidateNavigator';
-import SeguridadScreen from './shared/perfil/SeguridadScreen';
-import DatosCuentaScreen from './shared/perfil/DatosCuentaScreen';
-import CambiarContrasenaScreen from './shared/perfil/CambiarContasenaScreen';
+import SeguridadScreen from './shared/perfil/ajustes/SeguridadScreen';
+import DatosCuentaScreen from './shared/perfil/ajustes/DatosCuentaScreen';
+import CambiarContrasenaScreen from './shared/perfil/ajustes/CambiarContasenaScreen';
+import EditarPerfilScreen from './shared/perfil/ajustes/EditarPerfilScreen';
 const Stack = createNativeStackNavigator();
 const PrivateNavigator = () => {
-  const { userState } = useContext(AuthContext);
+  const { state } = useAuth();
 
   return (
     <Stack.Navigator
@@ -20,35 +19,40 @@ const PrivateNavigator = () => {
       <Stack.Screen
         name="HomeScreen"
         component={
-          userState.user.role === Role.candidate
+          state.user?.role === Role.candidate
             ? CandidateNavigator
             : RecruiterNavigator
         }
       ></Stack.Screen>
-      <Stack.Screen 
-        name='Seguridad'
-        component={SeguridadScreen}
-        options={{ 
-          headerShown: true,
-          title: 'Seguridad'
-        }}
-        />
-      <Stack.Screen 
-        name='DatosCuenta'
-        component={DatosCuentaScreen}
-        options={{ 
-          headerShown: true,
-          title: 'Datos de la cuenta'
-        }}
-        /> 
       <Stack.Screen
-        name='CambiarContrasena'
-        component={CambiarContrasenaScreen}
-        options={{ 
+        name="EditarPerfil"
+        component={EditarPerfilScreen}
+        options={{ headerShown: true, title: 'Editar perfil' }}
+      />
+      <Stack.Screen
+        name="Seguridad"
+        component={SeguridadScreen}
+        options={{
           headerShown: true,
-          title: 'Cambiar contraseña'
+          title: 'Seguridad',
         }}
-        />
+      />
+      <Stack.Screen
+        name="DatosCuenta"
+        component={DatosCuentaScreen}
+        options={{
+          headerShown: true,
+          title: 'Datos de la cuenta',
+        }}
+      />
+      <Stack.Screen
+        name="CambiarContrasena"
+        component={CambiarContrasenaScreen}
+        options={{
+          headerShown: true,
+          title: 'Cambiar contraseña',
+        }}
+      />
     </Stack.Navigator>
   );
 };

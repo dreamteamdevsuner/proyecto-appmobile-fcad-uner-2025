@@ -3,21 +3,19 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
-  Alert,
-} from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+} from 'react-native';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   Icon,
-  MD3Colors,
   Portal,
   Snackbar,
   Text,
   TextInput,
-} from "react-native-paper";
-import { Formik } from "formik";
-import * as Yup from "yup";
-import { AuthContext } from "../appContext/authContext";
+} from 'react-native-paper';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+import { useAuth } from '../appContext/authContext';
 
 interface AppSnackProps {
   visible: boolean;
@@ -39,16 +37,16 @@ const AppSnackBar = ({ visible, handleHideSnackBar }: AppSnackProps) => {
     <Portal>
       <Snackbar
         style={{
-          justifyContent: "center",
-          alignContent: "center",
-          display: "flex",
-          backgroundColor: "black",
+          justifyContent: 'center',
+          alignContent: 'center',
+          display: 'flex',
+          backgroundColor: 'black',
         }}
         visible={visible}
         onDismiss={() => handleHideSnackBar()}
       >
         <Text>Test 1</Text>
-        <Text style={{ color: "white" }}>Login Error</Text>
+        <Text style={{ color: 'white' }}>Login Error</Text>
       </Snackbar>
     </Portal>
   );
@@ -59,17 +57,17 @@ interface LoginForm {
   password: string;
 }
 const loginForm: LoginForm = {
-  email: "",
-  password: "",
+  email: '',
+  password: '',
 };
 const formValidationSchema = Yup.object({
-  password: Yup.string().required("campo obligatorio"),
+  password: Yup.string().required('campo obligatorio'),
   email: Yup.string()
-    .email("ingresar un email válido")
-    .required("campo obligatorio"),
+    .email('ingresar un email válido')
+    .required('campo obligatorio'),
 });
 const AuthForm = () => {
-  const { userState, login } = useContext(AuthContext);
+  const { state, login } = useAuth();
 
   const [showSnackbar, setShowSnackbar] = useState(false);
 
@@ -82,14 +80,14 @@ const AuthForm = () => {
 
   const handleLogin = (values: LoginForm) => {
     // console.log("handle login");
-    console.log("values", values);
+    console.log('values', values);
     //MOCKUP LOGIN SUCCESS
-
-    const loginRes = login(values);
-    //MOCKUP FAILED LOGIN
-    if (!loginRes) {
-      handleShowSnackbar();
-    }
+    (async () => {
+      const ok = await login(values.email, values.password);
+      if (!ok) {
+        handleShowSnackbar();
+      }
+    })();
   };
   return (
     <>
@@ -115,13 +113,13 @@ const AuthForm = () => {
           }) => (
             <View style={authStyles.container}>
               <TextInput
-                onBlur={handleBlur("email")}
+                onBlur={handleBlur('email')}
                 autoCapitalize="none"
-                label={"Correo electrónico"}
+                label={'Correo electrónico'}
                 placeholder="Escribí tu correo electrónico"
                 mode="outlined"
-                onFocus={() => setFieldTouched("email", true)}
-                onChangeText={handleChange("email")}
+                onFocus={() => setFieldTouched('email', true)}
+                onChangeText={handleChange('email')}
                 value={values.email}
                 keyboardType="email-address"
               />
@@ -132,14 +130,14 @@ const AuthForm = () => {
                 </View>
               )}
               <TextInput
-                onBlur={handleBlur("password")}
+                onBlur={handleBlur('password')}
                 secureTextEntry={true}
-                label={"Contraseña"}
+                label={'Contraseña'}
                 placeholder="Escribí tu contraseña"
                 mode="outlined"
                 autoCapitalize="none"
-                onChangeText={handleChange("password")}
-                onFocus={() => setFieldTouched("password", true)}
+                onChangeText={handleChange('password')}
+                onFocus={() => setFieldTouched('password', true)}
                 value={values.password}
               />
               {touched.password && errors.password && (
@@ -154,7 +152,7 @@ const AuthForm = () => {
                   <Text
                     variant="labelMedium"
                     style={{
-                      borderBottomColor: "black",
+                      borderBottomColor: 'black',
                       borderBottomWidth: 1,
 
                       top: -15,
@@ -168,13 +166,13 @@ const AuthForm = () => {
               <Button
                 mode="contained"
                 style={{
-                  backgroundColor: "black",
+                  backgroundColor: 'black',
                   opacity: (dirty && !isValid) || !dirty ? 0.5 : 1,
                 }}
                 onPress={() => handleSubmit()}
                 disabled={(dirty && !isValid) || !dirty}
               >
-                <Text style={{ color: "white" }}>Iniciar sesión</Text>
+                <Text style={{ color: 'white' }}>Iniciar sesión</Text>
               </Button>
             </View>
           )}
@@ -188,15 +186,15 @@ const AuthForm = () => {
   );
 };
 const authStyles = StyleSheet.create({
-  container: { flexDirection: "column", gap: 20 },
+  container: { flexDirection: 'column', gap: 20 },
   forgotPasswordContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "flex-end",
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
   forgotPassword: {},
-  errorView: { opacity: 0.7, display: "flex", flexDirection: "row" },
-  errorText: { textTransform: "capitalize" },
+  errorView: { opacity: 0.7, display: 'flex', flexDirection: 'row' },
+  errorText: { textTransform: 'capitalize' },
 });
 
 export default AuthForm;

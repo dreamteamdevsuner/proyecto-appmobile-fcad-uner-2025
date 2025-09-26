@@ -4,8 +4,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { PrivateStackParamList } from '../../navigator/types';
 import ROUTES from '../../navigator/routes';
 import ProfileScreen from '.';
-import SettingProfile from '../../../shared/SettingProfile';
-import NotificationsProfile from '../../../shared/NotificationsProfile';
+import SettingProfile from '../../../shared/perfil/ajustes/SettingProfile';
+import NotificationsProfile from '../../../candidates/screens/notificaciones/NotificationsProfile';
 
 import { Ionicons } from '@expo/vector-icons';
 

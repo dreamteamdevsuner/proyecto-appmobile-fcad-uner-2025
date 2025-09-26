@@ -14,17 +14,17 @@ import CAND_ROUTES from '../../../candidates/navigator/routes';
 import { CompositeNavigationProp } from '@react-navigation/native';
 
 const ofertas: OfertaItem[] = [
-  { id: 1, title: 'UX Santender', subtitle: 'Subtítulo 1' },
-  { id: 2, title: 'Frontend Naranja', subtitle: 'Subtítulo 2' },
-  { id: 3, title: 'Developer Shopify ', subtitle: 'Subtítulo 3' },
-  { id: 4, title: 'UI Desegner', subtitle: 'Subtítulo 4' },
-  { id: 5, title: 'Full Stack Banco Provincia', subtitle: 'Subtítulo 5' },
-  { id: 6, title: 'Backend Santender', subtitle: 'Subtítulo 6' },
-  { id: 7, title: 'Backend Naranja', subtitle: 'Subtítulo 7' },
-  { id: 8, title: 'DevOs Globant', subtitle: 'Subtítulo 8' },
-  { id: 9, title: 'RRHH Santender', subtitle: 'Subtítulo 9' },
-  { id: 10, title: 'RRHH Naranja', subtitle: 'Subtítulo 10' },
-  { id: 11, title: 'RRHH Globant', subtitle: 'Subtítulo 11' },
+  { id: 1, title: 'UX Santender', subtitle: 'Postulantes: 11' },
+  { id: 2, title: 'Frontend Naranja', subtitle: 'Postulantes: 11' },
+  { id: 3, title: 'Developer Shopify ', subtitle: 'Postulantes: 11' },
+  { id: 4, title: 'UI Desegner', subtitle: 'Postulantes: 11' },
+  { id: 5, title: 'Full Stack Banco Provincia', subtitle: 'Postulantes: 11' },
+  { id: 6, title: 'Backend Santender', subtitle: 'Postulantes: 11' },
+  { id: 7, title: 'Backend Naranja', subtitle: 'Postulantes: 11' },
+  { id: 8, title: 'DevOs Globant', subtitle: 'Postulantes: 11' },
+  { id: 9, title: 'RRHH Santender', subtitle: 'Postulantes: 11' },
+  { id: 10, title: 'RRHH Naranja', subtitle: 'Postulantes: 11' },
+  { id: 11, title: 'RRHH Globant', subtitle: 'Postulantes: 11' },
 ];
 
 const matchs: UserItem[] = [
