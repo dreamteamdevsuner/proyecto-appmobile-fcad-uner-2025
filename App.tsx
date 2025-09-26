@@ -5,6 +5,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Navigator from './navigator/Navigator';
 import { AuthProvider } from './appContext/authContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync();
+
+SplashScreen.setOptions({
+  duration: 1500,
+  fade: true,
+});
+
 export default function App() {
   return (
     //hardcodeando paleta custom , pasando blue como primary

@@ -14,7 +14,10 @@ export enum SecureStoreItem {
  * @param key key del item (debe ser SecureStoreItem)
  * @param item valor del item a guardar (cualquier objeto serializable a JSON)
  */
-export async function setItem<T>(key: SecureStoreItem, item: T): Promise<void> {
+export async function setItemAsync<T>(
+  key: SecureStoreItem,
+  item: T,
+): Promise<void> {
   try {
     const jsonString = JSON.stringify(item);
     await SecureStore.setItemAsync(key, jsonString);
@@ -28,7 +31,7 @@ export async function setItem<T>(key: SecureStoreItem, item: T): Promise<void> {
  * @param key Clave del ítem
  * @returns El ítem parseado o null si no existe
  */
-export async function getItem<T>(key: SecureStoreItem): Promise<T | null> {
+export async function getItemAsync<T>(key: SecureStoreItem): Promise<T | null> {
   try {
     const jsonString = await SecureStore.getItemAsync(key);
     if (jsonString === null) {
@@ -45,7 +48,7 @@ export async function getItem<T>(key: SecureStoreItem): Promise<T | null> {
  * Elimina un ítem de SecureStore.
  * @param key Clave del ítem
  */
-export async function deleteItem(key: SecureStoreItem): Promise<void> {
+export async function deleteItemAsync(key: SecureStoreItem): Promise<void> {
   try {
     await SecureStore.deleteItemAsync(key);
   } catch (error) {
@@ -56,11 +59,11 @@ export async function deleteItem(key: SecureStoreItem): Promise<void> {
 /**
  * Limpia todos los ítems relacionados con la autenticación.
  */
-export async function clearAuth(): Promise<void> {
+export async function clearAuthAsync(): Promise<void> {
   await Promise.allSettled([
-    deleteItem(SecureStoreItem.TOKEN),
-    deleteItem(SecureStoreItem.USER),
-    deleteItem(SecureStoreItem.REFRESH_TOKEN),
+    deleteItemAsync(SecureStoreItem.TOKEN),
+    deleteItemAsync(SecureStoreItem.USER),
+    deleteItemAsync(SecureStoreItem.REFRESH_TOKEN),
   ]);
 }
 
@@ -68,7 +71,7 @@ export async function clearAuth(): Promise<void> {
  * Obtiene el usuario actual, OJO: es medio redundante asi que capaz se elimine
  */
 export async function getUser(): Promise<UserItem | null> {
-  const user = await getItem<UserItem>(SecureStoreItem.USER);
+  const user = await getItemAsync<UserItem>(SecureStoreItem.USER);
   if (user) {
     return user;
   }

@@ -6,10 +6,10 @@ import React, {
   useCallback,
 } from 'react';
 import {
-  clearAuth,
+  clearAuthAsync,
   SecureStoreItem,
-  setItem,
-  getItem,
+  setItemAsync,
+  getItemAsync,
 } from '../utils/secure-store';
 
 export enum Role {
@@ -132,11 +132,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const restoreToken = async () => {
       try {
-        const token = await getItem<string>(SecureStoreItem.TOKEN);
-        const refreshToken = await getItem<string>(
+        const token = await getItemAsync<string>(SecureStoreItem.TOKEN);
+        const refreshToken = await getItemAsync<string>(
           SecureStoreItem.REFRESH_TOKEN,
         );
-        const user = await getItem<User>(SecureStoreItem.USER);
+        const user = await getItemAsync<User>(SecureStoreItem.USER);
 
         dispatch({
           type: AUTH_ACTIONS.RESTORE_TOKEN,
@@ -184,9 +184,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const token = 'fake-jwt-token';
       const refreshToken = 'fake-refresh-token';
 
-      await setItem(SecureStoreItem.TOKEN, token);
-      await setItem(SecureStoreItem.REFRESH_TOKEN, refreshToken);
-      await setItem(SecureStoreItem.USER, user);
+      await setItemAsync(SecureStoreItem.TOKEN, token);
+      await setItemAsync(SecureStoreItem.REFRESH_TOKEN, refreshToken);
+      await setItemAsync(SecureStoreItem.USER, user);
 
       dispatch({
         type: AUTH_ACTIONS.LOGIN,
@@ -204,7 +204,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const logout = useCallback(async () => {
     try {
-      await clearAuth();
+      await clearAuthAsync();
     } catch (error) {
       console.error('Error al limpiar almacenamiento:', error);
     } finally {

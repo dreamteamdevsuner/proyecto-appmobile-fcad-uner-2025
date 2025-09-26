@@ -44,8 +44,6 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
         const fetched = await fetchUserByIdMock(userId);
         setProfileUser(fetched);
         setNotFound(!fetched);
-        console.log(fetched);
-        console.log(state);
       } catch (error) {
         console.error(error);
       } finally {
@@ -100,7 +98,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
     }
   };
 
-  const isOwnProfile = () => !userId;
+  const isOwnProfile = () => userId === state.user?.id;
 
   if (loading) {
     return (
