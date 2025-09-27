@@ -52,7 +52,7 @@ Explorar las funcionalidades principales.
   </tr>
 </table>
 
-### Pantalla Swipe
+### Descubrir profesional
 
 #### Reclutador
 
@@ -173,6 +173,23 @@ Explorar las funcionalidades principales.
   <tr>
     <td colspan="3" align="center">
       La sección Nueva oferta permite a los recruiters publicar nuevas ofertas de trabajo de forma sencilla, además de poder previsualizar la oferta antes de publicarla.
+    </td>
+  </tr>
+
+### Ajustes
+
+<table>
+  <tr>
+    <td><img src="./public/img/ajustes_1.png" width="100%"/></td>
+    <td><img src="./public/img/ajustes_2.png" width="100%"/></td>
+    <td><img src="./public/img/ajustes_3.png" width="100%"/></td>
+    <td><img src="./public/img/ajustes_4.png" width="100%"/></td>
+   
+    
+  </tr>
+  <tr>
+    <td colspan="3" align="center">
+      En la pantalla "Ajustes" se encuentran las opciones "Cerrar sesión", "Editar perfil" y "Seguridad". Estas últimas dos opciones se despliegan en nuevas pantallas donde se pueden ejecutar sus funcionalidades.
     </td>
   </tr>
 </table>
