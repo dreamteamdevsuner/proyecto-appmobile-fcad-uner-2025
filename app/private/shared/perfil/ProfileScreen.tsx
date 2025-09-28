@@ -17,18 +17,19 @@ import {
   WhatIDo,
 } from '../../../../components/profile/index';
 
-type CombinedParamList = RecruiterStackParamList & CandidateStackParamList;
+export type CombinedParamList = RecruiterStackParamList & CandidateStackParamList;
 
 type Props = {
   route: RouteProp<CombinedParamList, keyof CombinedParamList>;
 };
 
 const ProfileScreenShared: React.FC<Props> = ({ route }) => {
+  console.log("route", route)
   const { state } = useAuth();
   const userId =
     route?.params &&
-    typeof route.params === 'object' &&
-    'userId' in route.params
+      typeof route.params === 'object' &&
+      'userId' in route.params
       ? (route.params as { userId?: number }).userId
       : state.user!.id;
 
@@ -133,8 +134,8 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
 
         {((profileUser?.role ?? state.user!.role) as Role) ===
           Role.candidate && (
-          <HorizontalChips skills={profileUser?.skills ?? []} />
-        )}
+            <HorizontalChips skills={profileUser?.skills ?? []} />
+          )}
       </View>
 
       <TabView

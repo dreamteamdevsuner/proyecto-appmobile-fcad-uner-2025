@@ -1,9 +1,20 @@
-import { StyleSheet, View, Image } from "react-native"
+import { StyleSheet, View, Image, Touchable, Pressable } from "react-native"
 import { checkIsLinkImage, checkIsPortfolioText, LinkImage, PortfolioText } from "../../utils/checkTypeOfRenderItem"
 import { Text } from "react-native-paper"
+import { useNavigation } from "@react-navigation/native"
+import { RootStackParams } from "../../app/private/recruiter/navigator/SwipeStack"
+
+import { StackNavigationProp } from "@react-navigation/stack"
+import CANDIDATE_ROUTES from "../../app/private/candidates/navigator/routes"
+import ROUTES from "../../app/private/recruiter/navigator/routes"
+
+
+
+
 
 const CandidatePortfolioCarouselItem = ({ item }: { item: LinkImage | PortfolioText }) => {
-  let innerContent = <View ><Text>Placeholder </Text></View>
+  const navigation = useNavigation<StackNavigationProp<RootStackParams>>()
+  let innerContent
   let styles = StyleSheet.create({
     container: {
       width: '100%',
@@ -26,7 +37,13 @@ const CandidatePortfolioCarouselItem = ({ item }: { item: LinkImage | PortfolioT
   }
   if (checkIsPortfolioText(item)) {
     styles = { ...styles, container: { ...styles.container, backgroundColor: 'black', } }
-    innerContent = <Text style={{ color: 'white', maxWidth: '80%' }}>Placeholder {item.portfolioText} </Text>
+    const t = {}
+    innerContent = <Pressable onPress={() => navigation.navigate(ROUTES.RECRUITER_CANDIDATE_PROFILE_FULL, {
+      route: { "key": "CandidateProfile-DE1J82UTp6yZRljjHZ7PG", "name": CANDIDATE_ROUTES.CANDIDATE_PROFILE, "params": undefined }
+    })} >
+      <Text style={{ color: 'white', maxWidth: '80%' }}>{item.portfolioText} </Text>
+    </Pressable>
+
   }
   return <View {...{ item }} style={styles.container} >
     {innerContent}
