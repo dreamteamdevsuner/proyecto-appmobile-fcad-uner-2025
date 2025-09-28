@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import ROUTES from './routes';
 
-import { SwipeStack } from '../screens/RecruiterSwipeMatchScreen';
+
 import FavoritosNavigator from '../screens/favoritos/FavoritosNavigator';
 import MensajeriaNavigator from '../screens/mensajeria/MensajeriaNavigator';
 import CrearOfertaNavigator from '../screens/crear-oferta/CrearOfertaNavigator';
@@ -14,6 +14,7 @@ import ProfileNavigator from '../screens/perfil/ProfileNavigator';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { PrivateStackParamList } from './types';
+import SwipeStack from './SwipeStack';
 
 
 const Tab = createBottomTabNavigator<PrivateStackParamList>();
