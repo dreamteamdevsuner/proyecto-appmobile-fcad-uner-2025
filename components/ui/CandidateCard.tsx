@@ -61,7 +61,7 @@ function CandidateCard({
                 textAlign: 'center',
               }}
             >
-              {item.firstName + ' ' + item.lastName}{' '}
+              {item.firstName + ' ' + item.lastName}
             </Text>
           }
         ></Card.Title>
@@ -143,8 +143,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#2c2c2c',
     color: 'white',
     borderRadius: 20,
+
     fontSize: 10,
-    //POR QUE LOS ESTILOS DE LEO NO ME FUNCIONAN SI ES EL MISMO COMPONENT Y TENGO QUE AGREGAR MR = 5 ??!
+
     marginRight: 5,
   },
 });

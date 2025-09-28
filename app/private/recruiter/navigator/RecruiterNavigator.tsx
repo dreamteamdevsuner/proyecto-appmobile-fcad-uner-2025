@@ -3,18 +3,18 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import ROUTES from './routes';
-import RecruiterHomeScreen from '../screens/RecruiterHomeScreen';
-import RecruiterSwipeMatchScreen, { SwipeStack } from '../screens/RecruiterSwipeMatchScreen';
+
+import { SwipeStack } from '../screens/RecruiterSwipeMatchScreen';
 import FavoritosNavigator from '../screens/favoritos/FavoritosNavigator';
 import MensajeriaNavigator from '../screens/mensajeria/MensajeriaNavigator';
 import CrearOfertaNavigator from '../screens/crear-oferta/CrearOfertaNavigator';
 import ProfileNavigator from '../screens/perfil/ProfileNavigator';
 
-import { Icon } from 'react-native-paper';
+
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { PrivateStackParamList } from './types';
-import JobsyHeader from '../../../../components/ui/JobsyHeader';
+
 
 const Tab = createBottomTabNavigator<PrivateStackParamList>();
 
@@ -25,29 +25,22 @@ const RecruiterNavigator = () => {
         headerShown: false,
         tabBarActiveTintColor: '#6750A4',
         tabBarInactiveTintColor: 'gray',
+        tabBarIcon: ({ color, size }) => (
+          <MaterialCommunityIcons
+            name="account-group-outline"
+            size={size}
+            color={color}
+          />
+        ),
       }}
+
       initialRouteName={ROUTES.RECRUITER_SWIPE_MATCH}
     >
       <Tab.Screen
-        options={{
-          headerShown: true,
-          headerTitle: 'Jobsy',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons
-              name="account-group-outline"
-              size={size}
-              color={color}
-            />
-          ),
 
-
-          header: ({ options }) => <JobsyHeader headerTitle={options.headerTitle?.toString() ?? 'placeholder title'}></JobsyHeader>
-
-
-        }}
 
         name={ROUTES.RECRUITER_SWIPE_MATCH}
-        // component={RecruiterSwipeMatchScreen}
+
         component={SwipeStack}
       ></Tab.Screen>
       <Tab.Screen
