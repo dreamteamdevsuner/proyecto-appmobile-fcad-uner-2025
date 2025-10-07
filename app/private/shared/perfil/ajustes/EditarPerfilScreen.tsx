@@ -13,8 +13,7 @@ import { TextInput, Button, Text, Dialog, Portal } from 'react-native-paper';
 import { Formik } from 'formik';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useNavigation } from '@react-navigation/native';
-import { useInputTheme } from '../../constants/theme/useInputTheme';
-import { useDropdownTheme } from '../../constants/theme/useDropdownTheme';
+import { useInputTheme, useDropdownTheme } from '../../constants/theme/index';
 
 import { PerfilValues } from '../../../../../interfaces/EditarPerfil';
 import { userEditarPerfil } from '../../../../../mockup/userEditarPerfil';

@@ -130,7 +130,7 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   section: {
-    backgroundColor: '#cdc7ceff',
+    backgroundColor: '#1D1C21',
     borderRadius: 15,
     padding: 10,
   },

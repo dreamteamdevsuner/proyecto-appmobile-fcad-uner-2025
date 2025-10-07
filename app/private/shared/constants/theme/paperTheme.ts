@@ -25,7 +25,7 @@ export const AppDarkTheme = {
   colors: {
   ...PaperDarkTheme.colors,
   ...NavigationDarkTheme.colors,
-    primary: '#B58DF1',
+    primary: '#A06FA6',
     secondary: "#BEB52C",
     background: '#0A090F',
     surface: '#1D1C21',
@@ -38,6 +38,6 @@ export const AppDarkTheme = {
     placeholder: '#999999',
     notification: '#BEB52C',
     onPrimary: '#010101', // texto en botones "contained"
-    onSecondary: '#0A090F', // texto sobre botones secundarios si usás otros colores
+    onSecondary: '#F1F1F1', // texto sobre botones secundarios si usás otros colores
   },
 };

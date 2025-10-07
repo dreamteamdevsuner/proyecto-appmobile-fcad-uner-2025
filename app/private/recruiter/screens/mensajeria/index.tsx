@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   section: {
-    backgroundColor: '#cdc7ceff',
+    backgroundColor: '#1D1C21',
     borderRadius: 15,
     padding: 10,
     marginBottom: 10,
