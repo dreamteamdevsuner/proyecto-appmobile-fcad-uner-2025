@@ -34,12 +34,12 @@ export default function SeguridadScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    // backgroundColor: '#fff',
   },
   card: {
     margin: 16,
     borderRadius: 20,
-    backgroundColor: '#F8EEF6',
+    backgroundColor: '#1D1C21',
     overflow: 'hidden',
   },
 });

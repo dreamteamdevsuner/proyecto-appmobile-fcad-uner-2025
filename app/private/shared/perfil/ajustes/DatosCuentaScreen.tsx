@@ -65,7 +65,7 @@ export default function DatosCuentaScreen() {
                 onDismiss={() => setDialogVisible(false)}
                 style={{ borderRadius: 20}}
               >
-                <Dialog.Title>Datos guardados</Dialog.Title>
+                <Dialog.Title>Datos actualizados</Dialog.Title>
                 <Dialog.Content>
                   <Text>Los datos de tu cuenta han sido actualizados correctamente.</Text>
                 </Dialog.Content>
@@ -89,7 +89,6 @@ export default function DatosCuentaScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     padding: 16,
   },
   sectionTitle: { fontSize: 16, 
@@ -101,11 +100,10 @@ const styles = StyleSheet.create({
   input: {
     marginHorizontal: 40,    
     marginBottom: 10,
-    backgroundColor: 'white',
   },
   button: {
     margin: 40,
     marginVertical: 200,
-    backgroundColor: 'black'
+    backgroundColor: '#BEB52C',
   },
 });

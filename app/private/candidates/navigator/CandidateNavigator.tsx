@@ -17,7 +17,7 @@ const CandidateNavigator = () => {
     <Tab.Navigator
       initialRouteName={ROUTES.CANDIDATE_HOME_TAB}
       screenOptions={{
-        tabBarActiveTintColor: '#6750A4',
+        tabBarActiveTintColor: '#BEB52C',
         tabBarInactiveTintColor: 'gray',
       }}
     >
