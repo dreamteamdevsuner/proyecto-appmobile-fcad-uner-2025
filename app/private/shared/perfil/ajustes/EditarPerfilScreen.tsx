@@ -61,6 +61,13 @@ const EditarPerfilScreen = () => {
   const inputTheme = useInputTheme();
   const dropdownTheme = useDropdownTheme() as any;
 
+  const getDropdownProps = () => ({
+    ...dropdownTheme,
+    badgeStyle: dropdownTheme.badgeStyle,
+    badgeTextStyle: dropdownTheme.badgeTextStyle,
+  });
+
+
   const [openDropdown, setOpenDropdown] = useState<string |null>(null);
 
   const handleOpen = (key: string) => {
@@ -200,6 +207,7 @@ const EditarPerfilScreen = () => {
                 <Text style={styles.titulo}>Herramientas</Text>
                 <DropDownPicker
                   {...dropdownTheme}
+                  {...getDropdownProps()}
                   open={openDropdown === 'herramientas'}
                   setOpen={() =>
                     setOpenDropdown(
@@ -224,6 +232,8 @@ const EditarPerfilScreen = () => {
                 {/* HABILIDADES */}
                 <Text style={styles.titulo}>Habilidades</Text>
                 <DropDownPicker
+                  {...dropdownTheme}
+                  {...getDropdownProps()}
                   open={openDropdown === 'habilidades'}
                   setOpen={() => handleOpen('habilidades')
                   }
@@ -239,7 +249,7 @@ const EditarPerfilScreen = () => {
                   mode="BADGE"
                   listMode="SCROLLVIEW"
                   zIndex={4000}
-                  {...dropdownTheme}
+                  
                 />
 
                 <SectionTitle>Formación</SectionTitle>
@@ -273,6 +283,8 @@ const EditarPerfilScreen = () => {
                 {/* IDIOMAS */}
                 <Text style={styles.titulo}>Idiomas</Text>
                 <DropDownPicker
+                  {...dropdownTheme}
+                  {...getDropdownProps()}
                   open={openDropdown === 'idiomas'}
                   setOpen={() => handleOpen('idiomas')
                   }
@@ -291,7 +303,6 @@ const EditarPerfilScreen = () => {
                   mode="BADGE"
                   listMode="SCROLLVIEW"
                   zIndex={3000}
-                  {...dropdownTheme}
                 />
 
                 <SectionTitle>Mis preferencias</SectionTitle>
@@ -338,7 +349,7 @@ const EditarPerfilScreen = () => {
                 <DropDownPicker
                   {...dropdownTheme}
                   open={openDropdown === 'contrato'}
-                  setOpen={() => handleBlur('contrato')
+                  setOpen={() => handleOpen('contrato')
                   }
                   value={values.contratoSeleccionado}
                   setValue={(callback) =>

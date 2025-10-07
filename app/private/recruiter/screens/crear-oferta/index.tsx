@@ -234,9 +234,7 @@ const CrearOferta = ({ navigation }: any) => {
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
       >
-        <Card style={styles.card}>
-          <Card.Content>
-            <Formik
+        <Formik
               initialValues={initialValues}
               onSubmit={handleSubmit}
               validationSchema={ofertaSchema}
@@ -257,7 +255,7 @@ const CrearOferta = ({ navigation }: any) => {
                   }));
                 }, [values]);
                 return (
-                  <View>
+                  <View style={styles.formContainer}>
                     <Text style={styles.titulo}>Título</Text>
                     <TextInput
                       mode="outlined"
@@ -342,7 +340,6 @@ const CrearOferta = ({ navigation }: any) => {
                       }
                       items={jornadaList}
                       placeholder="Selecciona jornada"
-                      // style={styles.dropdown}
                       zIndex={4000}
                       listMode="SCROLLVIEW"
                     />
@@ -471,8 +468,6 @@ const CrearOferta = ({ navigation }: any) => {
                 );
               }}
             </Formik>
-          </Card.Content>
-        </Card>
       </ScrollView>
     </View>
   );
@@ -481,6 +476,7 @@ const CrearOferta = ({ navigation }: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    margin:20,
   },
   input: {
     borderWidth: 1,
@@ -503,7 +499,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginTop: 20,
   },
-  card: {
+  formContainer: {
     padding: 20,
     borderRadius: 20,
     marginBottom: 20,
