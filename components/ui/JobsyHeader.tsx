@@ -18,13 +18,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000', // negro del fondo
     alignItems: 'left',
     justifyContent: 'left',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
+    margin: 0,
+    marginLeft: -15,
+    padding: 0,
     width: '100%',
+    height: '48',
   },
   logo: {
     width: 120, // ajustá el tamaño según el diseño
-    height: 40,
+    height: 48,
   },
 });
 
