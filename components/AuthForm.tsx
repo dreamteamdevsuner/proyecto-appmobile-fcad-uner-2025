@@ -16,6 +16,7 @@ import {
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useAuth } from '../appContext/authContext';
+import Logo from '../components/Logo';
 
 interface AppSnackProps {
   visible: boolean;
