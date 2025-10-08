@@ -166,13 +166,13 @@ const AuthForm = () => {
               <Button
                 mode="contained"
                 style={{
-                  backgroundColor: 'black',
+                  backgroundColor: '#BEB52C',
                   opacity: (dirty && !isValid) || !dirty ? 0.5 : 1,
                 }}
                 onPress={() => handleSubmit()}
                 disabled={(dirty && !isValid) || !dirty}
               >
-                <Text style={{ color: 'white' }}>Iniciar sesión</Text>
+                <Text style={{ color: '#1D1C21' }}>Iniciar sesión</Text>
               </Button>
             </View>
           )}

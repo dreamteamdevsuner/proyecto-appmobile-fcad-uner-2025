@@ -1,7 +1,7 @@
-import { StyleSheet, View } from "react-native";
-import React from "react";
-import { Card, Text } from "react-native-paper";
-import { logoStyles } from "../styles/helpers/logo";
+import { StyleSheet, View } from 'react-native';
+import React from 'react';
+import { Card, Text } from 'react-native-paper';
+import { logoStyles } from '../styles/helpers/logo';
 
 const Logo = () => {
   return (
