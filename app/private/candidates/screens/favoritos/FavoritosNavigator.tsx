@@ -21,22 +21,22 @@ const FavoritosNavigator = () => (
       <FavoritosStack.Screen
         name={ROUTES.CANDIDATE_FAVORITOS}
         component={Favoritos}
-        options={{ header: () => <JobsyHeader /> }}
+        options={{ title: 'Favoritos' }}
       />
       <FavoritosStack.Screen
         name={ROUTES.CANDIDATE_FAVORITOS_MATCHS}
         component={FavoritosMatchsScreen}
-        options={{ title: 'Mis matchs' }}
+        options={{ title: 'Favoritos' }}
       />
       <FavoritosStack.Screen
         name={ROUTES.CANDIDATE_FAVORITOS_INTERESANTES}
         component={FavoritosInteresantesScreen}
-        options={{ title: 'Me interesan' }}
+        options={{ title: 'Favoritos' }}
       />
       <FavoritosStack.Screen
         name={ROUTES.CANDIDATE_TEST}
         component={CandidateTestScreen}
-        options={{ title: 'Test' }}
+        options={{ title: 'Favoritos' }}
       />
       <FavoritosStack.Screen
         name={ROUTES.CANDIDATE_CONVERSACION}
