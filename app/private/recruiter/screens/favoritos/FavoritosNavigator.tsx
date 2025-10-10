@@ -45,7 +45,7 @@ const FavoritosNavigator = () => (
         name={CAND_ROUTES.CANDIDATE_PROFILE}
         component={ProfileScreen}
         options={{
-          title: 'Perfil',
+          title: 'Favoritos',
         }}
       />
     </FavoritosStack.Navigator>

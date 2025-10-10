@@ -141,7 +141,10 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
         navigationState={{ index, routes }}
         renderScene={renderScene}
         onIndexChange={setIndex}
-        style={{ marginHorizontal: 8, borderRadius: 30 }}
+        style={{
+          marginHorizontal: 8,
+          borderRadius: 30,
+        }}
         initialLayout={{ width: layout.width }}
         renderTabBar={(props) => <CustomProfileTabBar {...props} />}
       />

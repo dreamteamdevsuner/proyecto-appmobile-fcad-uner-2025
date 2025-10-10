@@ -114,7 +114,26 @@ const Mensajeria: React.FC<Props> = ({ navigation }) => {
 
           return (
             <View style={styles.section}>
-              <Text style={styles.title}>{item.title}</Text>
+              <View
+                style={
+                  (styles.titleContainer,
+                  {
+                    backgroundColor: '#F1836A',
+                    height: 48,
+                    width: '100%',
+                    borderTopStartRadius: 15,
+                    borderTopEndRadius: 15,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: 10,
+                    paddingHorizontal: 10,
+                    paddingVertical: 5,
+                  })
+                }
+              >
+                <Text style={styles.title}>Oferta: {item.title} </Text>
+              </View>
               {postulantes.length > 0 ? (
                 <UserList
                   users={postulantes}
@@ -141,13 +160,27 @@ const styles = StyleSheet.create({
   section: {
     backgroundColor: '#1D1C21',
     borderRadius: 15,
-    padding: 10,
+    padding: 0,
     marginBottom: 10,
   },
   title: {
+    fontSize: 18,
     fontWeight: 'bold',
-    fontSize: 22,
+    marginLeft: 15,
+    color: '#1D1C21',
+  },
+  titleContainer: {
+    fontSize: 25,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 10,
+    borderTopEndRadius: 15,
+    borderTopStartRadius: 15,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    width: '100%',
+    height: 48,
   },
   noUsers: {
     fontSize: 14,
