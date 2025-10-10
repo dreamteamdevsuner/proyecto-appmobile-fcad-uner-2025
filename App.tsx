@@ -17,6 +17,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 import { AppDarkTheme } from './app/private/shared/constants/theme/paperTheme';
+import { StatusBar } from 'expo-status-bar';
+//import * as NavigationBar from 'expo-navigation-bar';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -46,6 +48,21 @@ export default function App() {
     prepare();
   }, []);
 
+  {
+    /* Configuración de la barra de navegación 
+  useEffect(() => {
+    const setNavBarStyle = async () => {
+      await NavigationBar.setBackgroundColorAsync('#000000');
+      await NavigationBar.setButtonStyleAsync('light');
+      await NavigationBar.setVisibilityAsync('visible'); // 🔹 fuerza a mostrarse
+      await NavigationBar.setBehaviorAsync('inset-swipe'); // 🔹 mantiene el color en gestos
+    };
+
+    setNavBarStyle();
+  }, []);
+  */
+  }
+
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
       await SplashScreen.hideAsync();
@@ -60,6 +77,7 @@ export default function App() {
         <PaperProvider theme={AppDarkTheme}>
           <NavigationContainer theme={AppDarkTheme}>
             <SafeAreaView style={{ flex: 1 }}>
+              <StatusBar style="light" backgroundColor="#000000" />
               <Navigator></Navigator>
               {/* <View style={styles.contentWrapper}>
             <View style={styles.btnContainer}>

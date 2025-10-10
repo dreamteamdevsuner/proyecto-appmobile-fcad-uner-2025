@@ -2610,15 +2610,6 @@ expo-modules-core@3.0.18:
   dependencies:
     invariant "^2.2.4"
 
-expo-navigation-bar@^5.0.8:
-  version "5.0.8"
-  resolved "https://registry.npmjs.org/expo-navigation-bar/-/expo-navigation-bar-5.0.8.tgz"
-  integrity sha512-vaUkedxWscne24NIoADncgjP4WYKNdy69mSO9UWNRlOGdmzyswI4h16xuiNjlbTOxzHMVPotGWyMNxo5gxkxpg==
-  dependencies:
-    "@react-native/normalize-colors" "0.81.4"
-    debug "^4.3.2"
-    react-native-is-edge-to-edge "^1.2.1"
-
 expo-secure-store@~15.0.7:
   version "15.0.7"
   resolved "https://registry.npmjs.org/expo-secure-store/-/expo-secure-store-15.0.7.tgz"
