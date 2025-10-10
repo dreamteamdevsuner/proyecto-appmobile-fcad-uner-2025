@@ -56,13 +56,15 @@ export const ProfileHeader = ({
               gap: 8,
             }}
           >
-            <Text style={{ fontSize: 24 }}>¡Hola {name}!</Text>
+            <Text style={{ fontSize: 24, color: '#FFFFFF' }}>
+              ¡Hola {name}!
+            </Text>
             <Text
               style={{
                 fontSize: 12,
                 flexShrink: 1,
                 fontWeight: 400,
-                color: '#49454F',
+                color: '#FFFFFF',
               }}
             >
               Nos alegra que volvieras.
@@ -110,7 +112,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: 16,
     gap: 32,
-    backgroundColor: '#E6E0E9',
+    backgroundColor: '#1D1C21',
     alignSelf: 'center',
   },
   image: {

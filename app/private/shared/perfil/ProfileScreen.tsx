@@ -117,7 +117,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#fff' }}>
+    <View style={{ flex: 1, backgroundColor: '#0A090F' }}>
       <View style={{ paddingVertical: 8 }}>
         <ProfileHeader
           name={profileUser?.name ?? (state.user! as any).name}

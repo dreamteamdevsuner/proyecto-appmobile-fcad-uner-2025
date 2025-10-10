@@ -69,13 +69,13 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingHorizontal: 32,
     paddingBottom: 32,
-    backgroundColor: '#FEF7FF',
+    backgroundColor: '#1D1C21',
   },
   title: {
     fontWeight: 500,
     fontSize: 11,
     marginBottom: 8,
-    color: '#49454F',
+    color: '#ffffff',
   },
   tabContent: {
     flexGrow: 1,
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   textContent: {
-    color: '#1D1B20',
+    color: '#ffffff',
     fontSize: 14,
     lineHeight: 20,
   },
