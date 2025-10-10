@@ -7,6 +7,7 @@ import FavoritosInteresantesScreen from '../favoritos-interesan';
 import CandidateTestScreen from '../CandidateTestScreen';
 import Conversacion from '../conversacion';
 import { PrivateStackParamList } from '../../../candidates/navigator/types';
+import JobsyHeader from '../../../../../components/ui/JobsyHeader';
 
 const FavoritosStack = createNativeStackNavigator<PrivateStackParamList>();
 
@@ -20,7 +21,7 @@ const FavoritosNavigator = () => (
       <FavoritosStack.Screen
         name={ROUTES.CANDIDATE_FAVORITOS}
         component={Favoritos}
-        options={{ title: 'Favoritos' }}
+        options={{ header: () => <JobsyHeader /> }}
       />
       <FavoritosStack.Screen
         name={ROUTES.CANDIDATE_FAVORITOS_MATCHS}

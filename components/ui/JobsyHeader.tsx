@@ -15,18 +15,18 @@ const JobsyHeader = () => {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    backgroundColor: '#000000', // negro del fondo
+    backgroundColor: '#000000',
     alignItems: 'left',
     justifyContent: 'left',
     margin: 0,
-    marginLeft: -15,
     padding: 0,
     width: '100%',
     height: '48',
   },
   logo: {
-    width: 120, // ajustá el tamaño según el diseño
+    width: 120,
     height: 48,
+    marginLeft: -20,
   },
 });
 

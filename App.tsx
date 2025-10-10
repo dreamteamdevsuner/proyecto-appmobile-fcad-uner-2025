@@ -1,15 +1,22 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from 'react';
 
-import { NavigationContainer, DarkTheme as NavigationDarkTheme } from '@react-navigation/native';
+import {
+  NavigationContainer,
+  DarkTheme as NavigationDarkTheme,
+} from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
-import { MD3DarkTheme as PaperDarkTheme, PaperProvider, configureFonts } from 'react-native-paper';
+import {
+  MD3DarkTheme as PaperDarkTheme,
+  PaperProvider,
+  configureFonts,
+} from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Navigator from './navigator/Navigator';
 import { AuthProvider } from './appContext/authContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as SplashScreen from 'expo-splash-screen';
-import * as Font from "expo-font";
-import { AppDarkTheme } from "./app/private/shared/constants/theme/paperTheme";
+import * as Font from 'expo-font';
+import { AppDarkTheme } from './app/private/shared/constants/theme/paperTheme';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -22,19 +29,19 @@ export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
 
   useEffect(() => {
-    async function  prepare() {
+    async function prepare() {
       try {
-        await Font.loadAsync( {
-          RobotoRegular: require ("./assets/fonts/Roboto-Regular.ttf"),
-          RobotoMedium: require("./assets/fonts/Roboto-Medium.ttf"),
-          RobotoLight: require("./assets/fonts/Roboto-Light.ttf"),
-          RobotoThin: require("./assets/fonts/Roboto-Thin.ttf"),
+        await Font.loadAsync({
+          RobotoRegular: require('./assets/fonts/Roboto-Regular.ttf'),
+          RobotoMedium: require('./assets/fonts/Roboto-Medium.ttf'),
+          RobotoLight: require('./assets/fonts/Roboto-Light.ttf'),
+          RobotoThin: require('./assets/fonts/Roboto-Thin.ttf'),
         });
       } catch (e) {
         console.warn(e);
       } finally {
         setAppIsReady(true);
-      }      
+      }
     }
     prepare();
   }, []);
@@ -47,12 +54,11 @@ export default function App() {
 
   if (!appIsReady) return null;
 
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>
       <AuthProvider>
         <PaperProvider theme={AppDarkTheme}>
-          <NavigationContainer theme={AppDarkTheme}>          
+          <NavigationContainer theme={AppDarkTheme}>
             <SafeAreaView style={{ flex: 1 }}>
               <Navigator></Navigator>
               {/* <View style={styles.contentWrapper}>
@@ -61,7 +67,7 @@ export default function App() {
               <Button>Registrarse</Button>
             </View>
           </View> */}
-            </SafeAreaView>          
+            </SafeAreaView>
           </NavigationContainer>
         </PaperProvider>
       </AuthProvider>

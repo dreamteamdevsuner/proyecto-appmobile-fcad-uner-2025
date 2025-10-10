@@ -24,7 +24,11 @@ const UserListHorizontal: React.FC<Props> = ({ users, onSelectUser }) => {
       {item.avatarUrl ? (
         <Avatar.Image size={60} source={{ uri: item.avatarUrl }} />
       ) : (
-        <Avatar.Text size={60} label={item.name.charAt(0)} />
+        <Avatar.Text
+          size={60}
+          label={item.name.charAt(0)}
+          style={{ backgroundColor: item.avatarBgColor || '#DA79AE' }}
+        />
       )}
       <Text style={styles.cardTitle}>{item.name}</Text>
       {item.subtitle && (
@@ -54,22 +58,29 @@ const UserListHorizontal: React.FC<Props> = ({ users, onSelectUser }) => {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'flex-start',
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+    gap: 15,
   },
   selectedTitle: {
     fontWeight: 'bold',
+    padding: 30,
   },
   card: {
     width: 120,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingBottom: 10,
   },
   cardTitle: {
     fontWeight: 'bold',
     textAlign: 'center',
+    marginTop: 10,
   },
   cardSubtitle: {
     fontSize: 12,
     color: '#666',
+    marginBottom: 5,
   },
 });
 export default UserListHorizontal;
