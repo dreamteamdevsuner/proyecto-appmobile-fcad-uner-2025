@@ -18,17 +18,14 @@ import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 import { AppDarkTheme } from './app/private/shared/constants/theme/paperTheme';
 import { StatusBar } from 'expo-status-bar';
+import Splash from './components/SplashScreen';
 //import * as NavigationBar from 'expo-navigation-bar';
-
-SplashScreen.preventAutoHideAsync();
-
-SplashScreen.setOptions({
-  duration: 1500,
-  fade: true,
-});
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
+  const [showSplash, setShowSplash] = useState(true);
+
+  SplashScreen.preventAutoHideAsync();
 
   useEffect(() => {
     async function prepare() {
@@ -48,47 +45,24 @@ export default function App() {
     prepare();
   }, []);
 
-  {
-    /* Configuración de la barra de navegación 
-  useEffect(() => {
-    const setNavBarStyle = async () => {
-      await NavigationBar.setBackgroundColorAsync('#000000');
-      await NavigationBar.setButtonStyleAsync('light');
-      await NavigationBar.setVisibilityAsync('visible'); // 🔹 fuerza a mostrarse
-      await NavigationBar.setBehaviorAsync('inset-swipe'); // 🔹 mantiene el color en gestos
-    };
-
-    setNavBarStyle();
-  }, []);
-  */
-  }
-
-  const onLayoutRootView = useCallback(async () => {
-    if (appIsReady) {
-      await SplashScreen.hideAsync();
-    }
-  }, [appIsReady]);
-
   if (!appIsReady) return null;
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>
-      <AuthProvider>
-        <PaperProvider theme={AppDarkTheme}>
-          <NavigationContainer theme={AppDarkTheme}>
-            <SafeAreaView style={{ flex: 1 }}>
-              <StatusBar style="light" backgroundColor="#000000" />
-              <Navigator></Navigator>
-              {/* <View style={styles.contentWrapper}>
-            <View style={styles.btnContainer}>
-              <Button mode="outlined">Iniciar sesión</Button>
-              <Button>Registrarse</Button>
-            </View>
-          </View> */}
-            </SafeAreaView>
-          </NavigationContainer>
-        </PaperProvider>
-      </AuthProvider>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: '#000000' }}>
+      {showSplash ? (
+        <Splash onFinish={() => setShowSplash(false)} />
+      ) : (
+        <AuthProvider>
+          <PaperProvider theme={AppDarkTheme}>
+            <NavigationContainer theme={AppDarkTheme}>
+              <SafeAreaView style={{ flex: 1 }}>
+                <StatusBar style="light" backgroundColor="#000000" />
+                <Navigator></Navigator>
+              </SafeAreaView>
+            </NavigationContainer>
+          </PaperProvider>
+        </AuthProvider>
+      )}
     </GestureHandlerRootView>
   );
 }
@@ -98,10 +72,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  // contentWrapper: { flexDirection: 'column', gap: 2 },
-  // btnContainer: {
-  //   flexDirection: 'row',
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  // },
 });

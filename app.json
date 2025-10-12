@@ -1,16 +1,16 @@
 {
   "expo": {
-    "name": "proyecto-appmobile-fcad-uner-2025",
-    "slug": "proyecto-appmobile-fcad-uner-2025",
+    "name": "JOBSY",
+    "slug": "jobsy-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "icon": "./assets/images/logo/logo-jobsy-favicon-jobsy-nyb.png",
+    "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/images/logo/logo-jobsy-favicon-jobsy-nyb.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#BEB52C"
     },
     "ios": {
       "supportsTablet": true
@@ -26,8 +26,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "expo-secure-store"
-    ]
+    "plugins": ["expo-secure-store"]
   }
 }
