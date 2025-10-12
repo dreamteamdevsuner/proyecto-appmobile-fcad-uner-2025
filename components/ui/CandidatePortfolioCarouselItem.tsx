@@ -37,7 +37,7 @@ const CandidatePortfolioCarouselItem = ({ item }: { item: LinkImage | PortfolioT
   }
   if (checkIsPortfolioText(item)) {
     styles = { ...styles, container: { ...styles.container, backgroundColor: 'black', } }
-    const t = {}
+
     innerContent = <Pressable onPress={() => navigation.navigate(ROUTES.RECRUITER_CANDIDATE_PROFILE_FULL, {
       route: { "key": "CandidateProfile-DE1J82UTp6yZRljjHZ7PG", "name": CANDIDATE_ROUTES.CANDIDATE_PROFILE, "params": undefined }
     })} >
