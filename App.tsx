@@ -1,43 +1,68 @@
-import { NavigationContainer } from '@react-navigation/native';
+import React, { useCallback, useEffect, useState } from 'react';
+
+import {
+  NavigationContainer,
+  DarkTheme as NavigationDarkTheme,
+} from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
-import { DefaultTheme, PaperProvider } from 'react-native-paper';
+import {
+  MD3DarkTheme as PaperDarkTheme,
+  PaperProvider,
+  configureFonts,
+} from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Navigator from './navigator/Navigator';
 import { AuthProvider } from './appContext/authContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as SplashScreen from 'expo-splash-screen';
-
-SplashScreen.preventAutoHideAsync();
-
-SplashScreen.setOptions({
-  duration: 1500,
-  fade: true,
-});
+import * as Font from 'expo-font';
+import { AppDarkTheme } from './app/private/shared/constants/theme/paperTheme';
+import { StatusBar } from 'expo-status-bar';
+import Splash from './components/SplashScreen';
+//import * as NavigationBar from 'expo-navigation-bar';
 
 export default function App() {
+  const [appIsReady, setAppIsReady] = useState(false);
+  const [showSplash, setShowSplash] = useState(true);
+
+  SplashScreen.preventAutoHideAsync();
+
+  useEffect(() => {
+    async function prepare() {
+      try {
+        await Font.loadAsync({
+          RobotoRegular: require('./assets/fonts/Roboto-Regular.ttf'),
+          RobotoMedium: require('./assets/fonts/Roboto-Medium.ttf'),
+          RobotoLight: require('./assets/fonts/Roboto-Light.ttf'),
+          RobotoThin: require('./assets/fonts/Roboto-Thin.ttf'),
+        });
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setAppIsReady(true);
+      }
+    }
+    prepare();
+  }, []);
+
+  if (!appIsReady) return null;
+
   return (
-    //hardcodeando paleta custom , pasando blue como primary
-    <GestureHandlerRootView>
-      <AuthProvider>
-        <NavigationContainer>
-          <PaperProvider
-            theme={{
-              ...DefaultTheme,
-              colors: { ...DefaultTheme.colors, primary: '#b58df1' },
-            }}
-          >
-            <SafeAreaView style={{ flex: 1, justifyContent: 'center' }}>
-              <Navigator></Navigator>
-              {/* <View style={styles.contentWrapper}>
-            <View style={styles.btnContainer}>
-              <Button mode="outlined">Iniciar sesión</Button>
-              <Button>Registrarse</Button>
-            </View>
-          </View> */}
-            </SafeAreaView>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: '#000000' }}>
+      {showSplash ? (
+        <Splash onFinish={() => setShowSplash(false)} />
+      ) : (
+        <AuthProvider>
+          <PaperProvider theme={AppDarkTheme}>
+            <NavigationContainer theme={AppDarkTheme}>
+              <SafeAreaView style={{ flex: 1 }}>
+                <StatusBar style="light" backgroundColor="#000000" />
+                <Navigator></Navigator>
+              </SafeAreaView>
+            </NavigationContainer>
           </PaperProvider>
-        </NavigationContainer>
-      </AuthProvider>
+        </AuthProvider>
+      )}
     </GestureHandlerRootView>
   );
 }
@@ -46,11 +71,5 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  contentWrapper: { flexDirection: 'column', gap: 2 },
-  btnContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });

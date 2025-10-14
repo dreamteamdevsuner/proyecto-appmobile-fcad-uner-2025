@@ -110,8 +110,26 @@ const Mensajeria: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Todos mis chats</Text>
-
+      <View
+        style={
+          (styles.titleContainer,
+          {
+            backgroundColor: '#F1836A',
+            height: 48,
+            width: '100%',
+            borderTopStartRadius: 15,
+            borderTopEndRadius: 15,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: 10,
+            paddingHorizontal: 10,
+            paddingVertical: 5,
+          })
+        }
+      >
+        <Text style={styles.title}>Todos mis chats</Text>
+      </View>
       <UserList
         showOferta={true}
         users={users}
@@ -124,8 +142,11 @@ const Mensajeria: React.FC<Props> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    margin: 10,
+    padding: 0,
     flex: 1,
+    backgroundColor: '#1D1C21',
+    borderRadius: 15,
   },
   section: {
     backgroundColor: '#cdc7ceff',
@@ -134,8 +155,23 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   title: {
-    fontSize: 20,
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 15,
+    color: '#1D1C21',
+  },
+  titleContainer: {
+    fontSize: 25,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 10,
+    borderTopEndRadius: 15,
+    borderTopStartRadius: 15,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    width: '100%',
+    height: 48,
   },
   noUsers: {
     fontSize: 14,

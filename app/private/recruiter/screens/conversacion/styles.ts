@@ -4,7 +4,7 @@ import { Text, TextInput } from 'react-native-paper';
 
 export const Container = styled(View)`
   flex: 1;
-  background-color: #fff;
+  background-color: #0A090F;
 `;
 
 export const MessageRow = styled(View)<{ isMe: boolean }>`

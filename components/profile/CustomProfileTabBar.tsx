@@ -19,14 +19,14 @@ const CustomProfileTabBar = (props: ProfileTabBarProps) => (
       borderTopLeftRadius: 3,
     }}
     style={{
-      backgroundColor: '#FEF7FF',
+      backgroundColor: '#1D1C21',
       borderBottomWidth: 1,
-      borderBottomColor: '#cacacaff',
+      borderBottomColor: '#0A090F',
       elevation: 0,
       overflow: 'hidden',
     }}
-    activeColor="#6750A4"
-    inactiveColor="#2c2c2c"
+    activeColor="#FFFFFF"
+    inactiveColor="#FFFFFF"
     tabStyle={{}}
     android_ripple={{ color: '#EADDFF' }}
     renderIndicator={(indicatorProps) => {
@@ -44,7 +44,7 @@ const CustomProfileTabBar = (props: ProfileTabBarProps) => (
             width: textWidth,
             bottom: 0,
             height: 3,
-            backgroundColor: '#6750A4',
+            backgroundColor: '#FFFFFF',
             borderTopLeftRadius: 3,
             borderTopRightRadius: 3,
           }}

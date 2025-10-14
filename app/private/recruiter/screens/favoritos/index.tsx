@@ -107,7 +107,24 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.section}>
-        <View style={styles.titleContainer}>
+        <View
+          style={
+            (styles.titleContainer,
+            {
+              backgroundColor: '#F294AC',
+              height: 48,
+              width: '100%',
+              borderTopStartRadius: 15,
+              borderTopEndRadius: 15,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: 10,
+              paddingHorizontal: 10,
+              paddingVertical: 5,
+            })
+          }
+        >
           <Text style={styles.title}>Matchs recientes</Text>
         </View>
         <UserListHorizontal
@@ -116,7 +133,24 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
         ></UserListHorizontal>
       </View>
       <View style={[styles.listContainer, styles.section]}>
-        <View style={styles.titleContainer}>
+        <View
+          style={
+            (styles.titleContainer,
+            {
+              backgroundColor: '#76BBC0',
+              height: 48,
+              width: '100%',
+              borderTopStartRadius: 15,
+              borderTopEndRadius: 15,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: 10,
+              paddingHorizontal: 10,
+              paddingVertical: 5,
+            })
+          }
+        >
           <Text style={styles.title}>Mis matchs</Text>
         </View>
         <OfertasList
@@ -130,9 +164,9 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   section: {
-    backgroundColor: '#cdc7ceff',
+    backgroundColor: '#1D1C21',
     borderRadius: 15,
-    padding: 10,
+    padding: 0,
   },
   titleContainer: {
     flexDirection: 'row',
@@ -141,8 +175,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: 'bold',
-    fontSize: 25,
+    fontSize: 18,
     marginLeft: 15,
+    color: '#1D1C21',
   },
   container: {
     padding: 10,
