@@ -5,17 +5,18 @@ import {
   ViewStyle,
   StyleProp,
   ImageProps,
+  ImageStyle,
 } from 'react-native';
 import React from 'react';
 
 interface JobsyHeaderProps {
   headerTitle: string;
-  styles?: {
+  propStyles?: {
     [key: string]: StyleProp<ViewStyle>;
-    logo?: StyleProp<ImageProps>;
+    logo?: StyleProp<ImageStyle>;
   };
 }
-const JobsyHeader = ({ headerTitle, styles }: JobsyHeaderProps) => {
+const JobsyHeader = ({ headerTitle, propStyles }: JobsyHeaderProps) => {
   return (
     <View style={StyleSheet.flatten(styles?.headerContainer)}>
       <Image

@@ -1,32 +1,30 @@
 import { StyleProp, ViewStyle, Dimensions } from 'react-native';
-import React, { PropsWithChildren } from 'react'
+import React, { PropsWithChildren } from 'react';
 import { CarouselItemProps } from '../swipe_match/SwipeMatch';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 import { useSharedValue } from 'react-native-reanimated';
 interface AppCarouselProps<T> extends PropsWithChildren {
-  styles?: StyleProp<ViewStyle>,
-  children?: React.ReactNode,
-  ref?: React.RefObject<ICarouselInstance | null>,
+  styles?: StyleProp<ViewStyle>;
+  children?: React.ReactNode;
+  ref?: React.RefObject<ICarouselInstance | null>;
   width: number;
-  height?: number
+  height?: number;
   loop?: boolean;
   data: T[];
   enabledScroll: boolean;
-  handleScrollEnabled?: (val: boolean) => void
+  onScrollEnd?: (val: number) => void;
+  handleScrollEnabled?: (val: boolean) => void;
   renderItem: (props: CarouselItemProps<T>) => React.JSX.Element;
-
 }
 
 const screenWidth = Dimensions.get('window').width;
 const AppCarousel = <T,>(props: AppCarouselProps<T>) => {
-
-
-  const { ref, data, enabledScroll, renderItem, handleScrollEnabled } = props
+  const { ref, data, enabledScroll, renderItem, handleScrollEnabled } = props;
   const progress = useSharedValue<number>(0);
-  const width = screenWidth
+  const width = screenWidth;
   return (
-
     <Carousel<T>
+      onScrollEnd={(val) => console.log('scroll end', val)}
       ref={ref}
       width={width}
       height={props.height}
@@ -35,12 +33,9 @@ const AppCarousel = <T,>(props: AppCarouselProps<T>) => {
       style={props.styles}
       onProgressChange={progress}
       enabled={enabledScroll}
-      renderItem={({ item }) => renderItem({ item, handleScrollEnabled })
-
-      }
+      renderItem={({ item }) => renderItem({ item, handleScrollEnabled })}
     />
-  )
-}
+  );
+};
 
-export default AppCarousel
-
+export default AppCarousel;

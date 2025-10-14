@@ -11,6 +11,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import JobsyHeader from '../../../../components/ui/JobsyHeader';
 
 import { Image } from 'react-native';
+import { LOGO } from '../../../../constants/ui/logo';
 
 const Tab = createBottomTabNavigator();
 
@@ -44,6 +45,7 @@ const CandidateNavigator = () => {
               headerTitle={
                 options.headerTitle?.toString() ?? 'placeholder title'
               }
+              propStyles={{ logo: { width: 45, height: 45 } }}
             ></JobsyHeader>
           ),
         }}

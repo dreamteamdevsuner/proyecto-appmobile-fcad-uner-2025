@@ -1,5 +1,5 @@
 import { View, StyleSheet, StyleProp, ViewStyle, FlatList } from 'react-native';
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useMemo } from 'react';
 import { Button, Card, Chip, Icon, Text } from 'react-native-paper';
 import { Candidate } from '../../interfaces/Candidate';
 import { Pressable } from 'react-native-gesture-handler';
@@ -14,6 +14,7 @@ function CandidateCard({
   handleScrollEnabled,
 }: CandidateCardProps) {
   const imageLink = require('../../assets/images/avatarCandidatePlaceholder.jpg');
+
   return (
     <Card style={styles.card}>
       <View
@@ -78,6 +79,7 @@ function CandidateCard({
           </Text>
           <FlatList
             data={item.skills}
+            scrollEnabled={false}
             onTouchStart={(e) => {
               e.preventDefault();
               e.stopPropagation();
