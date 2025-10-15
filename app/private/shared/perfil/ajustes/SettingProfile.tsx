@@ -23,7 +23,7 @@ export default function SettingProfileScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <View style={styles.safe}>
       {/* Card con opciones */}
       <View style={styles.card}>
         <List.Item
@@ -56,7 +56,9 @@ export default function SettingProfileScreen() {
         >
           <Dialog.Title>Cerrar sesión</Dialog.Title>
           <Dialog.Content>
-            <Text>¿Estás seguro de que querés cerrar sesión?</Text>
+            <Text style={{ color: '#EAEAEA' }}>
+              ¿Estás seguro de que querés cerrar sesión?
+            </Text>
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={hideDialog}>Cancelar</Button>
@@ -71,15 +73,15 @@ export default function SettingProfileScreen() {
           </Dialog.Actions>
         </Dialog>
       </Portal>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#fff' },
+  safe: { flex: 1 },
   card: {
     margin: 16,
-    backgroundColor: '#F8EEF6', // rosado claro
+    backgroundColor: '#1d1c21',
     borderRadius: 20,
     overflow: 'hidden',
   },

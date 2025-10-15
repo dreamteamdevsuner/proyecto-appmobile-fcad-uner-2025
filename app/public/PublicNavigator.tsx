@@ -1,11 +1,13 @@
-import React from "react";
-import ResetPasswordScreen from "./ResetPasswordScreen";
-import Auth from "./Auth";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from 'react';
+import ResetPasswordScreen from './ResetPasswordScreen';
+import Auth from './Auth';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as SplashScreen from 'expo-splash-screen';
 
 const PublicNavigator = () => {
   const Stack = createNativeStackNavigator();
 
+  SplashScreen.hideAsync();
   return (
     <Stack.Navigator
       initialRouteName="Auth"

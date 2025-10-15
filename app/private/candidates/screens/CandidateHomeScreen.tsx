@@ -9,76 +9,92 @@ import JobOfferCard from '../../../../components/ui/JobOfferCard';
 
 const ofertasDeTrabajo: JobOffer[] = [
   {
-    recruiterFirstName: 'Lucía',
-    recruiterLastName: 'Gómez',
-    title: 'Desarrollador Frontend',
-    company: 'TechNova',
+    recruiterFirstName: 'Renata',
+    recruiterLastName: 'Scheneider',
+    recruiterPhoto: 'renata',
+    recruiterLocation: 'Córdoba, Argentina',
+    recruiterProfession: 'Talent Acquisition - Freelancer',
+    title: 'Diseñador UX/UI',
+    company: 'Banco Santander',
     location: 'Buenos Aires, Argentina',
     jobType: 'REMOTO',
     jobTime: 'FULL TIME',
     about:
-      'Buscamos un desarrollador frontend con experiencia en React para trabajar en proyectos innovadores.',
+      'Estamos en búsqueda de un diseñador UX/UI especializado en microinteracciones.',
+    skills: ['Figma', 'Microinteracciones', 'Miro'],
+    cuentaRegresiva: 'Quedan 3 días para aplicar',
   },
   {
-    recruiterFirstName: 'Carlos',
-    recruiterLastName: 'Pérez',
-    title: 'Analista de Datos',
-    company: 'DataVision',
-    location: 'Madrid, España',
-    jobType: 'HIBRIDO',
-    jobTime: 'PART TIME',
-    about:
-      'El rol implica análisis de grandes volúmenes de datos y generación de reportes para clientes internacionales.',
-  },
-  {
-    recruiterFirstName: 'María',
-    recruiterLastName: 'Fernández',
-    title: 'Diseñador UX/UI',
-    company: 'Creativa Studio',
-    location: 'Ciudad de México, México',
-    jobType: 'REMOTO',
-    jobTime: 'FULL TIME',
-    about:
-      'Estamos en búsqueda de un diseñador UX/UI para mejorar la experiencia de usuario en nuestras plataformas digitales.',
-  },
-  {
-    recruiterFirstName: 'Javier',
-    recruiterLastName: 'Rodríguez',
-    title: 'Ingeniero DevOps',
-    company: 'CloudWorks',
-    location: 'Barcelona, España',
+    recruiterFirstName: 'Mayra',
+    recruiterLastName: 'Roa',
+    recruiterPhoto: 'mayra',
+    recruiterLocation: 'Buenos Aires, Argentina',
+    recruiterProfession: 'HR Specialist - Mercado Libre',
+    title: 'Diseñador UX/UI Sr.',
+    company: 'Mercado Libre',
+    location: 'Buenos Aires, Argentina',
     jobType: 'HIBRIDO',
     jobTime: 'FULL TIME',
     about:
-      'Responsable de la automatización de procesos y mantenimiento de infraestructura en la nube.',
+      'Buscamos un Diseñador UX/UI Sr. con experiencia en diseño de interfaces para plataformas de e-commerce.',
+    skills: ['Figma', 'Sketch', 'Prototipado'],
+    cuentaRegresiva: 'Quedan 5 días para aplicar',
   },
   {
-    recruiterFirstName: 'Sofía',
-    recruiterLastName: 'Martínez',
-    title: 'Especialista en Marketing Digital',
-    company: 'MarketPro',
-    location: 'Lima, Perú',
+    recruiterFirstName: 'Lucía',
+    recruiterLastName: 'Vasconccellos',
+    recruiterPhoto: 'lucia',
+    recruiterProfession: 'HR Specialist - Talent Agency Looper',
+    recruiterLocation: 'Buenos Aires, Argentina',
+    title: 'Diseñador UI',
+    company: 'Proyecto freelance',
+    location: 'Mendoza, Argentina',
+    jobType: 'REMOTO',
+    jobTime: 'FULL TIME',
+    about:
+      'Estamos en búsqueda de un diseñador UX/UI para un proyecto freelance de 3 meses.',
+    skills: ['Adobe XD', 'Figma', 'Prototipado'],
+    cuentaRegresiva: 'Quedan 2 días para aplicar',
+  },
+  {
+    recruiterFirstName: 'Tom',
+    recruiterLastName: 'Bordt',
+    recruiterPhoto: 'tom',
+    recruiterProfession: 'HR Manager - Roblander',
+    recruiterLocation: 'Miami, EEUU',
+    title: 'Visual Designer',
+    company: 'Roblander',
+    location: 'Miami, EEUU',
     jobType: 'REMOTO',
     jobTime: 'PART TIME',
     about:
-      'Se requiere experiencia en campañas de Google Ads y manejo de redes sociales para clientes del sector retail.',
+      'Se busca Visual Designer con experiencia en branding y diseño gráfico para proyectos digitales.',
+    skills: ['Photoshop', 'Illustrator', 'Branding'],
+    cuentaRegresiva: 'Quedan 7 días para aplicar',
+  },
+  {
+    recruiterFirstName: 'Ann Lynn',
+    recruiterLastName: 'Parker',
+    recruiterPhoto: 'ann',
+    recruiterProfession: 'HR Manager - Tech Solutions',
+    recruiterLocation: 'Austin, EEUU',
+    title: 'UI Designer',
+    company: 'Lovelace Agency',
+    location: 'San Francisco, EEUU',
+    jobType: 'REMOTO',
+    jobTime: 'FULL TIME',
+    about:
+      'Buscamos un UI Designer con experiencia en diseño de interfaces para aplicaciones móviles.',
+    skills: ['Figma', 'Sketch', 'Prototipado'],
+    cuentaRegresiva: 'Quedan 4 días para aplicar',
   },
 ];
 const CandidateHomeScreen = () => {
   return (
     <SwipeMatch<JobOffer>
       data={ofertasDeTrabajo}
-      renderItem={({
-        item,
-
-      }
-      ) => {
-        return (
-          <JobOfferCard
-
-            {...{ item }}
-          ></JobOfferCard>
-        );
+      renderItem={({ item }) => {
+        return <JobOfferCard {...{ item }}></JobOfferCard>;
       }}
     ></SwipeMatch>
   );

@@ -1,5 +1,5 @@
 import { View, StyleSheet, StyleProp, ViewStyle, FlatList } from 'react-native';
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useMemo } from 'react';
 import { Button, Card, Chip, Icon, Text } from 'react-native-paper';
 import { Candidate } from '../../interfaces/Candidate';
 import { Pressable } from 'react-native-gesture-handler';
@@ -14,6 +14,7 @@ function CandidateCard({
   handleScrollEnabled,
 }: CandidateCardProps) {
   const imageLink = require('../../assets/images/avatarCandidatePlaceholder.jpg');
+
   return (
     <Card style={styles.card}>
       <View
@@ -61,7 +62,7 @@ function CandidateCard({
                 textAlign: 'center',
               }}
             >
-              {item.firstName + ' ' + item.lastName}{' '}
+              {item.firstName + ' ' + item.lastName}
             </Text>
           }
         ></Card.Title>
@@ -78,6 +79,7 @@ function CandidateCard({
           </Text>
           <FlatList
             data={item.skills}
+            scrollEnabled={false}
             onTouchStart={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -109,22 +111,7 @@ function CandidateCard({
               </Chip>
             )}
           ></FlatList>
-          <View
-            style={{
-              alignContent: 'center',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Button
-              style={{ width: 24 }}
-              children
-              buttonColor="transparent"
-              textColor="black"
-              icon="plus-circle-outline"
-              mode="contained"
-            ></Button>
-          </View>
+          {children}
         </Card.Content>
       </View>
     </Card>
@@ -158,8 +145,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#2c2c2c',
     color: 'white',
     borderRadius: 20,
+
     fontSize: 10,
-    //POR QUE LOS ESTILOS DE LEO NO ME FUNCIONAN SI ES EL MISMO COMPONENT Y TENGO QUE AGREGAR MR = 5 ??!
+
     marginRight: 5,
   },
 });

@@ -40,29 +40,15 @@ export const Divider = () => {
     </View>
   );
 };
-const GoogleLogin = () => {
-  return (
-    <View>
-      <Divider></Divider>
-      <Button
-        mode="outlined"
-        textColor="black"
-        icon={"google"}
-        buttonColor="white"
-      >
-        <Text>Iniciar sesión con Google</Text>
-      </Button>
-    </View>
-  );
-};
+
 //Provisorio reemplazar el Record
-interface RouteProps extends NativeStackScreenProps<Record<string, any>> {}
+interface RouteProps extends NativeStackScreenProps<Record<string, any>> { }
 const Auth = ({ navigation }: RouteProps) => {
   return (
     <View style={{ paddingHorizontal: 60, paddingTop: 40 }}>
       <Logo></Logo>
       <AuthForm></AuthForm>
-      <GoogleLogin></GoogleLogin>
+
       <View
         style={{
           display: "flex",

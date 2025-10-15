@@ -3,13 +3,14 @@ import ProfileScreenShared from '../../../shared/perfil/ProfileScreen';
 import { RouteProp } from '@react-navigation/native';
 import { PrivateStackParamList as CandidateStackParamList } from '../../navigator/types';
 import ROUTES from '../../navigator/routes';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-type Props = {
+interface Props extends NativeStackScreenProps<any, any> {
   route: RouteProp<CandidateStackParamList, typeof ROUTES.CANDIDATE_PROFILE>;
-};
+}
 
-const CandidateProfileWrapper: React.FC<Props> = ({ route }) => {
-  return <ProfileScreenShared route={route} />;
+const CandidateProfileWrapper: React.FC<Props> = ({ route, navigation }) => {
+  return <ProfileScreenShared route={route} navigation={navigation} />;
 };
 
 export default CandidateProfileWrapper;

@@ -16,14 +16,22 @@ import {
   ProfileHeader,
   WhatIDo,
 } from '../../../../components/profile/index';
+import { RootStackParams } from '../../recruiter/navigator/SwipeStack';
+import { RootStackParamList } from './ajustes/types';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import ROUTES from '../../recruiter/navigator/routes';
 
-type CombinedParamList = RecruiterStackParamList & CandidateStackParamList;
+export type CombinedParamList = RecruiterStackParamList &
+  CandidateStackParamList;
 
-type Props = {
-  route: RouteProp<CombinedParamList, keyof CombinedParamList>;
-};
+// type Props = {
+//   route: RouteProp<CombinedParamList, keyof CombinedParamList>;
+// };
+// type Props = NativeStackScreenProps<RootStackParams | CombinedParamList>;
+type Props = NativeStackScreenProps<any, any>;
 
 const ProfileScreenShared: React.FC<Props> = ({ route }) => {
+  console.log('route', route);
   const { state } = useAuth();
   const userId =
     route?.params &&
@@ -31,7 +39,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
     'userId' in route.params
       ? (route.params as { userId?: number }).userId
       : state.user!.id;
-
+  console.log('userId', userId);
   const [profileUser, setProfileUser] = useState<ProfileUser | undefined>();
   const [loading, setLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
@@ -44,8 +52,6 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
         const fetched = await fetchUserByIdMock(userId);
         setProfileUser(fetched);
         setNotFound(!fetched);
-        console.log(fetched);
-        console.log(state);
       } catch (error) {
         console.error(error);
       } finally {
@@ -100,7 +106,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
     }
   };
 
-  const isOwnProfile = () => !userId;
+  const isOwnProfile = () => userId === state.user?.id;
 
   if (loading) {
     return (
@@ -119,7 +125,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#fff' }}>
+    <View style={{ flex: 1, backgroundColor: '#0A090F' }}>
       <View style={{ paddingVertical: 8 }}>
         <ProfileHeader
           name={profileUser?.name ?? (state.user! as any).name}
@@ -143,7 +149,10 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
         navigationState={{ index, routes }}
         renderScene={renderScene}
         onIndexChange={setIndex}
-        style={{ marginHorizontal: 8, borderRadius: 30 }}
+        style={{
+          marginHorizontal: 8,
+          borderRadius: 30,
+        }}
         initialLayout={{ width: layout.width }}
         renderTabBar={(props) => <CustomProfileTabBar {...props} />}
       />

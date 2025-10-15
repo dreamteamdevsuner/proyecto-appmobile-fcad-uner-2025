@@ -3,6 +3,7 @@ import { View, StyleSheet, Text } from "react-native";
 import { TextInput, Button, Dialog, Portal } from "react-native-paper";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import { useNavigation } from "@react-navigation/native";
 
 const validationSchema = Yup.object().shape({
   actual: Yup.string().required("La contraseña actual es obligatoria"),
@@ -14,6 +15,7 @@ const validationSchema = Yup.object().shape({
 
 export default function CambiarContrasenaScreen() {
   const [dialogVisible, setDialogVisible] = useState(false);
+  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
@@ -73,10 +75,13 @@ export default function CambiarContrasenaScreen() {
               >
                 <Dialog.Title>Contaseña actualizada</Dialog.Title>
                 <Dialog.Content>
-                  <Text>La contraseña de tu cuenta ha sido actualizados correctamente.</Text>
+                  <Text style={{ color: '#EAEAEA' }}>La contraseña de tu cuenta ha sido actualizada correctamente.</Text>
                 </Dialog.Content>
                 <Dialog.Actions>
-                  <Button onPress={() => setDialogVisible(false)}>OK</Button>
+                  <Button onPress={() => { setDialogVisible(false);
+                    navigation.goBack();
+                  }}
+                  >OK</Button>
                 </Dialog.Actions>
               </Dialog>
             </Portal>
@@ -89,7 +94,6 @@ export default function CambiarContrasenaScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1,
-     backgroundColor: "#fff", 
     padding: 16
   },
   sectionTitle: { fontSize: 16, 
@@ -101,10 +105,9 @@ const styles = StyleSheet.create({
   input: { 
     marginHorizontal: 30,
     marginBottom: 10,
-    backgroundColor: 'white',
    },
   button: { margin: 40,
     marginVertical: 200,
-    backgroundColor: 'black',
+    backgroundColor: '#beb53c',
    },
 });

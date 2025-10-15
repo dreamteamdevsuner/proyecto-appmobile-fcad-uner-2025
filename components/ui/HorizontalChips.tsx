@@ -32,7 +32,7 @@ export const HorizontalChips = ({
         <Chip
           key={item}
           style={{
-            backgroundColor: backgroundColor ? backgroundColor : '#2c2c2c',
+            backgroundColor: backgroundColor ? backgroundColor : '#1D1C21',
             borderRadius: borderRadius ? borderRadius : 20,
           }}
           textStyle={{ color: textColor ? textColor : 'white' }}

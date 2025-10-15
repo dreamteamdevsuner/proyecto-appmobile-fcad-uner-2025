@@ -1,15 +1,21 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { useAuth } from '../appContext/authContext';
 import PrivateNavigator from '../app/private/PrivateNavigator';
 import PublicNavigator from '../app/public/PublicNavigator';
+import * as SplashScreen from 'expo-splash-screen';
 
 //Agregar Root Stack Params Luego
 const Stack = createNativeStackNavigator();
 const Navigator = () => {
   const { state } = useAuth();
-  console.log(state);
+
+  useEffect(() => {
+    if (state.user) {
+      SplashScreen.hideAsync();
+    }
+  }, [state.user]);
 
   return state.user ? (
     <PrivateNavigator></PrivateNavigator>

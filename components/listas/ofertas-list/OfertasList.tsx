@@ -18,6 +18,7 @@ const OfertasList: React.FC<Props> = ({ ofertas, onSelectOferta }) => {
         description={item.subtitle}
         style={pressedId === item.id ? styles.selectedItem : undefined}
         titleStyle={pressedId === item.id ? styles.selectedTitle : undefined}
+        descriptionStyle={styles.subtitle}
         onPress={() => onSelectOferta(item)}
         onPressIn={() => setPressedId(item.id)}
         onPressOut={() => setPressedId(null)}
@@ -55,6 +56,9 @@ const styles = StyleSheet.create({
   },
   selectedItem: {
     backgroundColor: 'rgba(0,0,0,0.1)',
+  },
+  subtitle: {
+    color: '#B3B3B3',
   },
 });
 

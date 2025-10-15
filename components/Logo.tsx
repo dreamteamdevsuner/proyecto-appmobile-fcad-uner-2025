@@ -1,19 +1,17 @@
-import { StyleSheet, View } from "react-native";
-import React from "react";
-import { Card, Text } from "react-native-paper";
-import { logoStyles } from "../styles/helpers/logo";
+import React from 'react';
+import { StyleSheet, View, Image } from 'react-native';
+import { logoStyles } from '../styles/helpers/logo';
 
 const Logo = () => {
   return (
     <View style={logoStyles.logoContainer}>
-      <Card style={logoStyles.logo}>
-        <Text variant="titleSmall" style={logoStyles.logoText}>
-          J
-        </Text>
-      </Card>
+      <Image
+        source={require('../assets/images/logo/logo-jobsy-favicon-jobsy-byn.png')}
+        style={logoStyles.logoImage}
+        resizeMode="contain"
+      />
     </View>
   );
 };
-const styles = StyleSheet.create({});
 
 export default Logo;

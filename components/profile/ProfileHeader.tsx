@@ -56,13 +56,15 @@ export const ProfileHeader = ({
               gap: 8,
             }}
           >
-            <Text style={{ fontSize: 24 }}>¡Hola {name}!</Text>
+            <Text style={{ fontSize: 24, color: '#FFFFFF' }}>
+              ¡Hola {name}!
+            </Text>
             <Text
               style={{
                 fontSize: 12,
                 flexShrink: 1,
                 fontWeight: 400,
-                color: '#49454F',
+                color: '#FFFFFF',
               }}
             >
               Nos alegra que volvieras.
@@ -83,12 +85,18 @@ export const ProfileHeader = ({
             }}
           >
             <View>
-              <Text style={{ fontSize: 24 }}>{name}</Text>
-              <Text style={{ fontSize: 16, flexShrink: 1 }}>{ocupation}</Text>
+              <Text style={{ fontSize: 24, color: '#FFFFFF' }}>{name}</Text>
+              <Text style={{ fontSize: 16, flexShrink: 1, color: '#FFFFFF' }}>
+                {ocupation}
+              </Text>
             </View>
             <View style={{ flexDirection: 'row', gap: 4 }}>
-              <Octicons name="location" size={20} color="#49454F" />
-              <Text numberOfLines={1} ellipsizeMode="tail">
+              <Octicons name="location" size={20} color="#FFFFFF" />
+              <Text
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={{ color: '#FFFFFF' }}
+              >
                 {city}
               </Text>
             </View>
@@ -110,7 +118,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: 16,
     gap: 32,
-    backgroundColor: '#E6E0E9',
+    backgroundColor: '#1D1C21',
     alignSelf: 'center',
   },
   image: {

@@ -46,13 +46,38 @@ Explorar las funcionalidades principales.
 
 <table>
   <tr>
-    <td><img src="./public/img/" width="100%"/></td>
-    <td><img src="./public/img/" width="100%"/></td>
-    <td><img src="./public/img/" width="100%"/></td>
+    <td><img src="./public/img/login-1.jpeg" width="100%"/></td>
+    <td><img src="./public/img/login-2.jpeg" width="100%"/></td>
+    <td><img src="./public/img/login-3.jpeg" width="100%"/></td>
   </tr>
+</table>
+
+### Descubrir profesional
+
+#### Reclutador
+
+<table>
   <tr>
+    <td><img src="./public/img/swipe-recruiter.jpeg" width="30%"/></td>
+   
+   </tr>
+   <tr>
     <td colspan="3" align="center">
-    La pantalla de inicio permite .....
+     Permite al reclutador evaluar perfiles y matchear con los postulantes que le interesan 
+    </td>
+  </tr>
+</table>
+
+#### Profesional
+
+<table>
+  <tr>
+    <td><img src="./public/img/swipe-candidate.jpeg" width="30%"/></td>
+   
+   </tr>
+   <tr>
+    <td colspan="3" align="center">
+     Permite al profesional evaluar propuestas  y matchear con las ofertas que le interesan 
     </td>
   </tr>
 </table>
@@ -61,13 +86,18 @@ Explorar las funcionalidades principales.
 
 <table>
   <tr>
-    <td><img src="./public/img/" width="100%"/></td>
-    <td><img src="./public/img/" width="100%"/></td>
-    <td><img src="./public/img/" width="100%"/></td>
+    <td><img src="./public/img/Perfil-propio-profesional-1.png" width="100%"/></td>
+    <td><img src="./public/img/Perfil-propio-profesional-2.png" width="100%"/></td>
+    <td><img src="./public/img/Perfil-ajeno-profesional-portfolio.png" width="100%"/></td>
+  </tr>
+  <tr>
+    <td><img src="./public/img/Perfil-propio-reclutador-1.png" width="100%"/></td>
+    <td><img src="./public/img/Perfil-ajeno-profesional-1.png" width="100%"/></td>
+    <td><img src="./public/img/Perfil-ajeno-profesional-2.png" width="100%"/></td>
   </tr>
   <tr>
     <td colspan="3" align="center">
-     En la sección de perfil, los usuarios pueden ...
+     En la sección de perfil, los usuarios profesionales pueden brindar una breve descripción de sí mismos, sus habilidades, experiencia laboral, estudios realizados e información de contacto. Además pueden compartir imágenes de su portfolio mostrando sus trabajos realizados, intereses o capturas de su día a día. En cuanto a los usuarios reclutadores mostráran un resumen de las ofertas laborales que hayan disponibilizado en la plataforma, tanto búsquedas activas como cerradas a modo de historial.
     </td>
   </tr>
 </table>
@@ -92,7 +122,7 @@ Explorar las funcionalidades principales.
   </tr>
 </table>
 
-### Favoritos
+### Favoritos - reclutadores
 
 <table>
   <tr>
@@ -106,6 +136,26 @@ Explorar las funcionalidades principales.
       La sección Favoritos posee una sección destacada con los 10 últimos match con profesionales, desde allí se puede acceder al perfil de los mismos.
       También tiene una lista de las ofertas que tienen Match odenados por oferta, al entrar a una oferta se accede al listado de profesionales, desde allí se puede acceder al perfil del profesional o a la mensajería además de poder eliminarlo de la lista.
     </td>
+  </tr>
+</table>
+
+### Favoritos - profesionales
+
+<table>
+  <tr>
+    <td><img src="./public/img/favoritos_profesionales_1.png" width="100%"/></td>
+    <td><img src="./public/img/favoritos_profesionales_2.png" width="100%"/></td>
+    <td><img src="./public/img/favoritos_profesionales_3.png" width="100%"/></td>
+    
+  </tr>
+  <tr>
+    <td colspan="3" align="center">
+    La pantalla Favoritos presenta 3 secciones: 
+      1- Matchs recientes: muestra los últimos 10 matchs con acceso a su detalle.
+      2- Mis matchs: previsualiza las 2 últimas coincidencias y permite ir a la lista completa.
+      3- Me interesan: previsualiza las 2 últimas postulaciones y permite acceder a la lista completa.
+  </td>
+
   </tr>
 </table>
 
@@ -123,6 +173,23 @@ Explorar las funcionalidades principales.
   <tr>
     <td colspan="3" align="center">
       La sección Nueva oferta permite a los recruiters publicar nuevas ofertas de trabajo de forma sencilla, además de poder previsualizar la oferta antes de publicarla.
+    </td>
+  </tr>
+
+### Ajustes
+
+<table>
+  <tr>
+    <td><img src="./public/img/ajustes_1.png" width="100%"/></td>
+    <td><img src="./public/img/ajustes_2.png" width="100%"/></td>
+    <td><img src="./public/img/ajustes_3.png" width="100%"/></td>
+    <td><img src="./public/img/ajustes_4.png" width="100%"/></td>
+   
+    
+  </tr>
+  <tr>
+    <td colspan="3" align="center">
+      En la pantalla "Ajustes" se encuentran las opciones "Cerrar sesión", "Editar perfil" y "Seguridad". Estas últimas dos opciones se despliegan en nuevas pantallas donde se pueden ejecutar sus funcionalidades.
     </td>
   </tr>
 </table>

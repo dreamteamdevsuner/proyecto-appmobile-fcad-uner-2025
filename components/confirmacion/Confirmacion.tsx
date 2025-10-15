@@ -21,7 +21,7 @@ const Confirmacion: React.FC<ConfirmacionProps> = ({
       <Dialog visible={visible} onDismiss={onCancel}>
         <Dialog.Title>{title}</Dialog.Title>
         <Dialog.Content>
-          <Text variant='bodyMedium'>{message}</Text>
+          <Text variant="bodyMedium">{message}</Text>
         </Dialog.Content>
         <Dialog.Actions>
           <Button onPress={onCancel}>Cancelar</Button>

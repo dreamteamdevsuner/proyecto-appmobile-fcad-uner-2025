@@ -1,5 +1,5 @@
 import { View, Text, Dimensions, StyleSheet } from 'react-native';
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useContext } from 'react';
 import Carousel, {
   CarouselRenderItem,
   ICarouselInstance,
@@ -9,6 +9,7 @@ import { candidates2 } from '../../../../mockup/candidates';
 
 import SwipeMatchButtons from './SwipeMatchButtons';
 import useSwipeMatch from '../../../../hooks/useSwipeMatch';
+import AppCarousel from '../swipe/AppCarousel';
 
 const data = candidates2;
 const width = Dimensions.get('window').width;
@@ -19,15 +20,15 @@ const width = Dimensions.get('window').width;
  */
 export interface CarouselItemProps<T> extends PropsWithChildren {
   /** El dato que será renderizado. */
-  item: T,
+  item: T;
   /**
-    * Callback opcional que permite al componente padre habilitar o deshabilitar el desplazamiento.
-    *
-    * @param val – `true` para habilitar el scroll, `false` para deshabilitarlo.
-    */
-  handleScrollEnabled?: (val: boolean) => void,
+   * Callback opcional que permite al componente padre habilitar o deshabilitar el desplazamiento.
+   *
+   * @param val – `true` para habilitar el scroll, `false` para deshabilitarlo.
+   */
+  handleScrollEnabled?: (val: boolean) => void;
   /** Hijos opcionales que pueden renderizarse dentro del elemento. */
-  children?: React.ReactNode
+  children?: React.ReactNode;
 }
 
 /**
@@ -42,14 +43,14 @@ const SwipeMatch = <T,>({
 }: {
   /** Arreglo de objetos de datos que el carrusel iterará. */
   data: T[];
+  onScrollEnd?: (val: number) => void;
   /**
-    * Función de renderizado para cada elemento del carrusel.
-    *
-    * @param props – Props que cumplen con {@link CarouselItemProps}.
-    * @returns Un elemento JSX que representa el ítem renderizado.
-    */
+   * Función de renderizado para cada elemento del carrusel.
+   *
+   * @param props – Props que cumplen con {@link CarouselItemProps}.
+   * @returns Un elemento JSX que representa el ítem renderizado.
+   */
   renderItem: (props: CarouselItemProps<T>) => React.JSX.Element;
-
 }): React.JSX.Element => {
   // Reference to the carousel instance – allows programmatic control.
   const ref = React.useRef<ICarouselInstance>(null);
@@ -62,17 +63,16 @@ const SwipeMatch = <T,>({
   return (
     <View style={styles.container}>
       <View style={styles.carouselContainer}>
-        <Carousel<T>
-          ref={ref}
-          width={width}
-          data={data}
-          style={styles.carousel}
-          onProgressChange={progress}
-          enabled={enabledScroll}
-          renderItem={({ item }) => renderItem({ item, handleScrollEnabled })
-
-          }
-        />
+        <AppCarousel
+          {...{
+            data,
+            ref,
+            width,
+            enabledScroll,
+            handleScrollEnabled,
+            renderItem,
+          }}
+        ></AppCarousel>
       </View>
       <SwipeMatchButtons {...{ handleLike }}></SwipeMatchButtons>
     </View>

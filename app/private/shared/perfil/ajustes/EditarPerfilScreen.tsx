@@ -10,10 +10,10 @@ import {
   Keyboard,
 } from 'react-native';
 import { TextInput, Button, Text, Dialog, Portal } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Formik } from 'formik';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useNavigation } from '@react-navigation/native';
+import { useInputTheme, useDropdownTheme } from '../../constants/theme/index';
 
 import { PerfilValues } from '../../../../../interfaces/EditarPerfil';
 import { userEditarPerfil } from '../../../../../mockup/userEditarPerfil';
@@ -58,17 +58,32 @@ const SectionTitle = ({ children }: { children: string }) => (
 );
 
 const EditarPerfilScreen = () => {
+  const inputTheme = useInputTheme();
+  const dropdownTheme = useDropdownTheme() as any;
+
+  const getDropdownProps = () => ({
+    ...dropdownTheme,
+    badgeStyle: dropdownTheme.badgeStyle,
+    badgeTextStyle: dropdownTheme.badgeTextStyle,
+  });
+
+
+  const [openDropdown, setOpenDropdown] = useState<string |null>(null);
+
+  const handleOpen = (key: string) => {
+    setOpenDropdown(prev => (prev === key ? null : key));
+  };
+
   const navigation = useNavigation();
 
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [dialogMessage, setDialogMessage] = useState({ title: '', message: '', type: '' });
   const userData = getUserData();
 
   const handleSubmit = async(values: PerfilValues, { setSubmitting }: any) => {
     try {
-      console.log('Datos a guardar: ', values);
-      // console.log('Perfil actualizado:', values);
+      // console.log('Datos a guardar: ', values);
+      console.log('Perfil actualizado:', values);
       await new Promise(resolve => setTimeout(resolve, 1000));
     setDialogMessage({
       title: '',
@@ -93,7 +108,7 @@ const EditarPerfilScreen = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -105,7 +120,7 @@ const EditarPerfilScreen = () => {
           showsHorizontalScrollIndicator={false}
           keyboardDismissMode="interactive"
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ paddingBottom: 100 }}
+          contentContainerStyle={{ padding: 20 }}
         >
           <Formik initialValues={userData} validationSchema={perfilValidacionSchema} 
                        onSubmit={handleSubmit} enableReinitialize>
@@ -119,18 +134,18 @@ const EditarPerfilScreen = () => {
               touched,
               isSubmitting
             }) => (
-              <View>
+              <View style={styles.formContainer}>
                 {/* DATOS PERSONALES */}
                 <SectionTitle>Datos Personales</SectionTitle>
                 <Text style={styles.titulo}>Nombre</Text>
                 <TextInput
                   mode="outlined"
+                  value={values.nombre}
                   onChangeText={handleChange('nombre')}
                   onBlur={handleBlur('nombre')}
-                  value={values.nombre}
-                  placeholder="Ingresá tu nombre"
-                  style={styles.input}
-                  theme={{ roundness: 30 }}
+                  theme={inputTheme.theme as any}
+                  outlineStyle={inputTheme.outlineStyle}
+                  contentStyle={inputTheme.contentStyle}
                 />
 
                 <Text style={styles.titulo}>Apellido</Text>
@@ -140,8 +155,9 @@ const EditarPerfilScreen = () => {
                   onBlur={handleBlur('apellido')}
                   value={values.apellido}
                   placeholder="Ingresá tu apellido"
-                  style={styles.input}
-                  theme={{ roundness: 30 }}
+                  theme={inputTheme.theme}
+                  outlineStyle={inputTheme.outlineStyle}
+                  contentStyle={inputTheme.contentStyle}
                 />
 
                 <Text style={styles.titulo}>Profesión</Text>
@@ -151,47 +167,47 @@ const EditarPerfilScreen = () => {
                   onBlur={handleBlur('profesion')}
                   value={values.profesion}
                   placeholder="Ej: Diseñador UX/UI"
-                  style={styles.input}
-                  theme={{ roundness: 30 }}
+                  theme={inputTheme.theme}
+                  outlineStyle={inputTheme.outlineStyle}
+                  contentStyle={inputTheme.contentStyle}
                 />
 
                 <Text style={styles.titulo}>Localización</Text>
-                <DropDownPicker
+                <DropDownPicker 
+                  {...dropdownTheme}
                   open={openDropdown === 'localizacion'}
-                  setOpen={() =>
-                    setOpenDropdown(
-                      openDropdown === 'localizacion' ? null : 'localizacion',
-                    )
-                  }
+                  setOpen={() => handleOpen('localizacion')}
                   value={values.localizacion}
                   setValue={(callback) =>
                     setFieldValue('localizacion', callback(values.localizacion))
                   }
                   items={PAISES_LIST}
-                  placeholder="Selecciona ubicación"
-                  style={styles.dropdown}
+                  placeholder="Selecciona ubicación"                  
                   zIndex={6000}
                   listMode="SCROLLVIEW"
+                  
                 />
                 
                 {/* SOBRE MÍ */}
                 <Text style={styles.titulo}>Sobre mí</Text>
                 <TextInput
                   mode="outlined"
-                  style={styles.input}
                   onChangeText={handleChange('aboutMe')}
                   onBlur={handleBlur('aboutMe')}
                   value={values.aboutMe}
                   placeholder="Cuéntanos sobre ti"
                   multiline
-                  contentStyle={{ paddingHorizontal: 20, paddingVertical: 15 }}
-                  theme={{ roundness: 30 }}
+                  theme={inputTheme.theme}
+                  outlineStyle={inputTheme.outlineStyle}
+                  contentStyle={inputTheme.contentStyle}
                 />
 
                 <SectionTitle>Perfil Profesional</SectionTitle>
                 {/* HERRAMIENTAS */}
                 <Text style={styles.titulo}>Herramientas</Text>
                 <DropDownPicker
+                  {...dropdownTheme}
+                  {...getDropdownProps()}
                   open={openDropdown === 'herramientas'}
                   setOpen={() =>
                     setOpenDropdown(
@@ -204,23 +220,22 @@ const EditarPerfilScreen = () => {
                   }
                   items={HERRAMIENTAS_LIST}
                   placeholder="Selecciona herramientas"
-                  style={styles.dropdown}
                   multiple={true}
                   min={1}
                   max={HERRAMIENTAS_LIST.length}
                   mode="BADGE"
                   listMode="SCROLLVIEW"
                   zIndex={5000}
+                  {...dropdownTheme}
                 />
 
                 {/* HABILIDADES */}
                 <Text style={styles.titulo}>Habilidades</Text>
                 <DropDownPicker
+                  {...dropdownTheme}
+                  {...getDropdownProps()}
                   open={openDropdown === 'habilidades'}
-                  setOpen={() =>
-                    setOpenDropdown(
-                      openDropdown === 'habilidades' ? null : 'habilidades',
-                    )
+                  setOpen={() => handleOpen('habilidades')
                   }
                   value={values.habilidades}
                   setValue={(callback) =>
@@ -228,13 +243,13 @@ const EditarPerfilScreen = () => {
                   }
                   items={HABILIDADES_LIST}
                   placeholder="Selecciona habilidades"
-                  style={styles.dropdown}
                   multiple={true}
                   min={1}
                   max={HABILIDADES_LIST.length}
                   mode="BADGE"
                   listMode="SCROLLVIEW"
                   zIndex={4000}
+                  
                 />
 
                 <SectionTitle>Formación</SectionTitle>
@@ -242,35 +257,36 @@ const EditarPerfilScreen = () => {
                 <Text style={styles.titulo}>Estudios formales</Text>
                 <TextInput
                   mode="outlined"
-                  style={styles.input}
                   onChangeText={handleChange('estudiosFormales')}
                   onBlur={handleBlur('estudiosFormales')}
                   value={values.estudiosFormales}
                   placeholder="Descripción"
                   multiline
-                  theme={{ roundness: 30 }}
+                  theme={inputTheme.theme}
+                  outlineStyle={inputTheme.outlineStyle}
+                  contentStyle={inputTheme.contentStyle}
                 />
 
                 <Text style={styles.titulo}>Otros estudios</Text>
                 <TextInput
                   mode="outlined"
-                  style={styles.input}
                   onChangeText={handleChange('otrosEstudios')}
                   onBlur={handleBlur('otrosEstudios')}
                   value={values.otrosEstudios}
                   placeholder="Descripción"
                   multiline
-                  theme={{ roundness: 30 }}
+                  theme={inputTheme.theme}
+                  outlineStyle={inputTheme.outlineStyle}
+                  contentStyle={inputTheme.contentStyle}
                 />
 
                 {/* IDIOMAS */}
                 <Text style={styles.titulo}>Idiomas</Text>
                 <DropDownPicker
+                  {...dropdownTheme}
+                  {...getDropdownProps()}
                   open={openDropdown === 'idiomas'}
-                  setOpen={() =>
-                    setOpenDropdown(
-                      openDropdown === 'idiomas' ? null : 'idiomas',
-                    )
+                  setOpen={() => handleOpen('idiomas')
                   }
                   value={values.idiomasSeleccionados}
                   setValue={(callback) =>
@@ -281,7 +297,6 @@ const EditarPerfilScreen = () => {
                   }
                   items={IDIOMAS_LIST}
                   placeholder="Selecciona tu nivel de idiomas"
-                  style={styles.dropdown}
                   multiple={true}
                   min={1}
                   max={IDIOMAS_LIST.length}
@@ -295,10 +310,7 @@ const EditarPerfilScreen = () => {
                 <Text style={styles.titulo}>Modalidad</Text>
                 <DropDownPicker
                   open={openDropdown === 'modalidad'}
-                  setOpen={() =>
-                    setOpenDropdown(
-                      openDropdown === 'modalidad' ? null : 'modalidad',
-                    )
+                  setOpen={() => handleOpen('modalidad')
                   }
                   value={values.modalidadSeleccionada}
                   setValue={(callback) =>
@@ -309,18 +321,15 @@ const EditarPerfilScreen = () => {
                   }
                   items={MODALIDADES_LIST}
                   placeholder="Selecciona modalidad"
-                  style={styles.dropdown}
                   zIndex={2000}
                   listMode="SCROLLVIEW"
+                  {...dropdownTheme}
                 />
 
                 <Text style={styles.titulo}>Jornada</Text>
                 <DropDownPicker
                   open={openDropdown === 'jornada'}
-                  setOpen={() =>
-                    setOpenDropdown(
-                      openDropdown === 'jornada' ? null : 'jornada',
-                    )
+                  setOpen={() => handleOpen('jornada')
                   }
                   value={values.jornadaSeleccionada}
                   setValue={(callback) =>
@@ -331,18 +340,16 @@ const EditarPerfilScreen = () => {
                   }
                   items={JORNADAS_LIST}
                   placeholder="Selecciona jornada"
-                  style={styles.dropdown}
                   zIndex={1900}
                   listMode="SCROLLVIEW"
+                  {...dropdownTheme}
                 />
 
                 <Text style={styles.titulo}>Contrato</Text>
                 <DropDownPicker
+                  {...dropdownTheme}
                   open={openDropdown === 'contrato'}
-                  setOpen={() =>
-                    setOpenDropdown(
-                      openDropdown === 'contrato' ? null : 'contrato',
-                    )
+                  setOpen={() => handleOpen('contrato')
                   }
                   value={values.contratoSeleccionado}
                   setValue={(callback) =>
@@ -353,9 +360,8 @@ const EditarPerfilScreen = () => {
                   }
                   items={CONTRATOS_LIST}
                   placeholder="Selecciona contrato"
-                  style={styles.dropdown}
                   zIndex={1800}
-                  listMode="SCROLLVIEW"
+                  listMode="SCROLLVIEW"                  
                 />
 
                 <SectionTitle>Contactos</SectionTitle>       
@@ -367,8 +373,9 @@ const EditarPerfilScreen = () => {
                   onBlur={handleBlur('email')}
                   value={values.email}
                   placeholder="Escribe tu correo aquí"
-                  style={[styles.input, touched.email && errors.email && styles.inputError]}
-                  theme={{ roundness: 30 }}
+                  theme={inputTheme.theme}
+                  outlineStyle={inputTheme.outlineStyle}
+                  contentStyle={inputTheme.contentStyle}
                   keyboardType="email-address"
                 />
                 {touched.email && errors.email && (
@@ -378,6 +385,7 @@ const EditarPerfilScreen = () => {
                 {/* REDES */}
                 <Text style={styles.titulo}>Redes</Text>
                 <DropDownPicker
+                  {...dropdownTheme}
                   open={openDropdown === 'redes'}
                   setOpen={() =>
                     setOpenDropdown(openDropdown === 'redes' ? null : 'redes')
@@ -386,9 +394,8 @@ const EditarPerfilScreen = () => {
                   setValue={() => {}}
                   items={REDES_LIST}
                   placeholder="Selecciona una red para agregar"
-                  style={styles.dropdown}
                   listMode="SCROLLVIEW"
-                  zIndex={1700}
+                  zIndex={1700}                  
                   onSelectItem={(item) => {
                     if (item) {
                       const nuevasRedes = [...values.redes];
@@ -454,68 +461,70 @@ const EditarPerfilScreen = () => {
           <Dialog.Icon 
             icon={dialogMessage.type === 'success' ? 'check-circle' : 'alert-circle'} 
             size={40} 
-            color={dialogMessage.type === 'success' ? '#3ea83e' : '#B22222'}
+            color={dialogMessage.type === 'success' ? '#489e48' : '#B22222'}
           />
           <Dialog.Title style={styles.dialogTitle}>
             {dialogMessage.message}
           </Dialog.Title>
           <Dialog.Actions>
             <Button 
-              mode="text"
+              mode="contained"
               onPress={() => { setDialogVisible(false);
                 if (dialogMessage.type === 'success') {
                   navigation.goBack();
                 }
               }}
-              textColor={dialogMessage.type === 'success' ? '#228B22' : '#B22222'}
             >
               Aceptar
             </Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 30,
-    backgroundColor: '#fff',
+  },
+  formContainer: {
+    padding: 20,
+    borderRadius: 20,
+    marginBottom: 20,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    borderWidth: 1,
+    borderColor: '#BEB52C',
   },
   input: {
-    borderWidth: 0.5,
-    borderColor: '#ccc',
+    borderWidth: 1,
+    borderColor: '#3C3C3C',
     borderRadius: 30,
-    marginBottom: 10,
-    backgroundColor: 'white',
+    marginBottom: 12,
+    paddingTop: 10,
+    paddingHorizontal: 15,
+    backgroundColor: '#121212',
+    color: '#EAEAEA',
   },
   inputError: {
-    borderColor: '#B22222',
-    borderWidth: 0.5,
+    borderColor: '#b45252',
   },
   errorText: {
-    color: '#B22222',
+    color: '#b45252',
     fontSize: 12,
     marginLeft: 15,
-    marginTop: -5,
+    marginTop: 2,
     marginBottom: 10,
-  },
-  dropdown: {
-    borderRadius: 30,
-    marginBottom: 10,
-  },
-  boton: {
-    marginTop: 20,
-    color: 'white',
-    backgroundColor: '#000',
   },
   titulo: {
-    fontSize: 14,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: '400',
     marginBottom: 5,
-    marginTop: 10,
+    marginTop: 20,
   },
   redesContainer: {
     margin: 10,
@@ -523,41 +532,45 @@ const styles = StyleSheet.create({
   redItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    // justifyContent: 'space-between',
+    justifyContent: 'space-between',
     marginBottom: 10,
   },
   sectionTitle: {
     fontWeight: "bold",
     fontSize: 20,
-    marginTop: 15,  
-    marginBottom: 15,
+    marginTop: 20,  
+    marginBottom: 5,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
     paddingBottom: 5,
   },
    removeButton: {
     borderRadius: 20,
     backgroundColor: '#b58df1',
-    // justifyContent: 'center',
-    // alignItems: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginLeft: 10,
     padding: 8,
   },
   removeButtonText: {
-    color: 'white',
+    color: 'transparent',
     fontSize: 12,
     fontWeight: 'bold',
   },
   dialog: {
-  backgroundColor: 'white',
+  backgroundColor: '#1D1C21',
   borderRadius: 30,
   alignItems: 'center',
   padding: 20,
-},
-dialogTitle: {
-  textAlign: 'center',
-  fontSize: 16,
-},
+  },
+  dialogTitle: {
+    textAlign: 'center',
+    fontSize: 16,
+  },
+  boton: {
+    marginTop: 20,
+    backgroundColor: '#BEB52C',
+    marginBottom: 20,
+  },
 });
 
 

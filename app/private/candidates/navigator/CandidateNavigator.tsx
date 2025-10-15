@@ -8,6 +8,10 @@ import ProfileNavigator from '../screens/perfil/ProfileNavigator';
 import FavoritosNavigator from '../screens/favoritos/FavoritosNavigator';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import JobsyHeader from '../../../../components/ui/JobsyHeader';
+
+import { Image } from 'react-native';
+import { LOGO } from '../../../../constants/ui/logo';
 import CustomNavBar from '../../../../components/ui/custom-bottom-bar/CustomNavBar';
 
 const Tab = createBottomTabNavigator();
@@ -17,7 +21,7 @@ const CandidateNavigator = () => {
     <Tab.Navigator
       initialRouteName={ROUTES.CANDIDATE_HOME_TAB}
       screenOptions={{
-        tabBarActiveTintColor: 'black',
+        tabBarActiveTintColor: '#BEB52C',
         tabBarInactiveTintColor: 'gray',
       }}
       tabBar={(props) => <CustomNavBar {...props}></CustomNavBar>}
@@ -26,12 +30,25 @@ const CandidateNavigator = () => {
         name={ROUTES.CANDIDATE_HOME_TAB}
         component={CandidateHomeScreen}
         options={{
+          headerTitle: 'Jobsy',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons
-              name="account-group-outline"
-              size={size}
-              color={color}
+            <Image
+              source={require('../../../../assets/icons/icon-job-13.png')}
+              style={{
+                width: size,
+                height: size,
+                tintColor: color, // así respeta el color activo/inactivo
+              }}
             />
+          ),
+
+          header: ({ options }) => (
+            <JobsyHeader
+              headerTitle={
+                options.headerTitle?.toString() ?? 'placeholder title'
+              }
+              propStyles={{ logo: { width: 45, height: 45 } }}
+            ></JobsyHeader>
           ),
         }}
       />

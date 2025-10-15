@@ -3,17 +3,17 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import ROUTES from './routes';
-import RecruiterHomeScreen from '../screens/RecruiterHomeScreen';
-import RecruiterSwipeMatchScreen from '../screens/RecruiterSwipeMatchScreen';
+
 import FavoritosNavigator from '../screens/favoritos/FavoritosNavigator';
 import MensajeriaNavigator from '../screens/mensajeria/MensajeriaNavigator';
 import CrearOfertaNavigator from '../screens/crear-oferta/CrearOfertaNavigator';
 import ProfileNavigator from '../screens/perfil/ProfileNavigator';
 
-import { Icon } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { PrivateStackParamList } from './types';
+import SwipeStack from './SwipeStack';
+
 import CustomNavBar from '../../../../components/ui/custom-bottom-bar/CustomNavBar';
 
 const Tab = createBottomTabNavigator<PrivateStackParamList>();
@@ -25,42 +25,19 @@ const RecruiterNavigator = () => {
         headerShown: false,
         tabBarActiveTintColor: 'black',
         tabBarInactiveTintColor: 'gray',
+        tabBarIcon: ({ color, size }) => (
+          <MaterialCommunityIcons
+            name="account-group-outline"
+            size={size}
+            color={color}
+          />
+        ),
       }}
       initialRouteName={ROUTES.RECRUITER_SWIPE_MATCH}
-      tabBar={(props) => <CustomNavBar {...props}></CustomNavBar>}
     >
       <Tab.Screen
-        options={{
-          headerShown: true,
-          headerTitle: 'Jobsy',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons
-              name="account-group-outline"
-              size={size}
-              color={color}
-            />
-          ),
-
-          //MOVE THIS TO COMPONENT
-          header: ({ options }) => {
-            return (
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  padding: 20,
-                }}
-              >
-                <Icon size={15} source={'star-circle'} color={'black'}></Icon>
-                <Text> {options.headerTitle?.toString()} </Text>
-              </View>
-            );
-          },
-        }}
-        //MOVE THIS TO COMPONENT
         name={ROUTES.RECRUITER_SWIPE_MATCH}
-        component={RecruiterSwipeMatchScreen}
+        component={SwipeStack}
       ></Tab.Screen>
       <Tab.Screen
         name={ROUTES.RECRUITER_FAVORITOS_TAB}
