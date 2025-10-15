@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Text as RNText,
   Platform,
-  KeyboardAvoidingView,
-  Keyboard,
+  KeyboardAvoidingView
 } from 'react-native';
 import { TextInput, Button, Text, Dialog, Portal } from 'react-native-paper';
 import { Formik } from 'formik';
-import DropDownPicker from 'react-native-dropdown-picker';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from '@react-navigation/native';
-import { useInputTheme, useDropdownTheme } from '../../constants/theme/index';
+
+import FormField from './componentesFormularios/FormField';
+import FormDropdown from './componentesFormularios/FormDropdown';
 
 import { PerfilValues } from '../../../../../interfaces/EditarPerfil';
 import { userEditarPerfil } from '../../../../../mockup/userEditarPerfil';
@@ -58,31 +58,13 @@ const SectionTitle = ({ children }: { children: string }) => (
 );
 
 const EditarPerfilScreen = () => {
-  const inputTheme = useInputTheme();
-  const dropdownTheme = useDropdownTheme() as any;
-
-  const getDropdownProps = () => ({
-    ...dropdownTheme,
-    badgeStyle: dropdownTheme.badgeStyle,
-    badgeTextStyle: dropdownTheme.badgeTextStyle,
-  });
-
-
-  const [openDropdown, setOpenDropdown] = useState<string |null>(null);
-
-  const handleOpen = (key: string) => {
-    setOpenDropdown(prev => (prev === key ? null : key));
-  };
-
   const navigation = useNavigation();
-
   const [dialogVisible, setDialogVisible] = useState(false);
   const [dialogMessage, setDialogMessage] = useState({ title: '', message: '', type: '' });
   const userData = getUserData();
 
   const handleSubmit = async(values: PerfilValues, { setSubmitting }: any) => {
     try {
-      // console.log('Datos a guardar: ', values);
       console.log('Perfil actualizado:', values);
       await new Promise(resolve => setTimeout(resolve, 1000));
     setDialogMessage({
@@ -112,323 +94,108 @@ const EditarPerfilScreen = () => {
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 40}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 40}
         enabled
       >
         <ScrollView
           showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-          keyboardDismissMode="interactive"
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{ padding: 20 }}
         >
           <Formik initialValues={userData} validationSchema={perfilValidacionSchema} 
                        onSubmit={handleSubmit} enableReinitialize>
-            {({
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              values,
-              setFieldValue,
-              errors,
-              touched,
-              isSubmitting
-            }) => (
+            {(formik) => (
               <View style={styles.formContainer}>
                 {/* DATOS PERSONALES */}
                 <SectionTitle>Datos Personales</SectionTitle>
                 <Text style={styles.titulo}>Nombre</Text>
-                <TextInput
-                  mode="outlined"
-                  value={values.nombre}
-                  onChangeText={handleChange('nombre')}
-                  onBlur={handleBlur('nombre')}
-                  theme={inputTheme.theme as any}
-                  outlineStyle={inputTheme.outlineStyle}
-                  contentStyle={inputTheme.contentStyle}
-                />
+                <FormField name='nombre' formik={formik} placeholder='Ingresá tu nombre aquí'/>
 
                 <Text style={styles.titulo}>Apellido</Text>
-                <TextInput
-                  mode="outlined"
-                  onChangeText={handleChange('apellido')}
-                  onBlur={handleBlur('apellido')}
-                  value={values.apellido}
-                  placeholder="Ingresá tu apellido"
-                  theme={inputTheme.theme}
-                  outlineStyle={inputTheme.outlineStyle}
-                  contentStyle={inputTheme.contentStyle}
-                />
+                <FormField name='apellido' formik={formik} placeholder="Ingresá tu apellido aquí"  />
 
                 <Text style={styles.titulo}>Profesión</Text>
-                <TextInput
-                  mode="outlined"
-                  onChangeText={handleChange('profesion')}
-                  onBlur={handleBlur('profesion')}
-                  value={values.profesion}
-                  placeholder="Ej: Diseñador UX/UI"
-                  theme={inputTheme.theme}
-                  outlineStyle={inputTheme.outlineStyle}
-                  contentStyle={inputTheme.contentStyle}
-                />
+                <FormField name='profesion' formik={formik} placeholder="Ej: Diseñador UX/UI" />
 
                 <Text style={styles.titulo}>Localización</Text>
-                <DropDownPicker 
-                  {...dropdownTheme}
-                  open={openDropdown === 'localizacion'}
-                  setOpen={() => handleOpen('localizacion')}
-                  value={values.localizacion}
-                  setValue={(callback) =>
-                    setFieldValue('localizacion', callback(values.localizacion))
-                  }
-                  items={PAISES_LIST}
-                  placeholder="Selecciona ubicación"                  
-                  zIndex={6000}
-                  listMode="SCROLLVIEW"
-                  
-                />
+                <FormDropdown name='localizacion' formik={formik} items={PAISES_LIST} 
+                  placeholder="Selecciona ubicación" />
                 
                 {/* SOBRE MÍ */}
                 <Text style={styles.titulo}>Sobre mí</Text>
-                <TextInput
-                  mode="outlined"
-                  onChangeText={handleChange('aboutMe')}
-                  onBlur={handleBlur('aboutMe')}
-                  value={values.aboutMe}
-                  placeholder="Cuéntanos sobre ti"
-                  multiline
-                  theme={inputTheme.theme}
-                  outlineStyle={inputTheme.outlineStyle}
-                  contentStyle={inputTheme.contentStyle}
-                />
+                <FormField name="aboutMe" formik={formik} placeholder="Cuéntanos sobre ti"  multiline />
 
                 <SectionTitle>Perfil Profesional</SectionTitle>
                 {/* HERRAMIENTAS */}
                 <Text style={styles.titulo}>Herramientas</Text>
-                <DropDownPicker
-                  {...dropdownTheme}
-                  {...getDropdownProps()}
-                  open={openDropdown === 'herramientas'}
-                  setOpen={() =>
-                    setOpenDropdown(
-                      openDropdown === 'herramientas' ? null : 'herramientas',
-                    )
-                  }
-                  value={values.herramientas}
-                  setValue={(callback) =>
-                    setFieldValue('herramientas', callback(values.herramientas))
-                  }
-                  items={HERRAMIENTAS_LIST}
-                  placeholder="Selecciona herramientas"
-                  multiple={true}
-                  min={1}
-                  max={HERRAMIENTAS_LIST.length}
-                  mode="BADGE"
-                  listMode="SCROLLVIEW"
-                  zIndex={5000}
-                  {...dropdownTheme}
-                />
+                <FormDropdown name='herramientas' formik={formik} items={HERRAMIENTAS_LIST}
+                  placeholder="Selecciona herramientas" multiple />
 
                 {/* HABILIDADES */}
                 <Text style={styles.titulo}>Habilidades</Text>
-                <DropDownPicker
-                  {...dropdownTheme}
-                  {...getDropdownProps()}
-                  open={openDropdown === 'habilidades'}
-                  setOpen={() => handleOpen('habilidades')
-                  }
-                  value={values.habilidades}
-                  setValue={(callback) =>
-                    setFieldValue('habilidades', callback(values.habilidades))
-                  }
-                  items={HABILIDADES_LIST}
-                  placeholder="Selecciona habilidades"
-                  multiple={true}
-                  min={1}
-                  max={HABILIDADES_LIST.length}
-                  mode="BADGE"
-                  listMode="SCROLLVIEW"
-                  zIndex={4000}
-                  
-                />
+                <FormDropdown name='habilidades' formik={formik} items={HABILIDADES_LIST}
+                  placeholder="Selecciona habilidades" multiple />
 
                 <SectionTitle>Formación</SectionTitle>
                 {/* ESTUDIOS */}
                 <Text style={styles.titulo}>Estudios formales</Text>
-                <TextInput
-                  mode="outlined"
-                  onChangeText={handleChange('estudiosFormales')}
-                  onBlur={handleBlur('estudiosFormales')}
-                  value={values.estudiosFormales}
-                  placeholder="Descripción"
-                  multiline
-                  theme={inputTheme.theme}
-                  outlineStyle={inputTheme.outlineStyle}
-                  contentStyle={inputTheme.contentStyle}
-                />
+                <FormField name='estudiosFormales' formik={formik} placeholder="Descripción estudios formales" multiline />
 
                 <Text style={styles.titulo}>Otros estudios</Text>
-                <TextInput
-                  mode="outlined"
-                  onChangeText={handleChange('otrosEstudios')}
-                  onBlur={handleBlur('otrosEstudios')}
-                  value={values.otrosEstudios}
-                  placeholder="Descripción"
-                  multiline
-                  theme={inputTheme.theme}
-                  outlineStyle={inputTheme.outlineStyle}
-                  contentStyle={inputTheme.contentStyle}
-                />
+                <FormField name='otrosEstudios' formik={formik} placeholder="Descripción otros estudios" multiline />
 
                 {/* IDIOMAS */}
                 <Text style={styles.titulo}>Idiomas</Text>
-                <DropDownPicker
-                  {...dropdownTheme}
-                  {...getDropdownProps()}
-                  open={openDropdown === 'idiomas'}
-                  setOpen={() => handleOpen('idiomas')
-                  }
-                  value={values.idiomasSeleccionados}
-                  setValue={(callback) =>
-                    setFieldValue(
-                      'idiomasSeleccionados',
-                      callback(values.idiomasSeleccionados),
-                    )
-                  }
-                  items={IDIOMAS_LIST}
-                  placeholder="Selecciona tu nivel de idiomas"
-                  multiple={true}
-                  min={1}
-                  max={IDIOMAS_LIST.length}
-                  mode="BADGE"
-                  listMode="SCROLLVIEW"
-                  zIndex={3000}
-                />
+                <FormDropdown name='idiomasSeleccionados' formik={formik} items={IDIOMAS_LIST} 
+                  placeholder="Selecciona idiomas" multiple />
 
                 <SectionTitle>Mis preferencias</SectionTitle>
                 {/* PREFERENCIAS SEPARADAS */}
                 <Text style={styles.titulo}>Modalidad</Text>
-                <DropDownPicker
-                  open={openDropdown === 'modalidad'}
-                  setOpen={() => handleOpen('modalidad')
-                  }
-                  value={values.modalidadSeleccionada}
-                  setValue={(callback) =>
-                    setFieldValue(
-                      'modalidadSeleccionada',
-                      callback(values.modalidadSeleccionada),
-                    )
-                  }
-                  items={MODALIDADES_LIST}
-                  placeholder="Selecciona modalidad"
-                  zIndex={2000}
-                  listMode="SCROLLVIEW"
-                  {...dropdownTheme}
-                />
+                <FormDropdown name='modalidadSeleccionada' formik={formik} items={MODALIDADES_LIST} 
+                  placeholder="Selecciona modalidad" />
 
                 <Text style={styles.titulo}>Jornada</Text>
-                <DropDownPicker
-                  open={openDropdown === 'jornada'}
-                  setOpen={() => handleOpen('jornada')
-                  }
-                  value={values.jornadaSeleccionada}
-                  setValue={(callback) =>
-                    setFieldValue(
-                      'jornadaSeleccionada',
-                      callback(values.jornadaSeleccionada),
-                    )
-                  }
-                  items={JORNADAS_LIST}
-                  placeholder="Selecciona jornada"
-                  zIndex={1900}
-                  listMode="SCROLLVIEW"
-                  {...dropdownTheme}
-                />
+                <FormDropdown name='jornadaSeleccionada' formik={formik} items={JORNADAS_LIST}
+                  placeholder="Selecciona jornada" />
 
                 <Text style={styles.titulo}>Contrato</Text>
-                <DropDownPicker
-                  {...dropdownTheme}
-                  open={openDropdown === 'contrato'}
-                  setOpen={() => handleOpen('contrato')
-                  }
-                  value={values.contratoSeleccionado}
-                  setValue={(callback) =>
-                    setFieldValue(
-                      'contratoSeleccionado',
-                      callback(values.contratoSeleccionado),
-                    )
-                  }
-                  items={CONTRATOS_LIST}
-                  placeholder="Selecciona contrato"
-                  zIndex={1800}
-                  listMode="SCROLLVIEW"                  
-                />
+                <FormDropdown name='contratoSeleccionado' formik={formik} items={CONTRATOS_LIST} 
+                  placeholder="Selecciona contrato"/>
 
                 <SectionTitle>Contactos</SectionTitle>       
                 {/* CONTACTO */}
                 <Text style={styles.titulo}>Correo electrónico</Text>
-                <TextInput
-                  mode="outlined"
-                  onChangeText={handleChange('email')}
-                  onBlur={handleBlur('email')}
-                  value={values.email}
-                  placeholder="Escribe tu correo aquí"
-                  theme={inputTheme.theme}
-                  outlineStyle={inputTheme.outlineStyle}
-                  contentStyle={inputTheme.contentStyle}
-                  keyboardType="email-address"
-                />
-                {touched.email && errors.email && (
-                  <Text style={styles.errorText}>{errors.email}</Text>
-                )}
+                <FormField name='email' formik={formik} placeholder="Escribe tu correo aquí" keyboardType="email-address" />
+                {formik.touched.email && formik.errors.email && 
+                  <Text style={styles.errorText}>{formik.errors.email}</Text>}
 
                 {/* REDES */}
                 <Text style={styles.titulo}>Redes</Text>
-                <DropDownPicker
-                  {...dropdownTheme}
-                  open={openDropdown === 'redes'}
-                  setOpen={() =>
-                    setOpenDropdown(openDropdown === 'redes' ? null : 'redes')
-                  }
-                  value={null}
-                  setValue={() => {}}
-                  items={REDES_LIST}
-                  placeholder="Selecciona una red para agregar"
-                  listMode="SCROLLVIEW"
-                  zIndex={1700}                  
-                  onSelectItem={(item) => {
-                    if (item) {
-                      const nuevasRedes = [...values.redes];
-                      if(!nuevasRedes.find((r) => r.tipo === item.value)) {
-                      setFieldValue('redes', [
-                        ...nuevasRedes,
-                        { tipo: item.value, url: '' },
-                      ]);
-                    }
-                  }
-                }}
+                <FormDropdown name='redSeleccionada'formik={formik} items={REDES_LIST}
+                  placeholder="Selecciona una red social"            
                 />
 
-                {values.redes.length > 0 && (
+                {formik.values.redes?.length > 0 && (
                   <View style={styles.redesContainer}>
-                    {values.redes.map((red, idx) => (
+                    {formik.values.redes.map((red, idx) => (
                       <View key={`${red.tipo}_${idx}`} style={styles.redItem}>
                         <TextInput
+                          style={{ flex: 1 }}
                           mode="outlined"
                           label={red.tipo}
                           value={red.url}
-                          placeholder={`Añade la URL de ${red.tipo} aquí...`}
+                          placeholder={`URL de ${red.tipo}`}
                           onChangeText={(text) => {
-                            const nuevasRedes = [...values.redes];
+                            const nuevasRedes = [...formik.values.redes];
                             nuevasRedes[idx] = {...red, url: text};
-                            setFieldValue('redes', nuevasRedes);
+                            formik.setFieldValue('redes', nuevasRedes);
                           }}
-                          theme={{ roundness: 30 }}
                         />
                         <TouchableOpacity
                           onPress={() => {
-                            const nuevasRedes = values.redes.filter((_, i) => i !== idx);
-                            setFieldValue('redes', nuevasRedes);
+                            const nuevasRedes = formik.values.redes.filter((_, i) => i !== idx);
+                            formik.setFieldValue('redes', nuevasRedes);
                           }}                        
                           style={styles.removeButton}
                         >
@@ -439,19 +206,20 @@ const EditarPerfilScreen = () => {
                   </View>
                 )}
                 <Button
-                  onPressIn={() => handleSubmit()}
+                  onPress={() => formik.handleSubmit()}
                   mode="contained"
                   style={styles.boton}
-                  disabled={isSubmitting}
-                  loading={isSubmitting}
+                  disabled={formik.isSubmitting}
+                  loading={formik.isSubmitting}
                 >
-                  {isSubmitting ? 'Guardando...' : 'Guardar cambios'}
+                  {formik.isSubmitting ? 'Guardando...' : 'Guardar cambios'}
                 </Button>
               </View>
             )}
           </Formik>
         </ScrollView>
       </KeyboardAvoidingView>
+
       <Portal>
         <Dialog 
           visible={dialogVisible}
@@ -500,19 +268,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#BEB52C',
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#3C3C3C',
-    borderRadius: 30,
-    marginBottom: 12,
-    paddingTop: 10,
-    paddingHorizontal: 15,
-    backgroundColor: '#121212',
-    color: '#EAEAEA',
-  },
-  inputError: {
-    borderColor: '#b45252',
-  },
   errorText: {
     color: '#b45252',
     fontSize: 12,
@@ -528,12 +283,13 @@ const styles = StyleSheet.create({
   },
   redesContainer: {
     margin: 10,
+    gap: 10,
   },
   redItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    gap: 10,
   },
   sectionTitle: {
     fontWeight: "bold",
@@ -546,10 +302,8 @@ const styles = StyleSheet.create({
    removeButton: {
     borderRadius: 20,
     backgroundColor: '#b58df1',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 10,
-    padding: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   removeButtonText: {
     color: 'transparent',
@@ -572,7 +326,5 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 });
-
-
 
 export default EditarPerfilScreen;

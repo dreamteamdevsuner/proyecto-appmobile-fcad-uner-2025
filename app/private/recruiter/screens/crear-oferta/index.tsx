@@ -7,7 +7,8 @@ import { UserItem } from '../../../../../types';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import ROUTES from '../../navigator/routes';
 import * as Yup from 'yup';
-import { useDropdownTheme, useInputTheme } from '../../../shared/constants/theme';
+import { useInputTheme } from '../../../shared/constants/theme/useInputTheme';
+
 const recruiter: UserItem = {
   id: 1,
   name: 'Renata Scheneider',
@@ -116,7 +117,7 @@ const initialValues: OfertaValues = {
 
 const CrearOferta = ({ navigation }: any) => {
   const inputTheme = useInputTheme();
-  const dropdownTheme = useDropdownTheme() as any;
+
   const [localizacionOpen, setLocalizacionOpen] = useState(false);
   const [modalidadOpen, setModalidadOpen] = useState(false);
   const [jornadaOpen, setJornadaOpen] = useState(false);
@@ -263,9 +264,6 @@ const CrearOferta = ({ navigation }: any) => {
                       onBlur={handleBlur('titulo')}
                       value={values.titulo}
                       placeholder="Puesto"
-                      theme={inputTheme.theme as any}
-                      outlineStyle={inputTheme.outlineStyle}
-                      contentStyle={inputTheme.contentStyle}
                     />
                     {errors.titulo && touched.titulo && (
                       <Text style={{ color: 'red', marginBottom: 5 }}>
@@ -278,10 +276,7 @@ const CrearOferta = ({ navigation }: any) => {
                       onChangeText={handleChange('institucion')}
                       onBlur={handleBlur('institucion')}
                       value={values.institucion}
-                      placeholder="Empresa"
-                      theme={inputTheme.theme as any}
-                      outlineStyle={inputTheme.outlineStyle}
-                      contentStyle={inputTheme.contentStyle}
+                      placeholder="Empresa"                    
                     />
                     {errors.institucion && touched.institucion && (
                       <Text style={{ color: 'red', marginBottom: 5 }}>
@@ -290,15 +285,13 @@ const CrearOferta = ({ navigation }: any) => {
                     )}
                     <Text style={styles.titulo}>Localización</Text>
                     <DropDownPicker
-                      {...dropdownTheme}
                       open={localizacionOpen}
                       setOpen={setLocalizacionOpen}
                       value={values.localizacion}
                       setValue={(callback) =>
                         setFieldValue(
                           'localizacion',
-                          callback(values.localizacion),
-                        )
+                          callback(values.localizacion))
                       }
                       items={localizacionList}
                       placeholder="Selecciona ubicación"
@@ -312,7 +305,6 @@ const CrearOferta = ({ navigation }: any) => {
                     )}
                     <Text style={styles.titulo}>Modalidad</Text>
                     <DropDownPicker
-                      {...dropdownTheme}
                       open={modalidadOpen}
                       setOpen={setModalidadOpen}
                       value={values.modalidad}
@@ -331,7 +323,6 @@ const CrearOferta = ({ navigation }: any) => {
                     )}
                     <Text style={styles.titulo}>Jornada</Text>
                     <DropDownPicker
-                      {...dropdownTheme}
                       open={jornadaOpen}
                       setOpen={setJornadaOpen}
                       value={values.jornada}
@@ -350,7 +341,6 @@ const CrearOferta = ({ navigation }: any) => {
                     )}
                     <Text style={styles.titulo}>Contrato</Text>
                     <DropDownPicker
-                      {...dropdownTheme}
                       open={contratoOpen}
                       setOpen={setContratoOpen}
                       value={values.contrato}
@@ -375,9 +365,6 @@ const CrearOferta = ({ navigation }: any) => {
                       value={values.descripcion}
                       placeholder="Descripción"
                       multiline                      
-                      theme={inputTheme.theme}
-                      outlineStyle={inputTheme.outlineStyle}
-                      contentStyle={inputTheme.contentStyle}
                     />
                     {errors.descripcion && touched.descripcion && (
                       <Text style={{ color: 'red', marginBottom: 5 }}>
@@ -386,7 +373,6 @@ const CrearOferta = ({ navigation }: any) => {
                     )}
                     <Text style={styles.titulo}>Soft Skills</Text>
                     <DropDownPicker
-                      {...dropdownTheme}
                       open={softSkillsOpen}
                       setOpen={setSoftSkillsOpen}
                       value={formValues.softSkills}
@@ -407,7 +393,6 @@ const CrearOferta = ({ navigation }: any) => {
                     />
                     <Text style={styles.titulo}>Hard Skills</Text>
                     <DropDownPicker
-                      {...dropdownTheme}
                       open={hardSkillsOpen}
                       setOpen={setHardSkillsOpen}
                       value={formValues.hardSkills}
@@ -446,9 +431,6 @@ const CrearOferta = ({ navigation }: any) => {
                       value={values.beneficios}
                       placeholder="Descripción"
                       multiline
-                      theme={inputTheme.theme}
-                      outlineStyle={inputTheme.outlineStyle}
-                      contentStyle={inputTheme.contentStyle}
                     />
                     <Button
                       onPress={handleSubmit as any}
