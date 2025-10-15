@@ -13,7 +13,7 @@ import { RootStackParams } from '../../navigator/SwipeStack';
 interface CandidatePortfolioScreenProps
   extends NativeStackScreenProps<
     RootStackParams,
-    ROUTES.RECRUITER_CANDIDATE_PROFILE
+    ROUTES.RECRUITER_CANDIDATE_PROFILE_PREVIEW
   > {}
 const width = Dimensions.get('screen').width;
 const CandidatePortfolioScreen = ({

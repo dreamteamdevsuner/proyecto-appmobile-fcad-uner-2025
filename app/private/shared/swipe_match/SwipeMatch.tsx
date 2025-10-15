@@ -10,7 +10,6 @@ import { candidates2 } from '../../../../mockup/candidates';
 import SwipeMatchButtons from './SwipeMatchButtons';
 import useSwipeMatch from '../../../../hooks/useSwipeMatch';
 import AppCarousel from '../swipe/AppCarousel';
-import { SwipeMatchContext } from '../../recruiter/screens/RecruiterSwipeMatchScreen';
 
 const data = candidates2;
 const width = Dimensions.get('window').width;
@@ -30,7 +29,6 @@ export interface CarouselItemProps<T> extends PropsWithChildren {
   handleScrollEnabled?: (val: boolean) => void;
   /** Hijos opcionales que pueden renderizarse dentro del elemento. */
   children?: React.ReactNode;
-  onScrollEnd?: (val: number) => void;
 }
 
 /**
@@ -40,12 +38,12 @@ export interface CarouselItemProps<T> extends PropsWithChildren {
  */
 const SwipeMatch = <T,>({
   data,
-  onScrollEnd,
+
   renderItem,
 }: {
   /** Arreglo de objetos de datos que el carrusel iterará. */
   data: T[];
-  onScrollEnd: (val: number) => void;
+  onScrollEnd?: (val: number) => void;
   /**
    * Función de renderizado para cada elemento del carrusel.
    *
@@ -61,8 +59,7 @@ const SwipeMatch = <T,>({
   const { enabledScroll, handleLike, handleScrollEnabled } = useSwipeMatch({
     ref,
   });
-  const { currentIdx, updateIdx } = useContext(SwipeMatchContext);
-  console.log('current idx', currentIdx);
+
   return (
     <View style={styles.container}>
       <View style={styles.carouselContainer}>

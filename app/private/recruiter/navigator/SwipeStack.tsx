@@ -3,23 +3,18 @@ import ROUTES from './routes';
 import JobsyHeader from '../../../../components/ui/JobsyHeader';
 import RecruiterSwipeMatchScreen from '../screens/RecruiterSwipeMatchScreen';
 import CandidatePortfolioScreen from '../screens/candidatePortfolioScreen/CandidatePortfolioSceen';
-import { View } from 'react-native';
-import { Text } from 'react-native-paper';
-
-import { RouteProp } from '@react-navigation/native';
-import { CombinedParamList } from '../../shared/perfil/ProfileScreen';
 
 import ProfileNavigator from '../../candidates/screens/perfil/ProfileNavigator';
-import { createContext, PropsWithChildren, useState } from 'react';
+import ProfileScreen from '../../shared/perfil/ProfileScreen';
+import CandidateProfileWrapper from '../../candidates/screens/perfil';
+import { TouchableOpacity, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export type RootStackParams = {
   [ROUTES.RECRUITER_SWIPE_MATCH_SCREEN]: undefined;
-  [ROUTES.RECRUITER_CANDIDATE_PROFILE]: {
+  [ROUTES.RECRUITER_CANDIDATE_PROFILE]: { userId?: number; title?: string };
+  [ROUTES.RECRUITER_CANDIDATE_PROFILE_PREVIEW]: {
     id: number;
-  };
-  [ROUTES.RECRUITER_CANDIDATE_PROFILE_FULL]: {
-    route: RouteProp<CombinedParamList, keyof CombinedParamList>;
-    endReached: boolean;
   };
 };
 
@@ -48,7 +43,7 @@ const SwipeStack = () => {
       ></Stack.Screen>
       <Stack.Screen
         options={{ headerShown: true, headerTitle: 'Descubrir profesionales' }}
-        name={ROUTES.RECRUITER_CANDIDATE_PROFILE}
+        name={ROUTES.RECRUITER_CANDIDATE_PROFILE_PREVIEW}
         component={CandidatePortfolioScreen}
       ></Stack.Screen>
       <Stack.Screen
@@ -63,8 +58,9 @@ const SwipeStack = () => {
             ></JobsyHeader>
           ),
         }}
-        name={ROUTES.RECRUITER_CANDIDATE_PROFILE_FULL}
-        component={ProfileNavigator}
+        name={ROUTES.RECRUITER_CANDIDATE_PROFILE}
+        // component={ProfileNavigator}
+        component={ProfileScreen}
       ></Stack.Screen>
     </Stack.Navigator>
   );

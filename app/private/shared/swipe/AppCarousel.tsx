@@ -12,7 +12,7 @@ interface AppCarouselProps<T> extends PropsWithChildren {
   loop?: boolean;
   data: T[];
   enabledScroll: boolean;
-  onScrollEnd?: (val: number) => void;
+
   handleScrollEnabled?: (val: boolean) => void;
   renderItem: (props: CarouselItemProps<T>) => React.JSX.Element;
 }
@@ -24,7 +24,6 @@ const AppCarousel = <T,>(props: AppCarouselProps<T>) => {
   const width = screenWidth;
   return (
     <Carousel<T>
-      onScrollEnd={(val) => console.log('scroll end', val)}
       ref={ref}
       width={width}
       height={props.height}

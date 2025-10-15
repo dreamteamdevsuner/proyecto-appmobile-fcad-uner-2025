@@ -16,23 +16,30 @@ import {
   ProfileHeader,
   WhatIDo,
 } from '../../../../components/profile/index';
+import { RootStackParams } from '../../recruiter/navigator/SwipeStack';
+import { RootStackParamList } from './ajustes/types';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import ROUTES from '../../recruiter/navigator/routes';
 
-export type CombinedParamList = RecruiterStackParamList & CandidateStackParamList;
+export type CombinedParamList = RecruiterStackParamList &
+  CandidateStackParamList;
 
-type Props = {
-  route: RouteProp<CombinedParamList, keyof CombinedParamList>;
-};
+// type Props = {
+//   route: RouteProp<CombinedParamList, keyof CombinedParamList>;
+// };
+// type Props = NativeStackScreenProps<RootStackParams | CombinedParamList>;
+type Props = NativeStackScreenProps<any, any>;
 
 const ProfileScreenShared: React.FC<Props> = ({ route }) => {
-  console.log("route", route)
+  console.log('route', route);
   const { state } = useAuth();
   const userId =
     route?.params &&
-      typeof route.params === 'object' &&
-      'userId' in route.params
+    typeof route.params === 'object' &&
+    'userId' in route.params
       ? (route.params as { userId?: number }).userId
       : state.user!.id;
-
+  console.log('userId', userId);
   const [profileUser, setProfileUser] = useState<ProfileUser | undefined>();
   const [loading, setLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
@@ -134,8 +141,8 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
 
         {((profileUser?.role ?? state.user!.role) as Role) ===
           Role.candidate && (
-            <HorizontalChips skills={profileUser?.skills ?? []} />
-          )}
+          <HorizontalChips skills={profileUser?.skills ?? []} />
+        )}
       </View>
 
       <TabView

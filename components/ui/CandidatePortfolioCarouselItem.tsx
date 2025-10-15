@@ -1,4 +1,12 @@
-import { StyleSheet, View, Image, Touchable, Pressable } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Image,
+  Touchable,
+  Pressable,
+  Button,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import {
   checkIsLinkImage,
   checkIsPortfolioText,
@@ -48,16 +56,13 @@ const CandidatePortfolioCarouselItem = ({
 
     innerContent = (
       <Pressable
-        onPress={() =>
-          navigation.navigate(ROUTES.RECRUITER_CANDIDATE_PROFILE_FULL, {
-            route: {
-              key: 'CandidateProfile-DE1J82UTp6yZRljjHZ7PG',
-              name: CANDIDATE_ROUTES.CANDIDATE_PROFILE,
-              params: undefined,
-            },
-            endReached: false,
-          })
-        }
+        style={{ flex: 1, justifyContent: 'center' }}
+        onPress={() => {
+          navigation.navigate(ROUTES.RECRUITER_CANDIDATE_PROFILE, {
+            userId: 222,
+            title: 'title',
+          });
+        }}
       >
         <Text style={{ color: 'white', maxWidth: '80%' }}>
           {item.portfolioText}

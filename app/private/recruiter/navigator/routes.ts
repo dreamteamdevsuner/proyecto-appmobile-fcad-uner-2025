@@ -15,7 +15,7 @@ enum ROUTES {
   RECRUITER_CREAR_OFERTA = 'NuevaOferta',
   RECRUITER_CREAR_OFERTA_PREVIEW = 'NuevaOfertaPreview',
   RECRUITER_SWIPE_MATCH_SCREEN = 'RecruiterSwipeMatchScreen',
+  RECRUITER_CANDIDATE_PROFILE_PREVIEW = 'RecruiterCandidateProfilePreview',
   RECRUITER_CANDIDATE_PROFILE = 'RecruiterCandidateProfile',
-  RECRUITER_CANDIDATE_PROFILE_FULL = 'RecruiterCandidateProfileFull',
 }
 export default ROUTES;
