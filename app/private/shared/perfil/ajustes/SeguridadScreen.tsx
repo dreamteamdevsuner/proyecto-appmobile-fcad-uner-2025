@@ -13,7 +13,7 @@ export default function SeguridadScreen() {
   const navigation = useNavigation<NavigationProp>();
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.card}>
         <List.Item
           title="Datos de cuenta"
@@ -27,7 +27,7 @@ export default function SeguridadScreen() {
           onPress={() => navigation.navigate('CambiarContrasena')}
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 

@@ -36,7 +36,7 @@ const OffersTab = (offers: Offer[] | undefined): React.JSX.Element => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FEF7FF',
+    backgroundColor: '#1D1C21',
   },
   selectedTitle: {
     fontWeight: 'bold',
