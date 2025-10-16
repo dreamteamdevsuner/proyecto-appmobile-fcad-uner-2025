@@ -55,15 +55,7 @@ const CandidatePortfolioCarouselItem = ({
     };
 
     innerContent = (
-      <Pressable
-        style={{ flex: 1, justifyContent: 'center' }}
-        onPress={() => {
-          navigation.navigate(ROUTES.RECRUITER_CANDIDATE_PROFILE, {
-            userId: 222,
-            title: 'title',
-          });
-        }}
-      >
+      <Pressable style={{ flex: 1, justifyContent: 'center' }}>
         <Text style={{ color: 'white', maxWidth: '80%' }}>
           {item.portfolioText}
         </Text>

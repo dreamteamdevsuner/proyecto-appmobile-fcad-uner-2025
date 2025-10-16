@@ -4,18 +4,15 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import ROUTES from './routes';
 
-
 import FavoritosNavigator from '../screens/favoritos/FavoritosNavigator';
 import MensajeriaNavigator from '../screens/mensajeria/MensajeriaNavigator';
 import CrearOfertaNavigator from '../screens/crear-oferta/CrearOfertaNavigator';
 import ProfileNavigator from '../screens/perfil/ProfileNavigator';
 
-
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { PrivateStackParamList } from './types';
 import SwipeStack from './SwipeStack';
-
 
 const Tab = createBottomTabNavigator<PrivateStackParamList>();
 
@@ -24,6 +21,7 @@ const RecruiterNavigator = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
+
         tabBarActiveTintColor: '#6750A4',
         tabBarInactiveTintColor: 'gray',
         tabBarIcon: ({ color, size }) => (
@@ -34,14 +32,10 @@ const RecruiterNavigator = () => {
           />
         ),
       }}
-
       initialRouteName={ROUTES.RECRUITER_SWIPE_MATCH}
     >
       <Tab.Screen
-
-
         name={ROUTES.RECRUITER_SWIPE_MATCH}
-
         component={SwipeStack}
       ></Tab.Screen>
       <Tab.Screen

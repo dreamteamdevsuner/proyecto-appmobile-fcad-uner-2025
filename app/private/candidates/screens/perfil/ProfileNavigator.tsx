@@ -41,6 +41,7 @@ const ProfileNavigator = () => (
                 />
               </TouchableOpacity>
               <TouchableOpacity
+                // onPress={() => navigation.navigate(ROUTES.CANDIDATE_SETTING)}
                 onPress={() => navigation.navigate(ROUTES.CANDIDATE_SETTING)}
               >
                 <Ionicons name="settings-outline" size={24} color="#F1F1F1" />
