@@ -85,12 +85,18 @@ export const ProfileHeader = ({
             }}
           >
             <View>
-              <Text style={{ fontSize: 24 }}>{name}</Text>
-              <Text style={{ fontSize: 16, flexShrink: 1 }}>{ocupation}</Text>
+              <Text style={{ fontSize: 24, color: '#FFFFFF' }}>{name}</Text>
+              <Text style={{ fontSize: 16, flexShrink: 1, color: '#FFFFFF' }}>
+                {ocupation}
+              </Text>
             </View>
             <View style={{ flexDirection: 'row', gap: 4 }}>
-              <Octicons name="location" size={20} color="#49454F" />
-              <Text numberOfLines={1} ellipsizeMode="tail">
+              <Octicons name="location" size={20} color="#FFFFFF" />
+              <Text
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={{ color: '#FFFFFF' }}
+              >
                 {city}
               </Text>
             </View>
