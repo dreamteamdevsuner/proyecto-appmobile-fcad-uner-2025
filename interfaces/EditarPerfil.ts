@@ -1,4 +1,4 @@
-export interface PerfilValues {
+export interface CandidatoValues {
   nombre: string;
   apellido: string;
   profesion: string;
@@ -14,4 +14,13 @@ export interface PerfilValues {
   contratoSeleccionado: string;
   email: string;
   redes: { tipo: string; url: string }[];
+}
+
+export interface ReclutadorValues {
+  nombre: string;
+  apellido: string;
+  profesion: string;
+  institucion: string;
+  localizacion: string;
+  palabrasClave: string[];
 }

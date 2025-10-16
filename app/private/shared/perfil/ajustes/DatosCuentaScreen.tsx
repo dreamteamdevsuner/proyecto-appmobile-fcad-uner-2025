@@ -4,15 +4,26 @@ import { Formik } from "formik";
 import { TextInput, Button, Text, Dialog, Portal } from "react-native-paper";
 import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useAuth } from '../../../../../appContext/authContext';
+import * as Yup from 'yup';
 
+const validationSchema = Yup.object().shape({
+  email: Yup.string()
+    .email('Por favor, ingresa un correo válido')
+    .required('El correo electrónico es obligatorio'),
+  correoAsociado: Yup.string()
+    .email('Por favor, ingresa un correo válido'),
+  telefono: Yup.string(), // Opcional
+});
 export default function DatosCuentaScreen() {
   const [dialogVisible, setDialogVisible] = useState(false);
   const navigation = useNavigation();
+  const { state } = useAuth();
 
   const userDatosCuenta = {
-      email: "juanac@ejemplo.com",
-      correoAsociado: "juanacosta25@mail.com",
-      telefono: "+549258159322"
+      email: state.user?.email || '',
+      correoAsociado: "",
+      telefono: "",
     };
 
   return (
@@ -21,13 +32,14 @@ export default function DatosCuentaScreen() {
 
       <Formik
         initialValues={userDatosCuenta}
+        validationSchema={validationSchema}
         enableReinitialize
         onSubmit={(values) => {
           console.log("Datos guardados: ", values);
           setDialogVisible(true);
       }}
       >
-        {({ handleChange, handleSubmit, values }) => (
+        {({ handleChange, handleSubmit, values, errors, touched }) => (
           <>
             <TextInput
               label="Correo electrónico"
@@ -35,25 +47,33 @@ export default function DatosCuentaScreen() {
               onChangeText={handleChange("email")}
               style={styles.input}
               mode="outlined"
-              theme={{ roundness: 30 }}
               keyboardType="email-address"
+              error={touched.email && !!errors.email}
             />
+            {touched.email && errors.email && (
+                  <Text style={styles.errorText}>{errors.email}</Text>
+            )}
+
             <TextInput
               label="Correo asociado"
               value={values.correoAsociado}
               onChangeText={handleChange("correoAsociado")}
               style={styles.input}
               mode="outlined"
-              theme={{ roundness: 30 }}
               keyboardType="email-address"
+              error={touched.correoAsociado && !!errors.correoAsociado}
             />
+            {touched.correoAsociado && errors.correoAsociado && (
+                  <Text style={styles.errorText}>{errors.correoAsociado}</Text>
+            )}
+
             <TextInput
               label="Teléfono"
               value={values.telefono}
               onChangeText={handleChange("telefono")}
               style={styles.input}
               mode="outlined"
-              theme={{ roundness: 30 }}
+              keyboardType="phone-pad"            
            />
 
             <Button mode="contained" style={styles.button} onPress={() => handleSubmit()}>
@@ -70,7 +90,9 @@ export default function DatosCuentaScreen() {
                   <Text>Los datos de tu cuenta han sido actualizados correctamente.</Text>
                 </Dialog.Content>
                 <Dialog.Actions>
-                  <Button onPress={() => { 
+                  <Button 
+                    mode="contained"
+                    onPress={() => { 
                     setDialogVisible(false);
                     navigation.goBack(); 
                   }}                               
@@ -98,12 +120,18 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   input: {
-    marginHorizontal: 40,    
+    marginHorizontal: 30,    
+    marginBottom: 5,
+  },
+   errorText: {
+    fontSize: 12,
+    color: '#ff9b92',
+    marginHorizontal: 40,
     marginBottom: 10,
   },
   button: {
-    margin: 40,
-    marginVertical: 200,
+    marginHorizontal: 20,
+    marginVertical: 80,
     backgroundColor: '#BEB52C',
   },
 });
