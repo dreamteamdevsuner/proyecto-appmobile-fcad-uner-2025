@@ -34,6 +34,7 @@ const RecruiterNavigator = () => {
         ),
       }}
       initialRouteName={ROUTES.RECRUITER_SWIPE_MATCH}
+      tabBar={(props) => <CustomNavBar {...props}></CustomNavBar>}
     >
       <Tab.Screen
         name={ROUTES.RECRUITER_SWIPE_MATCH}
