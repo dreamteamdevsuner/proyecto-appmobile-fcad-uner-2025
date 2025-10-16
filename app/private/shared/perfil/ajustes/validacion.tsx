@@ -13,3 +13,11 @@ export const perfilValidacionSchema= Yup.object().shape({
     })
   )
 });
+
+export const reclutadorValidacionSchema = Yup.object().shape({
+  nombre: Yup.string().required('El nombre es requerido'),
+  apellido: Yup.string().required('El apellido es requerido'),
+  profesion: Yup.string().required('La profesión es requerida'),
+  institucion: Yup.string().required('La institución es requerida'),
+  localizacion: Yup.string().required('La localización es requerida'),
+});
