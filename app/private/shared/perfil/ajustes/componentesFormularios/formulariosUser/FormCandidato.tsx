@@ -23,9 +23,10 @@ const SectionTitle = ({ children }: { children: string }) => (
 
 interface Props {
   formik: FormikProps<CandidatoValues>;
+  fieldPositions: React.MutableRefObject<{ [key: string]: number }>;
 }
 
-const FormularioCandidato = ({ formik }: Props) => {
+const FormularioCandidato = ({ formik, fieldPositions }: Props) => {
   return (
     <>
       <SectionTitle>Datos Personales</SectionTitle>
@@ -34,6 +35,9 @@ const FormularioCandidato = ({ formik }: Props) => {
         name="nombre"
         formik={formik}
         placeholder="Ingresá tu nombre aquí"
+        onLayout={(event) => {
+          fieldPositions.current['nombre'] = event.nativeEvent.layout.y;
+        }}
       />
 
       <Text style={styles.titulo}>Apellido</Text>
@@ -41,6 +45,9 @@ const FormularioCandidato = ({ formik }: Props) => {
         name="apellido"
         formik={formik}
         placeholder="Ingresá tu apellido aquí"
+        onLayout={(event) => {
+          fieldPositions.current['apellido'] = event.nativeEvent.layout.y;
+        }}
       />
 
       <Text style={styles.titulo}>Profesión</Text>
@@ -48,6 +55,9 @@ const FormularioCandidato = ({ formik }: Props) => {
         name="profesion"
         formik={formik}
         placeholder="Ej: Diseñador UX/UI"
+        onLayout={(event) => {
+          fieldPositions.current['profesion'] = event.nativeEvent.layout.y;
+        }}
       />
 
       <Text style={styles.titulo}>Localización</Text>
@@ -143,10 +153,10 @@ const FormularioCandidato = ({ formik }: Props) => {
         formik={formik}
         placeholder="Escribe tu correo aquí"
         keyboardType="email-address"
+        onLayout={(event) => {
+          fieldPositions.current['email'] = event.nativeEvent.layout.y;
+        }}
       />
-      {formik.touched.email && formik.errors.email && (
-        <Text style={styles.errorText}>{formik.errors.email as string}</Text>
-      )}
 
       <Text style={styles.titulo}>Redes</Text>
       <FormDropdown
@@ -154,36 +164,68 @@ const FormularioCandidato = ({ formik }: Props) => {
         formik={formik}
         items={REDES_LIST}
         placeholder="Selecciona una red social"
+        onLayout={(event) => {
+          fieldPositions.current['redSeleccionada'] =
+            event.nativeEvent.layout.y;
+        }}
       />
 
       {formik.values.redes && formik.values.redes.length > 0 && (
         <View style={styles.redesContainer}>
-          {formik.values.redes.map((red, idx) => (
-            <View key={`${red.tipo}_${idx}`} style={styles.redItem}>
-              <TextInput
-                style={{ flex: 1 }}
-                mode="outlined"
-                label={red.tipo}
-                value={red.url}
-                onChangeText={(text) => {
-                  const nuevasRedes = [...formik.values.redes];
-                  nuevasRedes[idx] = { ...red, url: text };
-                  formik.setFieldValue('redes', nuevasRedes);
-                }}
-              />
-              <TouchableOpacity
-                onPress={() => {
-                  const nuevasRedes = formik.values.redes.filter(
-                    (_, i) => i !== idx,
-                  );
-                  formik.setFieldValue('redes', nuevasRedes);
-                }}
-                style={styles.removeButton}
-              >
-                <Text style={styles.removeButtonText}>Quitar</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
+          {formik.values.redes.map((red, idx) => {
+            let errorMessage: string | null = null;
+            let isFieldTouched = false;
+
+            if (
+              Array.isArray(formik.errors.redes) &&
+              formik.errors.redes[idx] &&
+              typeof formik.errors.redes[idx] === 'object' &&
+              'url' in formik.errors.redes[idx]
+            ) {
+              errorMessage =
+                (formik.errors.redes[idx] as { url?: string }).url || null;
+            }
+
+            if (
+              Array.isArray(formik.touched.redes) &&
+              formik.touched.redes[idx] &&
+              (formik.touched.redes[idx] as { url?: boolean }).url
+            ) {
+              isFieldTouched = true;
+            }
+
+            const showError = isFieldTouched && errorMessage;
+
+            return (
+              <View key={`${red.tipo}_${idx}`}>
+                <View style={styles.redItem}>
+                  <TextInput
+                    style={{ flex: 1 }}
+                    mode="outlined"
+                    label={red.tipo}
+                    value={red.url}
+                    onChangeText={formik.handleChange(`redes[${idx}].url`)}
+                    onBlur={formik.handleBlur(`redes[${idx}].url`)}
+                    error={!!showError}
+                  />
+                  <TouchableOpacity
+                    onPress={() => {
+                      const nuevasRedes = formik.values.redes.filter(
+                        (_, i) => i !== idx,
+                      );
+                      formik.setFieldValue('redes', nuevasRedes);
+                    }}
+                    style={styles.removeButton}
+                  >
+                    <Text style={styles.removeButtonText}>Quitar</Text>
+                  </TouchableOpacity>
+                </View>
+                {showError && (
+                  <Text style={styles.errorText}>{errorMessage}</Text>
+                )}
+              </View>
+            );
+          })}
         </View>
       )}
     </>
@@ -191,11 +233,11 @@ const FormularioCandidato = ({ formik }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  titulo: { 
-    fontSize: 16, 
-    fontWeight: '400', 
-    marginBottom: 5, 
-    marginTop: 20 
+  titulo: {
+    fontSize: 16,
+    fontWeight: '400',
+    marginBottom: 5,
+    marginTop: 20,
   },
   sectionTitle: {
     fontWeight: 'bold',
@@ -205,15 +247,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     paddingBottom: 5,
   },
-  errorText: {
-    color: '#b45252',
-    fontSize: 12,
-    marginLeft: 15,
-    marginTop: 2,
-    marginBottom: 10,
-  },
-  redesContainer: { 
-    margin: 10, gap: 10 
+  redesContainer: {
+    margin: 10,
+    gap: 10,
   },
   redItem: {
     flexDirection: 'row',
@@ -221,16 +257,23 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: 10,
   },
+  errorText: {
+    fontSize: 12,
+    color: '#FF8A80',
+    marginTop: 4,
+    marginLeft: 12,
+  },
   removeButton: {
     borderRadius: 20,
     backgroundColor: '#b58df1',
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
-  removeButtonText: { 
-    color: 'transparet', 
-    fontSize: 12, 
-    fontWeight: 'bold' },
+  removeButtonText: {
+    color: 'transparet',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
 });
 
 export default FormularioCandidato;
