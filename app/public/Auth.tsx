@@ -5,12 +5,13 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
 } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Logo from '../../components/Logo';
 import AuthForm from '../../components/AuthForm';
 
 import { Button, Text } from 'react-native-paper';
+import supabase from '../../supabase/supabase';
 //TODO move a su component
 export const Divider = () => {
   // TODO GRIS MOVER A PALETTE DESPUES
@@ -44,7 +45,18 @@ export const Divider = () => {
 //Provisorio reemplazar el Record
 interface RouteProps extends NativeStackScreenProps<Record<string, any>> {}
 const Auth = ({ navigation }: RouteProps) => {
-  console.log('ENV', process.env.EXPO_PUBLIC_TEST);
+  useEffect(() => {
+    supabase
+      .from('publicacion')
+      .select()
+      .then(({ data, error }) => {
+        if (error) {
+          console.log('errrrrr', error);
+        }
+        console.log('data', data);
+      });
+  }, []);
+
   return (
     <View style={{ paddingHorizontal: 60, paddingTop: 40 }}>
       <Logo></Logo>

@@ -3,6 +3,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
+  Keyboard,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import {
@@ -17,6 +18,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useAuth } from '../appContext/authContext';
 import Logo from '../components/Logo';
+import { apiSignIn, LoginUser } from '../services/apiAuth';
 
 interface AppSnackProps {
   visible: boolean;
@@ -29,7 +31,7 @@ const AppSnackBar = ({ visible, handleHideSnackBar }: AppSnackProps) => {
         return handleHideSnackBar();
       }, 2000);
     }
-    //CLEAN UP POR SI ACASO
+    // CLEAN UP POR SI ACASO
     () => {
       handleHideSnackBar();
     };
@@ -41,12 +43,11 @@ const AppSnackBar = ({ visible, handleHideSnackBar }: AppSnackProps) => {
           justifyContent: 'center',
           alignContent: 'center',
           display: 'flex',
-          backgroundColor: 'black',
+          backgroundColor: 'red',
         }}
         visible={visible}
         onDismiss={() => handleHideSnackBar()}
       >
-        <Text>Test 1</Text>
         <Text style={{ color: 'white' }}>Login Error</Text>
       </Snackbar>
     </Portal>
@@ -78,20 +79,31 @@ const AuthForm = () => {
   const handleHideSnackbar = () => {
     setShowSnackbar(false);
   };
+  useEffect(() => {
+    handleShowSnackbar();
+  }, []);
 
-  const handleLogin = (values: LoginForm) => {
+  const handleLogin = async (values: LoginUser) => {
     // console.log("handle login");
     console.log('values', values);
     //MOCKUP LOGIN SUCCESS
-    (async () => {
-      const ok = await login(values.email, values.password);
-      if (!ok) {
-        handleShowSnackbar();
-      }
-    })();
+    // (async () => {
+    //   const ok = await login(values.email, values.password);
+    //   if (!ok) {
+    //     handleShowSnackbar();
+    //   }
+    // })();
+    const s = await apiSignIn(values);
+    if (!s) {
+      handleShowSnackbar();
+    }
   };
   return (
     <>
+      <AppSnackBar
+        visible={showSnackbar}
+        handleHideSnackBar={handleHideSnackbar}
+      ></AppSnackBar>
       <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={30}>
         <Formik
           initialValues={loginForm}
@@ -114,7 +126,10 @@ const AuthForm = () => {
           }) => (
             <View style={authStyles.container}>
               <TextInput
-                onBlur={handleBlur('email')}
+                onBlur={() => {
+                  handleBlur('email');
+                  Keyboard.dismiss();
+                }}
                 autoCapitalize="none"
                 label={'Correo electrónico'}
                 placeholder="Escribí tu correo electrónico"
@@ -131,7 +146,11 @@ const AuthForm = () => {
                 </View>
               )}
               <TextInput
-                onBlur={handleBlur('password')}
+                onBlur={() => {
+                  handleBlur('password');
+                  console.log('hiding');
+                  Keyboard.dismiss();
+                }}
                 secureTextEntry={true}
                 label={'Contraseña'}
                 placeholder="Escribí tu contraseña"
@@ -170,7 +189,10 @@ const AuthForm = () => {
                   backgroundColor: '#BEB52C',
                   opacity: (dirty && !isValid) || !dirty ? 0.5 : 1,
                 }}
-                onPress={() => handleSubmit()}
+                onPress={() => {
+                  Keyboard.dismiss();
+                  handleSubmit();
+                }}
                 disabled={(dirty && !isValid) || !dirty}
               >
                 <Text style={{ color: '#1D1C21' }}>Iniciar sesión</Text>
@@ -179,10 +201,6 @@ const AuthForm = () => {
           )}
         </Formik>
       </KeyboardAvoidingView>
-      <AppSnackBar
-        visible={showSnackbar}
-        handleHideSnackBar={handleHideSnackbar}
-      ></AppSnackBar>
     </>
   );
 };
