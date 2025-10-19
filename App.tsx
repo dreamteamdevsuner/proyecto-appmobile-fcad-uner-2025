@@ -19,6 +19,7 @@ import * as Font from 'expo-font';
 import { AppDarkTheme } from './app/private/shared/constants/theme/paperTheme';
 import { StatusBar } from 'expo-status-bar';
 import Splash from './components/SplashScreen';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 //import * as NavigationBar from 'expo-navigation-bar';
 
 export default function App() {
@@ -52,16 +53,18 @@ export default function App() {
       {showSplash ? (
         <Splash onFinish={() => setShowSplash(false)} />
       ) : (
-        <AuthProvider>
-          <PaperProvider theme={AppDarkTheme}>
-            <NavigationContainer theme={AppDarkTheme}>
-              <SafeAreaView style={{ flex: 1 }}>
-                <StatusBar style="light" backgroundColor="#000000" />
-                <Navigator></Navigator>
-              </SafeAreaView>
-            </NavigationContainer>
-          </PaperProvider>
-        </AuthProvider>
+        <KeyboardProvider>
+          <AuthProvider>
+            <PaperProvider theme={AppDarkTheme}>
+              <NavigationContainer theme={AppDarkTheme}>
+                <SafeAreaView style={{ flex: 1 }}>
+                  <StatusBar style="light" backgroundColor="#000000" />
+                  <Navigator></Navigator>
+                </SafeAreaView>
+              </NavigationContainer>
+            </PaperProvider>
+          </AuthProvider>
+        </KeyboardProvider>
       )}
     </GestureHandlerRootView>
   );

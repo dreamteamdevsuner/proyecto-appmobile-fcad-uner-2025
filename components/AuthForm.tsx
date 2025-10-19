@@ -19,6 +19,7 @@ import * as Yup from 'yup';
 import { useAuth } from '../appContext/authContext';
 import Logo from '../components/Logo';
 import { apiSignIn, LoginUser } from '../services/apiAuth';
+import { FormInput, FormInputWithHelper } from './ui/FormInputs';
 
 interface AppSnackProps {
   visible: boolean;
@@ -79,9 +80,6 @@ const AuthForm = () => {
   const handleHideSnackbar = () => {
     setShowSnackbar(false);
   };
-  useEffect(() => {
-    handleShowSnackbar();
-  }, []);
 
   const handleLogin = async (values: LoginUser) => {
     // console.log("handle login");
@@ -123,82 +121,84 @@ const AuthForm = () => {
             dirty,
             touched,
             initialTouched,
-          }) => (
-            <View style={authStyles.container}>
-              <TextInput
-                onBlur={() => {
-                  handleBlur('email');
-                  Keyboard.dismiss();
-                }}
-                autoCapitalize="none"
-                label={'Correo electrónico'}
-                placeholder="Escribí tu correo electrónico"
-                mode="outlined"
-                onFocus={() => setFieldTouched('email', true)}
-                onChangeText={handleChange('email')}
-                value={values.email}
-                keyboardType="email-address"
-              />
-              {touched.email && errors.email && (
-                <View style={authStyles.errorView}>
-                  <Icon source="alert-circle-outline" size={20} />
-                  <Text style={authStyles.errorText}>{errors.email}</Text>
-                </View>
-              )}
-              <TextInput
-                onBlur={() => {
-                  handleBlur('password');
-                  console.log('hiding');
-                  Keyboard.dismiss();
-                }}
-                secureTextEntry={true}
-                label={'Contraseña'}
-                placeholder="Escribí tu contraseña"
-                mode="outlined"
-                autoCapitalize="none"
-                onChangeText={handleChange('password')}
-                onFocus={() => setFieldTouched('password', true)}
-                value={values.password}
-              />
-              {touched.password && errors.password && (
-                <View style={authStyles.errorView}>
-                  <Icon source="alert-circle-outline" size={20} />
-                  <Text style={authStyles.errorText}>{errors.password}</Text>
-                </View>
-              )}
+          }) => {
+            const handleTextInputBlur = (key: keyof LoginForm) => {
+              handleBlur(key);
+              Keyboard.dismiss();
+            };
+            const handleTextFieldTouched = (key: keyof LoginForm) => {
+              setFieldTouched(key);
+            };
+            const handleOnChangeText = (key: keyof LoginForm) => {
+              handleChange(key);
+            };
 
-              <View style={authStyles.forgotPasswordContainer}>
-                <TouchableWithoutFeedback style={authStyles.forgotPassword}>
-                  <Text
-                    variant="labelMedium"
-                    style={{
-                      borderBottomColor: 'black',
-                      borderBottomWidth: 1,
+            return (
+              <View style={authStyles.container}>
+                <FormInputWithHelper<LoginForm>
+                  formKey="email"
+                  value={values.email}
+                  placeholder="Escribí tu correo electrónico"
+                  key={'email'}
+                  label="Correo electrónico"
+                  onBlur={() => handleTextInputBlur('email')}
+                  onFocus={() => setFieldTouched('email', true)}
+                  onChangeText={handleChange('email')}
+                  keyboardType="email-address"
+                  errorCondition={
+                    Boolean(touched.email && errors.email) || false
+                  }
+                  errorMessage={errors.email ?? ''}
+                ></FormInputWithHelper>
+                <FormInputWithHelper<LoginForm>
+                  formKey="password"
+                  value={values.password}
+                  placeholder="Escribí tu correo electrónico"
+                  secureTextEntry={true}
+                  key={'password'}
+                  label="Contraseña"
+                  onBlur={() => handleTextInputBlur('password')}
+                  onFocus={() => setFieldTouched('password', true)}
+                  onChangeText={handleChange('password')}
+                  errorCondition={
+                    Boolean(touched.password && errors.password) || false
+                  }
+                  errorMessage={errors.password ?? ''}
+                ></FormInputWithHelper>
 
-                      top: -15,
-                    }}
-                  >
-                    ¿Olvidaste tu contraseña ?
-                  </Text>
-                </TouchableWithoutFeedback>
+                <View style={authStyles.forgotPasswordContainer}>
+                  <TouchableWithoutFeedback style={authStyles.forgotPassword}>
+                    <Text
+                      variant="labelMedium"
+                      style={{
+                        borderBottomColor: 'black',
+                        borderBottomWidth: 1,
+
+                        top: -15,
+                      }}
+                    >
+                      ¿Olvidaste tu contraseña ?
+                    </Text>
+                  </TouchableWithoutFeedback>
+                </View>
+
+                <Button
+                  mode="contained"
+                  style={{
+                    backgroundColor: '#BEB52C',
+                    opacity: (dirty && !isValid) || !dirty ? 0.5 : 1,
+                  }}
+                  onPress={() => {
+                    Keyboard.dismiss();
+                    handleSubmit();
+                  }}
+                  disabled={(dirty && !isValid) || !dirty}
+                >
+                  <Text style={{ color: '#1D1C21' }}>Iniciar sesión</Text>
+                </Button>
               </View>
-
-              <Button
-                mode="contained"
-                style={{
-                  backgroundColor: '#BEB52C',
-                  opacity: (dirty && !isValid) || !dirty ? 0.5 : 1,
-                }}
-                onPress={() => {
-                  Keyboard.dismiss();
-                  handleSubmit();
-                }}
-                disabled={(dirty && !isValid) || !dirty}
-              >
-                <Text style={{ color: '#1D1C21' }}>Iniciar sesión</Text>
-              </Button>
-            </View>
-          )}
+            );
+          }}
         </Formik>
       </KeyboardAvoidingView>
     </>

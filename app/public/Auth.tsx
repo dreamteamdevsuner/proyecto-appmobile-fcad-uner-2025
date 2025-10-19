@@ -12,6 +12,7 @@ import AuthForm from '../../components/AuthForm';
 
 import { Button, Text } from 'react-native-paper';
 import supabase from '../../supabase/supabase';
+import PUBLIC_NAVIGATOR_ROUTES from './PUBLIC_NAVIGATOR_ROUTES';
 //TODO move a su component
 export const Divider = () => {
   // TODO GRIS MOVER A PALETTE DESPUES
@@ -71,10 +72,18 @@ const Auth = ({ navigation }: RouteProps) => {
         }}
       >
         <Text variant="labelMedium">No tengo cuenta.</Text>
-        <TouchableWithoutFeedback>
+        <TouchableWithoutFeedback
+          onPress={() => navigation.navigate(PUBLIC_NAVIGATOR_ROUTES.SIGN_UP)}
+        >
           <Text
             variant="labelMedium"
-            style={{ textDecorationLine: 'underline' }}
+            style={{
+              textDecorationLine: 'underline',
+              textDecorationStyle: 'solid',
+              textDecorationColor: 'white',
+              borderBottomColor: 'white',
+              borderBottomWidth: 1.5,
+            }}
           >
             Registrarme
           </Text>
@@ -83,15 +92,5 @@ const Auth = ({ navigation }: RouteProps) => {
     </View>
   );
 };
-
-const authLoginStyles = StyleSheet.create({
-  // container: { flex: 1 },
-  // loginForm: { flex: 1 },
-  footer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 export default Auth;
