@@ -4,13 +4,13 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
-} from "react-native";
-import React from "react";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import Logo from "../../components/Logo";
-import AuthForm from "../../components/AuthForm";
+} from 'react-native';
+import React from 'react';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import Logo from '../../components/Logo';
+import AuthForm from '../../components/AuthForm';
 
-import { Button, Text } from "react-native-paper";
+import { Button, Text } from 'react-native-paper';
 //TODO move a su component
 export const Divider = () => {
   // TODO GRIS MOVER A PALETTE DESPUES
@@ -19,13 +19,13 @@ export const Divider = () => {
   const styles = StyleSheet.create({
     divider: {
       marginVertical: 30,
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-evenly",
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-evenly',
     },
     dividerDecoration: {
-      backgroundColor: "#cac4d0",
+      backgroundColor: '#cac4d0',
 
       height: 1.2,
 
@@ -42,8 +42,9 @@ export const Divider = () => {
 };
 
 //Provisorio reemplazar el Record
-interface RouteProps extends NativeStackScreenProps<Record<string, any>> { }
+interface RouteProps extends NativeStackScreenProps<Record<string, any>> {}
 const Auth = ({ navigation }: RouteProps) => {
+  console.log('ENV', process.env.EXPO_PUBLIC_TEST);
   return (
     <View style={{ paddingHorizontal: 60, paddingTop: 40 }}>
       <Logo></Logo>
@@ -51,17 +52,17 @@ const Auth = ({ navigation }: RouteProps) => {
 
       <View
         style={{
-          display: "flex",
-          flexDirection: "row",
+          display: 'flex',
+          flexDirection: 'row',
           marginTop: 40,
-          justifyContent: "center",
+          justifyContent: 'center',
         }}
       >
         <Text variant="labelMedium">No tengo cuenta.</Text>
         <TouchableWithoutFeedback>
           <Text
             variant="labelMedium"
-            style={{ textDecorationLine: "underline" }}
+            style={{ textDecorationLine: 'underline' }}
           >
             Registrarme
           </Text>
@@ -76,8 +77,8 @@ const authLoginStyles = StyleSheet.create({
   // loginForm: { flex: 1 },
   footer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
