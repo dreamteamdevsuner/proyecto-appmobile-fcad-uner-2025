@@ -18,8 +18,10 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useAuth } from '../appContext/authContext';
 import Logo from '../components/Logo';
-import { apiSignIn, LoginUser } from '../services/apiAuth';
+import { signIn } from '../services/apiAuth';
 import { FormInput, FormInputWithHelper } from './ui/FormInputs';
+import { LoginForm } from '../interfaces/LoginForm';
+import { UserDTO } from '../services/interfaces/UserDTO';
 
 interface AppSnackProps {
   visible: boolean;
@@ -55,11 +57,7 @@ const AppSnackBar = ({ visible, handleHideSnackBar }: AppSnackProps) => {
   );
 };
 
-interface LoginForm {
-  email: string;
-  password: string;
-}
-const loginForm: LoginForm = {
+const loginForm: UserDTO = {
   email: '',
   password: '',
 };
@@ -81,7 +79,7 @@ const AuthForm = () => {
     setShowSnackbar(false);
   };
 
-  const handleLogin = async (values: LoginUser) => {
+  const handleLogin = async (values: UserDTO) => {
     // console.log("handle login");
     console.log('values', values);
     //MOCKUP LOGIN SUCCESS
@@ -91,8 +89,8 @@ const AuthForm = () => {
     //     handleShowSnackbar();
     //   }
     // })();
-    const s = await apiSignIn(values);
-    if (!s) {
+    const singInRes = await signIn(values);
+    if (!singInRes) {
       handleShowSnackbar();
     }
   };
@@ -153,7 +151,7 @@ const AuthForm = () => {
                 <FormInputWithHelper<LoginForm>
                   formKey="password"
                   value={values.password}
-                  placeholder="Escribí tu correo electrónico"
+                  placeholder="Escribí tu contraseña"
                   secureTextEntry={true}
                   key={'password'}
                   label="Contraseña"

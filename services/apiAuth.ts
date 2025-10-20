@@ -1,13 +1,9 @@
 import { Session, User, WeakPassword } from '@supabase/supabase-js';
 import supabase from '../supabase/supabase';
-import { Message } from '../types/Message';
+import { UserDTO } from './interfaces/UserDTO';
 
-export interface LoginUser {
-  email: string;
-  password: string;
-}
-export const apiSignIn = async (
-  user: LoginUser,
+export const signIn = async (
+  user: UserDTO,
 ): Promise<
   | {
       user: User;
@@ -16,15 +12,18 @@ export const apiSignIn = async (
     }
   | undefined
 > => {
-  try {
-    const { data, error } = await supabase.auth.signInWithPassword(user);
-    console.log('DATAAA', data);
-    if (error) {
-      throw Error(error.message);
-    }
-    return data;
-  } catch (error) {
-    const err: Error = error as Error;
-    console.log('singIn error', err.message);
+  const { data, error } = await supabase.auth.signInWithPassword(user);
+
+  if (error) {
+    throw Error(error.message);
   }
+
+  return data;
+};
+export const signUp = async (user: UserDTO) => {
+  const { data, error } = await supabase.auth.signUp(user);
+  if (error) {
+    throw Error(error.message);
+  }
+  return data;
 };

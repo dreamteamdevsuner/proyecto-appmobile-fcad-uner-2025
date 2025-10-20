@@ -6,7 +6,7 @@
 import {
   View, // Contenedor básico de layout
   Text, // Texto simple
-  Keyboard, // API del teclado nativo
+
   // Props comunes de los inputs de texto
   KeyboardTypeOptions, // Opciones de tipo de teclado (email, numeric, etc.)
   StyleSheet, // Creación de estilos en React Native
@@ -145,5 +145,6 @@ const localStyles = StyleSheet.create({
   /** Estilo del texto del mensaje de error. */
   errorText: {
     textTransform: 'capitalize',
+    color: '#B3B3B3',
   },
 });
