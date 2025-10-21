@@ -1,20 +1,29 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import React from 'react';
 import { UserDTO } from '../services/interfaces/UserDTO';
 import * as Yup from 'yup';
-import { Formik } from 'formik';
+import { Formik, FormikProps } from 'formik';
 import { signUp } from '../services/apiAuth';
 import { FormInputWithHelper } from './ui/FormInputs';
 import { Keyboard } from 'react-native';
 
-import { Button, useTheme } from 'react-native-paper';
+import { Button, Checkbox, Text, useTheme } from 'react-native-paper';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import { PaperSelect } from 'react-native-paper-select';
+import FormDropdown from '../app/private/shared/perfil/ajustes/componentesFormularios/FormDropdown';
+
+export enum Roles {
+  PROFESIONAL = 1,
+  RECLUTADOR = 2,
+}
 export interface SignUpForm {
   email: string;
   password: string;
   password2: string;
   nombre: string;
   apellido: string;
+  idtipousuario: Roles;
+  terminosYCondiciones: boolean;
 }
 const singnUpForm: SignUpForm = {
   email: '',
@@ -22,6 +31,8 @@ const singnUpForm: SignUpForm = {
   nombre: '',
   apellido: '',
   password2: '',
+  idtipousuario: Roles.PROFESIONAL,
+  terminosYCondiciones: false,
 };
 
 const formValidationSchema = Yup.object({
@@ -39,6 +50,7 @@ const formValidationSchema = Yup.object({
     .required('campo obligatorio'),
   nombre: Yup.string().required('campo obligatorio'),
   apellido: Yup.string().required(),
+  terminosYCondiciones: Yup.boolean().required(),
 });
 const SignUpForm = () => {
   const handleSignUp = async (user: UserDTO) => {
@@ -48,9 +60,6 @@ const SignUpForm = () => {
   };
   const theme = useTheme();
   return (
-    // <View style={signUpStyles.container}>
-    //   <Text>SignUpForm</Text>
-    // </View>
     <KeyboardAwareScrollView bottomOffset={62}>
       <Formik
         initialValues={singnUpForm}
@@ -58,32 +67,74 @@ const SignUpForm = () => {
         validationSchema={formValidationSchema}
         validateOnChange={true}
       >
-        {({
-          handleChange,
-          handleBlur,
-          handleSubmit,
-
-          setFieldTouched,
-          values,
-          errors,
-          isValid,
-          dirty,
-          touched,
-          initialTouched,
-        }) => {
-          const handleTextInputBlur = (key: keyof SignUpForm) => {
-            handleBlur(key);
-          };
-
+        {(formik) => {
+          const {
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            setFieldValue,
+            setFieldTouched,
+            values,
+            errors,
+            isValid,
+            dirty,
+            touched,
+            initialTouched,
+          } = formik;
           return (
             <View style={signUpStyles.container}>
+              <FormDropdown
+                placeholder="Registrarme como"
+                name="idtipousuario"
+                items={[
+                  { value: Roles.PROFESIONAL, label: 'profesional' },
+                  { value: Roles.RECLUTADOR, label: 'reclutador' },
+                ]}
+                textStyled={'capitalize'}
+                formik={formik}
+                viewStyles={{}}
+              >
+                <View
+                  style={{ marginBottom: 10, marginLeft: 10, opacity: 0.8 }}
+                >
+                  <Text>Registrarme como</Text>
+                </View>
+              </FormDropdown>
+              <FormInputWithHelper<SignUpForm>
+                formKey="nombre"
+                value={values.nombre}
+                placeholder="Escribí tu nombre"
+                key={'nombre'}
+                label="Nombre"
+                onBlur={() => handleBlur('nombre')}
+                onFocus={() => setFieldTouched('nombre', true)}
+                onChangeText={handleChange('nombre')}
+                errorCondition={
+                  Boolean(touched.nombre && errors.nombre) || false
+                }
+                errorMessage={errors.nombre ?? ''}
+              ></FormInputWithHelper>
+              <FormInputWithHelper<SignUpForm>
+                formKey="apellido"
+                value={values.apellido}
+                placeholder="Escribí tu apellido"
+                key={'apellido'}
+                label="Apellido"
+                onBlur={() => handleBlur('apellido')}
+                onFocus={() => setFieldTouched('apellido', true)}
+                onChangeText={handleChange('apellido')}
+                errorCondition={
+                  Boolean(touched.apellido && errors.apellido) || false
+                }
+                errorMessage={errors.nombre ?? ''}
+              ></FormInputWithHelper>
               <FormInputWithHelper<SignUpForm>
                 formKey="email"
                 value={values.email}
                 placeholder="Escribí tu correo electrónico"
                 key={'email'}
                 label="Correo electrónico"
-                onBlur={() => handleTextInputBlur('email')}
+                onBlur={() => handleBlur('email')}
                 onFocus={() => setFieldTouched('email', true)}
                 onChangeText={handleChange('email')}
                 keyboardType="email-address"
@@ -97,7 +148,7 @@ const SignUpForm = () => {
                 secureTextEntry={true}
                 key={'password'}
                 label="Contraseña"
-                onBlur={() => handleTextInputBlur('password')}
+                onBlur={() => handleBlur('password')}
                 onFocus={() => setFieldTouched('password', true)}
                 onChangeText={handleChange('password')}
                 errorCondition={
@@ -112,7 +163,7 @@ const SignUpForm = () => {
                 secureTextEntry={true}
                 key={'password2'}
                 label="Repetir Contraseña"
-                onBlur={() => handleTextInputBlur('password2')}
+                onBlur={() => handleBlur('password2')}
                 onFocus={() => setFieldTouched('password2', true)}
                 onChangeText={handleChange('password2')}
                 errorCondition={
@@ -120,7 +171,26 @@ const SignUpForm = () => {
                 }
                 errorMessage={errors.password2 ?? ''}
               ></FormInputWithHelper>
-
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'flex-start',
+                  alignItems: 'center',
+                }}
+              >
+                <Checkbox
+                  status={values.terminosYCondiciones ? 'checked' : 'unchecked'}
+                  onPress={() => {
+                    setFieldValue(
+                      'terminosYCondiciones',
+                      !values.terminosYCondiciones,
+                    );
+                  }}
+                />
+                <Text variant="labelSmall">
+                  Acepto los términos y condiciones.
+                </Text>
+              </View>
               <Button
                 mode="contained"
                 style={{

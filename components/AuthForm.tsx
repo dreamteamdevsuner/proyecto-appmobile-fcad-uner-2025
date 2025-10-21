@@ -83,16 +83,18 @@ const AuthForm = () => {
     // console.log("handle login");
     console.log('values', values);
     //MOCKUP LOGIN SUCCESS
-    // (async () => {
-    //   const ok = await login(values.email, values.password);
-    //   if (!ok) {
-    //     handleShowSnackbar();
-    //   }
-    // })();
-    const singInRes = await signIn(values);
-    if (!singInRes) {
-      handleShowSnackbar();
-    }
+    (async () => {
+      const ok = await login(values.email, values.password);
+      if (!ok) {
+        handleShowSnackbar();
+      }
+    })();
+
+    // const singInRes = await signIn(values);
+
+    // if (!singInRes) {
+    //   handleShowSnackbar();
+    // }
   };
   return (
     <>
