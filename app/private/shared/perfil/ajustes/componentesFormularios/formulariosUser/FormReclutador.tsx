@@ -13,18 +13,25 @@ const SectionTitle = ({ children }: { children: string }) => (
 
 interface Props {
   formik: FormikProps<ReclutadorValues>;
+  fieldPositions: React.MutableRefObject<{ [ key: string]: number }>;
 }
 
-const FormularioReclutador = ({ formik }: Props) => {
+const FormularioReclutador = ({ formik, fieldPositions }: Props) => {
   return (
     <>
       <SectionTitle>Datos personales</SectionTitle>
 
       <Text style={styles.titulo}>Nombre</Text>
-      <FormField name="nombre" formik={formik} placeholder="Ingresá tu nombre" />
+      <FormField name="nombre" formik={formik} placeholder="Ingresá tu nombre"
+        onLayout={(event) => {
+          fieldPositions.current['nombre'] = event.nativeEvent.layout.y;
+        }} />
 
       <Text style={styles.titulo}>Apellido</Text>
-      <FormField name="apellido" formik={formik} placeholder="Ingresá tu apellido" />
+      <FormField name="apellido" formik={formik} placeholder="Ingresá tu apellido"
+      onLayout={(event) => {
+          fieldPositions.current['apellido'] = event.nativeEvent.layout.y;
+        }} />
 
       <Text style={styles.titulo}>Profesión</Text>
       <FormDropdown
@@ -32,6 +39,9 @@ const FormularioReclutador = ({ formik }: Props) => {
         formik={formik}
         items={[{ label: 'Talent Acquisition', value: 'talent-acquisition' }]}
         placeholder="Selecciona profesión"
+        onLayout={(event) => {
+          fieldPositions.current['prefesion'] = event.nativeEvent.layout.y;
+        }}
       />
 
       <Text style={styles.titulo}>Institución para la que trabaja:</Text>
@@ -39,6 +49,9 @@ const FormularioReclutador = ({ formik }: Props) => {
         name="institucion"
         formik={formik}
         placeholder="Nombre de la empresa"
+        onLayout={(event) => {
+          fieldPositions.current['institucion'] = event.nativeEvent.layout.y;
+        }}
       />
 
       <Text style={styles.titulo}>Localización</Text>

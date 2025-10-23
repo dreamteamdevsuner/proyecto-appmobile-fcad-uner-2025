@@ -1,35 +1,42 @@
 import React, { useState } from 'react';
-import { LayoutChangeEvent, View } from 'react-native';
+import { LayoutChangeEvent, View, StyleSheet } from 'react-native';
 import { FormikProps } from 'formik';
-import { Menu, TextInput, useTheme, Chip } from 'react-native-paper';
+import { Menu, TextInput, useTheme, Chip, Text } from 'react-native-paper';
 import { useInputTheme } from '../../../constants/theme/useInputTheme';
 
 type OptionType = { label: string; value: string };
 
-type FormDropdownProps = {
-  name: string;
-  formik: FormikProps<any>;
+type FormDropdownProps<Values> = {
+  name: keyof Values & string;
+  formik: FormikProps<Values>;
   items: OptionType[];
   placeholder?: string;
   multiple?: boolean;
+  onLayout?: (event: LayoutChangeEvent) => void;
+
 };
 
-const FormDropdown = ({
+const FormDropdown = <Values extends {}> ({
   name,
   formik,
   items,
+  onLayout,
   placeholder = 'Seleccionar...',
   multiple = false,
-}: FormDropdownProps) => {
+}: FormDropdownProps<Values>) => {
   const [visible, setVisible] = useState(false);
   const [anchorWidth, setAnchorWidth] = useState(0);
   const { theme } = useInputTheme();
+
+  const { values, errors, touched } = formik;
   const value = formik.values[name];
+  
+  const hasError = touched[name] && errors[name]
 
   const handleSelect = (val: string) => {
     if (name === 'redSeleccionada') {
-      const redesActuales = formik.values.redes || [];
-      if (!redesActuales.some((r: any) => r.tipo === val)) {
+      const redesActuales = (formik.values as { redes?: { tipo: string; url: string}[] }).redes || [];
+      if (!redesActuales.some((r) => r.tipo === val)) {
         formik.setFieldValue('redes', [
           ...redesActuales,
           { tipo: val, url: '' },
@@ -70,7 +77,7 @@ const FormDropdown = ({
   };
 
   return (
-    <View style={{ marginBottom: 20 }}>
+    <View style={{ marginBottom: 20 }} onLayout={onLayout}>
       <Menu
         visible={visible}
         onDismiss={() => setVisible(false)}
@@ -85,13 +92,15 @@ const FormDropdown = ({
               value={selectedText}
               placeholder={placeholder}
               editable={false}
+              theme={theme}
+              error={!!hasError}
               right={
                 <TextInput.Icon
                   icon={visible ? 'chevron-up' : 'chevron-down'}
                   onPress={() => setVisible((prev) => !prev)}
                 />
               }
-            />
+            />            
           </View>
         }
       >
@@ -108,6 +117,10 @@ const FormDropdown = ({
           />
         ))}
       </Menu>
+      {hasError && (
+        <Text style={styles.errorText}>{errors[name] as string}</Text>
+      )}
+
       {multiple && Array.isArray(value) && value.length > 0 && (
         <View
           style={{
@@ -139,5 +152,14 @@ const FormDropdown = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  errorText: {
+    fontSize: 12,
+    color: '#FF8A80',
+    marginTop: 4,
+    marginLeft: 12,
+  }
+});
 
 export default FormDropdown;

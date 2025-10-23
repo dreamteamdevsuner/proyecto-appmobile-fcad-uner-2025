@@ -14,6 +14,8 @@ export interface CandidatoValues {
   contratoSeleccionado: string;
   email: string;
   redes: { tipo: string; url: string }[];
+
+  redSeleccionada?: string;
 }
 
 export interface ReclutadorValues {
