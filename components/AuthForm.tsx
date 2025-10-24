@@ -22,12 +22,18 @@ import { signIn } from '../services/apiAuth';
 import { FormInput, FormInputWithHelper } from './ui/FormInputs';
 import { LoginForm } from '../interfaces/LoginForm';
 import { UserDTO } from '../services/interfaces/UserDTO';
+import useSnackbar from '../hooks/useSnackbar';
 
 interface AppSnackProps {
   visible: boolean;
   handleHideSnackBar: () => void;
+  message: string;
 }
-const AppSnackBar = ({ visible, handleHideSnackBar }: AppSnackProps) => {
+export const AppSnackBar = ({
+  visible,
+  handleHideSnackBar,
+  message,
+}: AppSnackProps) => {
   useEffect(() => {
     if (visible) {
       setTimeout(() => {
@@ -46,12 +52,12 @@ const AppSnackBar = ({ visible, handleHideSnackBar }: AppSnackProps) => {
           justifyContent: 'center',
           alignContent: 'center',
           display: 'flex',
-          backgroundColor: 'red',
+          backgroundColor: 'black',
         }}
         visible={visible}
         onDismiss={() => handleHideSnackBar()}
       >
-        <Text style={{ color: 'white' }}>Login Error</Text>
+        <Text style={{ color: 'white' }}> {message}</Text>
       </Snackbar>
     </Portal>
   );
@@ -70,14 +76,8 @@ const formValidationSchema = Yup.object({
 const AuthForm = () => {
   const { state, login } = useAuth();
 
-  const [showSnackbar, setShowSnackbar] = useState(false);
-
-  const handleShowSnackbar = () => {
-    setShowSnackbar(true);
-  };
-  const handleHideSnackbar = () => {
-    setShowSnackbar(false);
-  };
+  const { handleHideSnackbar, handleShowSnackbar, showSnackbar } =
+    useSnackbar();
 
   const handleLogin = async (values: UserDTO) => {
     // console.log("handle login");
@@ -100,6 +100,7 @@ const AuthForm = () => {
     <>
       <AppSnackBar
         visible={showSnackbar}
+        message="Login Error"
         handleHideSnackBar={handleHideSnackbar}
       ></AppSnackBar>
       <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={30}>

@@ -11,6 +11,10 @@ import { Button, Checkbox, Text, useTheme } from 'react-native-paper';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { PaperSelect } from 'react-native-paper-select';
 import FormDropdown from '../app/private/shared/perfil/ajustes/componentesFormularios/FormDropdown';
+import GenericFormDropdown from '../app/private/shared/perfil/ajustes/componentesFormularios/GenericFormDropdown';
+import { Alert } from 'react-native';
+import { AppSnackBar } from './AuthForm';
+import useSnackbar from '../hooks/useSnackbar';
 
 export enum Roles {
   PROFESIONAL = 1,
@@ -50,17 +54,38 @@ const formValidationSchema = Yup.object({
     .required('campo obligatorio'),
   nombre: Yup.string().required('campo obligatorio'),
   apellido: Yup.string().required(),
-  terminosYCondiciones: Yup.boolean().required(),
+  terminosYCondiciones: Yup.bool().oneOf(
+    [true],
+    'Accept Terms & Conditions is required',
+  ),
 });
+
 const SignUpForm = () => {
-  const handleSignUp = async (user: UserDTO) => {
-    console.log('user', user);
-    const res = await signUp(user);
-    console.log('SIGNUP RESPONSE', res);
-  };
   const theme = useTheme();
+  const { handleHideSnackbar, handleShowSnackbar, showSnackbar } =
+    useSnackbar();
+  const handleSignUp = async (user: UserDTO) => {
+    try {
+      const { user: createdUser, session } = await signUp(user);
+      console.log('created user', createdUser);
+      console.log('session', session);
+      if (!createdUser) {
+        Alert.alert('Error al registrarse');
+        return;
+      }
+    } catch (error) {
+      console.log('err', error);
+      handleShowSnackbar();
+    }
+  };
+
   return (
     <KeyboardAwareScrollView bottomOffset={62}>
+      <AppSnackBar
+        visible={showSnackbar}
+        handleHideSnackBar={handleHideSnackbar}
+        message="Error al registrarse"
+      ></AppSnackBar>
       <Formik
         initialValues={singnUpForm}
         onSubmit={(values) => handleSignUp(values)}
@@ -83,7 +108,7 @@ const SignUpForm = () => {
           } = formik;
           return (
             <View style={signUpStyles.container}>
-              <FormDropdown
+              <GenericFormDropdown
                 placeholder="Registrarme como"
                 name="idtipousuario"
                 items={[
@@ -99,7 +124,7 @@ const SignUpForm = () => {
                 >
                   <Text>Registrarme como</Text>
                 </View>
-              </FormDropdown>
+              </GenericFormDropdown>
               <FormInputWithHelper<SignUpForm>
                 formKey="nombre"
                 value={values.nombre}
