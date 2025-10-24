@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -15,14 +15,26 @@ import { useAuth, Role } from '../../../../../appContext/authContext';
 import FormularioCandidato from '../ajustes/componentesFormularios/formulariosUser/FormCandidato';
 import FormularioReclutador from '../ajustes/componentesFormularios/formulariosUser/FormReclutador';
 
-import { CandidatoValues, ReclutadorValues } from '../../../../../interfaces/EditarPerfil';
-import { getRecruiterData, getCandidateData } from '../../../../../mockup/userEditarPerfil';
-import { perfilValidacionSchema, reclutadorValidacionSchema } from './validacion';
+import {
+  CandidatoValues,
+  ReclutadorValues,
+} from '../../../../../interfaces/EditarPerfil';
+import {
+  getRecruiterData,
+  getCandidateData,
+} from '../../../../../mockup/userEditarPerfil';
+import {
+  perfilValidacionSchema,
+  reclutadorValidacionSchema,
+} from './validacion';
 
 const EditarPerfilScreen = () => {
   const navigation = useNavigation();
   const [dialogVisible, setDialogVisible] = useState(false);
   const [dialogMessage, setDialogMessage] = useState({ message: '', type: '' });
+
+  const scrollRef = useRef<ScrollView>(null);
+  const fieldPositions = useRef<{ [key: string]: number }>({});
 
   const { state } = useAuth();
   const esReclutador = state.user?.role === Role.recruiter;
@@ -63,31 +75,44 @@ const EditarPerfilScreen = () => {
     );
   }
 
-return (
+  return (
     <View style={styles.container}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 40}
+        enabled
       >
-        <ScrollView contentContainerStyle={{ padding: 20 }}>
+        <ScrollView contentContainerStyle={{ padding: 20 }} ref={scrollRef}>
           <View style={styles.formContainer}>
-
-            {esReclutador ? (        
+            {esReclutador ? (
               <Formik
                 initialValues={initialData as ReclutadorValues}
                 validationSchema={reclutadorValidacionSchema}
-                onSubmit={handleSubmit as any} 
+                onSubmit={handleSubmit as any}
                 enableReinitialize
               >
                 {(formik) => (
                   <>
-                    <FormularioReclutador formik={formik} />
+                    <FormularioReclutador formik={formik} fieldPositions={fieldPositions}/>
                     <Button
-                      onPress={() => formik.handleSubmit()}
+                      onPress={() => {
+                        formik.validateForm().then(errors => {
+                          if (Object.keys(errors).length > 0) {
+                            const firstErrorField = Object.keys(errors)[0];
+                            const yPosition = fieldPositions.current[firstErrorField];
+                            if (yPosition !== undefined) {
+                              scrollRef.current?.scrollTo({ y: yPosition, animated: true});
+                            }
+                          } else {
+                            formik.handleSubmit();
+                          }
+                        });                                             
+                      }}
                       mode="contained"
                       style={styles.boton}
                       disabled={formik.isSubmitting}
-                      loading={formik.isSubmitting}
+                      loading={formik.isSubmitting}                      
                     >
                       {formik.isSubmitting ? 'Guardando...' : 'Guardar cambios'}
                     </Button>
@@ -95,7 +120,6 @@ return (
                 )}
               </Formik>
             ) : (
-              
               <Formik
                 initialValues={initialData as CandidatoValues}
                 validationSchema={perfilValidacionSchema}
@@ -104,9 +128,21 @@ return (
               >
                 {(formik) => (
                   <>
-                    <FormularioCandidato formik={formik} />
+                    <FormularioCandidato formik={formik} fieldPositions={fieldPositions}/>
                     <Button
-                      onPress={() => formik.handleSubmit()}
+                      onPress={async () => {
+                        formik.validateForm().then(errors => {
+                          if (Object.keys(errors).length > 0) {
+                            const firstErrorField = Object.keys(errors)[0];
+                            const yPositions = fieldPositions.current[firstErrorField];
+                            if (yPositions !== undefined) {
+                              scrollRef.current?.scrollTo({ y: yPositions, animated: true });
+                            }
+                          } else {
+                            formik.handleSubmit()
+                          }
+                        });
+                      }}
                       mode="contained"
                       style={styles.boton}
                       disabled={formik.isSubmitting}
@@ -129,11 +165,15 @@ return (
           style={styles.dialog}
         >
           <Dialog.Icon
-            icon={dialogMessage.type === 'success' ? 'check-circle' : 'alert-circle'}
+            icon={
+              dialogMessage.type === 'success' ? 'check-circle' : 'alert-circle'
+            }
             size={40}
             color={dialogMessage.type === 'success' ? '#789a78' : '#ff9b92'}
           />
-          <Dialog.Title style={styles.dialogTitle}>{dialogMessage.message}</Dialog.Title>
+          <Dialog.Title style={styles.dialogTitle}>
+            {dialogMessage.message}
+          </Dialog.Title>
           <Dialog.Actions>
             <Button
               mode="contained"
@@ -160,7 +200,7 @@ const styles = StyleSheet.create({
   formContainer: {
     padding: 20,
     borderRadius: 20,
-    marginBottom: 20,
+    marginBottom: 80,
     borderWidth: 1,
     borderColor: '#BEB52C',
   },
