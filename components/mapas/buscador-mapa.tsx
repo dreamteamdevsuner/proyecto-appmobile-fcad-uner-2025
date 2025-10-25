@@ -3,6 +3,7 @@ import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { TextInput, Button, ActivityIndicator, Text } from 'react-native-paper';
 import MapView, { Marker } from 'react-native-maps';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { LOCATIONIQ_API_KEY } from '@env';
 
 interface MapSearchProps {
   value: string;
@@ -38,12 +39,15 @@ const MapSearch: React.FC<MapSearchProps> = ({
     if (!value) return;
     setLoading(true);
     try {
-      const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
-        value,
-      )}&format=json&limit=3`;
+      const url = `https://us1.locationiq.com/v1/search?key=${LOCATIONIQ_API_KEY}&q=${encodeURIComponent(value)}&format=json&limit=3`;
+      console.log(LOCATIONIQ_API_KEY);
+      // API Nominatim de Open Street Map
+      // const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+      //   value,
+      // )}&format=json&limit=3`;
+
       const res = await fetch(url, {
         headers: {
-          'User-Agent': 'MiAppExpo/1.0 (miemail@dominio.com)',
           'Accept-Language': 'es',
         },
       });
@@ -126,7 +130,7 @@ const MapSearch: React.FC<MapSearchProps> = ({
           mode="contained"
           style={styles.boton}
           icon={() => (
-            <MaterialCommunityIcons name="search-web" size={20} color="white" />
+            <MaterialCommunityIcons name="search-web" size={20} color="black" />
           )}
         >
           Buscar
