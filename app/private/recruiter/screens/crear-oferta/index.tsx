@@ -8,6 +8,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import ROUTES from '../../navigator/routes';
 import * as Yup from 'yup';
 import { useInputTheme } from '../../../shared/constants/theme/useInputTheme';
+import MapSearch from '@components/mapas/buscador-mapa';
 
 const recruiter: UserItem = {
   id: 1,
@@ -17,12 +18,7 @@ const recruiter: UserItem = {
   avatarUrl:
     'https://www.centralnoticia.cl/wp-content/uploads/2025/07/Bono-mujer-trabajadora-4.jpg',
 };
-const localizacionList = [
-  { label: 'Argentina', value: 'Argentina' },
-  { label: 'Chile', value: 'Chile' },
-  { label: 'Uruguay', value: 'Uruguay' },
-  { label: 'Estados Unidos', value: 'Estados Unidos' },
-];
+
 const modalidadList = [
   { label: 'Remoto', value: 'remoto' },
   { label: 'Presencial', value: 'presencial' },
@@ -85,6 +81,8 @@ interface OfertaValues {
   titulo: string;
   institucion: string;
   localizacion: string;
+  lat: number;
+  lng: number;
   modalidad: string;
   jornada: string;
   contrato: string;
@@ -103,6 +101,8 @@ const initialValues: OfertaValues = {
   titulo: '',
   institucion: '',
   localizacion: '',
+  lat: -34.6037,
+  lng: -58.3816,
   modalidad: '',
   jornada: '',
   contrato: '',
@@ -126,14 +126,13 @@ const CrearOferta = ({ navigation }: any) => {
   const [hardSkillsOpen, setHardSkillsOpen] = useState(false);
   const [idiomasOpen, setIdiomasOpen] = useState<boolean[]>([false]);
   const [nivelesOpen, setNivelesOpen] = useState<boolean[]>([false]);
+
   // const [idiomasNivelesPickers, setIdiomasNivelesPickers] = useState<
   //   IdiomaNivel[]
   // >([{ idioma: '', nivel: '' }]);
 
   const [formValues, setFormValues] = useState<OfertaValues>({
     ...initialValues,
-    softSkills: [],
-    hardSkills: [],
   });
 
   const handleSubmit = (values: OfertaValues) => {
@@ -236,63 +235,84 @@ const CrearOferta = ({ navigation }: any) => {
         showsHorizontalScrollIndicator={false}
       >
         <Formik
-              initialValues={initialValues}
-              onSubmit={handleSubmit}
-              validationSchema={ofertaSchema}
-            >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                touched,
-                setFieldValue,
-              }) => {
-                useEffect(() => {
-                  setFormValues((prev) => ({
-                    ...prev,
-                    ...values,
-                  }));
-                }, [values]);
-                return (
-                  <View style={styles.formContainer}>
-                    <Text style={styles.titulo}>Título</Text>
-                    <TextInput
-                      mode="outlined"
-                      onChangeText={handleChange('titulo')}
-                      onBlur={handleBlur('titulo')}
-                      value={values.titulo}
-                      placeholder="Puesto"
-                    />
-                    {errors.titulo && touched.titulo && (
-                      <Text style={{ color: 'red', marginBottom: 5 }}>
-                        {errors.titulo}
-                      </Text>
-                    )}
-                    <Text style={styles.titulo}>Institución</Text>
-                    <TextInput
-                      mode="outlined"
-                      onChangeText={handleChange('institucion')}
-                      onBlur={handleBlur('institucion')}
-                      value={values.institucion}
-                      placeholder="Empresa"                    
-                    />
-                    {errors.institucion && touched.institucion && (
-                      <Text style={{ color: 'red', marginBottom: 5 }}>
-                        {errors.institucion}
-                      </Text>
-                    )}
-                    <Text style={styles.titulo}>Localización</Text>
+          initialValues={initialValues}
+          onSubmit={handleSubmit}
+          validationSchema={ofertaSchema}
+        >
+          {({
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            values,
+            errors,
+            touched,
+            setFieldValue,
+          }) => {
+            useEffect(() => {
+              setFormValues((prev) => ({
+                ...prev,
+                ...values,
+                softSkills: prev.softSkills,
+                hardSkills: prev.hardSkills,
+                localizacion: prev.localizacion,
+                lat: prev.lat,
+                lng: prev.lng,
+              }));
+            }, [values]);
+
+            return (
+              <View style={styles.formContainer}>
+                <Text style={styles.titulo}>Título</Text>
+                <TextInput
+                  mode="outlined"
+                  onChangeText={handleChange('titulo')}
+                  onBlur={handleBlur('titulo')}
+                  value={values.titulo}
+                  placeholder="Puesto"
+                />
+                {errors.titulo && touched.titulo && (
+                  <Text style={{ color: 'red', marginBottom: 5 }}>
+                    {errors.titulo}
+                  </Text>
+                )}
+                <Text style={styles.titulo}>Institución</Text>
+                <TextInput
+                  mode="outlined"
+                  onChangeText={handleChange('institucion')}
+                  onBlur={handleBlur('institucion')}
+                  value={values.institucion}
+                  placeholder="Empresa"
+                />
+                {errors.institucion && touched.institucion && (
+                  <Text style={{ color: 'red', marginBottom: 5 }}>
+                    {errors.institucion}
+                  </Text>
+                )}
+                <Text style={styles.titulo}>Localización</Text>
+                {/*
                     <DropDownPicker
                       open={localizacionOpen}
                       setOpen={setLocalizacionOpen}
                       value={values.localizacion}
-                      setValue={(callback) =>
-                        setFieldValue(
-                          'localizacion',
-                          callback(values.localizacion))
-                      }
+                      setValue={(callback) => {
+                        const newValue = callback(values.localizacion);
+
+                        setFieldValue('localizacion', newValue);
+
+                        const pais = localizacionList.find(
+                          (item) => item.value === newValue,
+                        );
+
+                        if (pais) {
+                          setFieldValue('lat', pais.latitud);
+                          setFieldValue('lng', pais.longitud);
+                          setPaisSeleccionado(pais);
+                          setMarkerCoords({
+                            latitude: pais.latitud,
+                            longitude: pais.longitud,
+                          });
+                        }
+                      }}
                       items={localizacionList}
                       placeholder="Selecciona ubicación"
                       zIndex={6000}
@@ -302,116 +322,137 @@ const CrearOferta = ({ navigation }: any) => {
                       <Text style={{ color: 'red', marginBottom: 5 }}>
                         {errors.localizacion}
                       </Text>
-                    )}
-                    <Text style={styles.titulo}>Modalidad</Text>
-                    <DropDownPicker
-                      open={modalidadOpen}
-                      setOpen={setModalidadOpen}
-                      value={values.modalidad}
-                      setValue={(callback) =>
-                        setFieldValue('modalidad', callback(values.modalidad))
-                      }
-                      items={modalidadList}
-                      placeholder="Selecciona modalidad"
-                      zIndex={5000}
-                      listMode="SCROLLVIEW"
-                    />
-                    {errors.modalidad && touched.modalidad && (
-                      <Text style={{ color: 'red', marginBottom: 5 }}>
-                        {errors.modalidad}
-                      </Text>
-                    )}
-                    <Text style={styles.titulo}>Jornada</Text>
-                    <DropDownPicker
-                      open={jornadaOpen}
-                      setOpen={setJornadaOpen}
-                      value={values.jornada}
-                      setValue={(callback) =>
-                        setFieldValue('jornada', callback(values.jornada))
-                      }
-                      items={jornadaList}
-                      placeholder="Selecciona jornada"
-                      zIndex={4000}
-                      listMode="SCROLLVIEW"
-                    />
-                    {errors.jornada && touched.jornada && (
-                      <Text style={{ color: 'red', marginBottom: 5 }}>
-                        {errors.jornada}
-                      </Text>
-                    )}
-                    <Text style={styles.titulo}>Contrato</Text>
-                    <DropDownPicker
-                      open={contratoOpen}
-                      setOpen={setContratoOpen}
-                      value={values.contrato}
-                      setValue={(callback) =>
-                        setFieldValue('contrato', callback(values.contrato))
-                      }
-                      items={contratoList}
-                      placeholder="Selecciona contrato"
-                      zIndex={3000}
-                      listMode="SCROLLVIEW"
-                    />
-                    {errors.contrato && touched.contrato && (
-                      <Text style={{ color: 'red', marginBottom: 5 }}>
-                        {errors.contrato}
-                      </Text>
-                    )}
-                    <Text style={styles.titulo}>Acerca del empleo</Text>
-                    <TextInput
-                      mode="outlined"
-                      onChangeText={handleChange('descripcion')}
-                      onBlur={handleBlur('descripcion')}
-                      value={values.descripcion}
-                      placeholder="Descripción"
-                      multiline                      
-                    />
-                    {errors.descripcion && touched.descripcion && (
-                      <Text style={{ color: 'red', marginBottom: 5 }}>
-                        {errors.descripcion}
-                      </Text>
-                    )}
-                    <Text style={styles.titulo}>Soft Skills</Text>
-                    <DropDownPicker
-                      open={softSkillsOpen}
-                      setOpen={setSoftSkillsOpen}
-                      value={formValues.softSkills}
-                      setValue={(callback) => {
-                        setFormValues((prev) => ({
-                          ...prev,
-                          softSkills: callback(prev.softSkills),
-                        }));
-                      }}
-                      items={softSkillsList}
-                      placeholder="Selecciona soft skill"
-                      zIndex={2000}
-                      listMode="MODAL"
-                      multiple={true}
-                      min={0}
-                      max={softSkillsList.length}
-                      mode="BADGE"
-                    />
-                    <Text style={styles.titulo}>Hard Skills</Text>
-                    <DropDownPicker
-                      open={hardSkillsOpen}
-                      setOpen={setHardSkillsOpen}
-                      value={formValues.hardSkills}
-                      setValue={(callback) => {
-                        setFormValues((prev) => ({
-                          ...prev,
-                          hardSkills: callback(prev.hardSkills),
-                        }));
-                      }}
-                      items={hardSkillsList}
-                      placeholder="Selecciona hard skill"
-                      zIndex={1000}
-                      listMode="MODAL"
-                      multiple={true}
-                      min={0}
-                      max={hardSkillsList.length}
-                      mode="BADGE"
-                    />
-                    {/* <Text style={styles.titulo}>Idiomas</Text>
+                    )} */}
+                <MapSearch
+                  value={formValues.localizacion}
+                  lat={formValues.lat}
+                  lng={formValues.lng}
+                  onChange={(text) =>
+                    setFormValues((prev) => ({
+                      ...prev,
+                      localizacion: text,
+                    }))
+                  }
+                  onCoordsChange={(lat, lng) =>
+                    setFormValues((prev) => ({ ...prev, lat, lng }))
+                  }
+                />
+
+                <Text style={styles.titulo}>Modalidad</Text>
+                <DropDownPicker
+                  open={modalidadOpen}
+                  setOpen={setModalidadOpen}
+                  theme="DARK"
+                  value={values.modalidad}
+                  setValue={(callback) =>
+                    setFieldValue('modalidad', callback(values.modalidad))
+                  }
+                  items={modalidadList}
+                  placeholder="Selecciona modalidad"
+                  zIndex={5000}
+                  listMode="SCROLLVIEW"
+                />
+                {errors.modalidad && touched.modalidad && (
+                  <Text style={{ color: 'red', marginBottom: 5 }}>
+                    {errors.modalidad}
+                  </Text>
+                )}
+                <Text style={styles.titulo}>Jornada</Text>
+                <DropDownPicker
+                  open={jornadaOpen}
+                  setOpen={setJornadaOpen}
+                  theme="DARK"
+                  value={values.jornada}
+                  setValue={(callback) =>
+                    setFieldValue('jornada', callback(values.jornada))
+                  }
+                  items={jornadaList}
+                  placeholder="Selecciona jornada"
+                  zIndex={4000}
+                  listMode="SCROLLVIEW"
+                />
+                {errors.jornada && touched.jornada && (
+                  <Text style={{ color: 'red', marginBottom: 5 }}>
+                    {errors.jornada}
+                  </Text>
+                )}
+                <Text style={styles.titulo}>Contratación</Text>
+                <DropDownPicker
+                  open={contratoOpen}
+                  setOpen={setContratoOpen}
+                  theme="DARK"
+                  value={values.contrato}
+                  setValue={(callback) =>
+                    setFieldValue('contrato', callback(values.contrato))
+                  }
+                  items={contratoList}
+                  placeholder="Selecciona contrato"
+                  zIndex={3000}
+                  listMode="SCROLLVIEW"
+                />
+                {errors.contrato && touched.contrato && (
+                  <Text style={{ color: 'red', marginBottom: 5 }}>
+                    {errors.contrato}
+                  </Text>
+                )}
+                <Text style={styles.titulo}>Acerca del empleo</Text>
+                <TextInput
+                  mode="outlined"
+                  onChangeText={handleChange('descripcion')}
+                  onBlur={handleBlur('descripcion')}
+                  value={values.descripcion}
+                  placeholder="Descripción"
+                  multiline
+                  style={styles.multilineTextInput}
+                />
+                {errors.descripcion && touched.descripcion && (
+                  <Text style={{ color: 'red', marginBottom: 5 }}>
+                    {errors.descripcion}
+                  </Text>
+                )}
+                <Text style={styles.titulo}>Soft Skills</Text>
+                <DropDownPicker
+                  open={softSkillsOpen}
+                  setOpen={setSoftSkillsOpen}
+                  theme="DARK"
+                  value={formValues.softSkills}
+                  setValue={(callback) => {
+                    setFormValues((prev) => ({
+                      ...prev,
+                      softSkills: callback(prev.softSkills),
+                    }));
+                  }}
+                  items={softSkillsList}
+                  placeholder="Selecciona soft skill"
+                  zIndex={2000}
+                  listMode="MODAL"
+                  multiple={true}
+                  min={0}
+                  max={softSkillsList.length}
+                  mode="BADGE"
+                />
+                <Text style={styles.titulo}>Hard Skills</Text>
+                <DropDownPicker
+                  open={hardSkillsOpen}
+                  setOpen={setHardSkillsOpen}
+                  theme="DARK"
+                  value={formValues.hardSkills}
+                  setValue={(callback) => {
+                    setFormValues((prev) => ({
+                      ...prev,
+                      hardSkills: callback(prev.hardSkills),
+                    }));
+                  }}
+                  items={hardSkillsList}
+                  placeholder="Selecciona hard skill"
+                  zIndex={1000}
+                  listMode="MODAL"
+                  multiple={true}
+                  min={0}
+                  max={hardSkillsList.length}
+                  mode="BADGE"
+                />
+                {/* <Text style={styles.titulo}>Idiomas</Text>
 
                     {formValues.idiomasNiveles?.map((item, index) => {
                       return (
@@ -423,33 +464,34 @@ const CrearOferta = ({ navigation }: any) => {
                         </>
                       );
                     })}*/}
-                    <Text style={styles.titulo}>Beneficios</Text>
-                    <TextInput
-                      mode="outlined"
-                      onChangeText={handleChange('beneficios')}
-                      onBlur={handleBlur('beneficios')}
-                      value={values.beneficios}
-                      placeholder="Descripción"
-                      multiline
+                <Text style={styles.titulo}>Beneficios</Text>
+                <TextInput
+                  mode="outlined"
+                  onChangeText={handleChange('beneficios')}
+                  onBlur={handleBlur('beneficios')}
+                  value={values.beneficios}
+                  placeholder="Descripción"
+                  multiline
+                  style={styles.multilineTextInput}
+                />
+                <Button
+                  onPress={handleSubmit as any}
+                  mode="contained"
+                  style={styles.boton}
+                  icon={() => (
+                    <MaterialCommunityIcons
+                      name="upload"
+                      size={20}
+                      color={'black'}
                     />
-                    <Button
-                      onPress={handleSubmit as any}
-                      mode="contained"
-                      style={styles.boton}
-                      icon={() => (
-                        <MaterialCommunityIcons
-                          name="upload"
-                          size={20}
-                          color={'black'}
-                        />
-                      )}
-                    >
-                      Publicar
-                    </Button>
-                  </View>
-                );
-              }}
-            </Formik>
+                  )}
+                >
+                  Publicar
+                </Button>
+              </View>
+            );
+          }}
+        </Formik>
       </ScrollView>
     </View>
   );
@@ -458,7 +500,12 @@ const CrearOferta = ({ navigation }: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin:20,
+    margin: 20,
+  },
+  map: {
+    flex: 1,
+    height: 200,
+    marginTop: 10,
   },
   input: {
     borderWidth: 1,
@@ -492,6 +539,9 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     borderWidth: 1,
     borderColor: '#BEB52C',
+  },
+  multilineTextInput: {
+    paddingVertical: 8,
   },
 });
 
