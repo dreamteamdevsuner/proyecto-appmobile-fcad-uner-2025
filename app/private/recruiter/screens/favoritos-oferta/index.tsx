@@ -1,81 +1,69 @@
 import { StyleSheet, View } from 'react-native';
 import { UserList } from '../../../../../components/listas';
-import { UserItem } from '../../../../../types/UserItem';
+import { UserItem } from '@models/index';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { PrivateStackParamList as RecruiterStackParamList } from '../../navigator/types';
 import { PrivateStackParamList as CandidateStackParamList } from '../../../candidates/navigator/types';
 import ROUTES from '../../navigator/routes';
 import CAND_ROUTES from '../../../candidates/navigator/routes';
-import { CompositeNavigationProp } from '@react-navigation/native';
 import { Text } from 'react-native-paper';
+import {
+  CompositeNavigationProp,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import { DBUsuario } from '@database/DBUsuario';
+import { getUsuariosMatchOferta } from '@services/UsuarioMatchService';
 
-const users: UserItem[] = [
-  {
-    id: 100,
-    name: 'Ana Lopez Gonzales',
-    avatarUrl: 'https://i.pravatar.cc/150?img=1',
-    role: 'UX /UI',
-  },
-  {
-    id: 2,
-    name: 'Juan Rio Bravo',
-    avatarUrl: 'https://i.pravatar.cc/150?img=2',
-    role: 'UX /UI',
-  },
-  { id: 3, name: 'Juana Costa', role: 'UX /UI' }, // sin avatar
-  {
-    id: 4,
-    name: 'Martín Peréz',
-    avatarUrl: 'https://i.pravatar.cc/150?img=1',
-    role: 'UX /UI',
-  },
-  {
-    id: 5,
-    name: 'Camilo Cuevas',
-    avatarUrl: 'https://i.pravatar.cc/150?img=2',
-    role: 'UX /UI',
-  },
-  {
-    id: 6,
-    name: 'Sofia Reyes',
-    avatarUrl: 'https://i.pravatar.cc/150?img=1',
-    role: 'UX /UI',
-  },
-  {
-    id: 7,
-    name: 'Rosa Ramos',
-    role: 'UX /UI',
-    avatarUrl: 'https://i.pravatar.cc/150?img=2',
-  },
-  { id: 8, name: 'John Doe', role: 'UX /UI' },
-  {
-    id: 9,
-    name: 'Jude Smith',
-    role: 'UX /UI',
-    avatarUrl: 'https://i.pravatar.cc/150?img=1',
-  },
-  {
-    id: 10,
-    name: 'Leonor Lewis',
-    role: 'UX /UI',
-    avatarUrl: 'https://i.pravatar.cc/150?img=2',
-  },
-  { id: 11, name: 'Luis García', role: 'UX /UI' },
-  { id: 12, name: 'Elba Gomez', role: 'UX /UI' },
-];
 type PrivateNav = NativeStackNavigationProp<
   RecruiterStackParamList,
-  ROUTES.RECRUITER_FAVORITOS
+  ROUTES.RECRUITER_FAVORITOS_OFERTA
 >;
+
 type CandidateNav = NativeStackNavigationProp<
   CandidateStackParamList,
   CAND_ROUTES.CANDIDATE_PROFILE
 >;
-type Props = {
-  navigation: CompositeNavigationProp<PrivateNav, CandidateNav>;
-};
 
-const FavoritosOferta: React.FC<Props> = ({ navigation }) => {
+type RouteProps = RouteProp<
+  RecruiterStackParamList,
+  ROUTES.RECRUITER_FAVORITOS_OFERTA
+>;
+
+const FavoritosOferta: React.FC = () => {
+  const navigation =
+    useNavigation<CompositeNavigationProp<PrivateNav, CandidateNav>>();
+  const route = useRoute<RouteProps>();
+  const [loading, setLoading] = React.useState(false);
+  const [usuarios, setUsuarios] = React.useState<UserItem[]>([]);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const usuariosData: DBUsuario[] = await getUsuariosMatchOferta(
+        route.params.ofertaId,
+      );
+      const usuariosItem: UserItem[] = usuariosData.map((usuario) => ({
+        id: usuario.id,
+        name: `${usuario.nombre} ${usuario.apellido}`,
+        role: usuario.rol,
+        subtitulo: `Postulantes: 11`,
+        avatarUrl: usuario.fotoperfil || undefined,
+      }));
+      setUsuarios(usuariosItem);
+    } catch (error) {
+      console.error('Error fetching usuarios:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const handleSelectUser = (user: UserItem) => {
     console.log(user);
 
@@ -117,7 +105,7 @@ const FavoritosOferta: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.title}>Oferta:</Text>
         </View>
         <UserList
-          users={users}
+          users={usuarios}
           showOferta={false}
           showMessageIcon
           onUserPress={handleSelectUser}

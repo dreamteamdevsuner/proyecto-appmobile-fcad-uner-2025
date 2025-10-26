@@ -1,26 +1,18 @@
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { View, Text, ScrollView, StyleSheet, Image } from 'react-native';
-import { Avatar, Badge, Card, DataTable, Divider } from 'react-native-paper';
+import { Badge, Card, DataTable, Divider } from 'react-native-paper';
 import React from 'react';
 import MapView, { Marker } from 'react-native-maps';
-
-const modalidadList = [
-  { label: 'Remoto', value: 'remoto' },
-  { label: 'Presencial', value: 'presencial' },
-  { label: 'Híbrido', value: 'hibrido' },
-];
-const jornadaList = [
-  { label: 'Media jornada', value: 'media' },
-  { label: 'Jornada completa', value: 'completa' },
-  { label: 'Proyecto', value: 'proyecto' },
-];
-const contratoList = [
-  { label: 'Inmediata', value: 'inmediata' },
-  { label: 'Proceso de selección', value: 'proceso de seleccion' },
-];
+import { useContext } from 'react';
+import { DataContext } from '@providers/DataContext';
 
 const OfertaScreen = ({ route }: any) => {
   const { data } = route.params;
+  const {
+    modalidad: modalidadList,
+    tipoJornada: jornadaList,
+    contratacion: contratoList,
+  } = useContext(DataContext);
 
   return (
     <ScrollView style={{ padding: 20 }}>
@@ -41,65 +33,79 @@ const OfertaScreen = ({ route }: any) => {
         <Divider style={styles.line} />
         <Text style={[styles.subtitle, styles.text]}>{data.titulo}</Text>
         <Text style={styles.text}>{data.institucion}</Text>
-        <View style={styles.mapContainer}>
-          <Text style={styles.text}>
-            <Ionicons name="location-outline" size={20} color="grey" />
-            {data.localizacion}
-          </Text>
-          <MapView
-            style={styles.map}
-            region={{
-              latitude: data.lat,
-              longitude: data.lng,
-              latitudeDelta: 5,
-              longitudeDelta: 5,
-            }}
-          >
-            <Marker
-              coordinate={{
+        {data.localizacion && (
+          <View style={styles.mapContainer}>
+            <Text style={styles.text}>
+              <Ionicons name="location-outline" size={20} color="grey" />
+              {data.localizacion}
+            </Text>
+            <MapView
+              style={styles.map}
+              region={{
                 latitude: data.lat,
                 longitude: data.lng,
+                latitudeDelta: 5,
+                longitudeDelta: 5,
               }}
-              title={data.titulo}
-              description={`Lat: ${data.lat.toFixed(5)}, Lng: ${data.lng.toFixed(5)}`}
-            />
-          </MapView>
-        </View>
+            >
+              <Marker
+                coordinate={{
+                  latitude: data.lat,
+                  longitude: data.lng,
+                }}
+                title={data.titulo}
+                description={`Lat: ${data.lat.toFixed(5)}, Lng: ${data.lng.toFixed(5)}`}
+              />
+            </MapView>
+          </View>
+        )}
         <DataTable.Row>
           <DataTable.Cell style={[styles.styleTable]}>
-            {modalidadList.find((item) => item.value === data.modalidad)
-              ?.label || data.modalidad}
+            {modalidadList.find((item) => item.id === data.modalidad)?.nombre}
           </DataTable.Cell>
           <DataTable.Cell style={[styles.styleTable]}>
-            {jornadaList.find((item) => item.value === data.jornada)?.label ||
+            {jornadaList.find((item) => item.id === data.jornada)?.nombre ||
               data.jornada}
           </DataTable.Cell>
 
           <DataTable.Cell style={[styles.styleTable]}>
-            {contratoList.find((item) => item.value === data.contrato)?.label ||
+            {contratoList.find((item) => item.id === data.contrato)?.nombre ||
               data.contrato}
           </DataTable.Cell>
         </DataTable.Row>
-        <View style={{ marginTop: 10, padding: 15 }}>
-          <Text style={[styles.sectionTitle]}>Acerca del empleo:</Text>
-          <Text style={styles.text}>{data.descripcion}</Text>
-          <Text style={[styles.sectionTitle]}>Herramientas:</Text>
-          <View style={styles.skillsContainer}>
-            {data.hardSkills?.map((skill: string, index: number) => (
-              <Badge key={index} style={styles.chip}>
-                {skill}
-              </Badge>
-            ))}
-          </View>
-          <Text style={[styles.sectionTitle]}>Habilidades:</Text>
-          <View style={styles.skillsContainer}>
-            {data.softSkills?.map((skill: string, index: number) => (
-              <Badge key={index} style={styles.chip}>
-                {skill}
-              </Badge>
-            ))}
-          </View>
 
+        <View style={{ marginTop: 10, padding: 15 }}>
+          {data.descripcion && (
+            <>
+              <Text style={[styles.sectionTitle]}>Acerca del empleo:</Text>
+              <Text style={styles.text}>{data.descripcion}</Text>
+            </>
+          )}
+
+          {data.hardSkills?.lenght > 0 && (
+            <>
+              <Text style={[styles.sectionTitle]}>Herramientas:</Text>
+              <View style={styles.skillsContainer}>
+                {data.hardSkills?.map((skill: string, index: number) => (
+                  <Badge key={index} style={styles.chip}>
+                    {skill}
+                  </Badge>
+                ))}
+              </View>
+            </>
+          )}
+          {data.softSkills?.lenght > 0 && (
+            <>
+              <Text style={[styles.sectionTitle]}>Habilidades:</Text>
+              <View style={styles.skillsContainer}>
+                {data.softSkills?.map((skill: string, index: number) => (
+                  <Badge key={index} style={styles.chip}>
+                    {skill}
+                  </Badge>
+                ))}
+              </View>
+            </>
+          )}
           {/* <Text style={[styles.sectionTitle]}>
             Idiomas:
           </Text> */}
@@ -110,22 +116,26 @@ const OfertaScreen = ({ route }: any) => {
             </Badge>
           ))}
         </View> */}
-          <Text style={[styles.sectionTitle]}>Beneficios:</Text>
-          <View style={{ marginTop: 4 }}>
-            {Array.isArray(data.beneficios)
-              ? data.beneficios.map((beneficio: string, index: number) => (
-                  <Text key={index} style={styles.beneficioItem}>
-                    • {beneficio}
-                  </Text>
-                ))
-              : data.beneficios
-                  .split('\n')
-                  .map((beneficio: string, index: number) => (
-                    <Text key={index} style={styles.beneficioItem}>
-                      • {beneficio.trim()}
-                    </Text>
-                  ))}
-          </View>
+          {data.beneficios && (
+            <>
+              <Text style={[styles.sectionTitle]}>Beneficios:</Text>
+              <View style={{ marginTop: 4 }}>
+                {Array.isArray(data.beneficios)
+                  ? data.beneficios.map((beneficio: string, index: number) => (
+                      <Text key={index} style={styles.beneficioItem}>
+                        • {beneficio}
+                      </Text>
+                    ))
+                  : data.beneficios
+                      .split('\n')
+                      .map((beneficio: string, index: number) => (
+                        <Text key={index} style={styles.beneficioItem}>
+                          • {beneficio.trim()}
+                        </Text>
+                      ))}
+              </View>
+            </>
+          )}
         </View>
       </Card>
     </ScrollView>

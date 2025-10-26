@@ -19,6 +19,7 @@ import * as Font from 'expo-font';
 import { AppDarkTheme } from './app/private/shared/constants/theme/paperTheme';
 import { StatusBar } from 'expo-status-bar';
 import Splash from './components/SplashScreen';
+import { DataProvider } from './providers/DataContext';
 //import * as NavigationBar from 'expo-navigation-bar';
 
 export default function App() {
@@ -53,14 +54,16 @@ export default function App() {
         <Splash onFinish={() => setShowSplash(false)} />
       ) : (
         <AuthProvider>
-          <PaperProvider theme={AppDarkTheme}>
-            <NavigationContainer theme={AppDarkTheme}>
-              <SafeAreaView style={{ flex: 1 }}>
-                <StatusBar style="light" backgroundColor="#000000" />
-                <Navigator></Navigator>
-              </SafeAreaView>
-            </NavigationContainer>
-          </PaperProvider>
+          <DataProvider>
+            <PaperProvider theme={AppDarkTheme}>
+              <NavigationContainer theme={AppDarkTheme}>
+                <SafeAreaView style={{ flex: 1 }}>
+                  <StatusBar style="light" backgroundColor="#000000" />
+                  <Navigator></Navigator>
+                </SafeAreaView>
+              </NavigationContainer>
+            </PaperProvider>
+          </DataProvider>
         </AuthProvider>
       )}
     </GestureHandlerRootView>

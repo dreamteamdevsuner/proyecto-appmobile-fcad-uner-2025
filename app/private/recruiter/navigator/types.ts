@@ -7,7 +7,7 @@ export type PrivateStackParamList = {
   [ROUTES.RECRUITER_MENSAJERIA]: undefined;
   [ROUTES.RECRUITER_FAVORITOS_TAB]: undefined;
   [ROUTES.RECRUITER_FAVORITOS]: undefined;
-  [ROUTES.RECRUITER_FAVORITOS_OFERTA]: { title: string };
+  [ROUTES.RECRUITER_FAVORITOS_OFERTA]: { title: string; ofertaId: string };
   [ROUTES.RECRUITER_CONVERSACION]: {
     title: string;
     myName: string;

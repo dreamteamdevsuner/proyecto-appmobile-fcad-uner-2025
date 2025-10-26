@@ -21,6 +21,6 @@ export type PrivateStackParamList = {
     otherAvatarUrl?: string;
     myAvatarUrl?: string;
   };
-  [ROUTES.CANDIDATE_PROFILE]: { userId?: number; title?: string };
+  [ROUTES.CANDIDATE_PROFILE]: { userId?: string; title?: string };
   [ROUTES.CANDIDATE_NOTIFICATIONS]: undefined;
 };

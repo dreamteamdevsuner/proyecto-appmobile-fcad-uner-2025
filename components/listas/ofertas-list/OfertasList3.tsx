@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, FlatList, StyleSheet, ListRenderItem } from 'react-native';
 import { List, IconButton } from 'react-native-paper';
 import { OfertaItem } from '../../../types/OfertaItem';
-import OfertasList from './OfertasList';
 
 type Props = {
   ofertas: OfertaItem[];
