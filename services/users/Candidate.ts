@@ -1,7 +1,8 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import { AbstractUser } from './AbstractUser';
-import supabase from '../../supabase/supabase';
+// import supabase from '../../supabase/supabase';
 import { User } from '../interfaces/User';
+import { supabase } from '../../supabase/supabaseClient';
 
 // import { Candidate } from '../../interfaces/Candidate';
 // interface Test {

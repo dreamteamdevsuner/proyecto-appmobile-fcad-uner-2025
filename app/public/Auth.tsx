@@ -11,8 +11,9 @@ import Logo from '../../components/Logo';
 import AuthForm from '../../components/AuthForm';
 
 import { Button, Text } from 'react-native-paper';
-import supabase from '../../supabase/supabase';
+// import supabase from '../../supabase/supabase';
 import PUBLIC_NAVIGATOR_ROUTES from './PUBLIC_NAVIGATOR_ROUTES';
+import { supabase } from '../../supabase/supabaseClient';
 //TODO move a su component
 export const Divider = () => {
   // TODO GRIS MOVER A PALETTE DESPUES
@@ -46,17 +47,17 @@ export const Divider = () => {
 //Provisorio reemplazar el Record
 interface RouteProps extends NativeStackScreenProps<Record<string, any>> {}
 const Auth = ({ navigation }: RouteProps) => {
-  useEffect(() => {
-    supabase
-      .from('publicacion')
-      .select()
-      .then(({ data, error }) => {
-        if (error) {
-          console.log('errrrrr', error);
-        }
-        console.log('data', data);
-      });
-  }, []);
+  // useEffect(() => {
+  //   supabase
+  //     .from('publicacion')
+  //     .select()
+  //     .then(({ data, error }) => {
+  //       if (error) {
+  //         console.log('errrrrr', error);
+  //       }
+  //       console.log('data', data);
+  //     });
+  // }, []);
 
   return (
     <View style={{ paddingHorizontal: 60, paddingTop: 40 }}>
