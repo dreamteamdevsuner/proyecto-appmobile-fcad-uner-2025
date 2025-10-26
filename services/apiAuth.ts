@@ -1,6 +1,7 @@
 import { Session, User, WeakPassword } from '@supabase/supabase-js';
-import supabase from '../supabase/supabase';
+// import supabase from '../supabase/supabase';
 import { UserDTO } from './interfaces/UserDTO';
+import { supabase } from '../supabase/supabaseClient';
 
 export const signIn = async (
   user: UserDTO,
