@@ -4,13 +4,15 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
-} from "react-native";
-import React from "react";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import Logo from "../../components/Logo";
-import AuthForm from "../../components/AuthForm";
+} from 'react-native';
+import React, { useEffect } from 'react';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import Logo from '../../components/Logo';
+import AuthForm from '../../components/AuthForm';
 
-import { Button, Text } from "react-native-paper";
+import { Button, Text } from 'react-native-paper';
+import supabase from '../../supabase/supabase';
+import PUBLIC_NAVIGATOR_ROUTES from './PUBLIC_NAVIGATOR_ROUTES';
 //TODO move a su component
 export const Divider = () => {
   // TODO GRIS MOVER A PALETTE DESPUES
@@ -19,13 +21,13 @@ export const Divider = () => {
   const styles = StyleSheet.create({
     divider: {
       marginVertical: 30,
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-evenly",
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-evenly',
     },
     dividerDecoration: {
-      backgroundColor: "#cac4d0",
+      backgroundColor: '#cac4d0',
 
       height: 1.2,
 
@@ -42,8 +44,20 @@ export const Divider = () => {
 };
 
 //Provisorio reemplazar el Record
-interface RouteProps extends NativeStackScreenProps<Record<string, any>> { }
+interface RouteProps extends NativeStackScreenProps<Record<string, any>> {}
 const Auth = ({ navigation }: RouteProps) => {
+  useEffect(() => {
+    supabase
+      .from('publicacion')
+      .select()
+      .then(({ data, error }) => {
+        if (error) {
+          console.log('errrrrr', error);
+        }
+        console.log('data', data);
+      });
+  }, []);
+
   return (
     <View style={{ paddingHorizontal: 60, paddingTop: 40 }}>
       <Logo></Logo>
@@ -51,17 +65,25 @@ const Auth = ({ navigation }: RouteProps) => {
 
       <View
         style={{
-          display: "flex",
-          flexDirection: "row",
+          display: 'flex',
+          flexDirection: 'row',
           marginTop: 40,
-          justifyContent: "center",
+          justifyContent: 'center',
         }}
       >
         <Text variant="labelMedium">No tengo cuenta.</Text>
-        <TouchableWithoutFeedback>
+        <TouchableWithoutFeedback
+          onPress={() => navigation.navigate(PUBLIC_NAVIGATOR_ROUTES.SIGN_UP)}
+        >
           <Text
             variant="labelMedium"
-            style={{ textDecorationLine: "underline" }}
+            style={{
+              textDecorationLine: 'underline',
+              textDecorationStyle: 'solid',
+              textDecorationColor: 'white',
+              borderBottomColor: 'white',
+              borderBottomWidth: 1.5,
+            }}
           >
             Registrarme
           </Text>
@@ -70,15 +92,5 @@ const Auth = ({ navigation }: RouteProps) => {
     </View>
   );
 };
-
-const authLoginStyles = StyleSheet.create({
-  // container: { flex: 1 },
-  // loginForm: { flex: 1 },
-  footer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
 
 export default Auth;

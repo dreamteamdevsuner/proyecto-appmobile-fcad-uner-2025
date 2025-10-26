@@ -3,33 +3,37 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
+  Keyboard,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import {
-  Button,
-  Icon,
-  Portal,
-  Snackbar,
-  Text,
-  TextInput,
-} from 'react-native-paper';
+import React, { useEffect } from 'react';
+import { Button, Portal, Snackbar, Text } from 'react-native-paper';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useAuth } from '../appContext/authContext';
-import Logo from '../components/Logo';
+
+import { FormInputWithHelper } from './ui/FormInputs';
+import { LoginForm } from '../interfaces/LoginForm';
+import { UserDTO } from '../services/interfaces/UserDTO';
+import useSnackbar from '../hooks/useSnackbar';
+import candidateService from '../services/users/Candidate';
 
 interface AppSnackProps {
   visible: boolean;
   handleHideSnackBar: () => void;
+  message: string;
 }
-const AppSnackBar = ({ visible, handleHideSnackBar }: AppSnackProps) => {
+export const AppSnackBar = ({
+  visible,
+  handleHideSnackBar,
+  message,
+}: AppSnackProps) => {
   useEffect(() => {
     if (visible) {
       setTimeout(() => {
         return handleHideSnackBar();
       }, 2000);
     }
-    //CLEAN UP POR SI ACASO
+    // CLEAN UP POR SI ACASO
     () => {
       handleHideSnackBar();
     };
@@ -46,18 +50,13 @@ const AppSnackBar = ({ visible, handleHideSnackBar }: AppSnackProps) => {
         visible={visible}
         onDismiss={() => handleHideSnackBar()}
       >
-        <Text>Test 1</Text>
-        <Text style={{ color: 'white' }}>Login Error</Text>
+        <Text style={{ color: 'white' }}> {message}</Text>
       </Snackbar>
     </Portal>
   );
 };
 
-interface LoginForm {
-  email: string;
-  password: string;
-}
-const loginForm: LoginForm = {
+const loginForm: UserDTO = {
   email: '',
   password: '',
 };
@@ -70,16 +69,14 @@ const formValidationSchema = Yup.object({
 const AuthForm = () => {
   const { state, login } = useAuth();
 
-  const [showSnackbar, setShowSnackbar] = useState(false);
+  const { handleHideSnackbar, handleShowSnackbar, showSnackbar } =
+    useSnackbar();
+  const service = candidateService;
+  useEffect(() => {
+    service.list();
+  }, []);
 
-  const handleShowSnackbar = () => {
-    setShowSnackbar(true);
-  };
-  const handleHideSnackbar = () => {
-    setShowSnackbar(false);
-  };
-
-  const handleLogin = (values: LoginForm) => {
+  const handleLogin = async (values: UserDTO) => {
     // console.log("handle login");
     console.log('values', values);
     //MOCKUP LOGIN SUCCESS
@@ -92,6 +89,11 @@ const AuthForm = () => {
   };
   return (
     <>
+      <AppSnackBar
+        visible={showSnackbar}
+        message="Login Error"
+        handleHideSnackBar={handleHideSnackbar}
+      ></AppSnackBar>
       <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={30}>
         <Formik
           initialValues={loginForm}
@@ -111,78 +113,80 @@ const AuthForm = () => {
             dirty,
             touched,
             initialTouched,
-          }) => (
-            <View style={authStyles.container}>
-              <TextInput
-                onBlur={handleBlur('email')}
-                autoCapitalize="none"
-                label={'Correo electrónico'}
-                placeholder="Escribí tu correo electrónico"
-                mode="outlined"
-                onFocus={() => setFieldTouched('email', true)}
-                onChangeText={handleChange('email')}
-                value={values.email}
-                keyboardType="email-address"
-              />
-              {touched.email && errors.email && (
-                <View style={authStyles.errorView}>
-                  <Icon source="alert-circle-outline" size={20} />
-                  <Text style={authStyles.errorText}>{errors.email}</Text>
-                </View>
-              )}
-              <TextInput
-                onBlur={handleBlur('password')}
-                secureTextEntry={true}
-                label={'Contraseña'}
-                placeholder="Escribí tu contraseña"
-                mode="outlined"
-                autoCapitalize="none"
-                onChangeText={handleChange('password')}
-                onFocus={() => setFieldTouched('password', true)}
-                value={values.password}
-              />
-              {touched.password && errors.password && (
-                <View style={authStyles.errorView}>
-                  <Icon source="alert-circle-outline" size={20} />
-                  <Text style={authStyles.errorText}>{errors.password}</Text>
-                </View>
-              )}
+          }) => {
+            const handleTextInputBlur = (key: keyof LoginForm) => {
+              handleBlur(key);
+              Keyboard.dismiss();
+            };
 
-              <View style={authStyles.forgotPasswordContainer}>
-                <TouchableWithoutFeedback style={authStyles.forgotPassword}>
-                  <Text
-                    variant="labelMedium"
-                    style={{
-                      borderBottomColor: 'black',
-                      borderBottomWidth: 1,
+            return (
+              <View style={authStyles.container}>
+                <FormInputWithHelper<LoginForm>
+                  formKey="email"
+                  value={values.email}
+                  placeholder="Escribí tu correo electrónico"
+                  key={'email'}
+                  label="Correo electrónico"
+                  onBlur={() => handleTextInputBlur('email')}
+                  onFocus={() => setFieldTouched('email', true)}
+                  onChangeText={handleChange('email')}
+                  keyboardType="email-address"
+                  errorCondition={
+                    Boolean(touched.email && errors.email) || false
+                  }
+                  errorMessage={errors.email ?? ''}
+                ></FormInputWithHelper>
+                <FormInputWithHelper<LoginForm>
+                  formKey="password"
+                  value={values.password}
+                  placeholder="Escribí tu contraseña"
+                  secureTextEntry={true}
+                  key={'password'}
+                  label="Contraseña"
+                  onBlur={() => handleTextInputBlur('password')}
+                  onFocus={() => setFieldTouched('password', true)}
+                  onChangeText={handleChange('password')}
+                  errorCondition={
+                    Boolean(touched.password && errors.password) || false
+                  }
+                  errorMessage={errors.password ?? ''}
+                ></FormInputWithHelper>
 
-                      top: -15,
-                    }}
-                  >
-                    ¿Olvidaste tu contraseña ?
-                  </Text>
-                </TouchableWithoutFeedback>
+                <View style={authStyles.forgotPasswordContainer}>
+                  <TouchableWithoutFeedback style={authStyles.forgotPassword}>
+                    <Text
+                      variant="labelMedium"
+                      style={{
+                        borderBottomColor: 'black',
+                        borderBottomWidth: 1,
+
+                        top: -15,
+                      }}
+                    >
+                      ¿Olvidaste tu contraseña ?
+                    </Text>
+                  </TouchableWithoutFeedback>
+                </View>
+
+                <Button
+                  mode="contained"
+                  style={{
+                    backgroundColor: '#BEB52C',
+                    opacity: (dirty && !isValid) || !dirty ? 0.5 : 1,
+                  }}
+                  onPress={() => {
+                    Keyboard.dismiss();
+                    handleSubmit();
+                  }}
+                  disabled={(dirty && !isValid) || !dirty}
+                >
+                  <Text style={{ color: '#1D1C21' }}>Iniciar sesión</Text>
+                </Button>
               </View>
-
-              <Button
-                mode="contained"
-                style={{
-                  backgroundColor: '#BEB52C',
-                  opacity: (dirty && !isValid) || !dirty ? 0.5 : 1,
-                }}
-                onPress={() => handleSubmit()}
-                disabled={(dirty && !isValid) || !dirty}
-              >
-                <Text style={{ color: '#1D1C21' }}>Iniciar sesión</Text>
-              </Button>
-            </View>
-          )}
+            );
+          }}
         </Formik>
       </KeyboardAvoidingView>
-      <AppSnackBar
-        visible={showSnackbar}
-        handleHideSnackBar={handleHideSnackbar}
-      ></AppSnackBar>
     </>
   );
 };
