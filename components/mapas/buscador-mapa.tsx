@@ -4,11 +4,13 @@ import { TextInput, Button, ActivityIndicator, Text } from 'react-native-paper';
 import MapView, { Marker } from 'react-native-maps';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LOCATIONIQ_API_KEY } from '@env';
+import axios from 'axios';
 
 interface MapSearchProps {
   value: string;
   lat?: number;
   lng?: number;
+  errors: string | undefined;
   onChange: (text: string) => void;
   onCoordsChange: (lat: number, lng: number) => void;
 }
@@ -20,6 +22,7 @@ const MapSearch: React.FC<MapSearchProps> = ({
   value,
   lat,
   lng,
+  errors,
   onChange,
   onCoordsChange,
 }) => {
@@ -39,19 +42,22 @@ const MapSearch: React.FC<MapSearchProps> = ({
     if (!value) return;
     setLoading(true);
     try {
+      setLoading(true);
+
       const url = `https://us1.locationiq.com/v1/search?key=${LOCATIONIQ_API_KEY}&q=${encodeURIComponent(value)}&format=json&limit=3`;
-      console.log(LOCATIONIQ_API_KEY);
       // API Nominatim de Open Street Map
       // const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
       //   value,
       // )}&format=json&limit=3`;
 
-      const res = await fetch(url, {
+      const res = await axios.get(url, {
         headers: {
           'Accept-Language': 'es',
         },
       });
-      const data = await res.json();
+
+      const data = res.data;
+
       if (data && data.length > 0) {
         if (data.length === 1) {
           const { lat, lon, display_name } = data[0];
@@ -121,7 +127,9 @@ const MapSearch: React.FC<MapSearchProps> = ({
           ) : undefined
         }
       />
-
+      {errors && (
+        <Text style={{ color: 'red', marginBottom: 5 }}>{errors}</Text>
+      )}
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
@@ -185,7 +193,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    marginBottom: 10,
+    marginBottom: 6,
     paddingHorizontal: 15,
   },
   boton: {

@@ -6,7 +6,12 @@
       "@components/*": ["./components/*"],
       "@utils/*": ["./utils/*"],
       "@app/*": ["./app/*"],
-      "@assets/*": ["./assets/*"]
+      "@assets/*": ["./assets/*"],
+      "@interfaces/*": ["./interfaces/*"],
+      "@database/*": ["./types/database/*"],
+      "@models/*": ["./types/models/*"],
+      "@services/*": ["./services/*"],
+      "@providers/*": ["./providers/*"]
     }
   }
 }

@@ -1,25 +1,25 @@
 import React, { useState } from 'react';
 import { View, FlatList, StyleSheet, ListRenderItem } from 'react-native';
 import { List } from 'react-native-paper';
-import { OfertaItem } from '../../../types/OfertaItem';
+import { Item } from '@models/index';
 
 type Props = {
-  ofertas: OfertaItem[];
-  onSelectOferta: (oferta: OfertaItem) => void;
+  items: Item[];
+  onSelectItem: (item: Item) => void;
 };
 
-const OfertasList: React.FC<Props> = ({ ofertas, onSelectOferta }) => {
-  const [pressedId, setPressedId] = useState<number | null>(null);
+const ItemList: React.FC<Props> = ({ items, onSelectItem }) => {
+  const [pressedId, setPressedId] = useState<string | null>(null);
 
-  const renderItem: ListRenderItem<OfertaItem> = ({ item }) => {
+  const renderItem: ListRenderItem<Item> = ({ item }) => {
     return (
       <List.Item
-        title={item.title}
-        description={item.subtitle}
+        title={item.titulo}
+        description={item.subtitulo}
         style={pressedId === item.id ? styles.selectedItem : undefined}
         titleStyle={pressedId === item.id ? styles.selectedTitle : undefined}
         descriptionStyle={styles.subtitle}
-        onPress={() => onSelectOferta(item)}
+        onPress={() => onSelectItem(item)}
         onPressIn={() => setPressedId(item.id)}
         onPressOut={() => setPressedId(null)}
         right={(props) => <List.Icon {...props} icon="chevron-right" />}
@@ -29,10 +29,10 @@ const OfertasList: React.FC<Props> = ({ ofertas, onSelectOferta }) => {
 
   return (
     <View style={styles.container}>
-      <FlatList<OfertaItem>
-        data={ofertas}
+      <FlatList<Item>
+        data={items}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString() + item.title}
+        keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <List.Item
@@ -62,4 +62,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OfertasList;
+export default ItemList;

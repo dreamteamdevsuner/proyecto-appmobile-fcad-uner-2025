@@ -1,84 +1,18 @@
-import { StyleSheet, View } from 'react-native';
-import { Text } from 'react-native-paper';
-import {
-  UserListHorizontal,
-  OfertasList,
-} from '../../../../../components/listas';
-import { UserItem } from '../../../../../types/UserItem';
-import { OfertaItem } from '../../../../../types/OfertaItem';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Text } from 'react-native-paper';
+import { UserListHorizontal, ItemList } from '../../../../../components/listas';
+import { UserItem, Item } from '@models/index';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { PrivateStackParamList as RecruiterStackParamList } from '../../navigator/types';
 import { PrivateStackParamList as CandidateStackParamList } from '../../../candidates/navigator/types';
 import ROUTES from '../../navigator/routes';
 import CAND_ROUTES from '../../../candidates/navigator/routes';
 import { CompositeNavigationProp } from '@react-navigation/native';
-
-const ofertas: OfertaItem[] = [
-  { id: 1, title: 'UX Santender', subtitle: 'Postulantes: 11' },
-  { id: 2, title: 'Frontend Naranja', subtitle: 'Postulantes: 11' },
-  { id: 3, title: 'Developer Shopify ', subtitle: 'Postulantes: 11' },
-  { id: 4, title: 'UI Desegner', subtitle: 'Postulantes: 11' },
-  { id: 5, title: 'Full Stack Banco Provincia', subtitle: 'Postulantes: 11' },
-  { id: 6, title: 'Backend Santender', subtitle: 'Postulantes: 11' },
-  { id: 7, title: 'Backend Naranja', subtitle: 'Postulantes: 11' },
-  { id: 8, title: 'DevOs Globant', subtitle: 'Postulantes: 11' },
-  { id: 9, title: 'RRHH Santender', subtitle: 'Postulantes: 11' },
-  { id: 10, title: 'RRHH Naranja', subtitle: 'Postulantes: 11' },
-  { id: 11, title: 'RRHH Globant', subtitle: 'Postulantes: 11' },
-];
-
-const matchs: UserItem[] = [
-  {
-    id: 100,
-    name: 'Ana Lopez Gonzales',
-    subtitle: 'Frontend Naranja',
-    avatarUrl: 'https://i.pravatar.cc/150?img=1',
-  },
-  {
-    id: 2,
-    name: 'Juan Rio Bravo',
-    subtitle: 'UX Santender',
-    avatarUrl: 'https://i.pravatar.cc/150?img=2',
-  },
-  { id: 3, name: 'Juana Costa', subtitle: 'RRHH Globant' }, // sin avatar
-  {
-    id: 4,
-    name: 'Martín Peréz',
-    subtitle: 'Developer Shopify',
-    avatarUrl: 'https://i.pravatar.cc/150?img=1',
-  },
-  {
-    id: 5,
-    name: 'Camilo Cuevas',
-    subtitle: 'UI Desegner',
-    avatarUrl: 'https://i.pravatar.cc/150?img=2',
-  },
-  {
-    id: 6,
-    name: 'Sofia Reyes',
-    subtitle: 'RRHH Santender',
-    avatarUrl: 'https://i.pravatar.cc/150?img=1',
-  },
-  {
-    id: 7,
-    name: 'Rosa Ramos',
-    subtitle: 'UX Santender',
-    avatarUrl: 'https://i.pravatar.cc/150?img=2',
-  },
-  { id: 8, name: 'John Doe', subtitle: 'Frontend Naranja' },
-  {
-    id: 9,
-    name: 'Jude Smith',
-    subtitle: 'UX Santender',
-    avatarUrl: 'https://i.pravatar.cc/150?img=1',
-  },
-  {
-    id: 10,
-    name: 'Leonor Lewis',
-    subtitle: 'Frontend Naranja',
-    avatarUrl: 'https://i.pravatar.cc/150?img=2',
-  },
-];
+import { DBOfertaTrabajo } from '@database/DBOfertaTrabajo';
+import { getOfertas } from '@services/OfertaService';
+import { useEffect, useState } from 'react';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { matchs } from '@utils/mockOfertasMatch';
 
 type PrivateNav = NativeStackNavigationProp<
   RecruiterStackParamList,
@@ -92,9 +26,13 @@ type Props = {
   navigation: CompositeNavigationProp<PrivateNav, CandidateNav>;
 };
 const Favoritos: React.FC<Props> = ({ navigation }) => {
-  const handleSelectOferta = (oferta: OfertaItem) => {
+  const [ofertas, setOfertas] = useState<Item[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const handleSelectOferta = (oferta: Item) => {
     navigation.navigate(ROUTES.RECRUITER_FAVORITOS_OFERTA, {
-      title: oferta.title,
+      title: oferta.titulo,
+      ofertaId: oferta.id,
     });
   };
   const handleSelectUser = (user: UserItem) => {
@@ -103,6 +41,28 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
       title: user.name,
     });
   };
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const ofertasData: DBOfertaTrabajo[] = await getOfertas();
+      const ofertasItem: Item[] = ofertasData.map((oferta) => ({
+        id: oferta.id.toString(),
+        titulo: oferta.titulo,
+        subtitulo: `Postulantes: 11`,
+      }));
+      setOfertas(ofertasItem);
+      console.log('Ofertas fetched:', ofertasData);
+    } catch (error) {
+      console.error('Error fetching ofertas:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -152,11 +112,23 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
           }
         >
           <Text style={styles.title}>Mis matchs</Text>
+          <TouchableOpacity
+            onPress={fetchData}
+            style={styles.refreshButton}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator size={'small'} color="#6750A4" />
+            ) : (
+              <MaterialCommunityIcons
+                name="refresh"
+                size={28}
+                color="#6750A4"
+              />
+            )}
+          </TouchableOpacity>
         </View>
-        <OfertasList
-          ofertas={ofertas}
-          onSelectOferta={handleSelectOferta}
-        ></OfertasList>
+        <ItemList items={ofertas} onSelectItem={handleSelectOferta}></ItemList>
       </View>
     </View>
   );
@@ -171,6 +143,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 10,
   },
   title: {
@@ -187,6 +160,9 @@ const styles = StyleSheet.create({
   listContainer: {
     flex: 1,
     gap: 5,
+  },
+  refreshButton: {
+    marginRight: 20,
   },
 });
 export default Favoritos;
