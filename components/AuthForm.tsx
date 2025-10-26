@@ -5,24 +5,17 @@ import {
   KeyboardAvoidingView,
   Keyboard,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import {
-  Button,
-  Icon,
-  Portal,
-  Snackbar,
-  Text,
-  TextInput,
-} from 'react-native-paper';
+import React, { useEffect } from 'react';
+import { Button, Portal, Snackbar, Text } from 'react-native-paper';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useAuth } from '../appContext/authContext';
-import Logo from '../components/Logo';
-import { signIn } from '../services/apiAuth';
-import { FormInput, FormInputWithHelper } from './ui/FormInputs';
+
+import { FormInputWithHelper } from './ui/FormInputs';
 import { LoginForm } from '../interfaces/LoginForm';
 import { UserDTO } from '../services/interfaces/UserDTO';
 import useSnackbar from '../hooks/useSnackbar';
+import candidateService from '../services/users/Candidate';
 
 interface AppSnackProps {
   visible: boolean;
@@ -78,6 +71,10 @@ const AuthForm = () => {
 
   const { handleHideSnackbar, handleShowSnackbar, showSnackbar } =
     useSnackbar();
+  const service = candidateService;
+  useEffect(() => {
+    service.list();
+  }, []);
 
   const handleLogin = async (values: UserDTO) => {
     // console.log("handle login");
@@ -89,12 +86,6 @@ const AuthForm = () => {
         handleShowSnackbar();
       }
     })();
-
-    // const singInRes = await signIn(values);
-
-    // if (!singInRes) {
-    //   handleShowSnackbar();
-    // }
   };
   return (
     <>
@@ -126,12 +117,6 @@ const AuthForm = () => {
             const handleTextInputBlur = (key: keyof LoginForm) => {
               handleBlur(key);
               Keyboard.dismiss();
-            };
-            const handleTextFieldTouched = (key: keyof LoginForm) => {
-              setFieldTouched(key);
-            };
-            const handleOnChangeText = (key: keyof LoginForm) => {
-              handleChange(key);
             };
 
             return (

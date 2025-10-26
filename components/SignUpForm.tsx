@@ -1,5 +1,5 @@
 import { View, StyleSheet } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { UserDTO } from '../services/interfaces/UserDTO';
 import * as Yup from 'yup';
 import { Formik, FormikProps } from 'formik';
@@ -15,6 +15,7 @@ import GenericFormDropdown from '../app/private/shared/perfil/ajustes/componente
 import { Alert } from 'react-native';
 import { AppSnackBar } from './AuthForm';
 import useSnackbar from '../hooks/useSnackbar';
+import { Message } from '../types/Message';
 
 export enum Roles {
   PROFESIONAL = 1,
@@ -62,19 +63,24 @@ const formValidationSchema = Yup.object({
 
 const SignUpForm = () => {
   const theme = useTheme();
+  const [message, setMessage] = useState('Error al registrarse');
   const { handleHideSnackbar, handleShowSnackbar, showSnackbar } =
     useSnackbar();
   const handleSignUp = async (user: UserDTO) => {
     try {
       const { user: createdUser, session } = await signUp(user);
-      console.log('created user', createdUser);
-      console.log('session', session);
+      // console.log('created user', createdUser);
+      // console.log('session', session);
       if (!createdUser) {
-        Alert.alert('Error al registrarse');
-        return;
+        throw Error('Error al registrarse');
       }
-    } catch (error) {
-      console.log('err', error);
+    } catch (error: any) {
+      if (error?.message === 'User already registered') {
+        setMessage('Ya existe un email asociado a esta cuenta');
+      } else {
+        setMessage(error?.message);
+      }
+
       handleShowSnackbar();
     }
   };
@@ -84,7 +90,7 @@ const SignUpForm = () => {
       <AppSnackBar
         visible={showSnackbar}
         handleHideSnackBar={handleHideSnackbar}
-        message="Error al registrarse"
+        message={message}
       ></AppSnackBar>
       <Formik
         initialValues={singnUpForm}
