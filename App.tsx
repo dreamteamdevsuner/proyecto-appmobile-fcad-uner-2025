@@ -19,6 +19,7 @@ import * as Font from 'expo-font';
 import { AppDarkTheme } from './app/private/shared/constants/theme/paperTheme';
 import { StatusBar } from 'expo-status-bar';
 import Splash from './components/SplashScreen';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { DataProvider } from './providers/DataContext';
 //import * as NavigationBar from 'expo-navigation-bar';
 
