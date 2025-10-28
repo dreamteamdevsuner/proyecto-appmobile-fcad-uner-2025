@@ -56,18 +56,20 @@ export default function App() {
       {showSplash ? (
         <Splash onFinish={() => setShowSplash(false)} />
       ) : (
-        <AuthProvider>
-          <DataProvider>
-            <PaperProvider theme={AppDarkTheme}>
-              <NavigationContainer theme={AppDarkTheme}>
-                <SafeAreaView style={{ flex: 1 }}>
-                  <StatusBar style="light" backgroundColor="#000000" />
-                  <Navigator></Navigator>
-                </SafeAreaView>
-              </NavigationContainer>
-            </PaperProvider>
-          </DataProvider>
-        </AuthProvider>
+        <KeyboardProvider>
+          <AuthProvider>
+            <DataProvider>
+              <PaperProvider theme={AppDarkTheme}>
+                <NavigationContainer theme={AppDarkTheme}>
+                  <SafeAreaView style={{ flex: 1 }}>
+                    <StatusBar style="light" backgroundColor="#000000" />
+                    <Navigator></Navigator>
+                  </SafeAreaView>
+                </NavigationContainer>
+              </PaperProvider>
+            </DataProvider>
+          </AuthProvider>
+        </KeyboardProvider>
       )}
     </GestureHandlerRootView>
   );

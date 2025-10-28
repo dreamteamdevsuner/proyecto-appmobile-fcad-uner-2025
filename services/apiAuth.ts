@@ -21,9 +21,17 @@ export const signIn = async (
 
   return data;
 };
-export const signUp = async (user: UserDTO) => {
-  const { data, error } = await supabase.auth.signUp(user);
+export const signUp = async (user: UserDTO, extras: Record<string, any>) => {
+  const { data, error } = await supabase.auth.signUp({
+    email: user.email,
+    password: user.password,
+
+    options: {
+      data: extras,
+    },
+  });
   if (error) {
+    console.log(error);
     throw Error(error.message);
   }
   return data;

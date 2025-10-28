@@ -66,9 +66,19 @@ const SignUpForm = () => {
   const [message, setMessage] = useState('Error al registrarse');
   const { handleHideSnackbar, handleShowSnackbar, showSnackbar } =
     useSnackbar();
-  const handleSignUp = async (user: UserDTO) => {
+  const handleSignUp = async (values: SignUpForm) => {
     try {
-      const { user: createdUser, session } = await signUp(user);
+      const extras = {
+        nombre: values.nombre,
+        apellido: values.apellido,
+        email: values.email,
+        role: values.idtipousuario,
+        full_name: `${values.nombre} ${values.apellido}`,
+      };
+      console.log('extras', extras);
+      const user: UserDTO = { password: values.password, email: values.email };
+      console.log('user', user);
+      const { user: createdUser, session } = await signUp(user, extras);
       // console.log('created user', createdUser);
       // console.log('session', session);
       if (!createdUser) {

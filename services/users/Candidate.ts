@@ -9,6 +9,25 @@ import { supabase } from '../../supabase/supabaseClient';
 //   id: number;
 //   name: 1;
 // }
+export interface Users {
+  activo: boolean;
+  apellido: string;
+  email: string;
+  fotoperfil: null | string;
+  id: string;
+  iddireccion: null;
+  idplan: number;
+  idtipousuario: number;
+  nombre: string;
+  rol: string;
+  tipousuario: Tipousuario;
+}
+
+export interface Tipousuario {
+  id: number;
+  nombre: string;
+}
+
 class CandidateService implements AbstractUser<User> {
   supabase: SupabaseClient<any, 'public', 'public', any, any>;
   constructor() {
@@ -24,6 +43,7 @@ class CandidateService implements AbstractUser<User> {
     if (error) {
       return error;
     }
+
     console.log('USERS LIST', data);
     return data;
   }
