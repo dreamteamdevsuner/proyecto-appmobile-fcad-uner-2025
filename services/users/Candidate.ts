@@ -1,39 +1,22 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { AbstractUser } from './AbstractUser';
+import { AbstractUser } from '../interfaces/AbstractUser';
 // import supabase from '../../supabase/supabase';
-import { User } from '../interfaces/User';
+
 import { supabase } from '../../supabase/supabaseClient';
+import { IUser } from '@services/interfaces/User.interface';
 
 // import { Candidate } from '../../interfaces/Candidate';
 // interface Test {
 //   id: number;
 //   name: 1;
 // }
-export interface Users {
-  activo: boolean;
-  apellido: string;
-  email: string;
-  fotoperfil: null | string;
-  id: string;
-  iddireccion: null;
-  idplan: number;
-  idtipousuario: number;
-  nombre: string;
-  rol: string;
-  tipousuario: Tipousuario;
-}
 
-export interface Tipousuario {
-  id: number;
-  nombre: string;
-}
-
-class CandidateService implements AbstractUser<User> {
+class CandidateService implements AbstractUser<IUser> {
   supabase: SupabaseClient<any, 'public', 'public', any, any>;
   constructor() {
     this.supabase = supabase;
   }
-  create(user: Partial<User>) {
+  create(user: Partial<IUser>) {
     // return {  };
   }
   async list() {

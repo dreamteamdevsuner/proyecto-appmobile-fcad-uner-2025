@@ -11,6 +11,9 @@ import {
   setItemAsync,
   getItemAsync,
 } from '../utils/secure-store';
+import { signIn } from '@services/apiAuth';
+import userService from '@services/users/User.service';
+import { IUserWithType } from '@services/interfaces/User.interface';
 
 export enum Role {
   candidate = 'candidate',
@@ -25,7 +28,7 @@ interface User {
 }
 
 interface State {
-  user: User | null;
+  user: User | null | IUserWithType;
   token: string | null;
   refreshToken: string | null;
   loading: boolean;
@@ -51,7 +54,7 @@ type Action =
     }
   | {
       type: AUTH_ACTIONS.LOGIN;
-      payload: { user: User; token: string; refreshToken: string };
+      payload: { user: IUserWithType; token: string; refreshToken: string };
     }
   | { type: AUTH_ACTIONS.LOGOUT }
   | { type: AUTH_ACTIONS.LOGIN_ERROR; payload: { error: string } }
@@ -159,38 +162,44 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     try {
       // TODO: Por ahora simular inicio de sesion a API con mocks, cambiar despues
-      let user: User | null = null;
+      // let user: User | null = null;
+      const {
+        data: { user, session },
+        error,
+      } = await signIn({ email, password });
 
-      if (email === 'dev@mail.com') {
-        user = {
-          id: 222,
-          email: 'dev@mail.com',
-          name: 'Dev',
-          role: Role.candidate,
-        };
-      } else if (email === 'recruiter@mail.com') {
-        user = {
-          id: 111,
-          email: 'recruiter@mail.com',
-          name: 'Recruiter',
-          role: Role.recruiter,
-        };
-      }
-
-      if (!user) {
+      if (!user || !session) {
         throw new Error('Credenciales inválidas');
       }
+      // if (email === 'dev@mail.com') {
+      //   user = {
+      //     id: 222,
+      //     email: 'dev@mail.com',
+      //     name: 'Dev',
+      //     role: Role.candidate,
+      //   };
+      // } else if (email === 'recruiter@mail.com') {
+      //   user = {
+      //     id: 111,
+      //     email: 'recruiter@mail.com',
+      //     name: 'Recruiter',
+      //     role: Role.recruiter,
+      //   };
+      // }
 
-      const token = 'fake-jwt-token';
-      const refreshToken = 'fake-refresh-token';
+      const token = session.access_token;
+      const refreshToken = session.refresh_token;
 
       await setItemAsync(SecureStoreItem.TOKEN, token);
       await setItemAsync(SecureStoreItem.REFRESH_TOKEN, refreshToken);
       await setItemAsync(SecureStoreItem.USER, user);
-
+      const signedUser = await userService.getOne(user.id);
+      if (!signedUser) {
+        throw Error('Error obteniendo perfil de usuario');
+      }
       dispatch({
         type: AUTH_ACTIONS.LOGIN,
-        payload: { user, token, refreshToken },
+        payload: { user: signedUser, token, refreshToken },
       });
       return true;
     } catch (error: any) {

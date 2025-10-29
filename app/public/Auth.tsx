@@ -14,35 +14,6 @@ import { Button, Text } from 'react-native-paper';
 // import supabase from '../../supabase/supabase';
 import PUBLIC_NAVIGATOR_ROUTES from './PUBLIC_NAVIGATOR_ROUTES';
 import { supabase } from '../../supabase/supabaseClient';
-//TODO move a su component
-export const Divider = () => {
-  // TODO GRIS MOVER A PALETTE DESPUES
-  //  #cac4d0
-  // TODO GRIS MOVER A PALETTE DESPUES
-  const styles = StyleSheet.create({
-    divider: {
-      marginVertical: 30,
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-evenly',
-    },
-    dividerDecoration: {
-      backgroundColor: '#cac4d0',
-
-      height: 1.2,
-
-      width: 106.83,
-    },
-  });
-  return (
-    <View style={styles.divider}>
-      <View style={styles.dividerDecoration}></View>
-      <Text variant="labelSmall"> o Inicia con</Text>
-      <View style={styles.dividerDecoration}></View>
-    </View>
-  );
-};
 
 //Provisorio reemplazar el Record
 interface RouteProps extends NativeStackScreenProps<Record<string, any>> {}

@@ -16,6 +16,8 @@ import { LoginForm } from '../interfaces/LoginForm';
 import { UserDTO } from '../services/interfaces/UserDTO';
 import useSnackbar from '../hooks/useSnackbar';
 import candidateService from '../services/users/Candidate';
+// import useAuth from '../hooks/useAuth';
+import userService from '../services/users/User.service';
 
 interface AppSnackProps {
   visible: boolean;
@@ -68,24 +70,26 @@ const formValidationSchema = Yup.object({
 });
 const AuthForm = () => {
   const { state, login } = useAuth();
-
+  // const { error, handleSignIn, loading } = useAuth();
   const { handleHideSnackbar, handleShowSnackbar, showSnackbar } =
     useSnackbar();
   const service = candidateService;
   useEffect(() => {
-    service.list();
+    // service.list();
   }, []);
 
   const handleLogin = async (values: UserDTO) => {
     // console.log("handle login");
     console.log('values', values);
+    // await handleSignIn(values);
     //MOCKUP LOGIN SUCCESS
-    (async () => {
-      const ok = await login(values.email, values.password);
-      if (!ok) {
-        handleShowSnackbar();
-      }
-    })();
+    // const u = await userService.getOne();
+    // console.log('user by id', u);
+
+    const ok = await login(values.email, values.password);
+    if (!ok) {
+      handleShowSnackbar();
+    }
   };
   return (
     <>
