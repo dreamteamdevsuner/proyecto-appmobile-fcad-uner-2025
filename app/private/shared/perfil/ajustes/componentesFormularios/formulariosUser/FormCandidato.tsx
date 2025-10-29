@@ -1,21 +1,12 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Text } from 'react-native-paper';
-import { TextInput } from 'react-native-paper';
-import { FormikProps } from 'formik';
+import { Text, TextInput, Button, Checkbox } from 'react-native-paper';
+import { FormikProps, FieldArray, FormikErrors } from 'formik';
 import FormField from '../FormField';
 import FormDropdown from '../FormDropdown';
 import { CandidatoValues } from '../../../../../../../interfaces/EditarPerfil';
-import {
-  PAISES_LIST,
-  HERRAMIENTAS_LIST,
-  HABILIDADES_LIST,
-  IDIOMAS_LIST,
-  MODALIDADES_LIST,
-  JORNADAS_LIST,
-  CONTRATOS_LIST,
-  REDES_LIST,
-} from '../../../../constants/GenericList';
+import { DropdownItem } from '@services/perfilService';
+import MapSearch from '@components/mapas/buscador-mapa';
 
 const SectionTitle = ({ children }: { children: string }) => (
   <Text style={styles.sectionTitle}>{children}</Text>
@@ -24,9 +15,25 @@ const SectionTitle = ({ children }: { children: string }) => (
 interface Props {
   formik: FormikProps<CandidatoValues>;
   fieldPositions: React.MutableRefObject<{ [key: string]: number }>;
+  listasSkills: {
+    habilidades: DropdownItem[];
+    herramientas: DropdownItem[];
+    idiomas: DropdownItem[];
+  };
+  listasTiposEnlace: DropdownItem[];
+  listasModalidades: DropdownItem[];
+  listasTiposJornada: DropdownItem[];
+  listasTiposContratacion: DropdownItem[];
 }
 
-const FormularioCandidato = ({ formik, fieldPositions }: Props) => {
+const FormularioCandidato = ({ formik, 
+  fieldPositions, 
+  listasSkills, 
+  listasTiposEnlace,
+  listasModalidades,
+  listasTiposJornada,
+  listasTiposContratacion
+ }: Props) => {
   return (
     <>
       <SectionTitle>Datos Personales</SectionTitle>
@@ -61,11 +68,25 @@ const FormularioCandidato = ({ formik, fieldPositions }: Props) => {
       />
 
       <Text style={styles.titulo}>Localización</Text>
-      <FormDropdown
-        name="localizacion"
-        formik={formik}
-        items={PAISES_LIST}
-        placeholder="Selecciona ubicación"
+      <MapSearch
+        value={formik.values.localizacion}
+        errors={
+          formik.errors.localizacion && formik.touched.localizacion
+            ? formik.errors.localizacion
+            : undefined
+        }
+        // lat={formik.values.lat} // Pasar lat actual
+        // lng={formik.values.lng} // Pasar lng actual
+        onChange={(text) => {
+          formik.setFieldValue('localizacion', text); 
+        }}
+        onCoordsChange={(newLat, newLng) => {
+          // Actualizar lat y lng en Formik
+          formik.setFieldValue('lat', newLat);
+          formik.setFieldValue('lng', newLng);
+        }}
+        // ¡Añade onLayout si MapSearch lo soporta!
+        // onLayout={(event) => { fieldPositions.current['localizacion'] = event.nativeEvent.layout.y; }}
       />
 
       <Text style={styles.titulo}>Sobre mí</Text>
@@ -81,7 +102,7 @@ const FormularioCandidato = ({ formik, fieldPositions }: Props) => {
       <FormDropdown
         name="herramientas"
         formik={formik}
-        items={HERRAMIENTAS_LIST}
+        items={listasSkills.herramientas}
         placeholder="Selecciona herramientas"
         multiple
       />
@@ -90,33 +111,97 @@ const FormularioCandidato = ({ formik, fieldPositions }: Props) => {
       <FormDropdown
         name="habilidades"
         formik={formik}
-        items={HABILIDADES_LIST}
+        items={listasSkills.habilidades}
         placeholder="Selecciona habilidades"
         multiple
       />
 
       <SectionTitle>Formación</SectionTitle>
-      <Text style={styles.titulo}>Estudios formales</Text>
-      <FormField
-        name="estudiosFormales"
-        formik={formik}
-        placeholder="Descripción estudios formales"
-        multiline
-      />
+      <FieldArray name='estudios'>
+        {(arrayHelpers) => (
+          <View>
+            {formik.values.estudios && formik.values.estudios.length > 0 ? (
+              formik.values.estudios.map((estudio, index) => (
+                <View key={index} style={styles.estudioContainer}>
+                  <Text style={styles.estudioTitulo}>Estudio #{index + 1}</Text>
 
-      <Text style={styles.titulo}>Otros estudios</Text>
-      <FormField
-        name="otrosEstudios"
-        formik={formik}
-        placeholder="Descripción otros estudios"
-        multiline
-      />
+                  {/*Título del estudio*/}
+                  <FormField
+                    name={`estudios[${index}].titulo`} 
+                    formik={formik}
+                    placeholder="Título (Ej: Licenciatura en Diseño)"
+                    style={{ marginBottom: 10 }}
+                  />
+                  
+                  <FormField
+                    name={`estudios[${index}].nombreinstitucion`} 
+                    formik={formik}
+                    placeholder="Institución (Ej: UBA)"
+                    style={{ marginBottom: 10 }}
+                  />
+                  
+                  <FormField
+                    name={`estudios[${index}].fechainicio`} 
+                    formik={formik}
+                    placeholder="Fecha Inicio (Ej: 2015)"
+                    style={{ marginBottom: 10 }}
+                  />
+
+                  <FormField
+                    name={`estudios[${index}].fechafin`} 
+                    formik={formik}
+                    placeholder="Fecha Fin (Ej: 2020 o Actualidad)"
+                    style={{ marginBottom: 10 }}
+                  />
+
+                {/* Checkbox "Activo" (Estudio en curso) */}
+                  <View style={styles.checkboxContainer}>
+                    <Checkbox.Android
+                      status={formik.values.estudios[index].activo ? 'checked' : 'unchecked'}
+                      onPress={() => formik.setFieldValue(`estudios[${index}].activo`, !formik.values.estudios[index].activo)}
+                    />
+                    <Text style={{color: 'white'}}>Estudio en curso</Text>
+                  </View>
+
+                  {/* Botón Quitar */}
+                  <Button
+                    mode="outlined"
+                    color="#b58df1"
+                    onPress={() => arrayHelpers.remove(index)} 
+                  >
+                    Quitar Estudio
+                  </Button>
+                </View>
+              ))
+            ) : (
+              <Text style={{ marginVertical: 10, color: 'gray' }}>No has añadido ningún estudio.</Text>
+            )}
+
+            {/* Botón Añadir */}
+            <Button
+              mode="contained"
+              style={{ marginTop: 10 }}
+              onPress={() => arrayHelpers.push({ // Añadir un estudio nuevo vacío
+                titulo: '',
+                nombreinstitucion: '',
+                fechainicio: '',
+                fechafin: '',
+                activo: false,
+              })}
+            >
+              Añadir Estudio
+            </Button>
+          </View>
+        )}
+      </FieldArray>
+
+      <View style={{ height: 20 }} /> {/* Espaciador */}
 
       <Text style={styles.titulo}>Idiomas</Text>
       <FormDropdown
         name="idiomasSeleccionados"
         formik={formik}
-        items={IDIOMAS_LIST}
+        items={listasSkills.idiomas}
         placeholder="Selecciona idiomas"
         multiple
       />
@@ -126,7 +211,7 @@ const FormularioCandidato = ({ formik, fieldPositions }: Props) => {
       <FormDropdown
         name="modalidadSeleccionada"
         formik={formik}
-        items={MODALIDADES_LIST}
+        items={listasModalidades}
         placeholder="Selecciona modalidad"
       />
 
@@ -134,7 +219,7 @@ const FormularioCandidato = ({ formik, fieldPositions }: Props) => {
       <FormDropdown
         name="jornadaSeleccionada"
         formik={formik}
-        items={JORNADAS_LIST}
+        items={listasTiposJornada}
         placeholder="Selecciona jornada"
       />
 
@@ -142,7 +227,7 @@ const FormularioCandidato = ({ formik, fieldPositions }: Props) => {
       <FormDropdown
         name="contratoSeleccionado"
         formik={formik}
-        items={CONTRATOS_LIST}
+        items={listasTiposContratacion}
         placeholder="Selecciona contrato"
       />
 
@@ -162,7 +247,7 @@ const FormularioCandidato = ({ formik, fieldPositions }: Props) => {
       <FormDropdown
         name="redSeleccionada"
         formik={formik}
-        items={REDES_LIST}
+        items={listasTiposEnlace}
         placeholder="Selecciona una red social"
         onLayout={(event) => {
           fieldPositions.current['redSeleccionada'] =
@@ -246,6 +331,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     borderBottomWidth: 1,
     paddingBottom: 5,
+    // borderBottomColor: '#BEB52C',
+    // color: '#FFF',
   },
   redesContainer: {
     margin: 10,
@@ -273,6 +360,23 @@ const styles = StyleSheet.create({
     color: 'transparet',
     fontSize: 12,
     fontWeight: 'bold',
+  },
+  estudioContainer: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 15,
+  },
+  estudioTitulo: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
   },
 });
 

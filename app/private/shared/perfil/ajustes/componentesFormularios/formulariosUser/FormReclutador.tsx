@@ -4,7 +4,7 @@ import { Text } from 'react-native-paper';
 import { FormikProps } from 'formik';
 import FormField from '../FormField';
 import FormDropdown from '../FormDropdown';
-import { PAISES_LIST } from '../../../../constants/GenericList';
+import MapSearch from '@components/mapas/buscador-mapa';
 import { ReclutadorValues } from '../../../../../../../interfaces/EditarPerfil';
 
 const SectionTitle = ({ children }: { children: string }) => (
@@ -55,11 +55,25 @@ const FormularioReclutador = ({ formik, fieldPositions }: Props) => {
       />
 
       <Text style={styles.titulo}>Localización</Text>
-      <FormDropdown
-        name="localizacion"
-        formik={formik}
-        items={PAISES_LIST}
-        placeholder="Selecciona ubicación"
+      <MapSearch
+        value={formik.values.localizacion}
+        errors={
+          formik.errors.localizacion && formik.touched.localizacion
+            ? formik.errors.localizacion
+            : undefined
+        }
+        // lat={formik.values.lat} // Pasar lat actual
+        // lng={formik.values.lng} // Pasar lng actual
+        onChange={(text) => {
+          formik.setFieldValue('localizacion', text); 
+        }}
+        onCoordsChange={(newLat, newLng) => {
+          // Actualizar lat y lng en Formik
+          formik.setFieldValue('lat', newLat);
+          formik.setFieldValue('lng', newLng);
+        }}
+        // ¡Añade onLayout si MapSearch lo soporta!
+        // onLayout={(event) => { fieldPositions.current['localizacion'] = event.nativeEvent.layout.y; }}
       />
 
       <Text style={styles.titulo}>Palabras clave:</Text>

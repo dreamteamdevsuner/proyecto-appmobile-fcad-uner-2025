@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,7 +7,7 @@ import {
   KeyboardAvoidingView,
   Text,
 } from 'react-native';
-import { Button, Dialog, Portal } from 'react-native-paper';
+import { Button, Dialog, Portal, ActivityIndicator } from 'react-native-paper';
 import { Formik } from 'formik';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth, Role } from '../../../../../appContext/authContext';
@@ -20,9 +20,12 @@ import {
   ReclutadorValues,
 } from '../../../../../interfaces/EditarPerfil';
 import {
-  getRecruiterData,
-  getCandidateData,
-} from '../../../../../mockup/userEditarPerfil';
+  cargarListasParaFormularios,
+  cargarDatosInicialesPerfil,
+  guardarPerfilProfesional,
+  guardarPerfilReclutador,
+  DropdownItem,
+} from '../../../../../services/perfilService';
 import {
   perfilValidacionSchema,
   reclutadorValidacionSchema,
@@ -32,14 +35,58 @@ const EditarPerfilScreen = () => {
   const navigation = useNavigation();
   const [dialogVisible, setDialogVisible] = useState(false);
   const [dialogMessage, setDialogMessage] = useState({ message: '', type: '' });
-
   const scrollRef = useRef<ScrollView>(null);
   const fieldPositions = useRef<{ [key: string]: number }>({});
-
   const { state } = useAuth();
   const esReclutador = state.user?.role === Role.recruiter;
 
-  const initialData = esReclutador ? getRecruiterData() : getCandidateData();
+  const [initialData, setInitialData] = useState<
+    CandidatoValues | ReclutadorValues | null
+  >(null);
+  const [listasDropdown, setListasDropdown] = useState<{
+    herramientas: DropdownItem[];
+    habilidades: DropdownItem[];
+    idiomas: DropdownItem[];
+    listasTiposEnlace: DropdownItem[];
+    modalidades: DropdownItem[];
+    tiposJornada: DropdownItem[];
+    tiposContratacion: DropdownItem[];
+  }>({
+    herramientas: [],
+    habilidades: [],
+    idiomas: [],
+    listasTiposEnlace: [],
+    modalidades: [],
+    tiposJornada: [],
+    tiposContratacion: [],
+  });
+
+  useEffect(() => {
+    const cargarDatos = async () => {
+      if (!state.user?.id) return;
+      const tipo = esReclutador ? 'reclutador' : 'profesional';
+
+      try {
+        const userId = String(state.user.id);
+        const [listas, datosGuardados] = await Promise.all([
+          cargarListasParaFormularios(),
+          cargarDatosInicialesPerfil(userId, tipo),
+        ]);
+
+        setListasDropdown(listas);
+        setInitialData(datosGuardados);
+      } catch (error) {
+        console.error('Error cargando datos:', error);
+        setDialogMessage({
+          message: 'Error al cargar tus datos',
+          type: 'error',
+        });
+        setDialogVisible(true);
+      }
+    };
+    cargarDatos();
+  }, [state.user?.id, esReclutador]);
+
   const validationSchema = esReclutador
     ? reclutadorValidacionSchema
     : perfilValidacionSchema;
@@ -48,17 +95,42 @@ const EditarPerfilScreen = () => {
     values: CandidatoValues | ReclutadorValues,
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
   ) => {
-    try {
-      console.log('Perfil actualizado:', values);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    const userId = String(state.user?.id);
+    if (!userId || userId === 'undefined') {
       setDialogMessage({
-        message: 'Perfil actualizado correctamente',
-        type: 'success',
+        message: 'Error: Usuario no autenticado',
+        type: 'error',
       });
+      setDialogVisible(true);
+      setSubmitting(false);
+      return;
+    }
+    try {
+      let resultado;
+      if (esReclutador) {
+        resultado = await guardarPerfilReclutador(
+          values as ReclutadorValues,
+          userId,
+        );
+      } else {
+        resultado = await guardarPerfilProfesional(
+          values as CandidatoValues,
+          userId,
+        );
+      }
+
+      if (resultado.success) {
+        setDialogMessage({
+          message: 'Perfil actualizado correctamente',
+          type: 'success',
+        });
+      } else {
+        throw new Error(resultado.error || 'Error desconocido');
+      }
     } catch (error) {
       console.log('Error:', error);
       setDialogMessage({
-        message: 'Error al actualizar el perfil',
+        message: (error as Error).message || 'Error al actualizar el perfil',
         type: 'error',
       });
     } finally {
@@ -69,8 +141,16 @@ const EditarPerfilScreen = () => {
 
   if (!initialData) {
     return (
-      <View style={styles.container}>
-        <Text>Error al cargar los datos del usuario</Text>
+      <View
+        style={[
+          styles.container,
+          { justifyContent: 'center', alignItems: 'center' },
+        ]}
+      >
+        <ActivityIndicator animating={true} size="large" />
+        <Text style={{ marginTop: 10, color: 'white' }}>
+          Cargando perfil...
+        </Text>
       </View>
     );
   }
@@ -94,25 +174,32 @@ const EditarPerfilScreen = () => {
               >
                 {(formik) => (
                   <>
-                    <FormularioReclutador formik={formik} fieldPositions={fieldPositions}/>
+                    <FormularioReclutador
+                      formik={formik}
+                      fieldPositions={fieldPositions}
+                    />
                     <Button
                       onPress={() => {
-                        formik.validateForm().then(errors => {
+                        formik.validateForm().then((errors) => {
                           if (Object.keys(errors).length > 0) {
                             const firstErrorField = Object.keys(errors)[0];
-                            const yPosition = fieldPositions.current[firstErrorField];
+                            const yPosition =
+                              fieldPositions.current[firstErrorField];
                             if (yPosition !== undefined) {
-                              scrollRef.current?.scrollTo({ y: yPosition, animated: true});
+                              scrollRef.current?.scrollTo({
+                                y: yPosition,
+                                animated: true,
+                              });
                             }
                           } else {
                             formik.handleSubmit();
                           }
-                        });                                             
+                        });
                       }}
                       mode="contained"
                       style={styles.boton}
                       disabled={formik.isSubmitting}
-                      loading={formik.isSubmitting}                      
+                      loading={formik.isSubmitting}
                     >
                       {formik.isSubmitting ? 'Guardando...' : 'Guardar cambios'}
                     </Button>
@@ -128,18 +215,34 @@ const EditarPerfilScreen = () => {
               >
                 {(formik) => (
                   <>
-                    <FormularioCandidato formik={formik} fieldPositions={fieldPositions}/>
+                    <FormularioCandidato
+                      formik={formik}
+                      fieldPositions={fieldPositions}
+                      listasSkills={{
+                        herramientas: listasDropdown.herramientas,
+                        habilidades: listasDropdown.habilidades,
+                        idiomas: listasDropdown.idiomas,
+                      }}
+                      listasTiposEnlace={listasDropdown.listasTiposEnlace}
+                      listasModalidades={listasDropdown.modalidades}
+                      listasTiposJornada={listasDropdown.tiposJornada}
+                      listasTiposContratacion={listasDropdown.tiposContratacion}
+                    />
                     <Button
                       onPress={async () => {
-                        formik.validateForm().then(errors => {
+                        formik.validateForm().then((errors) => {
                           if (Object.keys(errors).length > 0) {
                             const firstErrorField = Object.keys(errors)[0];
-                            const yPositions = fieldPositions.current[firstErrorField];
+                            const yPositions =
+                              fieldPositions.current[firstErrorField];
                             if (yPositions !== undefined) {
-                              scrollRef.current?.scrollTo({ y: yPositions, animated: true });
+                              scrollRef.current?.scrollTo({
+                                y: yPositions,
+                                animated: true,
+                              });
                             }
                           } else {
-                            formik.handleSubmit()
+                            formik.handleSubmit();
                           }
                         });
                       }}
@@ -196,6 +299,7 @@ const EditarPerfilScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#121212',
   },
   formContainer: {
     padding: 20,
