@@ -1,5 +1,10 @@
 import { DBEstudio } from "@database/DBEstudio";
 
+export interface SkillConNivel {
+  idskill: string;
+  idnivel: string | null;
+}
+
 export interface CandidatoValues {
   nombre: string;
   apellido: string;
@@ -7,11 +12,11 @@ export interface CandidatoValues {
   localizacion: string;
   lat: string | null;
   lng: string | null;
-  herramientas: string[];
+  herramientas: SkillConNivel[];
   habilidades: string[];
   aboutMe: string;
   estudios: DBEstudio[];
-  idiomasSeleccionados: string[];
+  idiomasSeleccionados: SkillConNivel[];
   modalidadSeleccionada: string;
   jornadaSeleccionada: string;
   contratoSeleccionado: string;

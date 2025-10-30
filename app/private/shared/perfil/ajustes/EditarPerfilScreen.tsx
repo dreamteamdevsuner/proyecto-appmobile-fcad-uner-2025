@@ -11,6 +11,7 @@ import { Button, Dialog, Portal, ActivityIndicator } from 'react-native-paper';
 import { Formik } from 'formik';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth, Role } from '../../../../../appContext/authContext';
+import { supabase } from "../../../../../supabase/supabaseClient";
 
 import FormularioCandidato from '../ajustes/componentesFormularios/formulariosUser/FormCandidato';
 import FormularioReclutador from '../ajustes/componentesFormularios/formulariosUser/FormReclutador';
@@ -51,6 +52,7 @@ const EditarPerfilScreen = () => {
     modalidades: DropdownItem[];
     tiposJornada: DropdownItem[];
     tiposContratacion: DropdownItem[];
+    niveles: DropdownItem[];
   }>({
     herramientas: [],
     habilidades: [],
@@ -59,15 +61,25 @@ const EditarPerfilScreen = () => {
     modalidades: [],
     tiposJornada: [],
     tiposContratacion: [],
+    niveles: [],
   });
 
   useEffect(() => {
     const cargarDatos = async () => {
-      if (!state.user?.id) return;
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError || !user) {
+        console.error('Error de autenticación:', authError);
+        setDialogMessage({
+          message: 'Error de autenticación. Intenta recargar.',
+          type: 'error',
+        });
+        setDialogVisible(true);
+        return;
+      }
+      const userId = user.id;
       const tipo = esReclutador ? 'reclutador' : 'profesional';
 
       try {
-        const userId = String(state.user.id);
         const [listas, datosGuardados] = await Promise.all([
           cargarListasParaFormularios(),
           cargarDatosInicialesPerfil(userId, tipo),
@@ -85,7 +97,7 @@ const EditarPerfilScreen = () => {
       }
     };
     cargarDatos();
-  }, [state.user?.id, esReclutador]);
+  }, [esReclutador]);
 
   const validationSchema = esReclutador
     ? reclutadorValidacionSchema
@@ -227,6 +239,7 @@ const EditarPerfilScreen = () => {
                       listasModalidades={listasDropdown.modalidades}
                       listasTiposJornada={listasDropdown.tiposJornada}
                       listasTiposContratacion={listasDropdown.tiposContratacion}
+                      listasNiveles={listasDropdown.niveles}
                     />
                     <Button
                       onPress={async () => {
