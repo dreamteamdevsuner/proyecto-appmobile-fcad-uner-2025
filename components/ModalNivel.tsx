@@ -53,7 +53,7 @@ const NivelModal = ({
                 onPress={() => setSelectedLevel(nivel.value)}
                 style={styles.levelButton}
               >
-                {nivel.label}
+                <Text>{nivel.label}</Text>
               </Button>
             ))}
           </View>
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    backgroundColor: 'rgba(0,0,0,0.9)',
   },
   modalContent: {
     width: '80%',

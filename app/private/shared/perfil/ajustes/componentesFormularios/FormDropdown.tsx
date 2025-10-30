@@ -156,7 +156,6 @@ const FormDropdown = <Values extends object>({
         Array.isArray(value) &&
         value.length > 0 && (
           <View style={styles.chipContainer}>
-                     {' '}
             {(value as string[]).map((val: string) => {
               const itemLabel =
                 items.find((i) => i.value === val)?.label || val;
@@ -165,9 +164,9 @@ const FormDropdown = <Values extends object>({
                   key={val}
                   onClose={() => handleSelect(val)}
                   style={styles.chip}
-                  closeIcon="close-circle-outline"
+                  closeIcon="close"
                 >
-                  {itemLabel}
+                  <Text>{itemLabel}</Text>
                 </Chip>
               );
             })}

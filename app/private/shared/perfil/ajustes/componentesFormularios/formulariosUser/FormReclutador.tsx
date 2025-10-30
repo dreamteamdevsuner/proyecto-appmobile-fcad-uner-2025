@@ -34,13 +34,12 @@ const FormularioReclutador = ({ formik, fieldPositions }: Props) => {
         }} />
 
       <Text style={styles.titulo}>Profesión</Text>
-      <FormDropdown
+      <FormField
         name="profesion"
         formik={formik}
-        items={[{ label: 'Talent Acquisition', value: 'talent-acquisition' }]}
-        placeholder="Selecciona profesión"
+        placeholder="Ej: Talent Acquisition."
         onLayout={(event) => {
-          fieldPositions.current['prefesion'] = event.nativeEvent.layout.y;
+          fieldPositions.current['profesion'] = event.nativeEvent.layout.y;
         }}
       />
 
@@ -72,18 +71,17 @@ const FormularioReclutador = ({ formik, fieldPositions }: Props) => {
           formik.setFieldValue('lat', newLat);
           formik.setFieldValue('lng', newLng);
         }}
-        // ¡Añade onLayout si MapSearch lo soporta!
         // onLayout={(event) => { fieldPositions.current['localizacion'] = event.nativeEvent.layout.y; }}
       />
 
-      <Text style={styles.titulo}>Palabras clave:</Text>
+      {/* <Text style={styles.titulo}>Palabras clave:</Text>
       <FormDropdown
         name="palabrasClave"
         formik={formik}
         items={[{ label: 'Empleabilidad', value: 'empleabilidad' }]}
         placeholder="Selecciona palabras clave"
         multiple={true}
-      />
+      /> */}
     </>
   );
 };

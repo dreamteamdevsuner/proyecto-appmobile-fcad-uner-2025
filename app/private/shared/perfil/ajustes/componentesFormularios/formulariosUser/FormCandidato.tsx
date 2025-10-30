@@ -147,7 +147,7 @@ const FormularioCandidato = ({ formik,
           formik.setFieldValue('lat', newLat);
           formik.setFieldValue('lng', newLng);
         }}
-        // ¡Añade onLayout si MapSearch lo soporta!
+        
         // onLayout={(event) => { fieldPositions.current['localizacion'] = event.nativeEvent.layout.y; }}
       />
 
@@ -180,7 +180,7 @@ const FormularioCandidato = ({ formik,
               onClose={() => removeSkill('herramientas', h.idskill)}
               style={styles.chip}
             >
-              {skillLabel} - {nivelLabel}
+              <Text>{skillLabel} - {nivelLabel}</Text>
             </Chip>
           );
         })}
@@ -298,7 +298,7 @@ const FormularioCandidato = ({ formik,
               onClose={() => removeSkill('idiomasSeleccionados', i.idskill)}
               style={styles.chip}
             >
-              {skillLabel} - {nivelLabel}
+              <Text>{skillLabel} - {nivelLabel}</Text>
             </Chip>
            );
         })}
@@ -385,7 +385,7 @@ const FormularioCandidato = ({ formik,
                   <TextInput
                     style={{ flex: 1 }}
                     mode="outlined"
-                    label={red.tipo}
+                    label={listasTiposEnlace.find(item => item.value === red.tipo)?.label || red.tipo}
                     value={red.url}
                     onChangeText={formik.handleChange(`redes[${idx}].url`)}
                     onBlur={formik.handleBlur(`redes[${idx}].url`)}
@@ -415,10 +415,6 @@ const FormularioCandidato = ({ formik,
         <NivelModal
           visible={nivelModalVisible}
           onDismiss={() => {
-            // Si el usuario cierra el modal sin guardar, debemos quitar la skill que se añadió temporalmente
-            if (skillParaNivel) {
-              removeSkill(skillParaNivel.fieldName, skillParaNivel.idskill);
-            }
             setNivelModalVisible(false);
             setSkillParaNivel(null);
           }}
@@ -472,7 +468,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   removeButtonText: {
-    color: 'transparet',
+    color: 'transparent',
     fontSize: 12,
     fontWeight: 'bold',
   },
@@ -501,7 +497,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   chip: {
-    backgroundColor: '#2C2C2C', // Color chip
+    backgroundColor: '#2C2C2C', 
   },
 });
 
