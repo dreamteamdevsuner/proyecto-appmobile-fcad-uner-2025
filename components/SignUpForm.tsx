@@ -16,6 +16,12 @@ import { Alert } from 'react-native';
 import { AppSnackBar } from './AuthForm';
 import useSnackbar from '../hooks/useSnackbar';
 import { Message } from '../types/Message';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { privateNavigatorRootParams } from '../app/private/privateNavigator/PrivateNavigator';
+import PRIVATE_NAVIGATOR_ROUTES from '../app/private/privateNavigator/privateNavigatorRoutes';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useAuth } from '../appContext/authContext';
 
 export enum Roles {
   PROFESIONAL = 1,
@@ -63,9 +69,12 @@ const formValidationSchema = Yup.object({
 
 const SignUpForm = () => {
   const theme = useTheme();
+  const { login } = useAuth();
   const [message, setMessage] = useState('Error al registrarse');
   const { handleHideSnackbar, handleShowSnackbar, showSnackbar } =
     useSnackbar();
+  let navigation =
+    useNavigation<StackNavigationProp<typeof privateNavigatorRootParams>>();
   const handleSignUp = async (values: SignUpForm) => {
     try {
       const extras = {
@@ -75,7 +84,7 @@ const SignUpForm = () => {
         role: values.idtipousuario,
         full_name: `${values.nombre} ${values.apellido}`,
       };
-      console.log('extras', extras);
+
       const user: UserDTO = { password: values.password, email: values.email };
       console.log('user', user);
       const { user: createdUser, session } = await signUp(user, extras);
@@ -84,6 +93,8 @@ const SignUpForm = () => {
       if (!createdUser) {
         throw Error('Error al registrarse');
       }
+      await login(values.email, values.password);
+      // navigation.navigate(PRIVATE_NAVIGATOR_ROUTES.HOME_SCREEN, {});
     } catch (error: any) {
       if (error?.message === 'User already registered') {
         setMessage('Ya existe un email asociado a esta cuenta');

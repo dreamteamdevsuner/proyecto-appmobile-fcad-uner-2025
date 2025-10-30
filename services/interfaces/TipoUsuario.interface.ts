@@ -1,4 +1,8 @@
+export enum Role {
+  PROFESIONAL = 'profesional',
+  RECLUTADOR = 'reclutador',
+}
 export interface ITipousuario {
   id: number;
-  nombre: string;
+  nombre: Role;
 }

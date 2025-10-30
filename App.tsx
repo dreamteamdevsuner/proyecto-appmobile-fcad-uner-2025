@@ -12,7 +12,7 @@ import {
 } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Navigator from './navigator/Navigator';
-import { AuthProvider } from './appContext/authContext';
+import { AuthProvider, useAuth } from './appContext/authContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';

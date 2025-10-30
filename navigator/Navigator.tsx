@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
 
 import { useAuth } from '../appContext/authContext';
-import PrivateNavigator from '../app/private/PrivateNavigator';
+import PrivateNavigator from '../app/private/privateNavigator/PrivateNavigator';
 import PublicNavigator from '../app/public/PublicNavigator';
 import * as SplashScreen from 'expo-splash-screen';
 

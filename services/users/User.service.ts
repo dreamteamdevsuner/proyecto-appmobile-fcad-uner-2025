@@ -1,5 +1,5 @@
 import { EntityCRUD } from '@services/interfaces/EntityCRUD';
-import { IUser, IUserWithType } from '@services/interfaces/User.interface';
+import { IUser } from '@services/interfaces/User.interface';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { supabase } from '../../supabase/supabaseClient';
 
@@ -20,7 +20,7 @@ class UserService implements EntityCRUD<IUser> {
     if (error) {
       throw error;
     }
-    return data?.at(0) as IUserWithType | null;
+    return data?.at(0) as IUser;
   }
 }
 

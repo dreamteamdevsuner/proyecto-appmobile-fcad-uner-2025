@@ -10,26 +10,13 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Logo from '../../components/Logo';
 import AuthForm from '../../components/AuthForm';
 
-import { Button, Text } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 // import supabase from '../../supabase/supabase';
 import PUBLIC_NAVIGATOR_ROUTES from './PUBLIC_NAVIGATOR_ROUTES';
-import { supabase } from '../../supabase/supabaseClient';
 
 //Provisorio reemplazar el Record
 interface RouteProps extends NativeStackScreenProps<Record<string, any>> {}
 const Auth = ({ navigation }: RouteProps) => {
-  // useEffect(() => {
-  //   supabase
-  //     .from('publicacion')
-  //     .select()
-  //     .then(({ data, error }) => {
-  //       if (error) {
-  //         console.log('errrrrr', error);
-  //       }
-  //       console.log('data', data);
-  //     });
-  // }, []);
-
   return (
     <View style={{ paddingHorizontal: 60, paddingTop: 40 }}>
       <Logo></Logo>

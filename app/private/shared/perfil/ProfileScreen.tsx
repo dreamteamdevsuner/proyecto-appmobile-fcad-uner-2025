@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { View, Dimensions, Text, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Dimensions,
+  Text,
+  ActivityIndicator,
+  Button,
+} from 'react-native';
 import { TabView } from 'react-native-tab-view';
 import { RouteProp } from '@react-navigation/native';
 import { PrivateStackParamList as RecruiterStackParamList } from '../../recruiter/navigator/types';
 import { PrivateStackParamList as CandidateStackParamList } from '../../candidates/navigator/types';
 import { ProfileScreenType } from '../../../../components/profile/ProfileHeader';
 import { HorizontalChips } from '../../../../components/ui/HorizontalChips';
-import { Role, useAuth } from '../../../../appContext/authContext';
+import { useAuth } from '../../../../appContext/authContext';
 import { ProfileUser } from '../../../../types/ProfileUser';
 import { fetchUserByIdMock } from '../../../../utils/mockUsers';
 import {
@@ -20,6 +26,7 @@ import { RootStackParams } from '../../recruiter/navigator/SwipeStack';
 import { RootStackParamList } from './ajustes/types';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import ROUTES from '../../recruiter/navigator/routes';
+import { Role } from '@services/interfaces/TipoUsuario.interface';
 
 export type CombinedParamList = RecruiterStackParamList &
   CandidateStackParamList;
@@ -31,6 +38,17 @@ export type CombinedParamList = RecruiterStackParamList &
 type Props = NativeStackScreenProps<any, any>;
 
 const ProfileScreenShared: React.FC<Props> = ({ route }) => {
+  const { logout } = useAuth();
+  return (
+    <View>
+      <Text>Perfil shared component</Text>
+      <Button title="logout" onPress={logout}></Button>
+    </View>
+  );
+};
+
+//TODO USAR ESTE COMPONENTE CON DATA DINAMICA
+/* const ProfileScreenShared: React.FC<Props> = ({ route }) => {
   console.log('route', route);
   const { state } = useAuth();
   const userId =
@@ -139,8 +157,8 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
           }
         />
 
-        {((profileUser?.role ?? state.user!.role) as Role) ===
-          Role.candidate && (
+        {(profileUser?.role ?? state.user?.tipousuario.nombre) ===
+          Role.PROFESIONAL && (
           <HorizontalChips skills={profileUser?.skills ?? []} />
         )}
       </View>
@@ -158,6 +176,6 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
       />
     </View>
   );
-};
-
+}; */
+//TODO USAR ESTE COMPONENTE CON DATA DINAMICA
 export default ProfileScreenShared;

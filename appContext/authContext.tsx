@@ -4,6 +4,7 @@ import React, {
   useReducer,
   useEffect,
   useCallback,
+  useState,
 } from 'react';
 import {
   clearAuthAsync,
@@ -13,12 +14,13 @@ import {
 } from '../utils/secure-store';
 import { signIn } from '@services/apiAuth';
 import userService from '@services/users/User.service';
-import { IUserWithType } from '@services/interfaces/User.interface';
+import { IUser } from '@services/interfaces/User.interface';
+import { Role } from '@services/interfaces/TipoUsuario.interface';
 
-export enum Role {
-  candidate = 'candidate',
-  recruiter = 'recruiter',
-}
+// export enum Role {
+//   candidate = 'candidate',
+//   recruiter = 'recruiter',
+// }
 
 interface User {
   id: number;
@@ -28,7 +30,7 @@ interface User {
 }
 
 interface State {
-  user: User | null | IUserWithType;
+  user: IUser | null;
   token: string | null;
   refreshToken: string | null;
   loading: boolean;
@@ -47,14 +49,14 @@ type Action =
   | {
       type: AUTH_ACTIONS.RESTORE_TOKEN;
       payload: {
-        user: User | null;
+        user: IUser | null;
         token: string | null;
         refreshToken: string | null;
       };
     }
   | {
       type: AUTH_ACTIONS.LOGIN;
-      payload: { user: IUserWithType; token: string; refreshToken: string };
+      payload: { user: IUser; token: string; refreshToken: string };
     }
   | { type: AUTH_ACTIONS.LOGOUT }
   | { type: AUTH_ACTIONS.LOGIN_ERROR; payload: { error: string } }
@@ -139,8 +141,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         const refreshToken = await getItemAsync<string>(
           SecureStoreItem.REFRESH_TOKEN,
         );
-        const user = await getItemAsync<User>(SecureStoreItem.USER);
-
+        const user = await getItemAsync<IUser>(SecureStoreItem.USER);
+        if (!user) {
+          throw Error("Error al obtener usuario:'");
+        }
         dispatch({
           type: AUTH_ACTIONS.RESTORE_TOKEN,
           payload: { user, token, refreshToken },
@@ -171,32 +175,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       if (!user || !session) {
         throw new Error('Credenciales inválidas');
       }
-      // if (email === 'dev@mail.com') {
-      //   user = {
-      //     id: 222,
-      //     email: 'dev@mail.com',
-      //     name: 'Dev',
-      //     role: Role.candidate,
-      //   };
-      // } else if (email === 'recruiter@mail.com') {
-      //   user = {
-      //     id: 111,
-      //     email: 'recruiter@mail.com',
-      //     name: 'Recruiter',
-      //     role: Role.recruiter,
-      //   };
-      // }
 
       const token = session.access_token;
       const refreshToken = session.refresh_token;
-
-      await setItemAsync(SecureStoreItem.TOKEN, token);
-      await setItemAsync(SecureStoreItem.REFRESH_TOKEN, refreshToken);
-      await setItemAsync(SecureStoreItem.USER, user);
       const signedUser = await userService.getOne(user.id);
       if (!signedUser) {
         throw Error('Error obteniendo perfil de usuario');
       }
+      await setItemAsync(SecureStoreItem.TOKEN, token);
+      await setItemAsync(SecureStoreItem.REFRESH_TOKEN, refreshToken);
+      await setItemAsync(SecureStoreItem.USER, signedUser);
+
       dispatch({
         type: AUTH_ACTIONS.LOGIN,
         payload: { user: signedUser, token, refreshToken },
