@@ -10,7 +10,8 @@ import {
 import { Button, Dialog, Portal, ActivityIndicator } from 'react-native-paper';
 import { Formik } from 'formik';
 import { useNavigation } from '@react-navigation/native';
-import { useAuth, Role } from '../../../../../appContext/authContext';
+import { useAuth } from '../../../../../appContext/authContext';
+import { Role } from '../../../../../services/interfaces/TipoUsuario.interface';
 import { supabase } from "../../../../../supabase/supabaseClient";
 
 import FormularioCandidato from '../ajustes/componentesFormularios/formulariosUser/FormCandidato';
@@ -39,7 +40,7 @@ const EditarPerfilScreen = () => {
   const scrollRef = useRef<ScrollView>(null);
   const fieldPositions = useRef<{ [key: string]: number }>({});
   const { state } = useAuth();
-  const esReclutador = state.user?.role === Role.recruiter;
+  const esReclutador = state.user?.rol === Role.RECLUTADOR;
 
   const [initialData, setInitialData] = useState<
     CandidatoValues | ReclutadorValues | null
