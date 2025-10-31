@@ -1,14 +1,14 @@
 import React from 'react';
 import { View, StyleSheet, LayoutChangeEvent } from 'react-native';
 import { TextInput, TextInputProps, Text } from 'react-native-paper';
-import { FormikProps } from 'formik';
+import { FormikProps, getIn } from 'formik';
 import { useInputTheme } from '../../../constants/theme/useInputTheme';
 
 type FormFieldProps<Values> = Omit<
   TextInputProps,
   'value' | 'onChangeText' | 'onBlur'
 > & {
-  name: keyof Values & string;
+  name: string;
   formik: FormikProps<Values>;
   onLayout?: (event: LayoutChangeEvent) => void;
 };
@@ -22,13 +22,16 @@ const FormField = <Values extends {}> ({
   const { values, handleChange, handleBlur, errors, touched } = formik;
   const inputTheme = useInputTheme();
 
-  const hasError = touched[name] && errors[name]
+  const fieldValue = getIn(values, name);
+  const fieldError = getIn(errors, name);
+  const fieldTouched = getIn(touched, name);
+  const hasError = fieldTouched && fieldError;
 
   return (
     <View onLayout={onLayout}>
         <TextInput
           mode="outlined"
-          value={values[name] as string}
+          value={fieldValue as string}
           onChangeText={handleChange(name)}
           onBlur={handleBlur(name)}
           error={!!hasError}
@@ -36,7 +39,7 @@ const FormField = <Values extends {}> ({
           {...props}
         />
         {hasError && (
-        <Text style={styles.errorText}>{errors[name] as string}</Text>
+        <Text style={styles.errorText}>{fieldError as string}</Text>
       )}
     </View>
   );
