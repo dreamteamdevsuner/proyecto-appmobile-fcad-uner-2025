@@ -1,9 +1,10 @@
 import { View, Text, Button } from 'react-native';
 import React from 'react';
 import { useAuth } from '../../appContext/authContext';
-import { Role } from '@services/interfaces/TipoUsuario.interface';
+
 import CandidateNavigator from './candidates/navigator/CandidateNavigator';
 import RecruiterNavigator from './recruiter/navigator/RecruiterNavigator';
+import { Role } from '@services/interfaces/TipoUsuario.interface';
 
 const PrivateHomeScreen = () => {
   const {

@@ -88,13 +88,11 @@ const SignUpForm = () => {
       const user: UserDTO = { password: values.password, email: values.email };
       console.log('user', user);
       const { user: createdUser, session } = await signUp(user, extras);
-      // console.log('created user', createdUser);
-      // console.log('session', session);
+
       if (!createdUser) {
         throw Error('Error al registrarse');
       }
       await login(values.email, values.password);
-      // navigation.navigate(PRIVATE_NAVIGATOR_ROUTES.HOME_SCREEN, {});
     } catch (error: any) {
       if (error?.message === 'User already registered') {
         setMessage('Ya existe un email asociado a esta cuenta');

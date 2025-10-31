@@ -27,6 +27,7 @@ import { RootStackParamList } from './ajustes/types';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import ROUTES from '../../recruiter/navigator/routes';
 import { Role } from '@services/interfaces/TipoUsuario.interface';
+import { supabase } from '../../../../supabase/supabaseClient';
 
 export type CombinedParamList = RecruiterStackParamList &
   CandidateStackParamList;
@@ -38,11 +39,12 @@ export type CombinedParamList = RecruiterStackParamList &
 type Props = NativeStackScreenProps<any, any>;
 
 const ProfileScreenShared: React.FC<Props> = ({ route }) => {
-  const { logout } = useAuth();
+  // const { logout } = useAuth();
+
   return (
     <View>
       <Text>Perfil shared component</Text>
-      <Button title="logout" onPress={logout}></Button>
+      <Button title="logout" onPress={() => supabase.auth.signOut()}></Button>
     </View>
   );
 };

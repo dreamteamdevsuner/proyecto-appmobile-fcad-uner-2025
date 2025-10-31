@@ -21,22 +21,6 @@ export const privateNavigatorRootParams = {
   [PRIVATE_NAVIGATOR_ROUTES.DATOS_CUENTA]: undefined,
   [PRIVATE_NAVIGATOR_ROUTES.CAMBIAR_CONTRASENA]: undefined,
 };
-const Test = () => {
-  const {
-    state: { loading, user },
-    logout,
-  } = useAuth();
-
-  return (
-    <View>
-      <Text>Test</Text>
-      <Text> {JSON.stringify(user)}</Text>
-      <Button onPress={() => logout()}>
-        <Text>Logout</Text>
-      </Button>
-    </View>
-  );
-};
 
 const Stack = createNativeStackNavigator<typeof privateNavigatorRootParams>();
 const PrivateNavigator = () => {
