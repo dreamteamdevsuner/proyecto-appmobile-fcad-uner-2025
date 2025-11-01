@@ -23,6 +23,8 @@ export interface CandidatoValues {
   email: string;
   redes: { tipo: string; url: string }[];
   redSeleccionada?: string;
+  avatar_url?: string | null;     // mostrar imagen actual
+  avatarBase64?: string | null;   //Enviar nueva
 }
 
 export interface ReclutadorValues {
@@ -32,4 +34,6 @@ export interface ReclutadorValues {
   institucion: string;
   localizacion: string;
   palabrasClave: string[];
+  avatar_url?: string | null;
+  avatarBase64?: string | null;
 }

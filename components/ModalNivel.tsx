@@ -52,17 +52,13 @@ const NivelModal = ({
                 mode={selectedLevel === nivel.value ? "contained" : "outlined"} // Resaltar el seleccionado
                 onPress={() => setSelectedLevel(nivel.value)}
                 style={styles.levelButton}
-              >
-                <Text>{nivel.label}</Text>
-              </Button>
+              >{nivel.label}</Button>
             ))}
           </View>
 
           <View style={styles.modalActions}>
             <Button onPress={onDismiss}>Cancelar</Button>
-            <Button mode="contained" onPress={handleSave}>
-              Aceptar
-            </Button>
+            <Button mode="contained" onPress={handleSave}>Aceptar</Button>
           </View>
         </View>
       </View>

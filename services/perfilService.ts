@@ -1,11 +1,54 @@
 import { supabase } from "../supabase/supabaseClient";
 import { CandidatoValues, ReclutadorValues, SkillConNivel } from "@interfaces/EditarPerfil";
-import { DBEstudio, DBModalidad, DBTipoJornada, DBContratacion, DBNivel } from "@database/index";
+import { DBUsuario, DBEstudio, DBModalidad, DBTipoJornada, DBContratacion, DBNivel } from "@database/index";
 
 export interface DropdownItem {
   label: string;
   value: string;
 }
+
+export const uploadAvatar = async (base64Data: string, userId: string) : Promise<string> => {
+  try {
+    const filePath = `${userId}/avatar.png`;
+
+    const rawBinary = atob(base64Data);
+
+    const arrayBuffer = new Uint8Array(rawBinary.length);
+    for (let i = 0; i < rawBinary.length; i++) {
+      arrayBuffer[i] = rawBinary.charCodeAt(i);
+    }
+
+    const { data, error } = await supabase.storage
+      .from('fotoPerfil')
+      .upload(
+        filePath,
+        arrayBuffer,
+        {
+          contentType: 'image/png',
+          upsert: true,
+        }
+      );
+
+    if (error) {
+      console.error('Error al subir la imagen: ', error);
+      throw error;
+    }
+
+    const { data: urlData } = supabase.storage
+      .from('fotoPerfil')
+      .getPublicUrl(data.path);
+
+    if (!urlData.publicUrl) {
+      throw new Error('No se pudo obtener la URL pública de la imagen.');
+    }
+
+    console.log('Imagen subida, URL pública: ', urlData.publicUrl);
+    return urlData.publicUrl;
+  } catch (err) {
+    console.error('Error en el servicio de subida de avatar: ', err);
+    throw new Error('No se pudo subir la imagen del avatar.');
+  }
+};
 
 export const cargarListasParaFormularios = async () => {
   try {
@@ -127,7 +170,9 @@ export const cargarDatosInicialesPerfil = async (
     email: usuario.email || '',
     localizacion: usuario.direccion?.pais || usuario.direccion?.ciudad || '',
     lat: usuario.direccion?.latitud ?? null,
-    lng: usuario.direccion?.longitud ?? null
+    lng: usuario.direccion?.longitud ?? null,
+    avatar_url: usuario.fotoperfil || null,
+    avatarBase64: null,
   };
 
   //Carga datos específicos
@@ -223,12 +268,29 @@ export const guardarPerfilProfesional = async (
   userId: string,
 ) => {
   try {
-    await supabase.from('usuario').update({
+    let nuevaFotoUrl: string | null = null;
+
+    if (values.avatarBase64) {
+      console.log('Detectada nueva imagen base64, subiendo...');
+
+      nuevaFotoUrl = await uploadAvatar(values.avatarBase64, userId);
+    }
+
+    const datosUsuario: Partial<DBUsuario> = {
       nombre: values.nombre,
       apellido: values.apellido,
       rol: values.profesion,
       email: values.email,
-    }).eq('id', userId).throwOnError();
+    };
+
+    if (nuevaFotoUrl) {
+      datosUsuario.fotoperfil = nuevaFotoUrl;
+    }
+
+    await supabase.from('usuario')
+      .update(datosUsuario)   
+      .eq('id', userId)
+      .throwOnError();
 
     const { data: userData } = await supabase.from('usuario').select('iddireccion').eq('id', userId).single();
     let direccionId = userData?.iddireccion;
@@ -326,11 +388,27 @@ export const guardarPerfilReclutador = async (
   userId: string,
 ) => {
   try {
-    await supabase.from('usuario').update({
+    let nuevaFotoUrl: string | null = null;
+
+    if (values.avatarBase64) {
+      console.log('detectada nueva imagen base64 para reclutador, subiendo...');
+      nuevaFotoUrl = await uploadAvatar(values.avatarBase64, userId);
+    }
+
+    const datosUsuario: Partial<DBUsuario> = {
       nombre: values.nombre,
       apellido: values.apellido,
       rol: values.profesion,
-    }).eq('id', userId).throwOnError();
+    };
+
+    if (nuevaFotoUrl) {
+      datosUsuario.fotoperfil = nuevaFotoUrl;
+    }
+
+    await supabase.from('usuario')
+      .update(datosUsuario)      
+      .eq('id', userId)
+      .throwOnError();
 
     const { data: userData } = await supabase.from('usuario').select('iddireccion').eq('id', userId).single();
     let direccionId = userData?.iddireccion;

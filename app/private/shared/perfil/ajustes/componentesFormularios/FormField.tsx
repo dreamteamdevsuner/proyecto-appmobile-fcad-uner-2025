@@ -35,7 +35,7 @@ const FormField = <Values extends {}> ({
           onChangeText={handleChange(name)}
           onBlur={handleBlur(name)}
           error={!!hasError}
-          theme={inputTheme.theme}
+          // theme={inputTheme.theme}
           {...props}
         />
         {hasError && (
