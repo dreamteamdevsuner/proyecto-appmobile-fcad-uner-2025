@@ -6,6 +6,7 @@ import FormField from '../FormField';
 import FormDropdown from '../FormDropdown';
 import MapSearch from '@components/mapas/buscador-mapa';
 import { ReclutadorValues } from '../../../../../../../interfaces/EditarPerfil';
+import AvatarPiker from '@components/ui/AvatarPiker';
 
 const SectionTitle = ({ children }: { children: string }) => (
   <Text style={styles.sectionTitle}>{children}</Text>
@@ -19,6 +20,13 @@ interface Props {
 const FormularioReclutador = ({ formik, fieldPositions }: Props) => {
   return (
     <>
+      <AvatarPiker
+        currentImageUrl={formik.values.avatar_url}
+        onImageSelected={(base64) => {
+          formik.setFieldValue('avatarBase64', base64);
+        }}
+      />
+      
       <SectionTitle>Datos personales</SectionTitle>
 
       <Text style={styles.titulo}>Nombre</Text>

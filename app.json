@@ -28,7 +28,14 @@
     },
     "plugins": [
       "expo-secure-store",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Jobsy necesita acceso a tu galería para elegir una foto de perfil.",
+          "cameraPermission": "Jobsy necesita acceso a tu cámara para tomar una foto de perfil."
+        }
+      ]
     ]
   }
 }

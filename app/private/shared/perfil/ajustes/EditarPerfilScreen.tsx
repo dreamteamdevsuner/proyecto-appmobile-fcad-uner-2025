@@ -204,18 +204,14 @@ const EditarPerfilScreen = () => {
                                 animated: true,
                               });
                             }
-                          } else {
-                            formik.handleSubmit();
-                          }
+                          } else { formik.handleSubmit(); }
                         });
                       }}
                       mode="contained"
                       style={styles.boton}
                       disabled={formik.isSubmitting}
                       loading={formik.isSubmitting}
-                    >
-                      {formik.isSubmitting ? 'Guardando...' : 'Guardar cambios'}
-                    </Button>
+                    >{formik.isSubmitting ? 'Guardando...' : 'Guardar cambios'}</Button>
                   </>
                 )}
               </Formik>
@@ -255,18 +251,14 @@ const EditarPerfilScreen = () => {
                                 animated: true,
                               });
                             }
-                          } else {
-                            formik.handleSubmit();
-                          }
+                          } else { formik.handleSubmit(); }
                         });
                       }}
                       mode="contained"
                       style={styles.boton}
                       disabled={formik.isSubmitting}
                       loading={formik.isSubmitting}
-                    >
-                      {formik.isSubmitting ? 'Guardando...' : 'Guardar cambios'}
-                    </Button>
+                    >{formik.isSubmitting ? 'Guardando...' : 'Guardar cambios'}</Button>
                   </>
                 )}
               </Formik>
@@ -282,9 +274,7 @@ const EditarPerfilScreen = () => {
           style={styles.dialog}
         >
           <Dialog.Icon
-            icon={
-              dialogMessage.type === 'success' ? 'check-circle' : 'alert-circle'
-            }
+            icon={dialogMessage.type === 'success' ? 'check-circle' : 'alert-circle'}
             size={40}
             color={dialogMessage.type === 'success' ? '#789a78' : '#ff9b92'}
           />
@@ -300,9 +290,7 @@ const EditarPerfilScreen = () => {
                   navigation.goBack();
                 }
               }}
-            >
-              Aceptar
-            </Button>
+            >Aceptar</Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>

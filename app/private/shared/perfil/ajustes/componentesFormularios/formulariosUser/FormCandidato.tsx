@@ -9,6 +9,7 @@ import { DropdownItem } from '@services/perfilService';
 import { SkillConNivel } from '../../../../../../../interfaces/EditarPerfil';
 import MapSearch from '@components/mapas/buscador-mapa';
 import NivelModal from '@components/ModalNivel';
+import AvatarPiker from '@components/ui/AvatarPiker';
 
 const SectionTitle = ({ children }: { children: string }) => (
   <Text style={styles.sectionTitle}>{children}</Text>
@@ -98,6 +99,13 @@ const FormularioCandidato = ({ formik,
 
   return (
     <>
+      <AvatarPiker 
+        currentImageUrl={formik.values.avatar_url}
+        onImageSelected={base64 => {
+          formik.setFieldValue('avatarBase64', base64);
+        }}
+      />
+      
       <SectionTitle>Datos Personales</SectionTitle>
       <Text style={styles.titulo}>Nombre</Text>
       <FormField
@@ -179,8 +187,7 @@ const FormularioCandidato = ({ formik,
               key={h.idskill} 
               onClose={() => removeSkill('herramientas', h.idskill)}
               style={styles.chip}
-            >
-              <Text>{skillLabel} - {nivelLabel}</Text>
+            >{skillLabel} - {nivelLabel}
             </Chip>
           );
         })}
@@ -248,9 +255,7 @@ const FormularioCandidato = ({ formik,
                     mode="outlined"
                     color="#b58df1"
                     onPress={() => arrayHelpers.remove(index)} 
-                  >
-                    Quitar Estudio
-                  </Button>
+                  >Quitar Estudio</Button>
                 </View>
               )
           })                
@@ -269,9 +274,7 @@ const FormularioCandidato = ({ formik,
                 fechafin: '',
                 activo: false,
               })}
-            >
-              Añadir Estudio
-            </Button>
+            >Añadir Estudio</Button>
           </View>
         )}
       </FieldArray>
@@ -297,8 +300,7 @@ const FormularioCandidato = ({ formik,
               key={i.idskill} 
               onClose={() => removeSkill('idiomasSeleccionados', i.idskill)}
               style={styles.chip}
-            >
-              <Text>{skillLabel} - {nivelLabel}</Text>
+            >{skillLabel} - {nivelLabel}
             </Chip>
            );
         })}

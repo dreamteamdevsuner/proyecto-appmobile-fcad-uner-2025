@@ -113,7 +113,7 @@ const FormDropdown = <Values extends object>({
               value={selectedText}
               placeholder={placeholder}
               editable={false}
-              theme={theme}
+              // theme={theme}
               error={!!hasError}
               right={
                 <TextInput.Icon
