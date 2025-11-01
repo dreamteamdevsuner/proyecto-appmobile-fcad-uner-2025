@@ -1,49 +1,77 @@
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 
-// Configura cómo se muestran las notificaciones locales o push
+// Configura cómo se muestran las notificaciones
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true, // ✅ Muestra el banner de notificación
-    shouldPlaySound: true, // ✅ Reproduce sonido si está disponible
-    shouldSetBadge: false, // ✅ No cambia el ícono de la app
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
   }),
 });
 
-// Función para programar una notificación diaria
-export const scheduleDailyNotification = async (): Promise<void> => {
-  if (Device.isDevice) {
-    const { status: existingStatus } =
-      await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
+// Función base para pedir permisos (la usamos en ambas notificaciones)
+const ensureNotificationPermissions = async () => {
+  if (!Device.isDevice) return false;
 
-    if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
+  const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  let finalStatus = existingStatus;
 
-    if (finalStatus !== 'granted') {
-      alert('No se otorgaron permisos para notificaciones 😢');
-      return;
-    }
+  if (existingStatus !== 'granted') {
+    const { status } = await Notifications.requestPermissionsAsync();
+    finalStatus = status;
   }
 
-  // Cancelar notificaciones anteriores para no duplicar
+  if (finalStatus !== 'granted') {
+    alert('No se otorgaron permisos para notificaciones 😢');
+    return false;
+  }
+
+  return true;
+};
+
+// ✅ Notificación para PROFESIONAL
+export const scheduleDailyNotificationProfesional = async (): Promise<void> => {
+  const hasPermission = await ensureNotificationPermissions();
+  if (!hasPermission) return;
+
   await Notifications.cancelAllScheduledNotificationsAsync();
 
-  // Programar notificación diaria
   await Notifications.scheduleNotificationAsync({
     content: {
       title: '¿Ya viste las nuevas ofertas de hoy? 🔥',
-      body: 'Podría estar tu próximo match laboral 😉',
+      body: 'Quizás está tu próximo trabajo soñando 😉',
     },
     trigger: {
+      //hour: 10,
+      // minute: 0,
+      // repeats: true
       type: 'timeInterval',
       seconds: 10,
       repeats: false,
+    },
+  });
+};
+
+// ✅ Notificación para RECLUTADOR
+export const scheduleDailyNotificationReclutador = async (): Promise<void> => {
+  const hasPermission = await ensureNotificationPermissions();
+  if (!hasPermission) return;
+
+  await Notifications.cancelAllScheduledNotificationsAsync();
+
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: '¿Ya viste los nuevos profesionales de hoy? 🔥',
+      body: 'Puede estar tu próximo match laboral 😉',
+    },
+    trigger: {
       //hour: 10,
-      //minute: 0,
-      //repeats: true,
+      // minute: 0,
+      // repeats: true,
+      type: 'timeInterval',
+      seconds: 10,
+      repeats: false,
     },
   });
 };
