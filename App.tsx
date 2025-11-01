@@ -25,7 +25,6 @@ import AppContent from './AppContent';
 import { navigationRef } from './app/private/candidates/navigator/navigationRef';
 
 import * as Notifications from 'expo-notifications';
-import { scheduleDailyNotification } from '@app/private/notifications/notifications';
 import * as Device from 'expo-device';
 
 //import * as NavigationBar from 'expo-navigation-bar';
