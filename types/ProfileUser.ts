@@ -1,13 +1,14 @@
 export type OfferStatus = 'Activa' | 'Cerrada' | 'Pausada';
 
 export type Offer = {
+  id: number | string;
   name: string;
-  status: OfferStatus;
+  status: string;
   description: string;
 };
 
 export type ProfileUser = {
-  id: number;
+  id: number | string;
   name: string;
   lastName?: string;
   email?: string;

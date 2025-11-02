@@ -4,6 +4,8 @@ import { OfertaItem } from '../../../../../types/OfertaItem';
 import { OfertasList } from '../../../../../components/listas';
 import ROUTES from '../../navigator/routes';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { PrivateStackParamList } from '../../navigator/types';
 
 const data: OfertaItem[] = [
   {
@@ -42,12 +44,13 @@ const dato: OfertaItem[] = [
 ];
 
 const NotificacionesProfile = () => {
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<PrivateStackParamList>>();
 
   const handleSelectOferta = (oferta: OfertaItem) => {
-    (navigation.navigate(ROUTES.CANDIDATE_FAVORITOS_MATCHS),
-      oferta.id,
-      oferta.title);
+    navigation.navigate(ROUTES.CANDIDATE_FAVORITOS_MATCHS, {
+      title: oferta.title,
+    });
   };
 
   return (
