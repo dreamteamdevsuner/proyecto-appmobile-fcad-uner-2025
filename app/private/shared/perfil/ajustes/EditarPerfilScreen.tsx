@@ -40,7 +40,7 @@ const EditarPerfilScreen = () => {
   const scrollRef = useRef<ScrollView>(null);
   const fieldPositions = useRef<{ [key: string]: number }>({});
   const { state } = useAuth();
-  const esReclutador = state.user?.rol === Role.RECLUTADOR;
+  const esReclutador = state.user?.tipousuario?.nombre === Role.RECLUTADOR;
 
   const [initialData, setInitialData] = useState<
     CandidatoValues | ReclutadorValues | null
