@@ -1,9 +1,20 @@
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { Surface } from 'react-native-paper';
-import { ProfileUser } from '../../types/ProfileUser';
+import { ScrollView, StyleSheet } from 'react-native';
+import { ActivityIndicator, Surface } from 'react-native-paper';
 import Portfolio from '../../app/private/shared/perfil/Portfolio';
+import {
+  CandidateTabScreenProps,
+  PROFILE_ROUTES,
+} from '@app/private/shared/perfil/types';
 
-export const WhatIDo = (user: ProfileUser) => {
+type Props = CandidateTabScreenProps<PROFILE_ROUTES.WHAT_I_DO>;
+
+export const WhatIDo = ({ route }: Props) => {
+  const { user } = route.params;
+
+  if (!user) {
+    return <ActivityIndicator />;
+  }
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
