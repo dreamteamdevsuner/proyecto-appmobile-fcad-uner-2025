@@ -1,5 +1,5 @@
 import { supabase } from '../supabase/supabaseClient';
-import { DBOfertaTrabajo } from '@database/index';
+import { DBOfertaTrabajo, DBOfertaTrabajoSkill } from '@database/index';
 import { OfertaTrabajoData } from '@models/OfertaTrabajoData';
 
 export async function getOfertas(): Promise<DBOfertaTrabajo[]> {
@@ -54,7 +54,31 @@ export async function crearOferta(data: OfertaTrabajoData) {
       .single();
 
     if (ofertaError) throw ofertaError;
+    let registrosHard: DBOfertaTrabajoSkill[] = [];
+    let registrosSoft: DBOfertaTrabajoSkill[] = [];
 
+    if (data.idsoftskills?.length) {
+      registrosSoft = data.idsoftskills.map((id) => ({
+        idskill: id,
+        idofertatrabajo: oferta.id,
+      }));
+    }
+    if (data.idhardskills?.length) {
+      registrosHard = data.idhardskills.map((id) => ({
+        idskill: id,
+        idofertatrabajo: oferta.id,
+      }));
+    }
+    const registros = [...registrosHard, ...registrosSoft];
+
+    if (registros.length > 0) {
+      const { data: ofertatrabajoskill, error } = await supabase
+        .from('ofertatrabajoskill')
+        .insert(registros)
+        .select();
+
+      if (error) throw error;
+    }
     return oferta;
   } catch (err: any) {
     console.error('Error creando oferta:', err);

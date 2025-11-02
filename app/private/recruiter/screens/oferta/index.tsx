@@ -5,29 +5,39 @@ import React from 'react';
 import MapView, { Marker } from 'react-native-maps';
 import { useContext } from 'react';
 import { DataContext } from '@providers/DataContext';
+import { useAuth } from '@appContext/authContext';
 
 const OfertaScreen = ({ route }: any) => {
   const { data } = route.params;
   const {
+    state: { user },
+  } = useAuth();
+  const {
     modalidad: modalidadList,
     tipoJornada: jornadaList,
     contratacion: contratoList,
+    softSkills: softSkillsList,
+    hardSkills: hardSkillsList,
   } = useContext(DataContext);
-
+  if (!user) return null;
   return (
     <ScrollView style={{ padding: 20 }}>
       <Card style={styles.card}>
         <View style={styles.header}>
           <Image
-            source={{ uri: data.recruiter.avatarUrl }}
+            source={
+              user.fotoperfil
+                ? { uri: user.fotoperfil }
+                : require('@assets/images/default_profile_picture.jpg')
+            }
             style={styles.squareAvatar}
           />
           <View style={styles.textContainer}>
             <Text style={[styles.title, styles.text]}>
-              {data.recruiter.name}
+              {user.nombre + ' ' + user.apellido}
             </Text>
-            <Text style={styles.text}>{data.recruiter.role}</Text>
-            <Text style={styles.text}>{data.recruiter.lugar}</Text>
+            <Text style={styles.text}>{user.rol}</Text>
+            <Text style={styles.text}>{user.iddireccion}</Text>
           </View>
         </View>
         <Divider style={styles.line} />
@@ -67,7 +77,6 @@ const OfertaScreen = ({ route }: any) => {
             {jornadaList.find((item) => item.id === data.jornada)?.nombre ||
               data.jornada}
           </DataTable.Cell>
-
           <DataTable.Cell style={[styles.styleTable]}>
             {contratoList.find((item) => item.id === data.contrato)?.nombre ||
               data.contrato}
@@ -82,40 +91,37 @@ const OfertaScreen = ({ route }: any) => {
             </>
           )}
 
-          {data.hardSkills?.lenght > 0 && (
-            <>
-              <Text style={[styles.sectionTitle]}>Herramientas:</Text>
-              <View style={styles.skillsContainer}>
-                {data.hardSkills?.map((skill: string, index: number) => (
-                  <Badge key={index} style={styles.chip}>
-                    {skill}
-                  </Badge>
-                ))}
-              </View>
-            </>
-          )}
-          {data.softSkills?.lenght > 0 && (
+          {data.softSkills?.length > 0 && (
             <>
               <Text style={[styles.sectionTitle]}>Habilidades:</Text>
               <View style={styles.skillsContainer}>
-                {data.softSkills?.map((skill: string, index: number) => (
-                  <Badge key={index} style={styles.chip}>
-                    {skill}
-                  </Badge>
-                ))}
+                {data.softSkills?.map((idskill: string, index: number) => {
+                  const skill = softSkillsList.find((s) => s.id === idskill);
+                  return (
+                    <Badge key={index} style={styles.chip}>
+                      {skill?.nombre}
+                    </Badge>
+                  );
+                })}
               </View>
             </>
           )}
-          {/* <Text style={[styles.sectionTitle]}>
-            Idiomas:
-          </Text> */}
-          {/* <View style={styles.skillsContainer}>
-          {data.softSkills?.map((skill: string, index: number) => (
-            <Badge key={index} style={styles.chip}>
-              {skill}
-            </Badge>
-          ))}
-        </View> */}
+          {data.hardSkills?.length > 0 && (
+            <>
+              <Text style={[styles.sectionTitle]}>Herramientas:</Text>
+              <View style={styles.skillsContainer}>
+                {data.hardSkills?.map((idskill: string, index: number) => {
+                  const skill = hardSkillsList.find((s) => s.id === idskill);
+                  return (
+                    <Badge key={index} style={styles.chip}>
+                      {skill?.nombre}
+                    </Badge>
+                  );
+                })}
+              </View>
+            </>
+          )}
+
           {data.beneficios && (
             <>
               <Text style={[styles.sectionTitle]}>Beneficios:</Text>
