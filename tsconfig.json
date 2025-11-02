@@ -11,7 +11,8 @@
       "@database/*": ["./types/database/*"],
       "@models/*": ["./types/models/*"],
       "@services/*": ["./services/*"],
-      "@providers/*": ["./providers/*"]
+      "@providers/*": ["./providers/*"],
+      "@appContext/*": ["./appContext/*"]
     }
   }
 }

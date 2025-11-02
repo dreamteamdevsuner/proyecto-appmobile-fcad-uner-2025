@@ -8,4 +8,6 @@ export interface OfertaTrabajoData {
   idcontratacion?: number | null;
   iddepartamento?: number | null;
   idusuario: string;
+  idsoftskills: string[] | null;
+  idhardskills: string[] | null;
 }
