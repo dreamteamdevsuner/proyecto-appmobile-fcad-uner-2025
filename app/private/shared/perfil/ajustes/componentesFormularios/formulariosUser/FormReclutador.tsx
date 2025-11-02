@@ -6,7 +6,7 @@ import FormField from '../FormField';
 import FormDropdown from '../FormDropdown';
 import MapSearch from '@components/mapas/buscador-mapa';
 import { ReclutadorValues } from '../../../../../../../interfaces/EditarPerfil';
-import AvatarPiker from '@components/ui/AvatarPiker';
+import AvatarPicker from '@components/ui/AvatarPicker';
 
 const SectionTitle = ({ children }: { children: string }) => (
   <Text style={styles.sectionTitle}>{children}</Text>
@@ -20,7 +20,7 @@ interface Props {
 const FormularioReclutador = ({ formik, fieldPositions }: Props) => {
   return (
     <>
-      <AvatarPiker
+      <AvatarPicker
         currentImageUrl={formik.values.avatar_url}
         onImageSelected={(base64) => {
           formik.setFieldValue('avatarBase64', base64);
@@ -30,7 +30,8 @@ const FormularioReclutador = ({ formik, fieldPositions }: Props) => {
       <SectionTitle>Datos personales</SectionTitle>
 
       <Text style={styles.titulo}>Nombre</Text>
-      <FormField name="nombre" formik={formik} placeholder="Ingresá tu nombre"
+      <FormField name="nombre" 
+      formik={formik} placeholder="Ingresá tu nombre"
         onLayout={(event) => {
           fieldPositions.current['nombre'] = event.nativeEvent.layout.y;
         }} />
@@ -68,9 +69,7 @@ const FormularioReclutador = ({ formik, fieldPositions }: Props) => {
           formik.errors.localizacion && formik.touched.localizacion
             ? formik.errors.localizacion
             : undefined
-        }
-        // lat={formik.values.lat} // Pasar lat actual
-        // lng={formik.values.lng} // Pasar lng actual
+        }      
         onChange={(text) => {
           formik.setFieldValue('localizacion', text); 
         }}
@@ -79,7 +78,6 @@ const FormularioReclutador = ({ formik, fieldPositions }: Props) => {
           formik.setFieldValue('lat', newLat);
           formik.setFieldValue('lng', newLng);
         }}
-        // onLayout={(event) => { fieldPositions.current['localizacion'] = event.nativeEvent.layout.y; }}
       />
 
       {/* <Text style={styles.titulo}>Palabras clave:</Text>

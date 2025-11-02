@@ -9,7 +9,7 @@ import { DropdownItem } from '@services/perfilService';
 import { SkillConNivel } from '../../../../../../../interfaces/EditarPerfil';
 import MapSearch from '@components/mapas/buscador-mapa';
 import NivelModal from '@components/ModalNivel';
-import AvatarPiker from '@components/ui/AvatarPiker';
+import AvatarPicker from '@components/ui/AvatarPicker';
 
 const SectionTitle = ({ children }: { children: string }) => (
   <Text style={styles.sectionTitle}>{children}</Text>
@@ -99,7 +99,7 @@ const FormularioCandidato = ({ formik,
 
   return (
     <>
-      <AvatarPiker 
+      <AvatarPicker 
         currentImageUrl={formik.values.avatar_url}
         onImageSelected={base64 => {
           formik.setFieldValue('avatarBase64', base64);
@@ -145,8 +145,8 @@ const FormularioCandidato = ({ formik,
             ? formik.errors.localizacion
             : undefined
         }
-        // lat={formik.values.lat}
-        // lng={formik.values.lng}
+        lat={formik.values.lat ? parseFloat(formik.values.lat) : undefined}
+        lng={formik.values.lng ? parseFloat(formik.values.lng) : undefined}
         onChange={(text) => {
           formik.setFieldValue('localizacion', text); 
         }}
@@ -154,9 +154,7 @@ const FormularioCandidato = ({ formik,
           // Actualizar lat y lng en Formik
           formik.setFieldValue('lat', newLat);
           formik.setFieldValue('lng', newLng);
-        }}
-        
-        // onLayout={(event) => { fieldPositions.current['localizacion'] = event.nativeEvent.layout.y; }}
+        }}        
       />
 
       <Text style={styles.titulo}>Sobre mí</Text>
@@ -187,7 +185,8 @@ const FormularioCandidato = ({ formik,
               key={h.idskill} 
               onClose={() => removeSkill('herramientas', h.idskill)}
               style={styles.chip}
-            >{skillLabel} - {nivelLabel}
+            >
+              <Text>{skillLabel} - {nivelLabel}</Text>
             </Chip>
           );
         })}
@@ -241,7 +240,7 @@ const FormularioCandidato = ({ formik,
                     style={{ marginBottom: 10 }}
                   />
 
-                {/* Checkbox "Activo" (Estudio en curso) */}
+                {/* Checkbox Estudio en curso */}
                   <View style={styles.checkboxContainer}>
                     <Checkbox.Android
                       status={formik.values.estudios[index].activo ? 'checked' : 'unchecked'}
@@ -300,7 +299,8 @@ const FormularioCandidato = ({ formik,
               key={i.idskill} 
               onClose={() => removeSkill('idiomasSeleccionados', i.idskill)}
               style={styles.chip}
-            >{skillLabel} - {nivelLabel}
+            >
+              <Text>{skillLabel} - {nivelLabel}</Text>
             </Chip>
            );
         })}
