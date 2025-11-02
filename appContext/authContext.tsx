@@ -16,6 +16,10 @@ import { signIn } from '@services/apiAuth';
 import userService from '@services/users/User.service';
 import { IUser } from '@services/interfaces/User.interface';
 import { Role } from '@services/interfaces/TipoUsuario.interface';
+import {
+  registerForPushNotifications,
+  savePushTokenToDatabase,
+} from '@services/notifications/pushNotification.service';
 
 // export enum Role {
 //   candidate = 'candidate',
@@ -190,6 +194,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           type: AUTH_ACTIONS.LOGIN,
           payload: { user: signedUser, token, refreshToken },
         });
+
+        // Registrar y guardar token push
+        try {
+          const expoToken = await registerForPushNotifications();
+          if (expoToken && signedUser?.id) {
+            await savePushTokenToDatabase(signedUser.id.toString(), expoToken);
+            console.log('✅ Push token guardado en BD:', expoToken);
+          }
+        } catch (err) {
+          console.warn('⚠️ Error guardando push token:', err);
+        }
+
         return true;
       } catch (error: any) {
         dispatch({
