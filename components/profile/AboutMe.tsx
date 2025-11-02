@@ -2,8 +2,9 @@ import { Text, FlatList, ScrollView, Pressable, Linking } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { Surface, Avatar } from 'react-native-paper';
 import { ProfileUser } from '../../types/ProfileUser';
+import { IUser } from '@services/interfaces/User.interface';
 
-export const AboutMe = (user: ProfileUser) => {
+export const AboutMe = (user: IUser) => {
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}

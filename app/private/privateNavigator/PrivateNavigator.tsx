@@ -24,10 +24,6 @@ export const privateNavigatorRootParams = {
 
 const Stack = createNativeStackNavigator<typeof privateNavigatorRootParams>();
 const PrivateNavigator = () => {
-  const {
-    state: { loading, user },
-  } = useAuth();
-
   return (
     <Stack.Navigator
       // initialRouteName={PRIVATE_NAVIGATOR_ROUTES.HOME_SCREEN}

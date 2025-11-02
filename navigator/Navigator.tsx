@@ -15,7 +15,6 @@ const Navigator = () => {
   const { state, logout, restoreToken, login } = useAuth();
 
   useEffect(() => {
-    console.log('here');
     const { data: onAuthStateSubscription } = supabase.auth.onAuthStateChange(
       async function (e, session) {
         if (e === 'INITIAL_SESSION') {

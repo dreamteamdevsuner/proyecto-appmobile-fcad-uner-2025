@@ -179,5 +179,116 @@ const ProfileScreenShared: React.FC<Props> = ({ route }) => {
     </View>
   );
 }; */
+/* const ProfileScreenShared: React.FC<Props> = ({ route }) => {
+  console.log('route', route);
+  const {
+    state: { user: profileUser },
+  } = useAuth();
+  if (!profileUser) {
+    return (
+      <View>
+        {' '}
+        <Text>Error obteniendo perfil</Text>{' '}
+      </View>
+    );
+  }
+  const layout = Dimensions.get('window');
+  const [index, setIndex] = useState(0);
+
+  const routes = React.useMemo(() => {
+    const role = profileUser.tipousuario.nombre;
+    if (role === Role.PROFESIONAL) {
+      return [
+        { key: 'aboutMe', title: 'Quien soy' },
+        { key: 'whatIDo', title: 'Lo que hago' },
+      ];
+    }
+    return [
+      { key: 'activeOffers', title: 'Activas' },
+      { key: 'pausedOffers', title: 'Pausadas' },
+      { key: 'closedOffers', title: 'Cerradas' },
+    ];
+  }, [profileUser.tipousuario.nombre]);
+
+  React.useEffect(() => {
+    setIndex(0);
+  }, [routes.length]);
+
+  const renderScene = ({ route }: { route: { key: string } }) => {
+    switch (route.key) {
+      case 'aboutMe':
+        return AboutMe(profileUser ?? (state.user! as any));
+      case 'whatIDo':
+        return WhatIDo(profileUser ?? (state.user! as any));
+      case 'activeOffers':
+        return OffersTab(
+          profileUser?.offers?.filter((item) => item.status === 'Activa'),
+        );
+      case 'closedOffers':
+        return OffersTab(
+          profileUser?.offers?.filter((item) => item.status === 'Pausada'),
+        );
+      case 'pausedOffers':
+        return OffersTab(
+          profileUser?.offers?.filter((item) => item.status === 'Cerrada'),
+        );
+      default:
+        return null;
+    }
+  };
+
+  const isOwnProfile = () => userId === state.user?.id;
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  if (notFound) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>No se encontró el usuario.</Text>
+      </View>
+    );
+  }
+
+  return (
+    <View style={{ flex: 1, backgroundColor: '#0A090F' }}>
+      <View style={{ paddingVertical: 8 }}>
+        <ProfileHeader
+          name={profileUser?.name ?? (state.user! as any).name}
+          ocupation={profileUser?.ocupation ?? ''}
+          avatarUrl={profileUser?.avatarUrl ?? ''}
+          city={profileUser?.city ?? ''}
+          profileScreenType={
+            isOwnProfile()
+              ? ProfileScreenType.RECRUITER_HOME_PROFILE
+              : ProfileScreenType.OTHER_PROFILE
+          }
+        />
+
+        {(profileUser?.role ?? state.user?.tipousuario.nombre) ===
+          Role.PROFESIONAL && (
+          <HorizontalChips skills={profileUser?.skills ?? []} />
+        )}
+      </View>
+
+      <TabView
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        style={{
+          marginHorizontal: 8,
+          borderRadius: 30,
+        }}
+        initialLayout={{ width: layout.width }}
+        renderTabBar={(props) => <CustomProfileTabBar {...props} />}
+      />
+    </View>
+  );
+}; */
 //TODO USAR ESTE COMPONENTE CON DATA DINAMICA
 export default ProfileScreenShared;
