@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   NavigationContainer,
-  createNavigationContainerRef,
   DarkTheme as NavigationDarkTheme,
 } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
@@ -11,7 +10,6 @@ import {
   configureFonts,
 } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Navigator from './navigator/Navigator';
 import { AuthProvider } from './appContext/authContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as SplashScreen from 'expo-splash-screen';
@@ -22,10 +20,7 @@ import Splash from './components/SplashScreen';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { DataProvider } from './providers/DataContext';
 import AppContent from './AppContent';
-import { navigationRef } from './app/private/candidates/navigator/navigationRef';
-
-import * as Notifications from 'expo-notifications';
-import * as Device from 'expo-device';
+import { navigationRef } from './navigator/navigationRef';
 
 //import * as NavigationBar from 'expo-navigation-bar';
 

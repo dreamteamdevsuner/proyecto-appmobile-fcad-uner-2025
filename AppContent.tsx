@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react';
-import * as Notifications from 'expo-notifications';
 import {
   scheduleDailyNotificationProfesional,
   scheduleDailyNotificationReclutador,
-} from '@app/private/notifications/notifications';
+} from './services/notifications/localNotification.service';
 import { useAuth } from './appContext/authContext';
-import { navigationRef } from './app/private/candidates/navigator/navigationRef';
 import Navigator from './navigator/Navigator';
+import { navigationRef } from './navigator/navigationRef';
+import * as Notifications from 'expo-notifications';
+import { registerForPushNotifications } from './services/notifications/pushNotification.service';
+import { supabase } from './supabase/supabaseClient';
 
 export default function AppContent() {
   const { state } = useAuth();
@@ -15,18 +17,34 @@ export default function AppContent() {
     if (!state.user?.tipousuario?.nombre) return;
 
     if (state.user.tipousuario.nombre === 'profesional') {
-      console.log('⏰ Programando notificación para PROFESIONAL');
       scheduleDailyNotificationProfesional();
     }
 
     if (state.user.tipousuario.nombre === 'reclutador') {
-      console.log('📣 Programando notificación para RECLUTADOR');
       scheduleDailyNotificationReclutador();
     }
   }, [state.user?.tipousuario?.nombre]);
 
+  useEffect(() => {
+    if (!state.user) return;
+
+    async function saveToken() {
+      const token = await registerForPushNotifications();
+      if (!token) return;
+
+      await supabase
+        .from('usuario')
+        .update({ expo_push_token: token })
+        .eq('id', state.user?.id); // Actualiza el token en la base de datos *le puse ? porque a veces state.user es null
+
+      console.log('✅ Expo push token guardado en BD:', token);
+    }
+
+    saveToken();
+  }, [state.user?.id]);
+
   /*
-  // ✅ Si querés navegar al touch de la notificación más adelante
+  // Navegar al touch de la notificación
   useEffect(() => {
     const subscription = Notifications.addNotificationResponseReceivedListener(() => {
       if (navigationRef.isReady()) {

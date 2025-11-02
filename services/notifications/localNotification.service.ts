@@ -23,14 +23,14 @@ const ensureNotificationPermissions = async () => {
   }
 
   if (finalStatus !== 'granted') {
-    alert('No se otorgaron permisos para notificaciones 😢');
+    alert('No se otorgaron permisos para notificaciones.');
     return false;
   }
 
   return true;
 };
 
-// ✅ Notificación para PROFESIONAL
+// Notificación para profesional
 export const scheduleDailyNotificationProfesional = async (): Promise<void> => {
   const hasPermission = await ensureNotificationPermissions();
   if (!hasPermission) return;
@@ -53,7 +53,7 @@ export const scheduleDailyNotificationProfesional = async (): Promise<void> => {
   });
 };
 
-// ✅ Notificación para RECLUTADOR
+// Notificación para reclutador
 export const scheduleDailyNotificationReclutador = async (): Promise<void> => {
   const hasPermission = await ensureNotificationPermissions();
   if (!hasPermission) return;
