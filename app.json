@@ -36,6 +36,13 @@
           "cameraPermission": "Jobsy necesita acceso a tu cámara para tomar una foto de perfil."
         }
       ]
-    ]
+    ],
+
+    "extra": {
+      "eas": {
+        "projectId": "e001ab00-af23-4a4b-9647-a39f8f0ce724"
+      }
+    },
+    "owner": "dreamteamdevs"
   }
 }

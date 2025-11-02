@@ -1,6 +1,6 @@
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
-import { supabase } from '../supabase/supabaseClient';
+import { supabase } from '../../supabase/supabaseClient';
 
 // 1️⃣ Función para registrar push token en Expo
 export async function registerForPushNotifications(): Promise<string | null> {
