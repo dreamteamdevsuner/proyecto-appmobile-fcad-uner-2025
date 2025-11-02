@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import * as Notifications from 'expo-notifications';
 import {
   scheduleDailyNotificationProfesional,
   scheduleDailyNotificationReclutador,
 } from './services/notifications/localNotification.service';
 import { useAuth } from './appContext/authContext';
-import { navigationRef } from './navigator/navigationRef';
 import Navigator from './navigator/Navigator';
+import { navigationRef } from './navigator/navigationRef';
+import * as Notifications from 'expo-notifications';
 
 export default function AppContent() {
   const { state } = useAuth();
