@@ -3,9 +3,9 @@ import * as Notifications from 'expo-notifications';
 import {
   scheduleDailyNotificationProfesional,
   scheduleDailyNotificationReclutador,
-} from '@app/private/notifications/notifications';
+} from './services/notifications/localNotification.service';
 import { useAuth } from './appContext/authContext';
-import { navigationRef } from './app/private/candidates/navigator/navigationRef';
+import { navigationRef } from './navigator/navigationRef';
 import Navigator from './navigator/Navigator';
 
 export default function AppContent() {
@@ -15,18 +15,16 @@ export default function AppContent() {
     if (!state.user?.tipousuario?.nombre) return;
 
     if (state.user.tipousuario.nombre === 'profesional') {
-      console.log('⏰ Programando notificación para PROFESIONAL');
       scheduleDailyNotificationProfesional();
     }
 
     if (state.user.tipousuario.nombre === 'reclutador') {
-      console.log('📣 Programando notificación para RECLUTADOR');
       scheduleDailyNotificationReclutador();
     }
   }, [state.user?.tipousuario?.nombre]);
 
   /*
-  // ✅ Si querés navegar al touch de la notificación más adelante
+  // Navegar al touch de la notificación
   useEffect(() => {
     const subscription = Notifications.addNotificationResponseReceivedListener(() => {
       if (navigationRef.isReady()) {

@@ -22,7 +22,7 @@ import Splash from './components/SplashScreen';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { DataProvider } from './providers/DataContext';
 import AppContent from './AppContent';
-import { navigationRef } from './app/private/candidates/navigator/navigationRef';
+import { navigationRef } from './navigator/navigationRef';
 
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
