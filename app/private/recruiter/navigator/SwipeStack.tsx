@@ -65,7 +65,6 @@ const SwipeStack = () => {
                 <View style={{ marginLeft: 'auto' }}>
                   <Pressable
                     onPress={() => {
-                      console.log('in');
                       navigation.navigate(ROUTES.RECRUITER_CANDIDATE_PROFILE, {
                         userId: 222,
                         title: 'title',

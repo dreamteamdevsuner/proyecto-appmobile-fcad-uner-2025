@@ -62,8 +62,6 @@ type Action =
   | { type: AUTH_ACTIONS.LOGIN_ERROR; payload: { error: string } }
   | { type: AUTH_ACTIONS.SET_LOADING; payload: { loading: boolean } };
 
-type Dispatch = (action: Action) => void;
-
 const initialState: State = {
   user: null,
   token: null,
@@ -116,7 +114,8 @@ type AuthContextType = {
   state: State;
   dispatch: React.Dispatch<Action>;
   logout: () => Promise<void>;
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (id: string, token: string, refreshToken: string) => Promise<boolean>;
+  restoreToken: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -133,35 +132,76 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
+  const restoreToken = async () => {
+    try {
+      const token = await getItemAsync<string>(SecureStoreItem.TOKEN);
+      const refreshToken = await getItemAsync<string>(
+        SecureStoreItem.REFRESH_TOKEN,
+      );
+      const user = await getItemAsync<IUser>(SecureStoreItem.USER);
+      if (!user) {
+        throw Error("Error al obtener usuario:'");
+        return;
+      }
+      dispatch({
+        type: AUTH_ACTIONS.RESTORE_TOKEN,
+        payload: { user, token, refreshToken },
+      });
+    } catch (error) {
+      console.error('Error al restaurar sesión:', error);
+      dispatch({
+        type: AUTH_ACTIONS.RESTORE_TOKEN,
+        payload: { user: null, token: null, refreshToken: null },
+      });
+    }
+  };
 
   useEffect(() => {
-    const restoreToken = async () => {
-      try {
-        const token = await getItemAsync<string>(SecureStoreItem.TOKEN);
-        const refreshToken = await getItemAsync<string>(
-          SecureStoreItem.REFRESH_TOKEN,
-        );
-        const user = await getItemAsync<IUser>(SecureStoreItem.USER);
-        if (!user) {
-          throw Error("Error al obtener usuario:'");
-        }
-        dispatch({
-          type: AUTH_ACTIONS.RESTORE_TOKEN,
-          payload: { user, token, refreshToken },
-        });
-      } catch (error) {
-        console.error('Error al restaurar sesión:', error);
-        dispatch({
-          type: AUTH_ACTIONS.RESTORE_TOKEN,
-          payload: { user: null, token: null, refreshToken: null },
-        });
-      }
-    };
-
-    restoreToken();
+    // restoreToken();
   }, []);
 
-  const login = useCallback(async (email: string, password: string) => {
+  const login = useCallback(
+    async (id: string, token: string, refreshToken: string) => {
+      dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: { loading: true } });
+
+      try {
+        // TODO: Por ahora simular inicio de sesion a API con mocks, cambiar despues
+        // let user: User | null = null;
+        // const {
+        //   data: { user, session },
+        //   error,
+        // } = await signIn({ email, password });
+
+        // if (!user || !session) {
+        //   throw new Error('Credenciales inválidas');
+        // }
+
+        // const token = session.access_token;
+        // const refreshToken = session.refresh_token;
+        const signedUser = await userService.getOne(id);
+        if (!signedUser) {
+          throw Error('Error obteniendo perfil de usuario');
+        }
+        await setItemAsync(SecureStoreItem.TOKEN, token);
+        await setItemAsync(SecureStoreItem.REFRESH_TOKEN, refreshToken);
+        await setItemAsync(SecureStoreItem.USER, signedUser);
+
+        dispatch({
+          type: AUTH_ACTIONS.LOGIN,
+          payload: { user: signedUser, token, refreshToken },
+        });
+        return true;
+      } catch (error: any) {
+        dispatch({
+          type: AUTH_ACTIONS.LOGIN_ERROR,
+          payload: { error: error.message },
+        });
+        return false;
+      }
+    },
+    [],
+  );
+  /*   const login = useCallback(async (email: string, password: string) => {
     dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: { loading: true } });
 
     try {
@@ -198,7 +238,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       });
       return false;
     }
-  }, []);
+  }, []); */
 
   const logout = useCallback(async () => {
     try {
@@ -216,6 +256,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     dispatch,
     login,
     logout,
+    restoreToken,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

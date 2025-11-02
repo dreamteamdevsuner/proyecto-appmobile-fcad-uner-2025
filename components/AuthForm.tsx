@@ -18,6 +18,7 @@ import useSnackbar from '../hooks/useSnackbar';
 import candidateService from '../services/users/Candidate';
 // import useAuth from '../hooks/useAuth';
 import userService from '../services/users/User.service';
+import { signIn, signUp } from '@services/apiAuth';
 
 interface AppSnackProps {
   visible: boolean;
@@ -80,13 +81,14 @@ const AuthForm = () => {
 
   const handleLogin = async (values: UserDTO) => {
     // console.log("handle login");
-    console.log('values', values);
+    // console.log('values', values);
     // await handleSignIn(values);
     //MOCKUP LOGIN SUCCESS
     // const u = await userService.getOne();
     // console.log('user by id', u);
 
-    const ok = await login(values.email, values.password);
+    const ok = await signIn({ email: values.email, password: values.password });
+    console.log('OK', ok);
     if (!ok) {
       handleShowSnackbar();
     }

@@ -92,7 +92,7 @@ const SignUpForm = () => {
       if (!createdUser) {
         throw Error('Error al registrarse');
       }
-      await login(values.email, values.password);
+      // await login(values.email, values.password);
     } catch (error: any) {
       if (error?.message === 'User already registered') {
         setMessage('Ya existe un email asociado a esta cuenta');
