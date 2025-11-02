@@ -8,7 +8,7 @@ import SettingProfile from '../../../shared/perfil/ajustes/SettingProfile';
 import { Ionicons } from '@expo/vector-icons';
 import NotificationsProfile from '../notificaciones/NotificationsProfile';
 import FavoritosOferta from '../favoritos-oferta';
-import CrearOferta from '../crear-oferta';
+import CrearOfertaNavigator from '../crear-oferta/CrearOfertaNavigator';
 
 const ProfileStack = createNativeStackNavigator<PrivateStackParamList>();
 
@@ -67,8 +67,10 @@ const ProfileNavigator = () => (
       />
       <ProfileStack.Screen
         name={ROUTES.RECRUITER_CREAR_OFERTA}
-        component={CrearOferta}
-        options={{ title: 'Nueva Oferta' }}
+        component={CrearOfertaNavigator}
+        options={{
+          headerShown: false,
+        }}
       />
     </ProfileStack.Navigator>
   </KeyboardAvoidingView>
