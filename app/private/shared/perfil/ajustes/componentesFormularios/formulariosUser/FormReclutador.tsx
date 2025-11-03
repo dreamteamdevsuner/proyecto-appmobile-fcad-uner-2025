@@ -6,7 +6,7 @@ import FormField from '../FormField';
 import FormDropdown from '../FormDropdown';
 import MapSearch from '@components/mapas/buscador-mapa';
 import { ReclutadorValues } from '../../../../../../../interfaces/EditarPerfil';
-import AvatarPiker from '@components/ui/AvatarPiker';
+import AvatarPicker from '@components/ui/AvatarPicker';
 
 const SectionTitle = ({ children }: { children: string }) => (
   <Text style={styles.sectionTitle}>{children}</Text>
@@ -14,32 +14,40 @@ const SectionTitle = ({ children }: { children: string }) => (
 
 interface Props {
   formik: FormikProps<ReclutadorValues>;
-  fieldPositions: React.MutableRefObject<{ [ key: string]: number }>;
+  fieldPositions: React.MutableRefObject<{ [key: string]: number }>;
 }
 
 const FormularioReclutador = ({ formik, fieldPositions }: Props) => {
   return (
     <>
-      <AvatarPiker
+      <AvatarPicker
         currentImageUrl={formik.values.avatar_url}
         onImageSelected={(base64) => {
           formik.setFieldValue('avatarBase64', base64);
         }}
       />
-      
+
       <SectionTitle>Datos personales</SectionTitle>
 
       <Text style={styles.titulo}>Nombre</Text>
-      <FormField name="nombre" formik={formik} placeholder="Ingresá tu nombre"
+      <FormField
+        name="nombre"
+        formik={formik}
+        placeholder="Ingresá tu nombre"
         onLayout={(event) => {
           fieldPositions.current['nombre'] = event.nativeEvent.layout.y;
-        }} />
+        }}
+      />
 
       <Text style={styles.titulo}>Apellido</Text>
-      <FormField name="apellido" formik={formik} placeholder="Ingresá tu apellido"
-      onLayout={(event) => {
+      <FormField
+        name="apellido"
+        formik={formik}
+        placeholder="Ingresá tu apellido"
+        onLayout={(event) => {
           fieldPositions.current['apellido'] = event.nativeEvent.layout.y;
-        }} />
+        }}
+      />
 
       <Text style={styles.titulo}>Profesión</Text>
       <FormField
@@ -69,17 +77,14 @@ const FormularioReclutador = ({ formik, fieldPositions }: Props) => {
             ? formik.errors.localizacion
             : undefined
         }
-        // lat={formik.values.lat} // Pasar lat actual
-        // lng={formik.values.lng} // Pasar lng actual
         onChange={(text) => {
-          formik.setFieldValue('localizacion', text); 
+          formik.setFieldValue('localizacion', text);
         }}
         onCoordsChange={(newLat, newLng) => {
           // Actualizar lat y lng en Formik
           formik.setFieldValue('lat', newLat);
           formik.setFieldValue('lng', newLng);
         }}
-        // onLayout={(event) => { fieldPositions.current['localizacion'] = event.nativeEvent.layout.y; }}
       />
 
       {/* <Text style={styles.titulo}>Palabras clave:</Text>

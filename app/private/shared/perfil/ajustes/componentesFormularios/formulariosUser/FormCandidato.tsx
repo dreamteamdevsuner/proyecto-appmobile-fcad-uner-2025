@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Text, TextInput, Button, Checkbox, Chip } from 'react-native-paper';
 import { FormikProps, FieldArray, FormikErrors, FormikTouched } from 'formik';
@@ -9,7 +9,7 @@ import { DropdownItem } from '@services/perfilService';
 import { SkillConNivel } from '../../../../../../../interfaces/EditarPerfil';
 import MapSearch from '@components/mapas/buscador-mapa';
 import NivelModal from '@components/ModalNivel';
-import AvatarPiker from '@components/ui/AvatarPiker';
+import AvatarPicker from '@components/ui/AvatarPicker';
 
 const SectionTitle = ({ children }: { children: string }) => (
   <Text style={styles.sectionTitle}>{children}</Text>
@@ -30,82 +30,97 @@ interface Props {
   listasNiveles: DropdownItem[];
 }
 
-const FormularioCandidato = ({ formik, 
-  fieldPositions, 
-  listasSkills, 
+const FormularioCandidato = ({
+  formik,
+  fieldPositions,
+  listasSkills,
   listasTiposEnlace,
   listasModalidades,
   listasTiposJornada,
   listasTiposContratacion,
-  listasNiveles
- }: Props) => {
-
+  listasNiveles,
+}: Props) => {
   const [nivelModalVisible, setNivelModalVisible] = useState(false);
   const [skillParaNivel, setSkillParaNivel] = useState<{
-    fieldName: 'herramientas' | 'idiomasSeleccionados'; 
+    fieldName: 'herramientas' | 'idiomasSeleccionados';
     idskill: string;
     label: string;
     nivelActual: string | null | undefined;
   } | null>(null);
 
-  const handleSkillItemSelected = (selectedId: string, fieldName: string): boolean => {
-      if (fieldName !== 'herramientas' && fieldName !== 'idiomasSeleccionados') {
-        return true;
-      }
-      
-      const fieldValues = formik.values[fieldName] as SkillConNivel[];
-      const exists = fieldValues.some(s => s.idskill === selectedId);
-      
-      if (!exists) { 
-          const skillList = fieldName === 'herramientas' ? listasSkills.herramientas : listasSkills.idiomas;
-          const skillLabel = skillList.find(item => item.value === selectedId)?.label || selectedId;
+  const handleSkillItemSelected = (
+    selectedId: string,
+    fieldName: string,
+  ): boolean => {
+    if (fieldName !== 'herramientas' && fieldName !== 'idiomasSeleccionados') {
+      return true;
+    }
 
-          setSkillParaNivel({
-            fieldName: fieldName, 
-            idskill: selectedId,
-            label: skillLabel,
-            nivelActual: null 
-          });
-          setNivelModalVisible(true);
-          return false;
-      }
-      
-      const newValues = fieldValues.filter(v => v.idskill !== selectedId);
-      formik.setFieldValue(fieldName, newValues);
+    const fieldValues = formik.values[fieldName] as SkillConNivel[];
+    const exists = fieldValues.some((s) => s.idskill === selectedId);
+
+    if (!exists) {
+      const skillList =
+        fieldName === 'herramientas'
+          ? listasSkills.herramientas
+          : listasSkills.idiomas;
+      const skillLabel =
+        skillList.find((item) => item.value === selectedId)?.label ||
+        selectedId;
+
+      setSkillParaNivel({
+        fieldName: fieldName,
+        idskill: selectedId,
+        label: skillLabel,
+        nivelActual: null,
+      });
+      setNivelModalVisible(true);
       return false;
+    }
+
+    const newValues = fieldValues.filter((v) => v.idskill !== selectedId);
+    formik.setFieldValue(fieldName, newValues);
+    return false;
   };
   const handleSaveLevel = (selectedLevelId: string | null) => {
     if (!skillParaNivel) return;
 
     const { fieldName, idskill } = skillParaNivel;
     const currentValues = formik.values[fieldName] as SkillConNivel[];
-    const newValue: SkillConNivel = { idskill: idskill, idnivel: selectedLevelId };
-    
+    const newValue: SkillConNivel = {
+      idskill: idskill,
+      idnivel: selectedLevelId,
+    };
+
     formik.setFieldValue(fieldName, [...currentValues, newValue]);
-    setSkillParaNivel(null); 
+    setSkillParaNivel(null);
     setNivelModalVisible(false);
   };
 
-  const removeSkill = (fieldName: 'herramientas' | 'idiomasSeleccionados', idskillToRemove: string) => {
+  const removeSkill = (
+    fieldName: 'herramientas' | 'idiomasSeleccionados',
+    idskillToRemove: string,
+  ) => {
     const currentValues = formik.values[fieldName] as SkillConNivel[];
-    const newValues = currentValues.filter(v => v.idskill !== idskillToRemove);
+    const newValues = currentValues.filter(
+      (v) => v.idskill !== idskillToRemove,
+    );
     formik.setFieldValue(fieldName, newValues);
   };
 
   const getNivelLabel = (idnivel: string | null | undefined): string => {
-      if (!idnivel) return '(Sin Nivel)'; 
-      return listasNiveles.find(n => n.value === idnivel)?.label || '';
+    if (!idnivel) return '(Sin Nivel)';
+    return listasNiveles.find((n) => n.value === idnivel)?.label || '';
   };
 
   return (
     <>
-      <AvatarPiker 
+      <AvatarPicker
         currentImageUrl={formik.values.avatar_url}
-        onImageSelected={base64 => {
+        onImageSelected={(base64) => {
           formik.setFieldValue('avatarBase64', base64);
         }}
       />
-      
       <SectionTitle>Datos Personales</SectionTitle>
       <Text style={styles.titulo}>Nombre</Text>
       <FormField
@@ -116,7 +131,6 @@ const FormularioCandidato = ({ formik,
           fieldPositions.current['nombre'] = event.nativeEvent.layout.y;
         }}
       />
-
       <Text style={styles.titulo}>Apellido</Text>
       <FormField
         name="apellido"
@@ -126,7 +140,6 @@ const FormularioCandidato = ({ formik,
           fieldPositions.current['apellido'] = event.nativeEvent.layout.y;
         }}
       />
-
       <Text style={styles.titulo}>Profesión</Text>
       <FormField
         name="profesion"
@@ -136,7 +149,6 @@ const FormularioCandidato = ({ formik,
           fieldPositions.current['profesion'] = event.nativeEvent.layout.y;
         }}
       />
-
       <Text style={styles.titulo}>Localización</Text>
       <MapSearch
         value={formik.values.localizacion}
@@ -145,20 +157,15 @@ const FormularioCandidato = ({ formik,
             ? formik.errors.localizacion
             : undefined
         }
-        // lat={formik.values.lat}
-        // lng={formik.values.lng}
         onChange={(text) => {
-          formik.setFieldValue('localizacion', text); 
+          formik.setFieldValue('localizacion', text);
         }}
         onCoordsChange={(newLat, newLng) => {
           // Actualizar lat y lng en Formik
           formik.setFieldValue('lat', newLat);
           formik.setFieldValue('lng', newLng);
         }}
-        
-        // onLayout={(event) => { fieldPositions.current['localizacion'] = event.nativeEvent.layout.y; }}
       />
-
       <Text style={styles.titulo}>Sobre mí</Text>
       <FormField
         name="aboutMe"
@@ -166,7 +173,6 @@ const FormularioCandidato = ({ formik,
         placeholder="Cuéntanos sobre ti"
         multiline
       />
-
       <SectionTitle>Perfil Profesional</SectionTitle>
       <Text style={styles.titulo}>Herramientas</Text>
       <FormDropdown
@@ -179,20 +185,22 @@ const FormularioCandidato = ({ formik,
         onItemSelected={handleSkillItemSelected}
       />
       <View style={styles.chipContainer}>
-        {formik.values.herramientas.map(h => {
-          const skillLabel = listasSkills.herramientas.find(item => item.value === h.idskill)?.label || h.idskill;
+        {formik.values.herramientas.map((h) => {
+          const skillLabel =
+            listasSkills.herramientas.find((item) => item.value === h.idskill)
+              ?.label || h.idskill;
           const nivelLabel = getNivelLabel(h.idnivel);
           return (
-            <Chip 
-              key={h.idskill} 
+            <Chip
+              key={h.idskill}
               onClose={() => removeSkill('herramientas', h.idskill)}
               style={styles.chip}
-            >{skillLabel} - {nivelLabel}
+            >
+              <Text>{`${skillLabel} - ${nivelLabel}`}</Text>
             </Chip>
           );
         })}
       </View>
-
       <Text style={styles.titulo}>Habilidades</Text>
       <FormDropdown
         name="habilidades"
@@ -201,86 +209,92 @@ const FormularioCandidato = ({ formik,
         placeholder="Selecciona habilidades"
         multiple
       />
-
       <SectionTitle>Formación</SectionTitle>
-      <FieldArray name='estudios'>
+      <FieldArray name="estudios">
         {(arrayHelpers) => (
           <View>
             {formik.values.estudios && formik.values.estudios.length > 0 ? (
               formik.values.estudios.map((estudio, index) => {
                 return (
                   <View key={index} style={styles.estudioContainer}>
-                  <Text style={styles.estudioTitulo}>Estudio #{index + 1}</Text>
-
-                  {/*Título del estudio*/}
-                  <FormField
-                    name={`estudios[${index}].titulo`} 
-                    formik={formik}
-                    placeholder="Título (Ej: Licenciatura en Diseño)"
-                    style={{ marginBottom: 10 }}
-                  />
-                  
-                  <FormField
-                    name={`estudios[${index}].nombreinstitucion`} 
-                    formik={formik}
-                    placeholder="Institución (Ej: UBA)"
-                    style={{ marginBottom: 10 }}
-                  />
-                  
-                  <FormField
-                    name={`estudios[${index}].fechainicio`} 
-                    formik={formik}
-                    placeholder="Fecha inicio"
-                    style={{ marginBottom: 10 }}
-                  />
-
-                  <FormField
-                    name={`estudios[${index}].fechafin`} 
-                    formik={formik}
-                    placeholder="Fecha Fin"
-                    style={{ marginBottom: 10 }}
-                  />
-
-                {/* Checkbox "Activo" (Estudio en curso) */}
-                  <View style={styles.checkboxContainer}>
-                    <Checkbox.Android
-                      status={formik.values.estudios[index].activo ? 'checked' : 'unchecked'}
-                      onPress={() => formik.setFieldValue(`estudios[${index}].activo`, !formik.values.estudios[index].activo)}
+                    <Text style={styles.estudioTitulo}>
+                      Estudio #{index + 1}
+                    </Text>
+                    <FormField
+                      name={`estudios[${index}].titulo`}
+                      formik={formik}
+                      placeholder="Título (Ej: Licenciatura en Diseño)"
+                      style={{ marginBottom: 10 }}
                     />
-                    <Text style={{color: 'white'}}>Estudio en curso</Text>
-                  </View>
+                    <FormField
+                      name={`estudios[${index}].nombreinstitucion`}
+                      formik={formik}
+                      placeholder="Institución (Ej: UBA)"
+                      style={{ marginBottom: 10 }}
+                    />
 
-                  {/* Botón Quitar */}
-                  <Button
-                    mode="outlined"
-                    color="#b58df1"
-                    onPress={() => arrayHelpers.remove(index)} 
-                  >Quitar Estudio</Button>
-                </View>
-              )
-          })                
+                    <FormField
+                      name={`estudios[${index}].fechainicio`}
+                      formik={formik}
+                      placeholder="Fecha inicio"
+                      style={{ marginBottom: 10 }}
+                    />
+
+                    <FormField
+                      name={`estudios[${index}].fechafin`}
+                      formik={formik}
+                      placeholder="Fecha Fin"
+                      style={{ marginBottom: 10 }}
+                    />
+                    <View style={styles.checkboxContainer}>
+                      <Checkbox.Android
+                        status={
+                          formik.values.estudios[index].activo
+                            ? 'checked'
+                            : 'unchecked'
+                        }
+                        onPress={() =>
+                          formik.setFieldValue(
+                            `estudios[${index}].activo`,
+                            !formik.values.estudios[index].activo,
+                          )
+                        }
+                      />
+                      <Text style={{ color: 'white' }}>Estudio en curso</Text>
+                    </View>
+                    <Button
+                      mode="outlined"
+                      color="#b58df1"
+                      onPress={() => arrayHelpers.remove(index)}
+                    >Quitar Estudio
+                    </Button>
+                  </View>
+                );
+              })
             ) : (
-              <Text style={{ marginVertical: 10, color: 'gray' }}>No has añadido ningún estudio.</Text>
+              <Text style={{ marginVertical: 10, color: 'gray' }}>
+                No has añadido ningún estudio.
+              </Text>
             )}
 
-            {/* Botón Añadir */}
             <Button
               mode="contained"
               style={{ marginTop: 10 }}
-              onPress={() => arrayHelpers.push({ 
-                titulo: '',
-                nombreinstitucion: '',
-                fechainicio: '',
-                fechafin: '',
-                activo: false,
-              })}
-            >Añadir Estudio</Button>
+              onPress={() =>
+                arrayHelpers.push({
+                  titulo: '',
+                  nombreinstitucion: '',
+                  fechainicio: '',
+                  fechafin: '',
+                  activo: false,
+                })
+              }
+            >Añadir Estudio
+            </Button>
           </View>
         )}
       </FieldArray>
-
       <View style={{ height: 20 }} /> {/* Espaciador */}
-
       <Text style={styles.titulo}>Idiomas</Text>
       <FormDropdown
         name="idiomasSeleccionados"
@@ -292,20 +306,22 @@ const FormularioCandidato = ({ formik,
         onItemSelected={handleSkillItemSelected}
       />
       <View style={styles.chipContainer}>
-        {formik.values.idiomasSeleccionados.map(i => {
-           const skillLabel = listasSkills.idiomas.find(item => item.value === i.idskill)?.label || i.idskill;
-           const nivelLabel = getNivelLabel(i.idnivel);
-           return (
-            <Chip 
-              key={i.idskill} 
+        {formik.values.idiomasSeleccionados.map((i) => {
+          const skillLabel =
+            listasSkills.idiomas.find((item) => item.value === i.idskill)
+              ?.label || i.idskill;
+          const nivelLabel = getNivelLabel(i.idnivel);
+          return (
+            <Chip
+              key={i.idskill}
               onClose={() => removeSkill('idiomasSeleccionados', i.idskill)}
               style={styles.chip}
-            >{skillLabel} - {nivelLabel}
+            >
+              <Text>{`${skillLabel} - ${nivelLabel}`}</Text>
             </Chip>
-           );
+          );
         })}
       </View>
-
       <SectionTitle>Mis preferencias</SectionTitle>
       <Text style={styles.titulo}>Modalidad</Text>
       <FormDropdown
@@ -314,7 +330,6 @@ const FormularioCandidato = ({ formik,
         items={listasModalidades}
         placeholder="Selecciona modalidad"
       />
-
       <Text style={styles.titulo}>Jornada</Text>
       <FormDropdown
         name="jornadaSeleccionada"
@@ -322,7 +337,6 @@ const FormularioCandidato = ({ formik,
         items={listasTiposJornada}
         placeholder="Selecciona jornada"
       />
-
       <Text style={styles.titulo}>Contrato</Text>
       <FormDropdown
         name="contratoSeleccionado"
@@ -330,7 +344,6 @@ const FormularioCandidato = ({ formik,
         items={listasTiposContratacion}
         placeholder="Selecciona contrato"
       />
-
       <SectionTitle>Contactos</SectionTitle>
       <Text style={styles.titulo}>Correo electrónico</Text>
       <FormField
@@ -342,7 +355,6 @@ const FormularioCandidato = ({ formik,
           fieldPositions.current['email'] = event.nativeEvent.layout.y;
         }}
       />
-
       <Text style={styles.titulo}>Redes</Text>
       <FormDropdown
         name="redSeleccionada"
@@ -354,7 +366,6 @@ const FormularioCandidato = ({ formik,
             event.nativeEvent.layout.y;
         }}
       />
-
       {formik.values.redes && formik.values.redes.length > 0 && (
         <View style={styles.redesContainer}>
           {formik.values.redes.map((red, idx) => {
@@ -387,7 +398,10 @@ const FormularioCandidato = ({ formik,
                   <TextInput
                     style={{ flex: 1 }}
                     mode="outlined"
-                    label={listasTiposEnlace.find(item => item.value === red.tipo)?.label || red.tipo}
+                    label={
+                      listasTiposEnlace.find((item) => item.value === red.tipo)
+                        ?.label || red.tipo
+                    }
                     value={red.url}
                     onChangeText={formik.handleChange(`redes[${idx}].url`)}
                     onBlur={formik.handleBlur(`redes[${idx}].url`)}
@@ -413,7 +427,7 @@ const FormularioCandidato = ({ formik,
           })}
         </View>
       )}
-        {skillParaNivel && (
+      {skillParaNivel && (
         <NivelModal
           visible={nivelModalVisible}
           onDismiss={() => {
@@ -426,8 +440,9 @@ const FormularioCandidato = ({ formik,
           onSaveLevel={handleSaveLevel}
         />
       )}
-    </>
-  );
+         {' '}
+    </>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -491,7 +506,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
-  chipContainer: { 
+  chipContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 6,
@@ -499,7 +514,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   chip: {
-    backgroundColor: '#2C2C2C', 
+    backgroundColor: '#2C2C2C',
   },
 });
 
