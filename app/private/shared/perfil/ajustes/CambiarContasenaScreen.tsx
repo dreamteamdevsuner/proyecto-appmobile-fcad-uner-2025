@@ -1,17 +1,35 @@
-import React, { useState } from "react";
-import { View, StyleSheet, KeyboardAvoidingView, ScrollView, Platform } from "react-native";
-import { TextInput, Button, Dialog, Portal, Text } from "react-native-paper";
-import { Formik } from "formik";
-import * as Yup from "yup";
-import { useNavigation } from "@react-navigation/native";
+import React, { useState } from 'react';
+import {
+  View,
+  StyleSheet,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  Alert,
+} from 'react-native';
+import { TextInput, Button, Dialog, Portal, Text } from 'react-native-paper';
+import { Formik, FormikHelpers } from 'formik';
+import * as Yup from 'yup';
+import { useNavigation } from '@react-navigation/native';
+
+import { supabase } from '../../../../../supabase/supabaseClient';
+import { useAuth } from '@appContext/authContext';
 
 const validationSchema = Yup.object().shape({
-  actual: Yup.string().required("La contraseña actual es obligatoria"),
-  nueva: Yup.string().min(6, "Mínimo 6 caracteres").required("Nueva contraseña obligatoria"),
+  actual: Yup.string().required('La contraseña actual es obligatoria'),
+  nueva: Yup.string()
+    .min(6, 'Mínimo 6 caracteres')
+    .required('Nueva contraseña obligatoria'),
   repetir: Yup.string()
-    .oneOf([Yup.ref("nueva")], "Las contraseñas no coinciden")
-    .required("Repite la nueva contraseña"),
+    .oneOf([Yup.ref('nueva')], 'Las contraseñas no coinciden')
+    .required('Repite la nueva contraseña'),
 });
+
+interface FormValues {
+  actual: string;
+  nueva: string;
+  repetir: string;
+}
 
 export default function CambiarContrasenaScreen() {
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -21,8 +39,58 @@ export default function CambiarContrasenaScreen() {
   const [isNuevaVisible, setIsNuevaVisible] = useState(false);
   const [isRepetirVisible, setIsRepetirVisible] = useState(false);
 
+  const [isLoading, setIsLoading] = useState(false);
+  const { state } = useAuth();
 
-return (
+  const handlePasswordUpdate = async (values: FormValues,
+     { resetForm, setFieldError }: FormikHelpers<FormValues>) => {
+    setIsLoading(true);
+
+    const email = state.user?.email;
+    if (!email) {
+      Alert.alert(
+        'Error',
+        'No se pudo obtener la información del usuario. Por favor, inicia sesión de nuevo.',
+      );
+      setIsLoading(false);
+      return;
+    }
+
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: values.actual,
+    });
+
+    if (signInError) {
+      console.error(
+        'Error al verificar contraseña actual: ',
+        signInError.message,
+      );
+      setFieldError('Actual', 'La contraseña actual es incorrecta');
+      setIsLoading(false);
+      return;
+    }
+
+    const { error: updateError } = await supabase.auth.updateUser({
+      password: values.nueva,
+    });
+
+    setIsLoading(false);
+
+    if (updateError) {
+      console.error('Error al actualizar contraseña: ', updateError.message);
+      Alert.alert(
+        'Error',
+        'No se pudo actualizar la contraseña. Intenta de nuevo. Debe tener al mínimo 6 caracteres.',
+      );
+    } else {
+      resetForm();
+      setDialogVisible(true);
+      console.log('Contraseña actualizada con éxito.');
+    }
+  };
+
+  return (
     <View style={styles.container}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
@@ -39,11 +107,7 @@ return (
           <Formik
             initialValues={{ actual: '', nueva: '', repetir: '' }}
             validationSchema={validationSchema}
-            onSubmit={(values, { resetForm }) => {
-              resetForm();
-              setDialogVisible(true);
-              console.log('Cambio de contraseña:', values);
-            }}
+            onSubmit={handlePasswordUpdate}
           >
             {({ handleChange, handleSubmit, values, errors, touched }) => (
               <View style={styles.formWrapper}>
@@ -58,13 +122,15 @@ return (
                     mode="outlined"
                     right={
                       <TextInput.Icon
-                        icon={isActualVisible ? 'eye-off-outline' : 'eye-outline'}
+                        icon={
+                          isActualVisible ? 'eye-off-outline' : 'eye-outline'
+                        }
                         onPress={() => setIsActualVisible(!isActualVisible)}
                       />
                     }
                   />
                   {touched.actual && errors.actual && (
-                  <Text style={styles.errorText}>{errors.actual}</Text>
+                    <Text style={styles.errorText}>{errors.actual}</Text>
                   )}
 
                   <TextInput
@@ -77,7 +143,9 @@ return (
                     mode="outlined"
                     right={
                       <TextInput.Icon
-                        icon={isNuevaVisible ? 'eye-off-outline' : 'eye-outline'}
+                        icon={
+                          isNuevaVisible ? 'eye-off-outline' : 'eye-outline'
+                        }
                         onPress={() => setIsNuevaVisible(!isNuevaVisible)}
                       />
                     }
@@ -95,7 +163,9 @@ return (
                     mode="outlined"
                     right={
                       <TextInput.Icon
-                        icon={isRepetirVisible ? 'eye-off-outline' : 'eye-outline'}
+                        icon={
+                          isRepetirVisible ? 'eye-off-outline' : 'eye-outline'
+                        }
                         onPress={() => setIsRepetirVisible(!isRepetirVisible)}
                       />
                     }
@@ -108,14 +178,15 @@ return (
                   mode="contained"
                   style={styles.button}
                   onPress={() => handleSubmit()}
-                >
-                  Guardar contraseña
+                  loading={isLoading}
+                  disabled={isLoading}
+                >Guardar contraseña
                 </Button>
               </View>
             )}
-          </Formik>        
-      </ScrollView>
-    </KeyboardAvoidingView>
+          </Formik>
+        </ScrollView>
+      </KeyboardAvoidingView>
       <Portal>
         <Dialog
           visible={dialogVisible}
@@ -124,13 +195,18 @@ return (
         >
           <Dialog.Title>Contaseña actualizada</Dialog.Title>
           <Dialog.Content>
-            <Text>La contraseña de tu cuenta ha sido actualizada correctamente.</Text>
+            <Text>
+              La contraseña de tu cuenta ha sido actualizada correctamente.
+            </Text>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button 
+            <Button
               mode="contained"
-              onPress={() => { setDialogVisible(false); navigation.goBack(); }}>
-              OK
+              onPress={() => {
+                setDialogVisible(false);
+                navigation.goBack();
+              }}
+            >OK
             </Button>
           </Dialog.Actions>
         </Dialog>
@@ -143,37 +219,37 @@ const styles = StyleSheet.create({
   scrollViewContent: {
     flexGrow: 1,
   },
-  container: { 
+  container: {
     flex: 1,
-    padding: 16
+    padding: 16,
   },
   formWrapper: {
     flex: 1,
-    justifyContent: 'space-between', 
+    justifyContent: 'space-between',
   },
-  sectionTitle: { 
-    fontSize: 16, 
-    fontWeight: "bold", 
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
     marginTop: 5,
     marginVertical: 20,
-    textAlign: "center"
+    textAlign: 'center',
   },
-  input: { 
+  input: {
     marginHorizontal: 30,
     marginBottom: 5,
-   },
-   errorText: {
+  },
+  errorText: {
     fontSize: 12,
     color: '#ff9b92',
     marginHorizontal: 40,
     marginBottom: 10,
   },
-  button: { 
+  button: {
     marginHorizontal: 20,
     marginVertical: 80,
     backgroundColor: '#BEB52C',
-   },
-   dialog: {
+  },
+  dialog: {
     borderRadius: 20,
     backgroundColor: '#1D1C21',
   },
