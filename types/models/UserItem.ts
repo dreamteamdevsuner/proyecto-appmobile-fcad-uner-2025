@@ -1,4 +1,4 @@
-export type UserItem = {
+export interface UserItem {
   id: string;
   name: string;
   subtitle?: string;
@@ -7,4 +7,4 @@ export type UserItem = {
   ofertaId?: number;
   ofertaName?: string;
   lugar?: string;
-};
+}

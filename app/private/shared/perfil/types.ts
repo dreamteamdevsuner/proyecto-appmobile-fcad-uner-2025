@@ -48,4 +48,7 @@ export type TopTabScreenParams = {
   userId?: number;
   user?: PerfilView;
   offers?: OfertaConDetalles[];
+  // Pull-to-refresh props (opcionales) que pueden ser pasados desde la pantalla contenedora
+  refreshing?: boolean;
+  onRefresh?: () => void | Promise<void>;
 };

@@ -1,5 +1,5 @@
-export type Message = {
+export interface Message {
   id: string;
   text: string;
   sender: 'me' | 'other';
-};
+}

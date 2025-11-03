@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, RefreshControl } from 'react-native';
 import { ActivityIndicator, Surface } from 'react-native-paper';
 import Portfolio from '../../app/private/shared/perfil/Portfolio';
 import {
@@ -19,6 +19,14 @@ export const WhatIDo = ({ route }: Props) => {
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.tabContent}
+      refreshControl={
+        <RefreshControl
+          refreshing={Boolean(route.params?.refreshing)}
+          onRefresh={route.params?.onRefresh ?? (() => {})}
+          colors={['#A06FA6']}
+          tintColor="#fff"
+        />
+      }
     >
       <Surface mode="flat" elevation={2} style={styles.surfaceDescription}>
         <Portfolio></Portfolio>

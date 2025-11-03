@@ -28,8 +28,8 @@ const FavoritosNavigator = () => (
       <FavoritosStack.Screen
         name={ROUTES.RECRUITER_FAVORITOS_OFERTA}
         component={FavoritosOferta}
-        options={({ route }) => ({
-          title: route.params?.title ?? 'Oferta',
+        options={() => ({
+          title: 'Mis Matchs',
           orientation: 'default',
         })}
       />

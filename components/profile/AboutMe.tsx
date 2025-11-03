@@ -5,6 +5,7 @@ import {
   Pressable,
   Linking,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { Surface, Avatar } from 'react-native-paper';
@@ -26,6 +27,14 @@ export const AboutMe = ({ route }: Props) => {
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.tabContent}
+      refreshControl={
+        <RefreshControl
+          refreshing={Boolean(route.params?.refreshing)}
+          onRefresh={route.params?.onRefresh ?? (() => {})}
+          colors={['#A06FA6']}
+          tintColor="#fff"
+        />
+      }
     >
       <Surface mode="flat" elevation={2} style={styles.surfaceDescription}>
         <Text style={styles.title}>Sobre mí:</Text>
