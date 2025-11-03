@@ -9,4 +9,5 @@ export interface DBUsuario {
   activo: boolean;
   idtipousuario?: number | null;
   fotoperfil?: string | null;
+  bio: string | null;
 }
