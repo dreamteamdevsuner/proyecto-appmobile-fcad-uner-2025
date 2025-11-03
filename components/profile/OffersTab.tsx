@@ -1,15 +1,42 @@
 import React from 'react';
-import { FlatList, View, Text, ListRenderItem, StyleSheet } from 'react-native';
-import { Offer, OfferStatus } from '../../types';
+import { FlatList, View, ListRenderItem, StyleSheet } from 'react-native';
 import { Divider, List } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import ROUTES from '../../app/private/recruiter/navigator/routes';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { PrivateStackParamList } from '../../app/private/recruiter/navigator/types';
+import {
+  PROFILE_ROUTES,
+  RecruiterTabScreenProps,
+} from '@app/private/shared/perfil/types';
+import { OfertaConDetalles } from '@services/profile/ProfileService';
 
-const OffersTab = (offers: Offer[] | undefined): React.JSX.Element => {
-  const renderItem: ListRenderItem<Offer> = ({ item }) => {
+type Props = RecruiterTabScreenProps<
+  | PROFILE_ROUTES.ACTIVE_OFFERS
+  | PROFILE_ROUTES.CLOSED_OFFERS
+  | PROFILE_ROUTES.PAUSED_OFFERS
+>;
+
+const OffersTab = ({ route }: Props): React.JSX.Element => {
+  const { offers, refreshing, onRefresh } = route.params;
+
+  const navigator =
+    useNavigation<NativeStackNavigationProp<PrivateStackParamList>>();
+
+  const renderItem: ListRenderItem<OfertaConDetalles> = ({ item }) => {
     return (
       <List.Item
-        title={item.name}
-        description={item.description}
+        title={item.titulo}
+        description={item.descripcion}
         right={(props) => <List.Icon {...props} icon={'chevron-right'} />}
+        onPress={() => {
+          console.log('Pressing: ', item.titulo);
+
+          navigator.navigate(ROUTES.RECRUITER_FAVORITOS_OFERTA, {
+            ofertaId: item.id.toString(),
+            title: item.titulo,
+          });
+        }}
       />
     );
   };
@@ -18,7 +45,7 @@ const OffersTab = (offers: Offer[] | undefined): React.JSX.Element => {
       <FlatList
         data={offers}
         renderItem={renderItem}
-        keyExtractor={(item) => item.name.toString()}
+        keyExtractor={(item) => item.titulo.toString()}
         ListEmptyComponent={
           <List.Item
             title="No hay elementos."
@@ -28,6 +55,8 @@ const OffersTab = (offers: Offer[] | undefined): React.JSX.Element => {
           />
         }
         ItemSeparatorComponent={() => <Divider></Divider>}
+        refreshing={Boolean(refreshing)}
+        onRefresh={onRefresh}
       />
     </View>
   );

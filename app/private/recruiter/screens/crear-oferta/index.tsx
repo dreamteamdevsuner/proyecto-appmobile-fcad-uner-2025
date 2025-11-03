@@ -12,31 +12,7 @@ import MapSearch from '@components/mapas/buscador-mapa';
 import { crearOferta } from '@services/OfertaService';
 import { useContext } from 'react';
 import { DataContext } from '@providers/DataContext';
-
-const recruiter: UserItem = {
-  id: '1',
-  name: 'Renata Scheneider',
-  role: 'Talent Acquisition Specialist',
-  lugar: 'Córdoba, Argentina',
-  avatarUrl:
-    'https://www.centralnoticia.cl/wp-content/uploads/2025/07/Bono-mujer-trabajadora-4.jpg',
-};
-
-const softSkillsList = [
-  { label: 'Trabajo en equipo', value: 'trabajo en equipo' },
-  { label: 'Creatividad', value: 'creatividad' },
-  { label: 'Organización', value: 'organización' },
-];
-
-const hardSkillsList = [
-  { label: 'React native', value: 'react native' },
-  { label: 'Python', value: 'python' },
-  { label: 'Figma', value: 'figma' },
-  { label: 'Miro', value: 'miro' },
-  { label: 'Ilustrator', value: 'ilustrator' },
-  { label: 'Whimsical', value: 'whimsical' },
-  { label: 'Expo', value: 'expo' },
-];
+import { useAuth } from '@appContext/authContext';
 
 const idioma = [
   { label: 'Inglés', value: 'Inglés' },
@@ -107,7 +83,15 @@ const CrearOferta = ({ navigation }: any) => {
     modalidad: modalidadList,
     tipoJornada: jornadaList,
     contratacion: contratoList,
+    softSkills,
+    hardSkills,
   } = useContext(DataContext);
+  const softSkillsList = softSkills.map((x) => {
+    return { label: x.nombre, value: x.id };
+  });
+  const hardSkillsList = hardSkills.map((x) => {
+    return { label: x.nombre, value: x.id };
+  });
   const inputTheme = useInputTheme();
   const [modalidadOpen, setModalidadOpen] = useState(false);
   const [jornadaOpen, setJornadaOpen] = useState(false);
@@ -116,6 +100,9 @@ const CrearOferta = ({ navigation }: any) => {
   const [hardSkillsOpen, setHardSkillsOpen] = useState(false);
   const [idiomasOpen, setIdiomasOpen] = useState<boolean[]>([false]);
   const [nivelesOpen, setNivelesOpen] = useState<boolean[]>([false]);
+  const {
+    state: { user },
+  } = useAuth();
 
   // const [idiomasNivelesPickers, setIdiomasNivelesPickers] = useState<
   //   IdiomaNivel[]
@@ -123,23 +110,25 @@ const CrearOferta = ({ navigation }: any) => {
 
   const [formValues, setFormValues] = useState<OfertaValues>({
     ...initialValues,
-    softSkills: [],
-    hardSkills: [],
   });
 
   const handleSubmit = async (values: OfertaValues) => {
     try {
-      const nuevaOferta = await crearOferta({
-        titulo: values.titulo,
-        descripcion: values.descripcion,
-        idusuario: '31c8ce0c-559a-42e5-89bb-87c32d38659b',
-        idmodalidad: values.modalidad,
-        idtipojornada: values.jornada,
-        idcontratacion: values.contrato,
-      });
+      if (user) {
+        const nuevaOferta = await crearOferta({
+          titulo: values.titulo,
+          descripcion: values.descripcion,
+          idusuario: user.id,
+          idmodalidad: values.modalidad,
+          idtipojornada: values.jornada,
+          idcontratacion: values.contrato,
+          idsoftskills: formValues.softSkills,
+          idhardskills: formValues.hardSkills,
+        });
 
-      console.log('Oferta creada:', nuevaOferta);
-      alert('Oferta publicada con éxito 🎉');
+        console.log('Oferta creada:', nuevaOferta);
+        if (nuevaOferta) alert('Oferta publicada con éxito 🎉');
+      }
     } catch (error: any) {
       console.error(error);
       alert('Error al crear la oferta');
@@ -156,7 +145,6 @@ const CrearOferta = ({ navigation }: any) => {
               navigation.navigate(ROUTES.RECRUITER_CREAR_OFERTA_PREVIEW, {
                 data: {
                   ...formValues,
-                  recruiter,
                 },
               });
             }}
@@ -258,7 +246,6 @@ const CrearOferta = ({ navigation }: any) => {
             useEffect(() => {
               setFormValues((prev) => ({
                 ...prev,
-                ...values,
                 softSkills: prev.softSkills,
                 hardSkills: prev.hardSkills,
                 localizacion: prev.localizacion,
@@ -408,12 +395,12 @@ const CrearOferta = ({ navigation }: any) => {
                   setOpen={setSoftSkillsOpen}
                   theme="DARK"
                   value={formValues.softSkills}
-                  setValue={(callback) => {
+                  setValue={(callback: (prev: string[]) => string[]) =>
                     setFormValues((prev) => ({
                       ...prev,
                       softSkills: callback(prev.softSkills),
-                    }));
-                  }}
+                    }))
+                  }
                   items={softSkillsList}
                   placeholder="Selecciona soft skill"
                   zIndex={2000}
@@ -429,12 +416,12 @@ const CrearOferta = ({ navigation }: any) => {
                   setOpen={setHardSkillsOpen}
                   theme="DARK"
                   value={formValues.hardSkills}
-                  setValue={(callback) => {
+                  setValue={(callback: (prev: string[]) => string[]) =>
                     setFormValues((prev) => ({
                       ...prev,
                       hardSkills: callback(prev.hardSkills),
-                    }));
-                  }}
+                    }))
+                  }
                   items={hardSkillsList}
                   placeholder="Selecciona hard skill"
                   zIndex={1000}

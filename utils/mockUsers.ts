@@ -14,16 +14,19 @@ const MOCK_USERS: ProfileUser[] = [
     skills: ['UX', 'Figma'],
     offers: [
       {
+        id: 1,
         name: 'UX Santander',
         status: 'Activa',
         description: 'Lorem Ipsum Dolor',
       },
       {
+        id: 2,
         name: 'Frontend Naranja',
         status: 'Activa',
         description: 'Lorem Ipsum Dolor',
       },
       {
+        id: 3,
         name: 'DevOps',
         status: 'Pausada',
         description: 'Lorem Ipsum Dolor',

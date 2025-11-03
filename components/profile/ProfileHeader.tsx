@@ -1,15 +1,12 @@
-import MaterialDesignIcons from '@react-native-vector-icons/material-design-icons';
 import { View, Image, Text, StyleSheet } from 'react-native';
 import { Surface } from 'react-native-paper';
-import { ProfileUser } from '../../types/ProfileUser';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import Octicons from '@expo/vector-icons/Octicons';
 
 interface ProfileHeaderProps {
-  name: string;
-  avatarUrl?: string;
-  ocupation?: string;
-  city?: string;
+  nombre: string;
+  fotoperfil?: string;
+  rol?: string;
+  ciudad?: string;
   profileScreenType: ProfileScreenType;
 }
 
@@ -21,16 +18,16 @@ export enum ProfileScreenType {
 }
 
 export const ProfileHeader = ({
-  name,
-  avatarUrl,
-  ocupation,
-  city,
+  nombre,
+  fotoperfil,
+  rol,
+  ciudad,
   profileScreenType,
 }: ProfileHeaderProps) => {
   return (
     <Surface style={styles.surface} mode="flat" elevation={4}>
       <Image
-        source={{ uri: avatarUrl }}
+        source={{ uri: fotoperfil }}
         style={styles.image}
         width={124}
         height={124}
@@ -57,7 +54,7 @@ export const ProfileHeader = ({
             }}
           >
             <Text style={{ fontSize: 24, color: '#FFFFFF' }}>
-              ¡Hola {name}!
+              ¡Hola {nombre.trim()}!
             </Text>
             <Text
               style={{
@@ -85,9 +82,9 @@ export const ProfileHeader = ({
             }}
           >
             <View>
-              <Text style={{ fontSize: 24, color: '#FFFFFF' }}>{name}</Text>
+              <Text style={{ fontSize: 24, color: '#FFFFFF' }}>{nombre}</Text>
               <Text style={{ fontSize: 16, flexShrink: 1, color: '#FFFFFF' }}>
-                {ocupation}
+                {rol}
               </Text>
             </View>
             <View style={{ flexDirection: 'row', gap: 4 }}>
@@ -97,7 +94,7 @@ export const ProfileHeader = ({
                 ellipsizeMode="tail"
                 style={{ color: '#FFFFFF' }}
               >
-                {city}
+                {ciudad}
               </Text>
             </View>
           </View>

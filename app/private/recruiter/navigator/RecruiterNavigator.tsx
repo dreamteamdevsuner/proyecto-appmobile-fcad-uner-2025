@@ -79,16 +79,6 @@ const RecruiterNavigator = () => {
           ),
         }}
       ></Tab.Screen>
-      <Tab.Screen
-        name={ROUTES.RECRUITER_CREAR_OFERTA}
-        component={CrearOfertaNavigator}
-        options={{
-          title: 'Nueva Oferta',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="plus" size={size} color={color} />
-          ),
-        }}
-      ></Tab.Screen>
     </Tab.Navigator>
   );
 };
