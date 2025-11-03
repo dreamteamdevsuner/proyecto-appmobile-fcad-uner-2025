@@ -18,7 +18,7 @@ type Props = RecruiterTabScreenProps<
 >;
 
 const OffersTab = ({ route }: Props): React.JSX.Element => {
-  const { offers } = route.params;
+  const { offers, refreshing, onRefresh } = route.params;
 
   const navigator =
     useNavigation<NativeStackNavigationProp<PrivateStackParamList>>();
@@ -55,6 +55,8 @@ const OffersTab = ({ route }: Props): React.JSX.Element => {
           />
         }
         ItemSeparatorComponent={() => <Divider></Divider>}
+        refreshing={Boolean(refreshing)}
+        onRefresh={onRefresh}
       />
     </View>
   );

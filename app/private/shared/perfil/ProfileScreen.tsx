@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { PrivateStackParamList as RecruiterStackParamList } from '../../recruiter/navigator/types';
 import { PrivateStackParamList as CandidateStackParamList } from '../../candidates/navigator/types';
@@ -114,15 +114,14 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
   const [notFound, setNotFound] = useState<boolean>(false);
   const [isOwnProfile, setIsOwnProfile] = useState<boolean>(false);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      setLoading(true);
+  const fetchProfile = useCallback(
+    async (silent = false) => {
+      if (!silent) setLoading(true);
       try {
-        const searchId = paramsUserId || state.user!.id;
+        const searchId = paramsUserId || state.user?.id;
 
         if (!searchId) {
           setNotFound(true);
-          setLoading(false);
           return;
         }
 
@@ -135,8 +134,6 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
         }
 
         const tipoUsuario = usuarioBase.tipousuario?.nombre;
-
-        console.log('Tipo usuario', usuarioBase.tipousuario);
 
         // vista normalizada
         let normalized: PerfilView = {
@@ -156,17 +153,14 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
           ofertasPublicadas: [],
         };
 
-        // TODO: verificar si enlaces son solo para profesional o ambos
         const enlaces = await getEnlaces(searchId.toString());
         if (enlaces) normalized.enlaces = enlaces;
 
         if (tipoUsuario === Role.PROFESIONAL) {
-          // profesional: obtener profesional, estudios, skills y experiencia
           const profesional = await getProfesional(searchId.toString());
           if (profesional) {
             const estudios = (await getEstudios(profesional.id)) || [];
             const skillsRaw = (await getSkills(profesional.id)) || [];
-            // Mapear skills a las categorías esperadas (mínimo: poner todo en 'habilidades')
             const habilidades = skillsRaw.map((s: any) => ({
               nombre: s.skill?.[0]?.nombre || s.skill?.nombre || '',
             }));
@@ -180,12 +174,10 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
             normalized.experiencia =
               (await getExperiencia(searchId.toString())) || [];
           } else {
-            // No tiene perfil profesional (pero usuario existe)
             normalized.experiencia =
               (await getExperiencia(searchId.toString())) || [];
           }
         } else if (tipoUsuario === Role.RECLUTADOR) {
-          // reclutador: obtener reclutador, experiencia y ofertas
           const reclutador = await getReclutador(searchId.toString());
           normalized.experiencia =
             (await getExperiencia(searchId.toString())) || [];
@@ -193,29 +185,41 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
             (await getOfertasReclutador(searchId.toString())) || [];
           normalized.ofertasPublicadas = ofertas;
         } else {
-          // usuario sin tipo claro: intentar tomar experiencia y enlaces
           normalized.experiencia =
             (await getExperiencia(searchId.toString())) || [];
         }
 
         setProfileUser(normalized);
-        console.log('PERFIL NORMALIZADO: ', normalized);
         setNotFound(false);
       } catch (error) {
         console.error('Error fetching profile:', error);
         setNotFound(true);
       } finally {
-        setLoading(false);
+        if (!silent) setLoading(false);
       }
-    };
+    },
+    [paramsUserId, state.user],
+  );
+
+  useEffect(() => {
     fetchProfile();
-  }, [paramsUserId]); // recargar si el userId en params cambia?
+  }, [fetchProfile]);
 
   console.log('NotFound: ', notFound);
 
   const [fabState, setFabState] = useState({ open: false });
   const onStateChange = ({ open }: any) => setFabState({ open });
   const { open } = fabState;
+
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await fetchProfile(true);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [fetchProfile]);
 
   // Mostrar FAB sólo si es el perfil propio y además se está en la
   // pantalla de perfil (Recruiter o Candidate). En otras rutas no debe verse.
@@ -241,7 +245,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
       ].filter(Boolean) as string[])
     : [];
 
-  // offers del recruiter
+  // offers del recruiter (TODO: cambiar estados por enum)
   const { activeOffers, pausedOffers, closedOffers } = useMemo(() => {
     if (!profileUser || !isReclutador(profileUser)) {
       return { activeOffers: [], pausedOffers: [], closedOffers: [] };
@@ -251,7 +255,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
 
     return {
       activeOffers: allOffers.filter(
-        (o) => o.estadooferta?.nombre === 'activa',
+        (o) => o.estadooferta?.nombre === 'publicada',
       ),
       pausedOffers: allOffers.filter(
         (o) => o.estadooferta?.nombre === 'pausada',
@@ -260,9 +264,11 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
         (o) => o.estadooferta?.nombre === 'cerrada',
       ),
     };
-  }, [profileUser]);
+  }, [profileUser?.ofertasPublicadas]);
 
-  const fabActions = useMemo(() => {
+  const fabActions = useMemo<
+    React.ComponentProps<typeof FAB.Group>['actions']
+  >(() => {
     if (isReclutador(profileUser)) {
       return [
         {
@@ -272,6 +278,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
             navigator.navigate(ROUTES.RECRUITER_CREAR_OFERTA);
           },
           style: { backgroundColor: 'white' },
+          color: '#1c1c29a2',
         },
       ];
     }
@@ -283,6 +290,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
           label: 'Editar Perfil',
           onPress: () => console.log('Pressed Editar Perfil'),
           style: { backgroundColor: 'white' },
+          color: '#1c1c29a2',
         },
       ];
     }
@@ -340,6 +348,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
 
       <Tab.Navigator
         style={{
+          flex: 1,
           marginHorizontal: 8,
           marginBottom: 16,
           borderRadius: 30,
@@ -363,12 +372,18 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
             <Tab.Screen
               name={PROFILE_ROUTES.ABOUT_ME}
               component={AboutMe}
-              initialParams={{ user: profileUser }}
+              initialParams={{ user: profileUser, refreshing, onRefresh }}
+              options={{
+                title: 'Quien soy',
+              }}
             />
             <Tab.Screen
               name={PROFILE_ROUTES.WHAT_I_DO}
               component={WhatIDo}
-              initialParams={{ user: profileUser }}
+              initialParams={{ user: profileUser, refreshing, onRefresh }}
+              options={{
+                title: 'Lo que hago',
+              }}
             />
           </>
         ) : (
@@ -378,6 +393,8 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
               component={OffersTab}
               initialParams={{
                 offers: activeOffers,
+                refreshing,
+                onRefresh,
               }}
               options={{
                 title: 'Activas',
@@ -388,6 +405,8 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
               component={OffersTab}
               initialParams={{
                 offers: pausedOffers,
+                refreshing,
+                onRefresh,
               }}
               options={{
                 title: 'Pausadas',
@@ -398,6 +417,8 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
               component={OffersTab}
               initialParams={{
                 offers: closedOffers,
+                refreshing,
+                onRefresh,
               }}
               options={{
                 title: 'Cerradas',
