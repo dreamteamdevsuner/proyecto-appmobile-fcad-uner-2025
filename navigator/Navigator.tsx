@@ -21,8 +21,12 @@ const Navigator = () => {
         if (e === 'INITIAL_SESSION') {
           const user = await getUser();
 
-          if (user) {
+          if (user && state.token && state.refreshToken) {
             await restoreToken();
+            await supabase.auth.setSession({
+              access_token: state.token,
+              refresh_token: state.refreshToken,
+            });
           }
         }
         if (e === 'SIGNED_IN' && session) {
