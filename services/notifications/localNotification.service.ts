@@ -43,12 +43,12 @@ export const scheduleDailyNotificationProfesional = async (): Promise<void> => {
       body: 'Quizás está tu próximo trabajo soñando 😉',
     },
     trigger: {
-      //hour: 10,
-      // minute: 0,
-      // repeats: true
-      type: 'timeInterval',
-      seconds: 10,
-      repeats: false,
+      hour: 10,
+      minute: 0,
+      repeats: true,
+      //type: 'timeInterval',
+      //seconds: 10,
+      //repeats: false,
     },
   });
 };
@@ -66,12 +66,12 @@ export const scheduleDailyNotificationReclutador = async (): Promise<void> => {
       body: 'Puede estar tu próximo match laboral 😉',
     },
     trigger: {
-      //hour: 10,
-      // minute: 0,
-      // repeats: true,
-      type: 'timeInterval',
-      seconds: 10,
-      repeats: false,
+      hour: 10,
+      minute: 0,
+      repeats: true,
+      //type: 'timeInterval',
+      //seconds: 10,
+      //repeats: false,
     },
   });
 };

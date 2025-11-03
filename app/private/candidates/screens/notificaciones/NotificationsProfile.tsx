@@ -1,94 +1,76 @@
-import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import { OfertaItem } from '../../../../../types/OfertaItem';
-import { OfertasList } from '../../../../../components/listas';
-import ROUTES from '../../navigator/routes';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { PrivateStackParamList } from '../../navigator/types';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Text, ActivityIndicator } from 'react-native';
+import OfertasList3 from '../../../../../components/listas/ofertas-list/OfertasList3';
+import { useAuth } from '../../../../../appContext/authContext';
+import {
+  getUserNotifications,
+  markNotificationAsRead,
+  AppNotification,
+} from '../../../../../services/notifications/notifications.service';
 
-const data: OfertaItem[] = [
-  {
-    id: 1,
-    title: 'Diseñador UX/UI - Banco Santander',
-    subtitle: '¡Felicitaciones tenés un nuevo match!',
-  },
-  {
-    id: 2,
-    title: 'Diseñador UX/UI Senior - Mercado Libre',
-    subtitle: '¡Felicitaciones tenés un nuevo match!',
-  },
-  {
-    id: 3,
-    title: 'Diseñador UX/UI - Proyecto Freelance',
-    subtitle: '¡Felicitaciones tenés un nuevo match!',
-  },
-  {
-    id: 4,
-    title: 'UI Designer - Globant Gut',
-    subtitle: '¡Felicitaciones tenés un nuevo match!',
-  },
-];
+export default function NotificationsProfile() {
+  const { state } = useAuth();
+  const [notifications, setNotifications] = useState<AppNotification[]>([]);
+  const [loading, setLoading] = useState(true);
 
-const dato: OfertaItem[] = [
-  {
-    id: 1,
-    title: 'Diseñador UX/UI - Banco Santander',
-    subtitle: 'Renata Scheneider te ha enviado un mensaje.',
-  },
-  {
-    id: 2,
-    title: 'Diseñador UX/UI Senior - Mercado Libre',
-    subtitle: 'Mayra Roa te ha enviado un mensaje.',
-  },
-];
-
-const NotificacionesProfile = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<PrivateStackParamList>>();
-
-  const handleSelectOferta = (oferta: OfertaItem) => {
-    navigation.navigate(ROUTES.CANDIDATE_FAVORITOS_MATCHS, {
-      title: oferta.title,
-    });
+  const loadNotifications = async () => {
+    if (!state.user?.id) return;
+    console.log('User ID:', state.user.id);
+    const data = await getUserNotifications(state.user.id.toString());
+    console.log('Notificaciones traídas:', data);
+    setNotifications(data);
+    setLoading(false);
   };
+
+  useEffect(() => {
+    loadNotifications();
+  }, [state.user?.id]);
+
+  const handlePress = async (notif: any) => {
+    await markNotificationAsRead(notif.id);
+    loadNotifications();
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator size="large" color="#BEB52C" />
+      </View>
+    );
+  }
+
+  if (!notifications.length) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.noUsers}>No tenés notificaciones aún.</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <View style={styles.section}>
-        <Text style={styles.title}>Matchs</Text>
-        <OfertasList ofertas={data} onSelectOferta={handleSelectOferta} />
-      </View>
-      <View style={styles.section}>
-        <Text style={styles.title}>Mensajes</Text>
-        <OfertasList ofertas={dato} onSelectOferta={handleSelectOferta} />
-      </View>
+      <OfertasList3
+        ofertas={notifications.map((n) => ({
+          id: n.id,
+          title:
+            n.tipo === 'match'
+              ? 'Tenés un nuevo match 💛'
+              : 'Tenés un nuevo mensaje 💬',
+          subtitle: n.texto,
+        }))}
+        onSelectOferta={handlePress}
+      />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-    flex: 1,
-  },
-  section: {
-    backgroundColor: '#cdc7ceff',
-    borderRadius: 15,
-    padding: 10,
-    marginBottom: 10,
-  },
-  title: {
-    fontWeight: 'regular',
-    fontSize: 22,
-    marginBottom: 10,
-  },
+  container: { padding: 10, flex: 1 },
+  loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   noUsers: {
-    fontSize: 14,
-    marginLeft: 15,
-    fontStyle: 'italic',
+    fontSize: 16,
+    marginTop: 20,
+    textAlign: 'center',
     color: 'gray',
   },
 });
-
-export default NotificacionesProfile;

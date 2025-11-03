@@ -1,92 +1,76 @@
-import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import ROUTES from '../../navigator/routes';
-import { useNavigation } from '@react-navigation/native';
-import { UserItem } from '../../../../../types/UserItem';
-import { UserList } from '../../../../../components/listas';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Text, ActivityIndicator } from 'react-native';
+import OfertasList3 from '../../../../../components/listas/ofertas-list/OfertasList3';
+import { useAuth } from '../../../../../appContext/authContext';
+import {
+  getUserNotifications,
+  markNotificationAsRead,
+  AppNotification,
+} from '../../../../../services/notifications/notifications.service';
 
-const interesados: UserItem[] = [
-  {
-    id: 1,
-    name: 'Juana Costa',
-    subtitle: 'Le interesa tu oferta!',
-    avatarUrl: '',
-  },
-  {
-    id: 2,
-    name: 'Martín Pérez',
-    subtitle: 'Le interesa tu oferta!',
-    avatarUrl: '',
-  },
-  {
-    id: 3,
-    name: 'Sofía Reyes',
-    subtitle: 'Le interesa tu oferta!',
-    avatarUrl: '',
-  },
-];
+export default function NotificationsProfile() {
+  const { state } = useAuth();
+  const [notifications, setNotifications] = useState<AppNotification[]>([]);
+  const [loading, setLoading] = useState(true);
 
-const respondieron: UserItem[] = [
-  {
-    id: 4,
-    name: 'Juana Costa',
-    subtitle: 'Ha respondido a tu mensaje.',
-    avatarUrl: '',
-  },
-  {
-    id: 5,
-    name: 'Carolina Gómez',
-    subtitle: 'Ha respondido a tu mensaje.',
-    avatarUrl: '',
-  },
-];
-
-const NotificacionesProfile = () => {
-  const navigation = useNavigation();
-
-  const handleSelectUser = (user: UserItem) => {
-    navigation.navigate(ROUTES.RECRUITER_FAVORITOS_OFERTA, {
-      userId: user.id,
-      userName: user.name,
-    });
+  const loadNotifications = async () => {
+    if (!state.user?.id) return;
+    console.log('User ID:', state.user.id);
+    const data = await getUserNotifications(state.user.id.toString());
+    console.log('Notificaciones traídas:', data);
+    setNotifications(data);
+    setLoading(false);
   };
+
+  useEffect(() => {
+    loadNotifications();
+  }, [state.user?.id]);
+
+  const handlePress = async (notif: any) => {
+    await markNotificationAsRead(notif.id);
+    loadNotifications();
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator size="large" color="#BEB52C" />
+      </View>
+    );
+  }
+
+  if (!notifications.length) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.noUsers}>No tenés notificaciones aún.</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <View style={styles.section}>
-        <Text style={styles.title}>Mensajes</Text>
-        <UserList users={respondieron} onUserPress={handleSelectUser} />
-      </View>
-      <View style={styles.section}>
-        <Text style={styles.title}>Profesionales interesados</Text>
-        <UserList users={interesados} onUserPress={handleSelectUser} />
-      </View>
+      <OfertasList3
+        ofertas={notifications.map((n) => ({
+          id: n.id,
+          title:
+            n.tipo === 'match'
+              ? 'Tienes un nuevo match 💛'
+              : 'Tienes un nuevo mensaje 💬',
+          subtitle: n.texto,
+        }))}
+        onSelectOferta={handlePress}
+      />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-    flex: 1,
-  },
-  section: {
-    backgroundColor: '#cdc7ceff',
-    borderRadius: 15,
-    padding: 10,
-    marginBottom: 10,
-  },
-  title: {
-    fontWeight: 'regular',
-    fontSize: 22,
-    marginBottom: 10,
-  },
+  container: { padding: 10, flex: 1 },
+  loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   noUsers: {
-    fontSize: 14,
-    marginLeft: 15,
-    fontStyle: 'italic',
+    fontSize: 16,
+    marginTop: 20,
+    textAlign: 'center',
     color: 'gray',
   },
 });
-
-export default NotificacionesProfile;

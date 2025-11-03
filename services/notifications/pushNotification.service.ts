@@ -2,12 +2,14 @@ import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import { supabase } from '../../supabase/supabaseClient';
 
-// 1️⃣ Función para registrar push token en Expo
+// Función para registrar push token en Expo
 export async function registerForPushNotifications(): Promise<string | null> {
   if (!Device.isDevice) {
-    console.warn(
-      'Solo se pueden enviar notificaciones push desde un dispositivo físico',
-    );
+    if (__DEV__) {
+      console.warn(
+        'Solo se pueden enviar notificaciones push desde un dispositivo físico',
+      );
+    }
     return null;
   }
 
@@ -20,7 +22,7 @@ export async function registerForPushNotifications(): Promise<string | null> {
   }
 
   if (finalStatus !== 'granted') {
-    alert('No se otorgaron permisos para notificaciones 😢');
+    alert('No se otorgaron permisos para notificaciones.');
     return null;
   }
 
@@ -28,7 +30,7 @@ export async function registerForPushNotifications(): Promise<string | null> {
   return tokenData.data;
 }
 
-// 2️⃣ Función para guardar token en Supabase
+// Función para guardar token en Supabase
 export async function savePushTokenToDatabase(userId: string, token: string) {
   const { data, error } = await supabase
     .from('usuario')
