@@ -181,7 +181,7 @@ export const cargarDatosInicialesPerfil = async (
       .from('profesional')
       .select('id, idmodalidad, idtipojornada')
       .eq('idusuario', userId)
-      .single();
+      .maybeSingle();
 
     //Obtener skills del profesional
     const profesionalId = prof?.id;
@@ -201,7 +201,7 @@ export const cargarDatosInicialesPerfil = async (
         });
         habilidades = skillsBD.filter(s => s.skill?.[0]?.idtiposkill === 1).map(s => String(s.skill![0].id));
         herramientas = skillsBD.filter(s => s.skill?.[0]?.idtiposkill === 2).map(mapearSkill);
-        idiomas = skillsBD.filter(s => s.skill?.[0]?.idtiposkill === 3).map(mapearSkill);;
+        idiomas = skillsBD.filter(s => s.skill?.[0]?.idtiposkill === 3).map(mapearSkill);
       }
       //Carga estudios
       const { data: estudiosBD } = await supabase
@@ -242,9 +242,10 @@ export const cargarDatosInicialesPerfil = async (
       estudios: estudios,
       redes,
       redSeleccionada: '',
-      //Campos pendientes
-      aboutMe: '',
+      aboutMe: usuario.bio || '',
       contratoSeleccionado: '',
+      lat: usuario.direccion?.latitud ?? null,
+      lng: usuario.direccion?.longitud ?? null,
     };
   } else {
     //Datos de reclutador
@@ -252,12 +253,14 @@ export const cargarDatosInicialesPerfil = async (
       .from('reclutador')
       .select('nombreempresa')
       .eq('idusuario', userId)
-      .single();
+      .maybeSingle();
 
     return {
       ...datosBase,
       institucion: reclu?.nombreempresa || '',
       palabrasClave: [],   //pendiente- no esta en base de datos
+      lat: usuario.direccion?.latitud ?? null,
+      lng: usuario.direccion?.longitud ?? null,
     };
   }
 };
@@ -272,7 +275,6 @@ export const guardarPerfilProfesional = async (
 
     if (values.avatarBase64) {
       console.log('Detectada nueva imagen base64, subiendo...');
-
       nuevaFotoUrl = await uploadAvatar(values.avatarBase64, userId);
     }
 
@@ -281,6 +283,7 @@ export const guardarPerfilProfesional = async (
       apellido: values.apellido,
       rol: values.profesion,
       email: values.email,
+      bio: values.aboutMe,
     };
 
     if (nuevaFotoUrl) {
@@ -374,7 +377,6 @@ export const guardarPerfilProfesional = async (
       await supabase.from('enlace').insert(enlacesParaInsertar).throwOnError();
     }
 
-    console.warn("Campos 'aboutMe', no se guardan porque no existen en la base de datos.");
     return { success: true };
   } catch (error) {
     console.error('Error al guardar perfil profesional: ', error);
@@ -391,7 +393,7 @@ export const guardarPerfilReclutador = async (
     let nuevaFotoUrl: string | null = null;
 
     if (values.avatarBase64) {
-      console.log('detectada nueva imagen base64 para reclutador, subiendo...');
+      console.log('Detectada nueva imagen base64 para reclutador, subiendo...');
       nuevaFotoUrl = await uploadAvatar(values.avatarBase64, userId);
     }
 
@@ -432,7 +434,7 @@ export const guardarPerfilReclutador = async (
       nombreempresa: values.institucion,
     }, { onConflict: 'idusuario' }).throwOnError();
 
-    console.warn("El campo 'palabraClave' no se guarda porque no existe en la base de datos.");
+    // console.warn("El campo 'palabraClave' no se guarda porque no existe en la base de datos.");
     return { success: true };
   } catch (error) {
     console.error('Error al guardar perfil reclutador: ', error);

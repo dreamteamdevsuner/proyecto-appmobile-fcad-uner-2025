@@ -25,4 +25,5 @@ export interface IUser {
   nombre: string;
   rol: string;
   tipousuario: ITipousuario;
+  bio: string;
 }

@@ -8,6 +8,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { supabase } from '../supabase/supabaseClient';
 import { getUser, SecureStoreItem } from '@utils/secure-store';
 import { setItemAsync } from 'expo-secure-store';
+import { RealtimeChannel } from '@supabase/supabase-js';
 
 //Agregar Root Stack Params Luego
 const Stack = createNativeStackNavigator();
@@ -15,14 +16,17 @@ const Navigator = () => {
   const { state, logout, restoreToken, login } = useAuth();
 
   useEffect(() => {
-    console.log('here');
     const { data: onAuthStateSubscription } = supabase.auth.onAuthStateChange(
       async function (e, session) {
         if (e === 'INITIAL_SESSION') {
           const user = await getUser();
 
-          if (user) {
+          if (user && state.token && state.refreshToken) {
             await restoreToken();
+            await supabase.auth.setSession({
+              access_token: state.token,
+              refresh_token: state.refreshToken,
+            });
           }
         }
         if (e === 'SIGNED_IN' && session) {
@@ -44,15 +48,40 @@ const Navigator = () => {
         }
       },
     );
+
     return () => {
       return onAuthStateSubscription.subscription.unsubscribe();
     };
   }, []);
 
   useEffect(() => {
+    let loggedUserUpdatesListener: RealtimeChannel;
     if (state.user) {
+      console.log('listening');
       SplashScreen.hideAsync();
+      // Assuming a 'profiles' table with user-specific data
+      loggedUserUpdatesListener = supabase
+        .channel('public:usuario')
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'usuario',
+            filter: `id=eq.${state.user.id}`,
+          },
+          (payload) => {
+            console.log('Profile updated:', payload.new);
+            // Update UI or application state with new profile data
+          },
+        )
+        .subscribe();
     }
+    return () => {
+      if (loggedUserUpdatesListener) {
+        loggedUserUpdatesListener.unsubscribe();
+      }
+    };
   }, [state.user]);
 
   return state.user ? (
