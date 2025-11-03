@@ -78,28 +78,12 @@ export type PerfilView = {
   ofertasPublicadas?: OfertaConDetalles[];
 };
 
-// helper - extraer o eliminar despues
-const mapOfferForTab = (offer: any): Offer => {
-  return {
-    id: offer.id,
-    name: offer.titulo,
-    status:
-      (offer.estadooferta &&
-        (offer.estadooferta[0]?.nombre || offer.estadooferta.nombre)) ||
-      (offer.activo ? 'Activa' : 'Pausada'),
-    description: offer.descripcion || '',
-  };
-};
-
 const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
   const { state } = useAuth();
-  console.log('STATE USER: ', state.user);
 
   const isFocused = useIsFocused();
 
   const paramsUserId = route.params ? route.params.userId : undefined;
-  console.log(paramsUserId);
-
   const initialRouteName = route.params?.initialRouteName ?? undefined;
 
   const navigator =
@@ -204,8 +188,6 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
   useEffect(() => {
     fetchProfile();
   }, [fetchProfile]);
-
-  console.log('NotFound: ', notFound);
 
   const [fabState, setFabState] = useState({ open: false });
   const onStateChange = ({ open }: any) => setFabState({ open });
