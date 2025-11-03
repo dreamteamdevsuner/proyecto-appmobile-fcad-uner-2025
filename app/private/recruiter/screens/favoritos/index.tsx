@@ -8,11 +8,10 @@ import { PrivateStackParamList as CandidateStackParamList } from '../../../candi
 import ROUTES from '../../navigator/routes';
 import CAND_ROUTES from '../../../candidates/navigator/routes';
 import { CompositeNavigationProp } from '@react-navigation/native';
-import { DBOfertaTrabajo } from '@database/DBOfertaTrabajo';
-import { getOfertas } from '@services/OfertaService';
+import { getMatchRecientes, getOfertasConMatch } from '@services/OfertaService';
 import { useEffect, useState } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { matchs } from '@utils/mockOfertasMatch';
+import { useAuth } from '@appContext/authContext';
 
 type PrivateNav = NativeStackNavigationProp<
   RecruiterStackParamList,
@@ -26,7 +25,12 @@ type Props = {
   navigation: CompositeNavigationProp<PrivateNav, CandidateNav>;
 };
 const Favoritos: React.FC<Props> = ({ navigation }) => {
+  const {
+    state: { user: usuarioLogueado },
+  } = useAuth();
+
   const [ofertas, setOfertas] = useState<Item[]>([]);
+  const [matchs, setMatchs] = useState<UserItem[]>([]);
   const [loading, setLoading] = useState(false);
 
   const handleSelectOferta = (oferta: Item) => {
@@ -41,18 +45,34 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
       title: user.name,
     });
   };
-
-  const fetchData = async () => {
+  const fetchMatchsRecientes = async () => {
     try {
-      setLoading(true);
-      const ofertasData: DBOfertaTrabajo[] = await getOfertas();
-      const ofertasItem: Item[] = ofertasData.map((oferta) => ({
-        id: oferta.id.toString(),
-        titulo: oferta.titulo,
-        subtitulo: `Postulantes: 11`,
-      }));
-      setOfertas(ofertasItem);
-      console.log('Ofertas fetched:', ofertasData);
+      if (usuarioLogueado) {
+        setLoading(true);
+
+        const matchsData = await getMatchRecientes(usuarioLogueado.id);
+        setMatchs(matchsData);
+        console.log('Matchs fetched:', matchsData);
+      }
+    } catch (error) {
+      console.error('Error fetching matchs:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const fetchMatchsOfertas = async () => {
+    try {
+      if (usuarioLogueado) {
+        setLoading(true);
+        const ofertasData = await getOfertasConMatch(usuarioLogueado.id);
+        const ofertasItem: Item[] = ofertasData.map((oferta) => ({
+          id: oferta.id.toString(),
+          titulo: oferta.titulo,
+          subtitulo: `Postulantes: ${oferta.postulantes}`,
+        }));
+        setOfertas(ofertasItem);
+        console.log('Ofertas fetched:', ofertasData);
+      }
     } catch (error) {
       console.error('Error fetching ofertas:', error);
     } finally {
@@ -61,7 +81,8 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
   };
 
   useEffect(() => {
-    fetchData();
+    fetchMatchsRecientes();
+    fetchMatchsOfertas();
   }, []);
 
   return (
@@ -113,7 +134,7 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
         >
           <Text style={styles.title}>Mis matchs</Text>
           <TouchableOpacity
-            onPress={fetchData}
+            onPress={fetchMatchsOfertas}
             style={styles.refreshButton}
             disabled={loading}
           >

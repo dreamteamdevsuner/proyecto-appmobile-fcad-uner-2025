@@ -15,7 +15,7 @@ import {
 } from '@react-navigation/native';
 import React, { useEffect } from 'react';
 import { DBUsuario } from '@database/DBUsuario';
-import { getUsuariosMatchOferta } from '@services/UsuarioMatchService';
+import { getUsuariosMatchOferta } from '@services/OfertaService';
 
 type PrivateNav = NativeStackNavigationProp<
   RecruiterStackParamList,
@@ -49,7 +49,6 @@ const FavoritosOferta: React.FC = () => {
         id: usuario.id,
         name: `${usuario.nombre} ${usuario.apellido}`,
         role: usuario.rol,
-        subtitulo: `Postulantes: 11`,
         avatarUrl: usuario.fotoperfil || undefined,
       }));
       setUsuarios(usuariosItem);
@@ -102,7 +101,7 @@ const FavoritosOferta: React.FC = () => {
             })
           }
         >
-          <Text style={styles.title}>Oferta:</Text>
+          <Text style={styles.title}>{route.params.title}</Text>
         </View>
         <UserList
           users={usuarios}

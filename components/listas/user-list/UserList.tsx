@@ -31,7 +31,7 @@ const UserList: React.FC<Props> = ({
 }) => {
   const navigation = useNavigation<NavigationProp>();
 
-  const [pressedId, setPressedId] = useState<number | null>(null);
+  const [pressedId, setPressedId] = useState<string | null>(null);
   const [selectedUser, setSelectedUser] = useState<UserItem | null>(null);
   const [dialogVisible, setDialogVisible] = useState(false);
 
