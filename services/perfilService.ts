@@ -319,22 +319,27 @@ export const guardarPerfilProfesional = async (
       idtipojornada: values.jornadaSeleccionada ? Number(values.jornadaSeleccionada) : null,
     }, { onConflict: 'idusuario' }).throwOnError();
 
-    //Borrar e insertar skills
+    // Borrar e insertar skills
     const { data: profData } = await supabase.from('profesional').select('id').eq('idusuario', userId).single();
     if (!profData) throw new Error('No se encontro el perfil profesional.');
     const profesionalId = profData.id;
 
-    await supabase.from('profesionalskill').delete().eq('idprofesional', profesionalId);
+    // Eliminar skills previas (lanzar error en caso de fallo)
+    await supabase.from('profesionalskill').delete().eq('idprofesional', profesionalId).throwOnError();
+
+    // Normalizar las listas: todas como objetos { idskill: string, idnivel: string | number | null }
     const todasLasSkills = [
-      ...values.habilidades.map(id => ({ idskill: id, idnivel: null })),
-      ...values.herramientas,
-      ...values.idiomasSeleccionados,
+      ...values.habilidades.map(id => ({ idskill: String(id), idnivel: null })),
+      ...values.herramientas.map(h => ({ idskill: String(h.idskill), idnivel: h.idnivel ?? null })),
+      ...values.idiomasSeleccionados.map(i => ({ idskill: String(i.idskill), idnivel: i.idnivel ?? null })),
     ];
-    const skillsParaInsertar = todasLasSkills.map(s => ({ 
+
+    // Preparar payload respetando los tipos de la BD: idskill es string (uuid), idnivel es number | null
+    const skillsParaInsertar = todasLasSkills.map(s => ({
       idprofesional: profesionalId,
-      idskill: Number(s.idskill),
-      idnivel: s.idnivel ? Number(s.idnivel) : null
-      }));
+      idskill: s.idskill,
+      idnivel: s.idnivel ? Number(s.idnivel) : null,
+    }));
 
     if (skillsParaInsertar.length > 0) {
       await supabase.from('profesionalskill').insert(skillsParaInsertar).throwOnError();
