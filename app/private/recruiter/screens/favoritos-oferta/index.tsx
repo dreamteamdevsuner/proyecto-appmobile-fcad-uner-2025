@@ -14,8 +14,8 @@ import {
   useRoute,
 } from '@react-navigation/native';
 import React, { useEffect } from 'react';
-import { DBUsuario } from '@database/DBUsuario';
-import { getUsuariosMatchOferta } from '@services/OfertaService';
+import { getUsuariosMatchOferta, UsuarioMatch } from '@services/OfertaService';
+import { useAuth } from '@appContext/authContext';
 
 type PrivateNav = NativeStackNavigationProp<
   RecruiterStackParamList,
@@ -38,11 +38,13 @@ const FavoritosOferta: React.FC = () => {
   const route = useRoute<RouteProps>();
   const [loading, setLoading] = React.useState(false);
   const [usuarios, setUsuarios] = React.useState<UserItem[]>([]);
-
+  const {
+    state: { user: usuarioLogueado },
+  } = useAuth();
   const fetchData = async () => {
     try {
       setLoading(true);
-      const usuariosData: DBUsuario[] = await getUsuariosMatchOferta(
+      const usuariosData: UsuarioMatch[] = await getUsuariosMatchOferta(
         route.params.ofertaId,
       );
       const usuariosItem: UserItem[] = usuariosData.map((usuario) => ({
@@ -50,6 +52,7 @@ const FavoritosOferta: React.FC = () => {
         name: `${usuario.nombre} ${usuario.apellido}`,
         role: usuario.rol,
         avatarUrl: usuario.fotoperfil || undefined,
+        idOfertaTrabajoMatch: usuario.idOfertaTrabajoMatch,
       }));
       setUsuarios(usuariosItem);
     } catch (error) {
@@ -73,12 +76,17 @@ const FavoritosOferta: React.FC = () => {
   };
 
   const handleSelectConversation = (user: UserItem) => {
-    navigation.navigate(ROUTES.RECRUITER_CONVERSACION, {
-      title: user.name,
-      myName: 'Renata',
-      otherAvatarUrl: user.avatarUrl,
-      myAvatarUrl: undefined,
-    });
+    console.log(user.id, user.idOfertaTrabajoMatch);
+    if (usuarioLogueado) {
+      navigation.navigate(ROUTES.RECRUITER_CONVERSACION, {
+        title: user.name,
+        myName: usuarioLogueado?.nombre,
+        otherAvatarUrl: user.avatarUrl,
+        myAvatarUrl: undefined,
+        idOfertaTrabajoMatch: user.idOfertaTrabajoMatch,
+        idUsuarioProfesional: user.id,
+      });
+    }
   };
   return (
     <View style={styles.container}>

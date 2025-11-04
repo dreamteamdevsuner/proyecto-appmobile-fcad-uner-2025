@@ -154,16 +154,21 @@ export async function crearOferta(data: OfertaTrabajoData) {
     throw err;
   }
 }
+export type UsuarioMatch = DBUsuario & { idOfertaTrabajoMatch: string };
 
 export async function getUsuariosMatchOferta(
   ofertaId: string,
-): Promise<DBUsuario[]> {
+): Promise<UsuarioMatch[]> {
   const { data, error } = await supabase
     .from('ofertatrabajomatch')
     .select(
       `
+      id,
       profesional:profesional (
-        usuario:usuario (id, nombre, apellido, email, fotoperfil, idplan, activo, rol)
+        id,
+        usuario:usuario (
+          id, nombre, apellido, email, fotoperfil, idplan, activo, rol, bio
+        )
       )
     `,
     )
@@ -173,23 +178,27 @@ export async function getUsuariosMatchOferta(
   if (error) throw new Error(error.message);
   if (!data) return [];
 
-  const usuarios: DBUsuario[] = [];
-
-  for (const match of data) {
-    const profs = Array.isArray(match.profesional)
+  const usuarios: UsuarioMatch[] = data.flatMap((match) => {
+    const profesionales = Array.isArray(match.profesional)
       ? match.profesional
       : match.profesional
         ? [match.profesional]
         : [];
-    for (const prof of profs) {
-      const usrs = Array.isArray(prof.usuario)
+
+    return profesionales.flatMap((prof) => {
+      const usuarios = Array.isArray(prof.usuario)
         ? prof.usuario
         : prof.usuario
           ? [prof.usuario]
           : [];
-      usuarios.push(...usrs);
-    }
-  }
+
+      return usuarios.map((usr) => ({
+        ...usr,
+        id: prof.id,
+        idOfertaTrabajoMatch: match.id,
+      }));
+    });
+  });
 
   console.log(`Usuarios fetched ofertaId ${ofertaId}:`, usuarios);
   return usuarios;
