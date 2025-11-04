@@ -7,4 +7,5 @@ export interface UserItem {
   ofertaId?: number;
   ofertaName?: string;
   lugar?: string;
+  idOfertaTrabajoMatch?: string;
 }
