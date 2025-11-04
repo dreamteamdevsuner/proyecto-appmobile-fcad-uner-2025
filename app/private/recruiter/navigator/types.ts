@@ -14,7 +14,7 @@ export type PrivateStackParamList = {
     otherAvatarUrl?: string;
     myAvatarUrl?: string;
     idOfertaTrabajoMatch?: string;
-    idUsuarioProfesional: string;
+    idUsuarioProfesional?: string;
   };
   [ROUTES.RECRUITER_PROFILE]: { userId?: number; title?: string };
   [ROUTES.RECRUITER_SETTINGS]: undefined;
