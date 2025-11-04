@@ -3,6 +3,7 @@
     "name": "JOBSY",
     "slug": "jobsy-app",
     "version": "1.0.0",
+    "scheme": "jobsy",
     "orientation": "portrait",
     "icon": "./assets/images/logo/logo-jobsy-favicon-jobsy-nyb.png",
     "userInterfaceStyle": "dark",
