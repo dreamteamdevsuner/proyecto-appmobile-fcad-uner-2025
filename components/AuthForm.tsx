@@ -19,6 +19,11 @@ import candidateService from '../services/users/Candidate';
 // import useAuth from '../hooks/useAuth';
 import userService from '../services/users/User.service';
 import { signIn, signUp } from '@services/apiAuth';
+import PUBLIC_NAVIGATOR_ROUTES from '@app/public/PUBLIC_NAVIGATOR_ROUTES';
+
+interface AuthFormProps {
+  navigation: any;
+}
 
 interface AppSnackProps {
   visible: boolean;
@@ -69,7 +74,7 @@ const formValidationSchema = Yup.object({
     .email('ingresar un email válido')
     .required('campo obligatorio'),
 });
-const AuthForm = () => {
+const AuthForm = ({ navigation }: AuthFormProps) => {
   const { state, login } = useAuth();
   // const { error, handleSignIn, loading } = useAuth();
   const { handleHideSnackbar, handleShowSnackbar, showSnackbar } =
@@ -159,17 +164,21 @@ const AuthForm = () => {
                 ></FormInputWithHelper>
 
                 <View style={authStyles.forgotPasswordContainer}>
-                  <TouchableWithoutFeedback style={authStyles.forgotPassword}>
+                  <TouchableWithoutFeedback 
+                    style={authStyles.forgotPassword}
+                    onPress={() => 
+                      navigation.navigate(PUBLIC_NAVIGATOR_ROUTES.RESET_PASSWORD)}
+                  >
                     <Text
                       variant="labelMedium"
                       style={{
-                        borderBottomColor: 'black',
+                        // borderBottomColor: 'black',
                         borderBottomWidth: 1,
-
-                        top: -15,
+                        color: '#b58df1',
+                        fontWeight: 'bold',
+                        top: -10,
                       }}
-                    >
-                      ¿Olvidaste tu contraseña ?
+                    >¿Olvidaste tu contraseña ?
                     </Text>
                   </TouchableWithoutFeedback>
                 </View>

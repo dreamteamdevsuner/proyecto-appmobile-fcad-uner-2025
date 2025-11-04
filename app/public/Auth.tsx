@@ -20,7 +20,7 @@ const Auth = ({ navigation }: RouteProps) => {
   return (
     <View style={{ paddingHorizontal: 60, paddingTop: 40 }}>
       <Logo></Logo>
-      <AuthForm></AuthForm>
+      <AuthForm navigation={navigation}></AuthForm>
 
       <View
         style={{
