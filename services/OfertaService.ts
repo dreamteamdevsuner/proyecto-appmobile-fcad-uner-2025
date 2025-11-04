@@ -154,7 +154,10 @@ export async function crearOferta(data: OfertaTrabajoData) {
     throw err;
   }
 }
-export type UsuarioMatch = DBUsuario & { idOfertaTrabajoMatch: string };
+export type UsuarioMatch = DBUsuario & {
+  idOfertaTrabajoMatch: string;
+  idProfesional: string;
+};
 
 export async function getUsuariosMatchOferta(
   ofertaId: string,
@@ -194,7 +197,7 @@ export async function getUsuariosMatchOferta(
 
       return usuarios.map((usr) => ({
         ...usr,
-        id: prof.id,
+        idProfesional: prof.id,
         idOfertaTrabajoMatch: match.id,
       }));
     });

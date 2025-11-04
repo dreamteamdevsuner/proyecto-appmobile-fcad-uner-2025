@@ -52,6 +52,7 @@ const FavoritosOferta: React.FC = () => {
         name: `${usuario.nombre} ${usuario.apellido}`,
         role: usuario.rol,
         avatarUrl: usuario.fotoperfil || undefined,
+        idProfesional: usuario.idProfesional,
         idOfertaTrabajoMatch: usuario.idOfertaTrabajoMatch,
       }));
       setUsuarios(usuariosItem);
@@ -76,7 +77,6 @@ const FavoritosOferta: React.FC = () => {
   };
 
   const handleSelectConversation = (user: UserItem) => {
-    console.log(user.id, user.idOfertaTrabajoMatch);
     if (usuarioLogueado) {
       navigation.navigate(ROUTES.RECRUITER_CONVERSACION, {
         title: user.name,
@@ -84,7 +84,7 @@ const FavoritosOferta: React.FC = () => {
         otherAvatarUrl: user.avatarUrl,
         myAvatarUrl: undefined,
         idOfertaTrabajoMatch: user.idOfertaTrabajoMatch,
-        idUsuarioProfesional: user.id,
+        idUsuarioProfesional: user.idProfesional,
       });
     }
   };

@@ -41,7 +41,7 @@ const Conversacion: React.FC<Props> = ({ route }) => {
       setLoading(true);
       const messagesData = await getChatConMensajes(
         idOfertaTrabajoMatch!,
-        idUsuarioProfesional,
+        idUsuarioProfesional!,
       );
       const messagesItem =
         messagesData?.mensajes.map((message) => ({
