@@ -1,6 +1,6 @@
-import { View, StyleSheet, Keyboard, Alert, KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback } from 'react-native';
+import { View, StyleSheet, Keyboard, KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import React, { useState } from 'react';
-import { Button, Text } from 'react-native-paper';
+import { Button, Text, Portal, Dialog } from 'react-native-paper';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -30,8 +30,21 @@ const UpdatePasswordSchema = Yup.object().shape({
     .required('Confirma tu contraseña'),
 });
 
-const UpdatePasswordScreen = ({ navigation }: UpdatePasswordProps) => {
+const UpdatePasswordScreen = ({ navigation, route }: UpdatePasswordProps) => {
   const [loading, setLoading] = useState(false);
+  const emailFromParams = route.params?.email ?? '';
+
+  const [dialog, setDialog] = useState<{
+    visible: boolean;
+    title: string;
+    message: string;
+    onOk: () => void;
+  }>({
+    visible: false,
+    title: '',
+    message: '',
+    onOk: () => {},
+  });
 
   const handleUpdatePassword = async (values: { 
     email: string;
@@ -41,7 +54,6 @@ const UpdatePasswordScreen = ({ navigation }: UpdatePasswordProps) => {
     Keyboard.dismiss();
     setLoading(true);
 
-    // Llamamos a la nueva función del servicio apiAuth
     const { success, error } = await resetPasswordWithToken(
       values.email,
       values.token,
@@ -50,24 +62,26 @@ const UpdatePasswordScreen = ({ navigation }: UpdatePasswordProps) => {
     setLoading(false);
     
     if (error) {
-      Alert.alert(
-        'Error',
-        'No se pudo actualizar tu contraseña. Por favor, intenta de nuevo.'
-      );
-    } 
-    
-    if (success) {
-      Alert.alert('¡Éxito!',
-        'Tu contraseña ha sido actualizada. Ya puedes iniciar sesión.',
-        [
-          {
-            text: 'OK',
-            onPress: () => navigation.navigate(PUBLIC_NAVIGATOR_ROUTES.AUTH)
-          },
-        ]
-      );
+      setDialog({
+        visible: true,
+        title: 'Error',
+        message: 'El código es incorrectos o ha expirado. Por favor, intenta de nuevo.',
+        onOk: () => setDialog({ ...dialog, visible: false }), // Solo cerrar
+      });
     }
-  }
+
+    if (success) {
+      setDialog({
+        visible: true,
+        title: '¡Éxito!',
+        message: 'Tu contraseña ha sido actualizada. Ya puedes iniciar sesión.',
+        onOk: () => {
+          setDialog({ ...dialog, visible: false }); 
+          navigation.navigate(PUBLIC_NAVIGATOR_ROUTES.AUTH);
+        },
+      });
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -75,6 +89,22 @@ const UpdatePasswordScreen = ({ navigation }: UpdatePasswordProps) => {
       style={styles.flexOne}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
     >
+      <Portal>
+        <Dialog
+          visible={dialog.visible}
+          onDismiss={() => setDialog({ ...dialog, visible: false })}
+          style={{ borderRadius: 30, backgroundColor: '#1D1C21' }}
+        >
+          <Dialog.Title>{dialog.title}</Dialog.Title>
+          <Dialog.Content>
+            <Text variant="bodyMedium">{dialog.message}</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={dialog.onOk}>OK</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
@@ -83,11 +113,11 @@ const UpdatePasswordScreen = ({ navigation }: UpdatePasswordProps) => {
           <View style={styles.container}>
             <Logo />
             <Text variant="titleLarge" style={styles.title}>Crea tu nueva contraseña</Text>
-            <Text variant="bodyMedium" style={styles.subtitle}>Ingresa una nueva contraseña segura.</Text>
+            <Text variant="bodyMedium" style={styles.subtitle}>Revisa tu correo electrónico, copia el código y regresa a crear tu nueva contraseña.</Text>
 
             <Formik
               initialValues={{
-                email: '',
+                email: emailFromParams,
                 token: '',
                 password: '',
                 confirmPassword: '',
@@ -105,14 +135,15 @@ const UpdatePasswordScreen = ({ navigation }: UpdatePasswordProps) => {
                     placeholder="El email con el que te registraste"
                     keyboardType="email-address"
                     autoCapitalize="none"
+                    editable={false}
                   />
                   <FormField
                     name="token"
                     formik={formikProps}
-                    label="Código del Email"
+                    label="Código recibido"
                     placeholder="Pega el código que recibiste"
                     autoCapitalize="none"
-                    keyboardType="number-pad" // O 'default' si tu token tiene letras
+                    keyboardType="number-pad" 
                   />
                   <FormField
                     name="password"
@@ -165,6 +196,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 60,
     paddingTop: 40,
     justifyContent: 'flex-start',
+    paddingBottom: 40,
   },
   title: {
     textAlign: 'center',
@@ -174,7 +206,7 @@ const styles = StyleSheet.create({
   subtitle: {
     textAlign: 'center',
     marginBottom: 30,
-    color: '#666',
+    color: '#9d9d9d',
   },
   formContainer: {
     gap: 20,
