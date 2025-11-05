@@ -1,6 +1,6 @@
-import { View, StyleSheet, Keyboard, Alert, KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback } from 'react-native';
+import { View, StyleSheet, Keyboard, KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import React, { useState } from 'react';
-import { Button, Text } from 'react-native-paper';
+import { Button, Text, Portal, Dialog } from 'react-native-paper';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -23,32 +23,45 @@ const ResetSchema = Yup.object().shape({
 
 const ResetPasswordScreen = ({ navigation }: ResetPasswordProps) => {
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+
+  const [dialog, setDialog] = useState<{
+    visible: boolean;
+    title: string;
+    message: string;
+    onOk: () => void; // Función a ejecutar al presionar OK
+  }>({
+    visible: false,
+    title: '',
+    message: '',
+    onOk: () => {},
+  });
 
   const handlePasswordReset = async (values: { email: string }) => {
     Keyboard.dismiss();
     setLoading(true);
-    setMessage('');
 
     const { success, error } = await sendPasswordResetEmail(values.email);
 
     setLoading(false);
     if (error) {
-      Alert.alert('Error',
-        'No se pudo enviar el correo electrónico. Verifica que sea correcto.'
-      );
+      setDialog({
+        visible: true,
+        title: 'Error',
+        message: 'No se pudo enviar el correo electrónico. Verifica que sea correcto.',
+        onOk: () => setDialog({ ...dialog, visible: false }), 
+      });
     } else if (success) {
-      Alert.alert('¡Revisa la bandeja de entrada de tu correo electrónico!',
-        'Te hemos enviado un link para recuperar tu contraseña.',
-        [
-          {
-            text: 'OK',
-            onPress: () =>
-              navigation.navigate(PUBLIC_NAVIGATOR_ROUTES.UPDATE_PASSWORD),
-          },
-        ]
-      );
-      setMessage('¡Email de recuperción enviado!');
+      setDialog({
+        visible: true,
+        title: '¡Revisa tu correo electrónico!',
+        message: 'Te hemos enviado un token para recuperar tu contraseña.',
+        onOk: () => {
+          setDialog({ ...dialog, visible: false });
+          navigation.navigate(PUBLIC_NAVIGATOR_ROUTES.UPDATE_PASSWORD, {
+            email: values.email,
+          });
+        },
+      });
     }
   };
 
@@ -58,6 +71,22 @@ const ResetPasswordScreen = ({ navigation }: ResetPasswordProps) => {
       style={styles.flexOne}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
     >
+      <Portal>
+        <Dialog
+          visible={dialog.visible}
+          onDismiss={() => setDialog({ ...dialog, visible: false })}
+          style={{ borderRadius: 30, backgroundColor: '#1D1C21' }}
+        >
+          <Dialog.Title>{dialog.title}</Dialog.Title>
+          <Dialog.Content>
+            <Text variant="bodyMedium">{dialog.message}</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={dialog.onOk}>OK</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
@@ -123,6 +152,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1, 
     justifyContent: 'flex-start',
+    paddingBottom: 40,
   },
   container: {
     flex: 1,
@@ -138,7 +168,7 @@ const styles = StyleSheet.create({
   subtitle: {
     textAlign: 'center',
     marginBottom: 30,
-    color: '#666',
+    color: '#9d9d9d',
   },
   formContainer: {
     gap: 20,
