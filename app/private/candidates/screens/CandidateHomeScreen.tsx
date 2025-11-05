@@ -1,11 +1,15 @@
 import { View, Text } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import SwipeMatch from '../../shared/swipe_match/SwipeMatch';
 
 import { candidates2 } from '../../../../mockup/candidates';
 import CandidateCard from '../../../../components/ui/CandidateCard';
 import { JobOffer } from '../../../../interfaces/JobOffer';
 import JobOfferCard from '../../../../components/ui/JobOfferCard';
+import { getJobOffersPreview } from '@services/jobOffer/JobOfferPreview.service';
+import usePaginatedData from '../../../../hooks/usePaginatedData';
+import { DBJobPreview } from '@database/DBJobPreview';
+import { JobOfferCardHardCoded } from '../../../../components/ui/JobOfferCard';
 
 const ofertasDeTrabajo: JobOffer[] = [
   {
@@ -90,13 +94,29 @@ const ofertasDeTrabajo: JobOffer[] = [
   },
 ];
 const CandidateHomeScreen = () => {
+  const { data, loading, page, setNextPage } = usePaginatedData<DBJobPreview>(
+    5,
+    getJobOffersPreview,
+  );
   return (
-    <SwipeMatch<JobOffer>
-      data={ofertasDeTrabajo}
-      renderItem={({ item }) => {
-        return <JobOfferCard {...{ item }}></JobOfferCard>;
-      }}
-    ></SwipeMatch>
+    <>
+      <Text style={{ color: 'white' }}> Page state {page}</Text>
+      {/* <Text>Data</Text>
+      <Text style={{ color: 'white' }}>{JSON.stringify(data, null, 2)}</Text> */}
+      <SwipeMatch<DBJobPreview>
+        data={data}
+        handleScrollEnd={setNextPage}
+        renderItem={({ item }) => {
+          return <JobOfferCard {...{ item }}></JobOfferCard>;
+        }}
+      ></SwipeMatch>
+      {/* <SwipeMatch<JobOffer>
+        data={ofertasDeTrabajo}
+        renderItem={({ item }) => {
+          return <JobOfferCardHardCoded {...{ item }}></JobOfferCardHardCoded>;
+        }}
+      ></SwipeMatch> */}
+    </>
   );
 };
 

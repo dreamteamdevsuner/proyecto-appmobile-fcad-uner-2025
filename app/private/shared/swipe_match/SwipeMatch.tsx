@@ -38,12 +38,13 @@ export interface CarouselItemProps<T> extends PropsWithChildren {
  */
 const SwipeMatch = <T,>({
   data,
-
+  handleScrollEnd,
   renderItem,
 }: {
   /** Arreglo de objetos de datos que el carrusel iterará. */
   data: T[];
   onScrollEnd?: (val: number) => void;
+  handleScrollEnd: () => void;
   /**
    * Función de renderizado para cada elemento del carrusel.
    *
@@ -65,6 +66,7 @@ const SwipeMatch = <T,>({
       <View style={styles.carouselContainer}>
         <AppCarousel
           {...{
+            handleScrollEnd,
             data,
             ref,
             width,
