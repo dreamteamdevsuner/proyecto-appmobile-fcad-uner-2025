@@ -259,8 +259,9 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
           onPress: () => {
             navigator.navigate(ROUTES.RECRUITER_CREAR_OFERTA);
           },
-          style: { backgroundColor: 'white' },
-          color: '#1c1c29a2',
+          style: { backgroundColor: '#A06FA6' },
+          color: '#1D1C21',
+          size: 'medium',
         },
       ];
     }
@@ -268,11 +269,12 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
     if (isProfesional(profileUser)) {
       return [
         {
-          icon: 'pencil-outline',
-          label: 'Editar Perfil',
+          icon: 'image-outline',
+          label: 'Publicar foto',
           onPress: () => console.log('Pressed Editar Perfil'),
-          style: { backgroundColor: 'white' },
-          color: '#1c1c29a2',
+          style: { backgroundColor: '#A06FA6' },
+          color: '#1D1C21',
+          size: 'medium',
         },
       ];
     }
@@ -323,7 +325,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
           }
         />
 
-        {isProfesional(profileUser) && (
+        {isProfesional(profileUser) && horizontalChipsSkills.length > 0 && (
           <HorizontalChips skills={horizontalChipsSkills} />
         )}
       </View>
@@ -353,59 +355,103 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
           <>
             <Tab.Screen
               name={PROFILE_ROUTES.ABOUT_ME}
-              component={AboutMe}
-              initialParams={{ user: profileUser, refreshing, onRefresh }}
-              options={{
-                title: 'Quien soy',
-              }}
-            />
+              options={{ title: 'Quien soy' }}
+            >
+              {(props) => (
+                <AboutMe
+                  {...props}
+                  // Override route.params so child always receives latest profileUser and refresh handlers
+                  route={{
+                    ...props.route,
+                    params: {
+                      ...(props.route.params || {}),
+                      user: profileUser,
+                      refreshing,
+                      onRefresh,
+                    },
+                  }}
+                />
+              )}
+            </Tab.Screen>
             <Tab.Screen
               name={PROFILE_ROUTES.WHAT_I_DO}
-              component={WhatIDo}
-              initialParams={{ user: profileUser, refreshing, onRefresh }}
-              options={{
-                title: 'Lo que hago',
-              }}
-            />
+              options={{ title: 'Lo que hago' }}
+            >
+              {(props) => (
+                <WhatIDo
+                  {...props}
+                  route={{
+                    ...props.route,
+                    params: {
+                      ...(props.route.params || {}),
+                      user: profileUser,
+                      refreshing,
+                      onRefresh,
+                    },
+                  }}
+                />
+              )}
+            </Tab.Screen>
           </>
         ) : (
           <>
             <Tab.Screen
               name={PROFILE_ROUTES.ACTIVE_OFFERS}
-              component={OffersTab}
-              initialParams={{
-                offers: activeOffers,
-                refreshing,
-                onRefresh,
-              }}
-              options={{
-                title: 'Activas',
-              }}
-            />
+              options={{ title: 'Activas' }}
+            >
+              {(props) => (
+                <OffersTab
+                  {...props}
+                  route={{
+                    ...props.route,
+                    params: {
+                      ...(props.route.params || {}),
+                      offers: activeOffers,
+                      refreshing,
+                      onRefresh,
+                    },
+                  }}
+                />
+              )}
+            </Tab.Screen>
             <Tab.Screen
               name={PROFILE_ROUTES.PAUSED_OFFERS}
-              component={OffersTab}
-              initialParams={{
-                offers: pausedOffers,
-                refreshing,
-                onRefresh,
-              }}
-              options={{
-                title: 'Pausadas',
-              }}
-            />
+              options={{ title: 'Pausadas' }}
+            >
+              {(props) => (
+                <OffersTab
+                  {...props}
+                  route={{
+                    ...props.route,
+                    params: {
+                      ...(props.route.params || {}),
+                      offers: pausedOffers,
+                      refreshing,
+                      onRefresh,
+                    },
+                  }}
+                />
+              )}
+            </Tab.Screen>
             <Tab.Screen
               name={PROFILE_ROUTES.CLOSED_OFFERS}
-              component={OffersTab}
-              initialParams={{
-                offers: closedOffers,
-                refreshing,
-                onRefresh,
-              }}
-              options={{
-                title: 'Cerradas',
-              }}
-            />
+              options={{ title: 'Cerradas' }}
+            >
+              {(props) => (
+                <OffersTab
+                  {...props}
+                  route={{
+                    ...props.route,
+                    params: {
+                      ...(props.route.params || {}),
+                      offers: closedOffers,
+                      refreshing,
+                      onRefresh,
+                    },
+                  }}
+                />
+              )}
+            </Tab.Screen>
           </>
         )}
       </Tab.Navigator>
@@ -417,20 +463,31 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
             visible
             icon={({ size, color }) =>
               open ? (
-                <MaterialCommunityIcons name="close" size={22} color="white" />
+                <MaterialCommunityIcons
+                  name="close"
+                  size={22}
+                  color="#A06FA6"
+                />
               ) : (
-                <MaterialCommunityIcons name="plus" size={22} color="white" />
+                <MaterialCommunityIcons name="plus" size={22} color="#1D1C21" />
               )
             }
-            backdropColor="#1c1c29a2"
+            backdropColor="#00000056"
             variant="tertiary"
             style={{
               paddingBottom: 100,
             }}
-            fabStyle={{
-              backgroundColor: '#A06FA6',
-              borderRadius: 16,
-            }}
+            fabStyle={
+              open
+                ? {
+                    backgroundColor: '#1D1C21',
+                    borderRadius: 36,
+                  }
+                : {
+                    backgroundColor: '#A06FA6',
+                    borderRadius: 16,
+                  }
+            }
             actions={fabActions}
             onStateChange={onStateChange}
             onPress={() => {
