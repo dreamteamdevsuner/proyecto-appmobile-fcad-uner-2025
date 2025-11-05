@@ -17,7 +17,7 @@ const usePaginatedData = <T,>(
   const firstRender = useRef(true);
   const setNextPage = async function () {
     const paginateResult = await databaseFunc(page, itemsPerPage);
-    console.log('paginate', paginateResult);
+
     if (paginateResult.data.length > 0) {
       setPaginatedData((prev) => ({
         ...prev,
@@ -36,7 +36,7 @@ const usePaginatedData = <T,>(
       await setNextPage();
       firstRender.current = false;
     } catch (error) {
-      console.log('error getting pagination');
+      throw Error('error getting pagination');
     } finally {
       setLoading(false);
     }
