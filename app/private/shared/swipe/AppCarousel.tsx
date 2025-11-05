@@ -43,6 +43,7 @@ const AppCarousel = <T,>(props: AppCarouselProps<T>) => {
       onScrollEnd={(i) => {
         if (i === data.length - 1) {
           handleScrollEnd();
+          return;
         }
       }}
       renderItem={({ item }) => renderItem({ item, handleScrollEnabled })}

@@ -1,20 +1,31 @@
+import { Pagination } from '@services/jobOffer/JobOfferPreview.service';
 import React, { useEffect, useRef, useState } from 'react';
 
 const usePaginatedData = <T,>(
   itemsPerPage = 5,
-  databaseFunc: (page: number, itemsPerPage: number) => Promise<Array<T>>,
+  databaseFunc: (page: number, itemsPerPage: number) => Promise<Pagination<T>>,
 ) => {
-  const [paginatedData, setPaginatedData] = useState<Array<T>>([]);
+  const [paginatedData, setPaginatedData] = useState<Pagination<T>>({
+    data: [],
+    next: false,
+    nextPage: 0,
+    prev: false,
+    prevPage: null,
+  });
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const firstRender = useRef(true);
   const setNextPage = async function () {
     const paginateResult = await databaseFunc(page, itemsPerPage);
     console.log('paginate', paginateResult);
-    if (paginateResult.length > 0) {
-      setPaginatedData((prev) => [...prev, ...paginateResult]);
-      if (!firstRender.current) {
-        setPage(page + 1);
+    if (paginateResult.data.length > 0) {
+      setPaginatedData((prev) => ({
+        ...prev,
+        ...paginateResult,
+        data: [...prev.data, ...paginateResult.data],
+      }));
+      if (paginateResult.nextPage && !firstRender.current) {
+        setPage(paginateResult.nextPage);
       }
     }
   };
@@ -23,10 +34,10 @@ const usePaginatedData = <T,>(
     try {
       setLoading(true);
       await setNextPage();
+      firstRender.current = false;
     } catch (error) {
       console.log('error getting pagination');
     } finally {
-      firstRender.current = false;
       setLoading(false);
     }
   };
@@ -35,10 +46,6 @@ const usePaginatedData = <T,>(
     console.log('firing fetch');
 
     getPaginatedData();
-    () => {
-      console.log('unmount');
-      return setPage(1);
-    };
   }, [page]);
   return { data: paginatedData, loading, page, setNextPage };
 };

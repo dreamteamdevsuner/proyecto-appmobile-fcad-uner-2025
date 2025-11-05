@@ -10,6 +10,7 @@ import { getJobOffersPreview } from '@services/jobOffer/JobOfferPreview.service'
 import usePaginatedData from '../../../../hooks/usePaginatedData';
 import { DBJobPreview } from '@database/DBJobPreview';
 import { JobOfferCardHardCoded } from '../../../../components/ui/JobOfferCard';
+import { date } from 'yup';
 
 const ofertasDeTrabajo: JobOffer[] = [
   {
@@ -94,10 +95,12 @@ const ofertasDeTrabajo: JobOffer[] = [
   },
 ];
 const CandidateHomeScreen = () => {
-  const { data, loading, page, setNextPage } = usePaginatedData<DBJobPreview>(
-    5,
-    getJobOffersPreview,
-  );
+  const {
+    data: { data },
+    loading,
+    page,
+    setNextPage,
+  } = usePaginatedData<DBJobPreview>(5, getJobOffersPreview);
   return (
     <>
       <Text style={{ color: 'white' }}> Page state {page}</Text>
