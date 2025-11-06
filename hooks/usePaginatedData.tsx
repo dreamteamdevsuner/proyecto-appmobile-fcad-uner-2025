@@ -1,4 +1,4 @@
-import { Pagination } from '@services/jobOffer/JobOfferPreview.service';
+import { Pagination } from '@services/shared/entityPreviewService';
 import React, { useEffect, useRef, useState } from 'react';
 
 const usePaginatedData = <T,>(
@@ -47,7 +47,7 @@ const usePaginatedData = <T,>(
 
     getPaginatedData();
   }, [page]);
-  return { data: paginatedData, loading, page, setNextPage };
+  return { data: paginatedData as Pagination<T>, loading, page, setNextPage };
 };
 
 export default usePaginatedData;

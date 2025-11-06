@@ -18,6 +18,7 @@ import { DBJobPreview } from '@database/DBJobPreview';
 import { Idusuario } from '../../types/database/DBJobPreview';
 import moment from 'moment';
 import { date } from 'yup';
+import useImageSourceFallback from '../../hooks/useImageSourceFallback';
 //aca va la info de RRHH que publica
 const HrAbout = ({
   firstName,
@@ -36,21 +37,10 @@ const HrAbout = ({
   recruiterProfession?: string;
   recruiterLocation?: string;
 }) => {
-  // const hrPic = photoKey
-  //   ? recruiterPhotos[photoKey]
-  //   : require('../../assets/images/hrPlaceholder.jpg');
-  const [hrPic, setHrPic] = useState(
+  const { defaultSrcImage, imageError, onError } = useImageSourceFallback(
+    photoKey ?? '',
     '../../assets/images/default_profile_picture.jpg',
   );
-  const [imageError, setImageError] = useState(false);
-  const defaultSrcImage = require('../../assets/images/default_profile_picture.jpg');
-  const imgPath = null;
-
-  useEffect(() => {
-    if (!imgPath) {
-      setImageError(true);
-    }
-  });
 
   return (
     <View
@@ -76,11 +66,13 @@ const HrAbout = ({
         }}
       >
         <Card.Cover
-          source={imageError ? defaultSrcImage : imgPath}
-          onError={() => {
-            setImageError(true);
-          }}
-          defaultSource={defaultSrcImage}
+          source={
+            imageError
+              ? require('../../assets/images/default_profile_picture.jpg')
+              : { uri: photoKey }
+          }
+          onError={onError}
+          defaultSource={require('../../assets/images/default_profile_picture.jpg')}
           style={{
             width: 48,
             height: 48,

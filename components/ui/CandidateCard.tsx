@@ -3,12 +3,132 @@ import React, { PropsWithChildren, useMemo } from 'react';
 import { Button, Card, Chip, Icon, Text } from 'react-native-paper';
 import { Candidate } from '../../interfaces/Candidate';
 import { Pressable } from 'react-native-gesture-handler';
+import { CandidatePreview } from '@database/DBCandidatePreview';
+import useImageSourceFallback from '../../hooks/useImageSourceFallback';
 export interface CandidateCardProps extends PropsWithChildren {
-  item: Candidate;
+  item: CandidatePreview;
   styles?: StyleProp<ViewStyle>;
   handleScrollEnabled?: (val: boolean) => void | undefined;
 }
 function CandidateCard({
+  item,
+  children,
+  handleScrollEnabled,
+}: CandidateCardProps) {
+  const imageLink = require('../../assets/images/avatarCandidatePlaceholder.jpg');
+  const { defaultSrcImage, imageError, onError } = useImageSourceFallback(
+    item?.fotoperfil ?? '',
+    '../../assets/images/avatarCandidatePlaceholder.jpg',
+  );
+  return (
+    <Card style={styles.card}>
+      <View
+        style={{
+          overflow: 'hidden',
+          maxHeight: 340,
+        }}
+      >
+        <View
+          style={{
+            paddingVertical: 25,
+            paddingHorizontal: 35,
+            flexDirection: 'row',
+            gap: 20,
+            maxHeight: '70%',
+          }}
+        >
+          <View style={{ flexBasis: '80%' }}>
+            <Card.Cover
+              style={{ objectFit: 'fill', marginLeft: 40, resizeMode: 'cover' }}
+              source={
+                imageError
+                  ? require('../../assets/images/profile_avatar_placeholder.png')
+                  : item.fotoperfil
+              }
+              onError={onError}
+              defaultSource={require('../../assets/images/profile_avatar_placeholder.png')}
+              height={50}
+            ></Card.Cover>
+          </View>
+          <View>
+            <View style={{ flexDirection: 'row' }}>
+              <Icon
+                source={'map-marker-outline'}
+                size={20}
+                color="black"
+              ></Icon>
+              <Text> {item?.iddireccion?.ciudad ?? 'none'}</Text>
+            </View>
+            <Text style={{ opacity: 0.3 }}> REMOTO</Text>
+          </View>
+        </View>
+      </View>
+      <View style={{ marginTop: -20 }}>
+        <Card.Title
+          title={
+            <Text
+              variant="headlineSmall"
+              style={{
+                fontWeight: 'bold',
+                textAlign: 'center',
+              }}
+            >
+              {item.nombre + ' ' + item.apellido}
+            </Text>
+          }
+        ></Card.Title>
+
+        <Card.Content>
+          <Text
+            style={{
+              textAlign: 'center',
+              marginTop: -10,
+            }}
+            variant="titleMedium"
+          >
+            {item.rol}
+          </Text>
+          <FlatList
+            data={['1', '2', '3']}
+            scrollEnabled={false}
+            onTouchStart={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleScrollEnabled && handleScrollEnabled(false);
+              return;
+            }}
+            onTouchEnd={(e) =>
+              handleScrollEnabled && handleScrollEnabled(false)
+            }
+            onScrollBeginDrag={(e) =>
+              handleScrollEnabled && handleScrollEnabled(false)
+            }
+            onScrollEndDrag={() => {
+              handleScrollEnabled && handleScrollEnabled(true);
+            }}
+            style={styles.chipContainer}
+            horizontal={true}
+            renderItem={({ item, index }) => (
+              <Chip
+                mode="outlined"
+                textStyle={{ color: 'white' }}
+                style={styles.chip}
+                key={index}
+                onPress={() =>
+                  handleScrollEnabled && handleScrollEnabled(false)
+                }
+              >
+                {item}
+              </Chip>
+            )}
+          ></FlatList>
+          {children}
+        </Card.Content>
+      </View>
+    </Card>
+  );
+}
+/* function CandidateCard({
   item,
   children,
   handleScrollEnabled,
@@ -116,7 +236,7 @@ function CandidateCard({
       </View>
     </Card>
   );
-}
+} */
 const styles = StyleSheet.create({
   card: {
     width: '90%',
