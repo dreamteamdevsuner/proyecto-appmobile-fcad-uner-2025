@@ -75,7 +75,7 @@ const ResetPasswordScreen = ({ navigation }: ResetPasswordProps) => {
         <Dialog
           visible={dialog.visible}
           onDismiss={() => setDialog({ ...dialog, visible: false })}
-          style={{ borderRadius: 30, backgroundColor: '#1D1C21' }}
+          style={{ borderRadius: 30, backgroundColor: '#333333' }}
         >
           <Dialog.Title>{dialog.title}</Dialog.Title>
           <Dialog.Content>
@@ -95,7 +95,7 @@ const ResetPasswordScreen = ({ navigation }: ResetPasswordProps) => {
           <View style={styles.container}>
             <Logo />
             <Text variant="bodyMedium" style={styles.subtitle}>
-              Ingresa tu correo electrónico y te enviaremos un token para recuperar tu contraseña.
+              Ingresa tu correo electrónico y te enviaremos un código para recuperar tu contraseña.
             </Text>
 
             <Formik 
