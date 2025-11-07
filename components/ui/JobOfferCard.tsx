@@ -164,7 +164,7 @@ function JobOfferCard({ item }: JobOfferCardProps) {
             }}
           >
             <Icon source={'map-marker-outline'} size={20} color="white"></Icon>
-            <Text>{item.iddireccion.ciudad}</Text>
+            <Text>{item?.iddireccion?.ciudad ?? ''}</Text>
           </View>
           <View
             style={{
