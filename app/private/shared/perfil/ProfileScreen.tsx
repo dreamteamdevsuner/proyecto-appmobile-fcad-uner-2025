@@ -35,7 +35,11 @@ import {
   ProfileTopTabParamList,
 } from './types';
 import { FAB, Portal } from 'react-native-paper';
-import { useNavigation, useIsFocused } from '@react-navigation/native';
+import {
+  useNavigation,
+  useIsFocused,
+  RouteProp,
+} from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuth } from '../../../../appContext/authContext';
 import { Role } from '@services/interfaces/TipoUsuario.interface';
@@ -89,7 +93,13 @@ type recruiterCandidateProfileStack = NativeStackScreenProps<
 export type ProfileStackProps =
   | candidateProfileStack
   | recruiterProfileStack
-  | recruiterCandidateProfileStack;
+  | recruiterCandidateProfileStack
+  | ({
+      route: RouteProp<
+        RecruiterStackParamList,
+        typeof ROUTES.RECRUITER_PROFILE
+      >;
+    } & NativeStackScreenProps<any, any>);
 
 const ProfileScreenShared = ({ route }: ProfileStackProps) => {
   const { state } = useAuth();
@@ -97,7 +107,7 @@ const ProfileScreenShared = ({ route }: ProfileStackProps) => {
   const isFocused = useIsFocused();
 
   const paramsUserId = route.params ? route.params.userId : undefined;
-  const initialRouteName = route.params?.initialRouteName ?? undefined;
+  const initialRoute = route?.params?.initialRouteName || undefined;
 
   const navigator =
     useNavigation<
@@ -351,7 +361,9 @@ const ProfileScreenShared = ({ route }: ProfileStackProps) => {
           marginBottom: 16,
           borderRadius: 30,
         }}
-        // initialRouteName={initialRouteName  }
+        //  {...(initialRoute? { initialRouteName : initialRoute } : {})}
+        // {...(initialRouteName )&& { initialRouteName =initialRouteName } }
+        initialRouteName={initialRoute}
         screenOptions={{
           tabBarIndicatorStyle: {
             height: 0,
