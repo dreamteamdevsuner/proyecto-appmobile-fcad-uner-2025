@@ -39,11 +39,7 @@ import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuth } from '../../../../appContext/authContext';
 import { Role } from '@services/interfaces/TipoUsuario.interface';
-
-type Props = NativeStackScreenProps<
-  ProfileStackParams,
-  CAND_ROUTES.CANDIDATE_PROFILE | ROUTES.RECRUITER_PROFILE
->;
+import { RootStackParams } from '@app/private/recruiter/navigator/SwipeStack';
 
 const Tab = createMaterialTopTabNavigator<ProfileTopTabParamList>();
 
@@ -78,7 +74,24 @@ export type PerfilView = {
   ofertasPublicadas?: OfertaConDetalles[];
 };
 
-const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
+type candidateProfileStack = NativeStackScreenProps<
+  ProfileStackParams,
+  CAND_ROUTES.CANDIDATE_PROFILE
+>;
+type recruiterProfileStack = NativeStackScreenProps<
+  ProfileStackParams,
+  ROUTES.RECRUITER_PROFILE
+>;
+type recruiterCandidateProfileStack = NativeStackScreenProps<
+  RootStackParams,
+  ROUTES.RECRUITER_CANDIDATE_PROFILE
+>;
+export type ProfileStackProps =
+  | candidateProfileStack
+  | recruiterProfileStack
+  | recruiterCandidateProfileStack;
+
+const ProfileScreenShared = ({ route }: ProfileStackProps) => {
   const { state } = useAuth();
 
   const isFocused = useIsFocused();
@@ -111,7 +124,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
 
         setIsOwnProfile(searchId === state.user?.id);
 
-        const usuarioBase = await getUsuarioBase(searchId);
+        const usuarioBase = await getUsuarioBase(searchId.toString());
         if (!usuarioBase) {
           setNotFound(true);
           return;
@@ -162,6 +175,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
               (await getExperiencia(searchId.toString())) || [];
           }
         } else if (tipoUsuario === Role.RECLUTADOR) {
+          console.log('search ID', searchId);
           const reclutador = await getReclutador(searchId.toString());
           normalized.experiencia =
             (await getExperiencia(searchId.toString())) || [];
@@ -337,7 +351,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
           marginBottom: 16,
           borderRadius: 30,
         }}
-        initialRouteName={initialRouteName}
+        // initialRouteName={initialRouteName  }
         screenOptions={{
           tabBarIndicatorStyle: {
             height: 0,

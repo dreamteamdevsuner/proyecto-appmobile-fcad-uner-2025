@@ -53,7 +53,7 @@ const RecruiterSwipeMatchScreen = ({
                 navigation.navigate(
                   ROUTES.RECRUITER_CANDIDATE_PROFILE_PREVIEW,
                   {
-                    id: 1,
+                    userId: item.id,
                   },
                 )
               }

@@ -61,6 +61,9 @@ const CandidatePortfolioScreen = ({
         styles={{ maxHeight: '100%', minHeight: '100%' }}
         data={carouselData}
         enabledScroll={true}
+        //TODO refactor add a real func here
+        handleScrollEnd={() => {}}
+        //TODO refactor add a real func here
         renderItem={({ item }) => {
           return (
             <CandidatePortfolioCarouselItem
