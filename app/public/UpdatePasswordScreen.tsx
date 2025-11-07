@@ -93,7 +93,7 @@ const UpdatePasswordScreen = ({ navigation, route }: UpdatePasswordProps) => {
         <Dialog
           visible={dialog.visible}
           onDismiss={() => setDialog({ ...dialog, visible: false })}
-          style={{ borderRadius: 30, backgroundColor: '#1D1C21' }}
+          style={{ borderRadius: 30, backgroundColor: '#333333' }}
         >
           <Dialog.Title>{dialog.title}</Dialog.Title>
           <Dialog.Content>
