@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useAuth } from '../appContext/authContext';
 import PrivateNavigator from '../app/private/privateNavigator/PrivateNavigator';
@@ -9,6 +9,7 @@ import { supabase } from '../supabase/supabaseClient';
 import { getUser, SecureStoreItem } from '@utils/secure-store';
 import { setItemAsync } from 'expo-secure-store';
 import { RealtimeChannel } from '@supabase/supabase-js';
+import { View, ActivityIndicator } from 'react-native';
 
 //Agregar Root Stack Params Luego
 const Stack = createNativeStackNavigator();
@@ -30,6 +31,8 @@ const Navigator = () => {
           }
         }
         if (e === 'SIGNED_IN' && session) {
+          console.log('Signing');
+
           await login(
             session?.user.id,
             session?.access_token,
@@ -40,6 +43,7 @@ const Navigator = () => {
           logout();
         }
         if (e === 'TOKEN_REFRESHED' && session) {
+          console.log('TOKEN REFRESHED');
           await setItemAsync(SecureStoreItem.TOKEN, session.access_token);
           await setItemAsync(
             SecureStoreItem.REFRESH_TOKEN,
@@ -53,12 +57,27 @@ const Navigator = () => {
       return onAuthStateSubscription.subscription.unsubscribe();
     };
   }, []);
+  const [loadingSessionIfExists, setLoadingSessionIfExists] = useState(true);
+  const handleLoadPrevSession = async () => {
+    try {
+      await restoreToken();
+    } catch (error) {
+    } finally {
+      SplashScreen.hideAsync();
+      setTimeout(() => {
+        setLoadingSessionIfExists(false);
+      }, 500);
+    }
+  };
+  useEffect(() => {
+    handleLoadPrevSession();
+  }, []);
 
   useEffect(() => {
     let loggedUserUpdatesListener: RealtimeChannel;
     if (state.user) {
       console.log('listening');
-      SplashScreen.hideAsync();
+      // SplashScreen.hideAsync();
       // Assuming a 'profiles' table with user-specific data
       loggedUserUpdatesListener = supabase
         .channel('public:usuario')
@@ -83,8 +102,15 @@ const Navigator = () => {
       }
     };
   }, [state.user]);
-
-  return state.user ? (
+  if (loadingSessionIfExists) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        {/* You can customize your splash screen or loading indicator here */}
+        <ActivityIndicator size={30} color={'#BEB52C'}></ActivityIndicator>
+      </View>
+    );
+  }
+  return state.user && !loadingSessionIfExists ? (
     <PrivateNavigator></PrivateNavigator>
   ) : (
     <PublicNavigator></PublicNavigator>

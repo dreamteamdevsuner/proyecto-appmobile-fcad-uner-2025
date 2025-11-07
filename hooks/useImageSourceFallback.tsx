@@ -13,7 +13,7 @@ const useImageSourceFallback = (
     }
   });
 
-  return { defaultSrcImage, onError, imageError };
+  return { onError, imageError, defaultSrcImageUrl };
 };
 
 export default useImageSourceFallback;

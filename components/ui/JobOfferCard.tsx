@@ -37,7 +37,7 @@ const HrAbout = ({
   recruiterProfession?: string;
   recruiterLocation?: string;
 }) => {
-  const { defaultSrcImage, imageError, onError } = useImageSourceFallback(
+  const { imageError, onError } = useImageSourceFallback(
     photoKey ?? '',
     '../../assets/images/default_profile_picture.jpg',
   );

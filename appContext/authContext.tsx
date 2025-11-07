@@ -169,23 +169,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: { loading: true } });
 
       try {
-        // TODO: Por ahora simular inicio de sesion a API con mocks, cambiar despues
-        // let user: User | null = null;
-        // const {
-        //   data: { user, session },
-        //   error,
-        // } = await signIn({ email, password });
-
-        // if (!user || !session) {
-        //   throw new Error('Credenciales inválidas');
-        // }
-
-        // const token = session.access_token;
-        // const refreshToken = session.refresh_token;
         const signedUser = await userService.getOne(id);
         if (!signedUser) {
           throw Error('Error obteniendo perfil de usuario');
         }
+
         await setItemAsync(SecureStoreItem.TOKEN, token);
         await setItemAsync(SecureStoreItem.REFRESH_TOKEN, refreshToken);
         await setItemAsync(SecureStoreItem.USER, signedUser);

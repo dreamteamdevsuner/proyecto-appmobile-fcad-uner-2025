@@ -1,12 +1,4 @@
-import {
-  StyleSheet,
-  View,
-  Image,
-  Touchable,
-  Pressable,
-  Button,
-  TouchableWithoutFeedback,
-} from 'react-native';
+import { StyleSheet, View, Pressable } from 'react-native';
 import {
   checkIsLinkImage,
   checkIsPortfolioText,
@@ -14,19 +6,13 @@ import {
   PortfolioText,
 } from '../../utils/checkTypeOfRenderItem';
 import { Text } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
-import { RootStackParams } from '../../app/private/recruiter/navigator/SwipeStack';
-
-import { StackNavigationProp } from '@react-navigation/stack';
-import CANDIDATE_ROUTES from '../../app/private/candidates/navigator/routes';
-import ROUTES from '../../app/private/recruiter/navigator/routes';
+import CarouselPortfolioCarouselImage from './CarouselPortfolioCarouselImage';
 
 const CandidatePortfolioCarouselItem = ({
   item,
 }: {
   item: LinkImage | PortfolioText;
 }) => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
   let innerContent;
   let styles = StyleSheet.create({
     container: {
@@ -40,12 +26,9 @@ const CandidatePortfolioCarouselItem = ({
   });
   if (checkIsLinkImage(item)) {
     innerContent = (
-      <View style={{ width: '100%', flex: 1 }}>
-        <Image
-          source={item.link}
-          style={{ resizeMode: 'cover', width: '100%', height: '100%' }}
-        ></Image>
-      </View>
+      <CarouselPortfolioCarouselImage
+        link={item.link}
+      ></CarouselPortfolioCarouselImage>
     );
   }
   if (checkIsPortfolioText(item)) {
@@ -68,4 +51,5 @@ const CandidatePortfolioCarouselItem = ({
     </View>
   );
 };
+
 export default CandidatePortfolioCarouselItem;

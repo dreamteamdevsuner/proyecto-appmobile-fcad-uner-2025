@@ -9,10 +9,8 @@ import ProfileScreen from '../../shared/perfil/ProfileScreen';
 import { Pressable, View } from 'react-native';
 
 import { Icon, Text } from 'react-native-paper';
-import CandidateProfileWrapper from '@app/private/candidates/screens/perfil';
-import ProfileNavigator from '../screens/perfil/ProfileNavigator';
-import ProfileScreenShared from '../../shared/perfil/ProfileScreen';
-
+import { CandidatePreview } from '../../../../types/database/DBCandidatePreview';
+type CarouselDataType = Pick<CandidatePreview, 'bio' | 'fotoperfil'>;
 export type RootStackParams = {
   [ROUTES.RECRUITER_SWIPE_MATCH_SCREEN]: undefined;
   [ROUTES.RECRUITER_CANDIDATE_PROFILE]: {
@@ -23,7 +21,7 @@ export type RootStackParams = {
   };
   [ROUTES.RECRUITER_CANDIDATE_PROFILE_PREVIEW]: {
     userId: string;
-  };
+  } & CarouselDataType;
 };
 
 const Stack = createNativeStackNavigator<RootStackParams>();
@@ -86,71 +84,10 @@ const SwipeStack = () => {
             },
           };
         }}
-        /*  options={{
-          headerShown: true,
-          headerTitle: 'Descubrir profesionales ',
-          header: ({ navigation, options, route }) => {
-            return (
-              <View
-                style={{
-                  paddingHorizontal: 20,
-                  paddingVertical: 15,
-                  flexDirection: 'row',
-                }}
-              >
-                <Text>{options.headerTitle?.toString()} </Text>
-                <View style={{ marginLeft: 'auto' }}>
-                  <Pressable
-                    onPress={() => {
-                      navigation.navigate(ROUTES.RECRUITER_CANDIDATE_PROFILE, {
-                        userId: 'route.params.userId',
-                        title: 'title',
-                      });
-                    }}
-                  >
-                    <Icon size={15} color="white" source={'close'}></Icon>
-                  </Pressable>
-                </View>
-              </View>
-            );
-          },
-        }} */
         name={ROUTES.RECRUITER_CANDIDATE_PROFILE_PREVIEW}
         component={CandidatePortfolioScreen}
       ></Stack.Screen>
-      {/*  <Stack.Screen
-        options={{
-          headerShown: true,
-          headerTitle: 'Descubrir profesionales ',
-          header: ({ navigation, options, route }) => {
-            return (
-              <View
-                style={{
-                  paddingHorizontal: 20,
-                  paddingVertical: 15,
-                  flexDirection: 'row',
-                }}
-              >
-                <Text>{options.headerTitle?.toString()} </Text>
-                <View style={{ marginLeft: 'auto' }}>
-                  <Pressable
-                    onPress={() => {
-                      navigation.navigate(ROUTES.RECRUITER_CANDIDATE_PROFILE, {
-                        userId: 'route.params.userId',
-                        title: 'title',
-                      });
-                    }}
-                  >
-                    <Icon size={15} color="white" source={'close'}></Icon>
-                  </Pressable>
-                </View>
-              </View>
-            );
-          },
-        }}
-        name={ROUTES.RECRUITER_CANDIDATE_PROFILE_PREVIEW}
-        component={CandidatePortfolioScreen}
-      ></Stack.Screen> */}
+
       <Stack.Screen
         options={{
           headerShown: true,
@@ -165,8 +102,7 @@ const SwipeStack = () => {
           ),
         }}
         name={ROUTES.RECRUITER_CANDIDATE_PROFILE}
-        // component={ProfileNavigator}
-        component={ProfileScreenShared}
+        component={ProfileScreen}
       ></Stack.Screen>
     </Stack.Navigator>
   );

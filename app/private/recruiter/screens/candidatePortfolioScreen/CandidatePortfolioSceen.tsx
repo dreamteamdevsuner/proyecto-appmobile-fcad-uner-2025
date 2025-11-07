@@ -22,23 +22,11 @@ const CandidatePortfolioScreen = ({
 }: CandidatePortfolioScreenProps) => {
   const carouselData: Array<LinkImage | PortfolioText> = [
     {
-      link: require(
-        `../../../../../assets/images/mockupCandidatePortfolio/candidatePortfolio-1.jpg`,
-      ),
+      link: route.params.fotoperfil ?? '',
     },
+
     {
-      link: require(
-        `../../../../../assets/images/mockupCandidatePortfolio/candidatePortfolio-2.jpg`,
-      ),
-    },
-    {
-      link: require(
-        `../../../../../assets/images/mockupCandidatePortfolio/candidatePortfolio-3.jpg`,
-      ),
-    },
-    {
-      portfolioText:
-        '🎬 Tengo muchas ganas de trabajar en nuevos proyectos de diseño UI para mobile. Estoy ansiosa por proyectos que me propongan desafíos Soy proactiva y mi ojo estético es mi don. Donde pongo el ojo, pongo la conversión. Si te interesó mi perfil, matcheame y hablemos. \n Juani 🌈',
+      portfolioText: route?.params?.bio ?? '',
     },
   ];
 
@@ -61,9 +49,6 @@ const CandidatePortfolioScreen = ({
         styles={{ maxHeight: '100%', minHeight: '100%' }}
         data={carouselData}
         enabledScroll={true}
-        //TODO refactor add a real func here
-        handleScrollEnd={() => {}}
-        //TODO refactor add a real func here
         renderItem={({ item }) => {
           return (
             <CandidatePortfolioCarouselItem

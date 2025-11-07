@@ -35,12 +35,7 @@ const RecruiterSwipeMatchScreen = ({
     page,
     setNextPage,
   } = usePaginatedData(1, getCandidatePreview);
-  console.log(JSON.stringify(data, null, 4));
-  // return (
-  //   <View>
-  //     <Text style={{ color: 'white' }}>{JSON.stringify(data, null, 3)} </Text>
-  //   </View>
-  // );
+
   return (
     <SwipeMatch<CandidatePreview>
       data={data}
@@ -54,6 +49,8 @@ const RecruiterSwipeMatchScreen = ({
                   ROUTES.RECRUITER_CANDIDATE_PROFILE_PREVIEW,
                   {
                     userId: item.id,
+                    bio: item.bio,
+                    fotoperfil: item.fotoperfil,
                   },
                 )
               }
