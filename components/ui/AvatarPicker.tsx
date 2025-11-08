@@ -9,20 +9,14 @@ interface Props {
   size?: number;
 }
 
-type PermissionStatus = ImagePicker.PermissionStatus | null;
-
 const AvatarPicker = ({
   currentImageUrl,
   onImageSelected,
   size = 120,
 }: Props) => {
-  const [, requestCameraPermission] = ImagePicker.useCameraPermissions();
-  const [, requestMediaLibraryPermission] =
+  const [cameraPermissionStatus, requestCameraPermission] = ImagePicker.useCameraPermissions();
+  const [mediaLibraryPermissionStatus, requestMediaLibraryPermission] =
     ImagePicker.useMediaLibraryPermissions();
-
-  // --- Nuestros propios estados para guardar los permisos ---
-  const [camStatus, setCamStatus] = useState<PermissionStatus>(null);
-  const [libStatus, setLibStatus] = useState<PermissionStatus>(null);
 
   // Estados para el Dialog
   const [permissionDialogVisible, setPermissionDialogVisible] = useState(false);
@@ -34,64 +28,45 @@ const AvatarPicker = ({
   // Estado para la vista previa local
   const [localImageUri, setLocalImageUri] = useState<string | null>(null);
 
-  const checkPermissions = async () => {
-    console.log('Comprobando permisos...');
-    const newCamStatus = await ImagePicker.getCameraPermissionsAsync();
-    const newLibStatus = await ImagePicker.getMediaLibraryPermissionsAsync();
-    // Actualiza nuestros estados locales
-    setCamStatus(newCamStatus.status);
-    setLibStatus(newLibStatus.status);
-  };
-
-  useEffect(() => {
-    checkPermissions();
-    const subscription = AppState.addEventListener('change', (nextAppState) => {
-      if (nextAppState === 'active') {
-        console.log('App activa: Re-comprobando permisos...');
-        checkPermissions();
-      }
-    });
-    return () => {
-      subscription.remove();
-    };
-  }, []);
-
   const verifyPermissions = async (
     permissionType: 'camera' | 'mediaLibrary'
   ): Promise<boolean> => {
-    let currentStatus: PermissionStatus;
-    let requestPermission;
+    
+    const permission =
+      permissionType === 'camera'
+        ? cameraPermissionStatus
+        : mediaLibraryPermissionStatus;
+    
+    const request =
+      permissionType === 'camera'
+        ? requestCameraPermission
+        : requestMediaLibraryPermission;
+    
+    // Si los hooks aún no cargan
+    if (!permission) return false;
 
-    if (permissionType === 'camera') {
-      currentStatus = camStatus;
-      requestPermission = requestCameraPermission;
-    } else {
-      currentStatus = libStatus;
-      requestPermission = requestMediaLibraryPermission;
+    console.log(`Estado ${permissionType}: ${permission.status}`);
+
+    if (permission.status === ImagePicker.PermissionStatus.GRANTED) {
+      return true;
     }
 
     if (
-      currentStatus === null ||
-      currentStatus === ImagePicker.PermissionStatus.UNDETERMINED
+      permission.status === ImagePicker.PermissionStatus.UNDETERMINED ||
+      (permission.status === ImagePicker.PermissionStatus.DENIED && permission.canAskAgain)
     ) {
-      console.log(`Permiso ${permissionType} no determinado, solicitando...`);
-      const { status } = await requestPermission(); //Popup nativo
-      if (permissionType === 'camera') {
-        setCamStatus(status);
-      } else {
-        setLibStatus(status);
-      }
+      console.log('Permiso no otorgado, solicitando...');
+      const { status } = await request(); //Popup nativo
       return status === ImagePicker.PermissionStatus.GRANTED;
     }
     // Si está denegado, mostramos nuestro Dialog
-    if (currentStatus === ImagePicker.PermissionStatus.DENIED) {
-      console.log(`Permiso ${permissionType} denegado, mostrando dialog.`);
-      setDialogPermissionType(permissionType);
+    if (permission.status === ImagePicker.PermissionStatus.DENIED &&
+      !permission.canAskAgain) {
+      console.log('Permiso denegado permanentemente. Mostrando diálogo de ajustes.');      setDialogPermissionType(permissionType);
       setPermissionDialogVisible(true);
       return false;
     }
-    console.log(`Permiso ${permissionType} ya otorgado.`);
-    return true;
+    return false;
   };
 
   const handlePickImage = async () => {

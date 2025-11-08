@@ -14,9 +14,12 @@ import { Button, Text } from 'react-native-paper';
 import ROUTES from '../navigator/routes';
 import { TouchableOpacity } from 'react-native';
 import { RootStackParams } from '../navigator/SwipeStack';
+import usePaginatedData from '../../../../hooks/usePaginatedData';
+import { getCandidatePreview } from '@services/candidatePreview/candidatePreview.service';
+import { CandidatePreview } from '@database/DBCandidatePreview';
 
 //TODO move to own component
-const data = candidates2;
+const dataHardCoded = candidates2;
 
 interface RecruiterSwipeMatchScreen
   extends NativeStackScreenProps<
@@ -26,9 +29,17 @@ interface RecruiterSwipeMatchScreen
 const RecruiterSwipeMatchScreen = ({
   navigation,
 }: RecruiterSwipeMatchScreen) => {
+  const {
+    data: { data },
+    loading,
+    page,
+    setNextPage,
+  } = usePaginatedData(1, getCandidatePreview);
+
   return (
-    <SwipeMatch<Candidate>
+    <SwipeMatch<CandidatePreview>
       data={data}
+      handleScrollEnd={setNextPage}
       renderItem={({ item, handleScrollEnabled }) => {
         return (
           <CandidateCard item={item} {...{ handleScrollEnabled }}>
@@ -37,7 +48,9 @@ const RecruiterSwipeMatchScreen = ({
                 navigation.navigate(
                   ROUTES.RECRUITER_CANDIDATE_PROFILE_PREVIEW,
                   {
-                    id: 1,
+                    userId: item.id,
+                    bio: item.bio,
+                    fotoperfil: item.fotoperfil,
                   },
                 )
               }

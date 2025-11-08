@@ -1,15 +1,10 @@
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, RefreshControl } from 'react-native';
 import { ActivityIndicator, Surface } from 'react-native-paper';
 import Portfolio from '../../app/private/shared/perfil/Portfolio';
-import {
-  CandidateTabScreenProps,
-  PROFILE_ROUTES,
-} from '@app/private/shared/perfil/types';
+import { useProfileContext } from '@appContext/ProfileContext';
 
-type Props = CandidateTabScreenProps<PROFILE_ROUTES.WHAT_I_DO>;
-
-export const WhatIDo = ({ route }: Props) => {
-  const { user } = route.params;
+export const WhatIDo = () => {
+  const { user, refreshing, onRefresh } = useProfileContext();
 
   if (!user) {
     return <ActivityIndicator />;
@@ -19,6 +14,14 @@ export const WhatIDo = ({ route }: Props) => {
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.tabContent}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={['#A06FA6']}
+          tintColor="#fff"
+        />
+      }
     >
       <Surface mode="flat" elevation={2} style={styles.surfaceDescription}>
         <Portfolio></Portfolio>
@@ -30,7 +33,7 @@ export const WhatIDo = ({ route }: Props) => {
 const styles = StyleSheet.create({
   tabContent: {
     flexGrow: 1,
-    backgroundColor: 'transparent',
+    backgroundColor: '#1D1C21',
     gap: 2,
   },
   surfaceDescription: {

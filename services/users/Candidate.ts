@@ -27,7 +27,6 @@ class CandidateService implements AbstractUser<IUser> {
       return error;
     }
 
-    console.log('USERS LIST', data);
     return data;
   }
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, Platform } from 'react-native';
 import { Avatar, IconButton } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
@@ -11,8 +11,10 @@ import {
   StyledTextInput,
 } from './styles';
 import { PrivateStackParamList } from '../../navigator/types';
-import { Message } from '../../../../../types/Message';
+import { Message } from '../../../../../types/models/Message';
 import ROUTES from '../../navigator/routes';
+import { getChatConMensajes } from '@services/ChatService';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 
 type Props = NativeStackScreenProps<
   PrivateStackParamList,
@@ -22,30 +24,41 @@ type Props = NativeStackScreenProps<
 const Conversacion: React.FC<Props> = ({ route }) => {
   const {
     title,
-    myName = 'Renata',
+    myName,
     otherAvatarUrl,
     myAvatarUrl,
+    idOfertaTrabajoMatch,
+    idUsuarioProfesional,
   } = route.params;
   const [inputText, setInputText] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const flatListRef = useRef<FlatList>(null);
 
+  const getMessages = async () => {
+    try {
+      setLoading(true);
+      const messagesData = await getChatConMensajes(
+        idOfertaTrabajoMatch!,
+        idUsuarioProfesional!,
+      );
+      const messagesItem =
+        messagesData?.mensajes.map((message) => ({
+          id: message.id,
+          text: message.texto,
+          sender: message.idusuario,
+        })) ?? [];
+      setMessages(messagesItem);
+      console.log('Mensajes fetched:', messagesData);
+    } catch (error) {
+      console.error('Error fetching mensajes:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const initialMessages: Message[] = [
-      {
-        id: '1',
-        text: `Hola, ${title}. Tu perfil es interesante para nuestra propuesta, ¿podrías enviarme tu CV a esta dirección? renata@correo.com Gracias.`,
-        sender: 'me',
-      },
-      {
-        id: '2',
-        text: `¡Hola, Renata!`,
-        sender: 'other',
-      },
-    ];
-
-    setMessages(initialMessages);
+    getMessages();
   }, []);
 
   const handleSend = () => {
@@ -103,27 +116,33 @@ const Conversacion: React.FC<Props> = ({ route }) => {
   };
 
   return (
-    <Container>
-      <FlatList
-        ref={flatListRef}
-        data={messages}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        contentContainerStyle={{ padding: 10 }}
-        onContentSizeChange={() => {
-          flatListRef.current?.scrollToEnd({ animated: true });
-        }}
-      />
-
-      <InputContainer>
-        <StyledTextInput
-          placeholder="Escribe un mensaje..."
-          value={inputText}
-          onChangeText={setInputText}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={90}
+    >
+      <Container>
+        <FlatList
+          ref={flatListRef}
+          data={messages}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+          contentContainerStyle={{ padding: 10 }}
+          onContentSizeChange={() => {
+            flatListRef.current?.scrollToEnd({ animated: true });
+          }}
         />
-        <IconButton icon="send" onPress={handleSend} />
-      </InputContainer>
-    </Container>
+
+        <InputContainer>
+          <StyledTextInput
+            placeholder="Escribe un mensaje..."
+            value={inputText}
+            onChangeText={setInputText}
+          />
+          <IconButton icon="send" onPress={handleSend} />
+        </InputContainer>
+      </Container>
+    </KeyboardAvoidingView>
   );
 };
 

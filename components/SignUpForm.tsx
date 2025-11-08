@@ -15,7 +15,7 @@ import GenericFormDropdown from '../app/private/shared/perfil/ajustes/componente
 import { Alert } from 'react-native';
 import { AppSnackBar } from './AuthForm';
 import useSnackbar from '../hooks/useSnackbar';
-import { Message } from '../types/Message';
+
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { privateNavigatorRootParams } from '../app/private/privateNavigator/PrivateNavigator';

@@ -1,10 +1,11 @@
 import { View, StyleSheet, StyleProp, ViewStyle, FlatList } from 'react-native';
 import React, { PropsWithChildren, useMemo } from 'react';
-import { Button, Card, Chip, Icon, Text } from 'react-native-paper';
-import { Candidate } from '../../interfaces/Candidate';
-import { Pressable } from 'react-native-gesture-handler';
+import { Card, Chip, Icon, Text } from 'react-native-paper';
+
+import { CandidatePreview } from '@database/DBCandidatePreview';
+import useImageSourceFallback from '../../hooks/useImageSourceFallback';
 export interface CandidateCardProps extends PropsWithChildren {
-  item: Candidate;
+  item: CandidatePreview;
   styles?: StyleProp<ViewStyle>;
   handleScrollEnabled?: (val: boolean) => void | undefined;
 }
@@ -13,8 +14,10 @@ function CandidateCard({
   children,
   handleScrollEnabled,
 }: CandidateCardProps) {
-  const imageLink = require('../../assets/images/avatarCandidatePlaceholder.jpg');
-
+  const { imageError, onError } = useImageSourceFallback(
+    item?.fotoperfil ?? '',
+    '../../assets/images/avatarCandidatePlaceholder.jpg',
+  );
   return (
     <Card style={styles.card}>
       <View
@@ -34,8 +37,14 @@ function CandidateCard({
         >
           <View style={{ flexBasis: '80%' }}>
             <Card.Cover
-              style={{ objectFit: 'fill', marginLeft: 40 }}
-              source={imageLink}
+              style={{ objectFit: 'fill', marginLeft: 40, resizeMode: 'cover' }}
+              source={
+                imageError
+                  ? require('../../assets/images/profile_avatar_placeholder.png')
+                  : { uri: item.fotoperfil }
+              }
+              onError={onError}
+              defaultSource={require('../../assets/images/profile_avatar_placeholder.png')}
               height={50}
             ></Card.Cover>
           </View>
@@ -46,7 +55,7 @@ function CandidateCard({
                 size={20}
                 color="black"
               ></Icon>
-              <Text> {item.country.slice(0, 2).toUpperCase() + '.'}</Text>
+              <Text> {item?.iddireccion?.ciudad ?? ''}</Text>
             </View>
             <Text style={{ opacity: 0.3 }}> REMOTO</Text>
           </View>
@@ -62,7 +71,7 @@ function CandidateCard({
                 textAlign: 'center',
               }}
             >
-              {item.firstName + ' ' + item.lastName}
+              {item.nombre + ' ' + item.apellido}
             </Text>
           }
         ></Card.Title>
@@ -75,10 +84,10 @@ function CandidateCard({
             }}
             variant="titleMedium"
           >
-            {item.profession}
+            {item.rol}
           </Text>
           <FlatList
-            data={item.skills}
+            data={['1', '2', '3']}
             scrollEnabled={false}
             onTouchStart={(e) => {
               e.preventDefault();
@@ -107,7 +116,7 @@ function CandidateCard({
                   handleScrollEnabled && handleScrollEnabled(false)
                 }
               >
-                {item}
+                <Text>{item}</Text>
               </Chip>
             )}
           ></FlatList>
@@ -117,6 +126,7 @@ function CandidateCard({
     </Card>
   );
 }
+
 const styles = StyleSheet.create({
   card: {
     width: '90%',

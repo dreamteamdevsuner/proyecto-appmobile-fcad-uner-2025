@@ -1,27 +1,47 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { FlatList, View, ListRenderItem, StyleSheet } from 'react-native';
 import { Divider, List } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import ROUTES from '../../app/private/recruiter/navigator/routes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { PrivateStackParamList } from '../../app/private/recruiter/navigator/types';
 import {
   PROFILE_ROUTES,
+  ProfileTopTabParamList,
   RecruiterTabScreenProps,
 } from '@app/private/shared/perfil/types';
 import { OfertaConDetalles } from '@services/profile/ProfileService';
+import { useProfileContext } from '@appContext/ProfileContext';
 
-type Props = RecruiterTabScreenProps<
+type OffersTabRouteProp = RouteProp<
+  ProfileTopTabParamList,
   | PROFILE_ROUTES.ACTIVE_OFFERS
   | PROFILE_ROUTES.CLOSED_OFFERS
   | PROFILE_ROUTES.PAUSED_OFFERS
 >;
 
-const OffersTab = ({ route }: Props): React.JSX.Element => {
-  const { offers } = route.params;
+const OffersTab = (): React.JSX.Element => {
+  const route = useRoute<OffersTabRouteProp>();
+  const { type } = route.params;
+
+  const { activeOffers, pausedOffers, closedOffers, refreshing, onRefresh } =
+    useProfileContext();
 
   const navigator =
     useNavigation<NativeStackNavigationProp<PrivateStackParamList>>();
+
+  const offersToShow = useMemo(() => {
+    switch (type) {
+      case 'published':
+        return activeOffers;
+      case 'paused':
+        return pausedOffers;
+      case 'closed':
+        return closedOffers;
+      default:
+        return [];
+    }
+  }, [type, activeOffers, pausedOffers, closedOffers]);
 
   const renderItem: ListRenderItem<OfertaConDetalles> = ({ item }) => {
     return (
@@ -43,7 +63,7 @@ const OffersTab = ({ route }: Props): React.JSX.Element => {
   return (
     <View style={styles.container}>
       <FlatList
-        data={offers}
+        data={offersToShow}
         renderItem={renderItem}
         keyExtractor={(item) => item.titulo.toString()}
         ListEmptyComponent={
@@ -55,6 +75,8 @@ const OffersTab = ({ route }: Props): React.JSX.Element => {
           />
         }
         ItemSeparatorComponent={() => <Divider></Divider>}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
       />
     </View>
   );

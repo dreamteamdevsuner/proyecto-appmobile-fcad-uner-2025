@@ -1,5 +1,6 @@
-export type UserItem = {
+export interface UserItem {
   id: string;
+  idProfesional?: string;
   name: string;
   subtitle?: string;
   avatarUrl?: string;
@@ -7,4 +8,5 @@ export type UserItem = {
   ofertaId?: number;
   ofertaName?: string;
   lugar?: string;
-};
+  idOfertaTrabajoMatch?: string;
+}

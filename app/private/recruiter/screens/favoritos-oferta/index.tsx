@@ -14,8 +14,8 @@ import {
   useRoute,
 } from '@react-navigation/native';
 import React, { useEffect } from 'react';
-import { DBUsuario } from '@database/DBUsuario';
-import { getUsuariosMatchOferta } from '@services/UsuarioMatchService';
+import { getUsuariosMatchOferta, UsuarioMatch } from '@services/OfertaService';
+import { useAuth } from '@appContext/authContext';
 
 type PrivateNav = NativeStackNavigationProp<
   RecruiterStackParamList,
@@ -38,19 +38,22 @@ const FavoritosOferta: React.FC = () => {
   const route = useRoute<RouteProps>();
   const [loading, setLoading] = React.useState(false);
   const [usuarios, setUsuarios] = React.useState<UserItem[]>([]);
-
+  const {
+    state: { user: usuarioLogueado },
+  } = useAuth();
   const fetchData = async () => {
     try {
       setLoading(true);
-      const usuariosData: DBUsuario[] = await getUsuariosMatchOferta(
+      const usuariosData: UsuarioMatch[] = await getUsuariosMatchOferta(
         route.params.ofertaId,
       );
       const usuariosItem: UserItem[] = usuariosData.map((usuario) => ({
         id: usuario.id,
         name: `${usuario.nombre} ${usuario.apellido}`,
         role: usuario.rol,
-        subtitulo: `Postulantes: 11`,
         avatarUrl: usuario.fotoperfil || undefined,
+        idProfesional: usuario.idProfesional,
+        idOfertaTrabajoMatch: usuario.idOfertaTrabajoMatch,
       }));
       setUsuarios(usuariosItem);
     } catch (error) {
@@ -74,12 +77,16 @@ const FavoritosOferta: React.FC = () => {
   };
 
   const handleSelectConversation = (user: UserItem) => {
-    navigation.navigate(ROUTES.RECRUITER_CONVERSACION, {
-      title: user.name,
-      myName: 'Renata',
-      otherAvatarUrl: user.avatarUrl,
-      myAvatarUrl: undefined,
-    });
+    if (usuarioLogueado) {
+      navigation.navigate(ROUTES.RECRUITER_CONVERSACION, {
+        title: user.name,
+        myName: usuarioLogueado?.nombre,
+        otherAvatarUrl: user.avatarUrl,
+        myAvatarUrl: undefined,
+        idOfertaTrabajoMatch: user.idOfertaTrabajoMatch,
+        idUsuarioProfesional: user.idProfesional,
+      });
+    }
   };
   return (
     <View style={styles.container}>
@@ -102,7 +109,7 @@ const FavoritosOferta: React.FC = () => {
             })
           }
         >
-          <Text style={styles.title}>Oferta:</Text>
+          <Text style={styles.title}>{route.params.title}</Text>
         </View>
         <UserList
           users={usuarios}

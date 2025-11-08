@@ -13,67 +13,65 @@ import CrearOfertaNavigator from '../crear-oferta/CrearOfertaNavigator';
 const ProfileStack = createNativeStackNavigator<PrivateStackParamList>();
 
 const ProfileNavigator = () => (
-  <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
-    <ProfileStack.Navigator>
-      <ProfileStack.Screen
-        name={ROUTES.RECRUITER_PROFILE}
-        component={ProfileScreen}
-        options={({ navigation }) => ({
-          title: 'Mi perfil',
-          headerShown: true,
-          headerRight: () => (
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginRight: 12,
+  <ProfileStack.Navigator>
+    <ProfileStack.Screen
+      name={ROUTES.RECRUITER_PROFILE}
+      component={ProfileScreen}
+      options={({ navigation }) => ({
+        title: 'Mi perfil',
+        headerShown: true,
+        headerRight: () => (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginRight: 12,
+            }}
+          >
+            <TouchableOpacity
+              style={{ marginRight: 16 }}
+              onPress={() => {
+                navigation.navigate(ROUTES.RECRUITER_NOTIFICATIONS);
               }}
             >
-              <TouchableOpacity
-                style={{ marginRight: 16 }}
-                onPress={() => {
-                  navigation.navigate(ROUTES.RECRUITER_NOTIFICATIONS);
-                }}
-              >
-                <Ionicons
-                  name="notifications-outline"
-                  size={24}
-                  color="#FFFFFF"
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => navigation.navigate(ROUTES.RECRUITER_SETTINGS)}
-              >
-                <Ionicons name="settings-outline" size={24} color="#FFFFFF" />
-              </TouchableOpacity>
-            </View>
-          ),
-        })}
-      />
-      <ProfileStack.Screen
-        name={ROUTES.RECRUITER_SETTINGS}
-        component={SettingProfile}
-        options={{ title: 'Ajustes' }}
-      />
-      <ProfileStack.Screen
-        name={ROUTES.RECRUITER_NOTIFICATIONS}
-        component={NotificationsProfile}
-        options={{ title: 'Notificaciones' }}
-      />
-      <ProfileStack.Screen
-        name={ROUTES.RECRUITER_FAVORITOS_OFERTA}
-        component={FavoritosOferta}
-        options={{ title: 'Favoritos' }}
-      />
-      <ProfileStack.Screen
-        name={ROUTES.RECRUITER_CREAR_OFERTA}
-        component={CrearOfertaNavigator}
-        options={{
-          headerShown: false,
-        }}
-      />
-    </ProfileStack.Navigator>
-  </KeyboardAvoidingView>
+              <Ionicons
+                name="notifications-outline"
+                size={24}
+                color="#FFFFFF"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate(ROUTES.RECRUITER_SETTINGS)}
+            >
+              <Ionicons name="settings-outline" size={24} color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
+        ),
+      })}
+    />
+    <ProfileStack.Screen
+      name={ROUTES.RECRUITER_SETTINGS}
+      component={SettingProfile}
+      options={{ title: 'Ajustes' }}
+    />
+    <ProfileStack.Screen
+      name={ROUTES.RECRUITER_NOTIFICATIONS}
+      component={NotificationsProfile}
+      options={{ title: 'Notificaciones' }}
+    />
+    <ProfileStack.Screen
+      name={ROUTES.RECRUITER_FAVORITOS_OFERTA}
+      component={FavoritosOferta}
+      options={{ title: 'Favoritos' }}
+    />
+    <ProfileStack.Screen
+      name={ROUTES.RECRUITER_CREAR_OFERTA}
+      component={CrearOfertaNavigator}
+      options={{
+        headerShown: false,
+      }}
+    />
+  </ProfileStack.Navigator>
 );
 
 export default ProfileNavigator;

@@ -7,6 +7,8 @@ import {
   markNotificationAsRead,
   AppNotification,
 } from '../../../../../services/notifications/notifications.service';
+import { timeAgo } from '../../../../../utils/timeAgo';
+import { supabase } from '../../../../../supabase/supabaseClient';
 
 export default function NotificationsProfile() {
   const { state } = useAuth();
@@ -15,9 +17,7 @@ export default function NotificationsProfile() {
 
   const loadNotifications = async () => {
     if (!state.user?.id) return;
-    console.log('User ID:', state.user.id);
     const data = await getUserNotifications(state.user.id.toString());
-    console.log('Notificaciones traídas:', data);
     setNotifications(data);
     setLoading(false);
   };
@@ -31,6 +31,20 @@ export default function NotificationsProfile() {
     loadNotifications();
   };
 
+  const handleDelete = async (notif: any) => {
+    const { error } = await supabase
+      .from('notificacion')
+      .delete()
+      .eq('id', notif.id);
+
+    if (error) {
+      console.error('Error eliminando notificación:', error);
+      return;
+    }
+
+    loadNotifications(); // recargar lista
+  };
+
   if (loading) {
     return (
       <View style={styles.loading}>
@@ -42,7 +56,7 @@ export default function NotificationsProfile() {
   if (!notifications.length) {
     return (
       <View style={styles.container}>
-        <Text style={styles.noUsers}>No tenés notificaciones aún 👀</Text>
+        <Text style={styles.noUsers}>No tenés notificaciones aún.</Text>
       </View>
     );
   }
@@ -52,13 +66,13 @@ export default function NotificationsProfile() {
       <OfertasList3
         ofertas={notifications.map((n) => ({
           id: n.id,
-          title:
-            n.tipo === 'match'
-              ? 'Tienes un nuevo match 💛'
-              : 'Tienes un nuevo mensaje 💬',
-          subtitle: n.texto,
+          title: n.ofertatrabajo?.titulo || 'Nueva notificación 💬',
+          //subtitle: `${n.texto} · ${timeAgo(n.created_at ?? '')}`,
+          subtitle: `${n.texto}`,
+          time: timeAgo(n.created_at ?? ''),
         }))}
         onSelectOferta={handlePress}
+        onDeleteOferta={handleDelete}
       />
     </View>
   );

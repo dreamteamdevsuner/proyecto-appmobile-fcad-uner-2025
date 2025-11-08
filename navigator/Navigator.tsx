@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useAuth } from '../appContext/authContext';
 import PrivateNavigator from '../app/private/privateNavigator/PrivateNavigator';
@@ -8,6 +8,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import { supabase } from '../supabase/supabaseClient';
 import { getUser, SecureStoreItem } from '@utils/secure-store';
 import { setItemAsync } from 'expo-secure-store';
+import { RealtimeChannel } from '@supabase/supabase-js';
+import { View, ActivityIndicator } from 'react-native';
 
 //Agregar Root Stack Params Luego
 const Stack = createNativeStackNavigator();
@@ -15,17 +17,22 @@ const Navigator = () => {
   const { state, logout, restoreToken, login } = useAuth();
 
   useEffect(() => {
-    console.log('here');
     const { data: onAuthStateSubscription } = supabase.auth.onAuthStateChange(
       async function (e, session) {
         if (e === 'INITIAL_SESSION') {
           const user = await getUser();
 
-          if (user) {
+          if (user && state.token && state.refreshToken) {
             await restoreToken();
+            await supabase.auth.setSession({
+              access_token: state.token,
+              refresh_token: state.refreshToken,
+            });
           }
         }
         if (e === 'SIGNED_IN' && session) {
+          console.log('Signing');
+
           await login(
             session?.user.id,
             session?.access_token,
@@ -36,6 +43,7 @@ const Navigator = () => {
           logout();
         }
         if (e === 'TOKEN_REFRESHED' && session) {
+          console.log('TOKEN REFRESHED');
           await setItemAsync(SecureStoreItem.TOKEN, session.access_token);
           await setItemAsync(
             SecureStoreItem.REFRESH_TOKEN,
@@ -44,18 +52,65 @@ const Navigator = () => {
         }
       },
     );
+
     return () => {
       return onAuthStateSubscription.subscription.unsubscribe();
     };
   }, []);
+  const [loadingSessionIfExists, setLoadingSessionIfExists] = useState(true);
+  const handleLoadPrevSession = async () => {
+    try {
+      await restoreToken();
+    } catch (error) {
+    } finally {
+      SplashScreen.hideAsync();
+      setTimeout(() => {
+        setLoadingSessionIfExists(false);
+      }, 500);
+    }
+  };
+  useEffect(() => {
+    handleLoadPrevSession();
+  }, []);
 
   useEffect(() => {
+    let loggedUserUpdatesListener: RealtimeChannel;
     if (state.user) {
-      SplashScreen.hideAsync();
+      console.log('listening');
+      // SplashScreen.hideAsync();
+      // Assuming a 'profiles' table with user-specific data
+      loggedUserUpdatesListener = supabase
+        .channel('public:usuario')
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'usuario',
+            filter: `id=eq.${state.user.id}`,
+          },
+          (payload) => {
+            console.log('Profile updated:', payload.new);
+            // Update UI or application state with new profile data
+          },
+        )
+        .subscribe();
     }
+    return () => {
+      if (loggedUserUpdatesListener) {
+        loggedUserUpdatesListener.unsubscribe();
+      }
+    };
   }, [state.user]);
-
-  return state.user ? (
+  if (loadingSessionIfExists) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        {/* You can customize your splash screen or loading indicator here */}
+        <ActivityIndicator size={30} color={'#BEB52C'}></ActivityIndicator>
+      </View>
+    );
+  }
+  return state.user && !loadingSessionIfExists ? (
     <PrivateNavigator></PrivateNavigator>
   ) : (
     <PublicNavigator></PublicNavigator>

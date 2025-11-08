@@ -1,2 +1,2 @@
 export * from './OfertaService';
-export * from './UsuarioMatchService';
+export * from './ChatService';

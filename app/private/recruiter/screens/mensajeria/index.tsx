@@ -22,69 +22,69 @@ const ofertas: OfertaItem[] = [
 
 const users: UserItem[] = [
   {
-    id: 100,
+    id: '100',
     name: 'Ana Lopez Gonzales',
     role: 'UX/UI',
     avatarUrl: 'https://i.pravatar.cc/150?img=1',
     ofertaId: 1,
   },
   {
-    id: 2,
+    id: '2',
     name: 'Juan Rio Bravo',
     role: 'Frontend',
     avatarUrl: 'https://i.pravatar.cc/150?img=2',
     ofertaId: 2,
   },
   {
-    id: 3,
+    id: '3',
     name: 'Juana Costa',
     role: 'Developer',
     ofertaId: 3,
   },
   {
-    id: 4,
+    id: '4',
     name: 'Martín Pérez',
     role: 'Frontend',
     ofertaId: 2,
   },
   {
-    id: 5,
+    id: '5',
     name: 'Camilo Cuevas',
     role: 'UX /UI',
     avatarUrl: 'https://i.pravatar.cc/150?img=1',
     ofertaId: 2,
   },
   {
-    id: 6,
+    id: '6',
     name: 'Sofia Reyes',
     avatarUrl: 'https://i.pravatar.cc/150?img=1',
     role: 'UX /UI',
     ofertaId: 5,
   },
   {
-    id: 7,
+    id: '7',
     name: 'Rosa Ramos',
     role: 'UX /UI',
     avatarUrl: 'https://i.pravatar.cc/150?img=2',
     ofertaId: 5,
   },
-  { id: 8, name: 'John Doe', role: 'UX /UI', ofertaId: 1 },
+  { id: '8', name: 'John Doe', role: 'UX /UI', ofertaId: 1 },
   {
-    id: 9,
+    id: '9',
     name: 'Jude Smith',
     role: 'UX /UI',
     avatarUrl: 'https://i.pravatar.cc/150?img=1',
     ofertaId: 2,
   },
   {
-    id: 10,
+    id: '10',
     name: 'Leonor Lewis',
     role: 'UX /UI',
     avatarUrl: 'https://i.pravatar.cc/150?img=2',
     ofertaId: 3,
   },
-  { id: 11, name: 'Luis García', role: 'UX /UI', ofertaId: 7 },
-  { id: 12, name: 'Elba Gomez', role: 'UX /UI', ofertaId: 9 },
+  { id: '11', name: 'Luis García', role: 'UX /UI', ofertaId: 7 },
+  { id: '12', name: 'Elba Gomez', role: 'UX /UI', ofertaId: 9 },
 ];
 
 type Props = NativeStackScreenProps<
@@ -99,6 +99,8 @@ const Mensajeria: React.FC<Props> = ({ navigation }) => {
       myName: 'Renata',
       otherAvatarUrl: user.avatarUrl,
       myAvatarUrl: undefined,
+      idOfertaTrabajoMatch: '',
+      idUsuarioProfesional: '',
     });
   };
 
