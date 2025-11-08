@@ -43,8 +43,6 @@ const usePaginatedData = <T,>(
   };
 
   useEffect(() => {
-    console.log('firing fetch');
-
     getPaginatedData();
   }, [page]);
   return { data: paginatedData as Pagination<T>, loading, page, setNextPage };
