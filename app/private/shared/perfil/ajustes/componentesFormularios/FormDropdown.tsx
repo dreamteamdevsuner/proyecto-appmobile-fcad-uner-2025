@@ -4,7 +4,6 @@ import { FormikProps } from 'formik';
 import { Menu, TextInput, useTheme, Chip, Text } from 'react-native-paper';
 import { useInputTheme } from '../../../constants/theme/useInputTheme';
 import { DropdownItem } from '@services/perfilService';
-import { SkillConNivel } from '@interfaces/EditarPerfil';
 
 type OptionType = { label: string; value: string };
 
@@ -16,8 +15,6 @@ type FormDropdownProps<Values> = {
   multiple?: boolean;
   onLayout?: (event: LayoutChangeEvent) => void;
   onItemSelected?: (value: string, name: keyof Values & string) => boolean;
-  niveles?: DropdownItem[]; 
-  isSkill?: boolean;
 };
 
 const FormDropdown = <Values extends object>({
@@ -28,14 +25,13 @@ const FormDropdown = <Values extends object>({
   placeholder = 'Seleccionar...',
   multiple = false,
   onItemSelected,
-  isSkill,
 }: FormDropdownProps<Values>) => {
   const [visible, setVisible] = useState(false);
   const [anchorWidth, setAnchorWidth] = useState(0);
   const { theme } = useInputTheme();
 
   const { values, errors, touched } = formik;
-  const value = formik.values[name] as string | string[] | SkillConNivel[];
+  const value = formik.values[name] as string | string[] | undefined;
   const hasError = touched[name] && errors[name];
 
   const handleSelect = (val: string) => {
@@ -64,13 +60,14 @@ const FormDropdown = <Values extends object>({
       return;
     }
 
-    if (multiple && !isSkill) {
+    if (multiple) {
       const selected: string[] = Array.isArray(value) ? (value as string[]) : [];
       const newValues = selected.includes(val)
         ? selected.filter((v) => v !== val)
         : [...selected, val];
+
       formik.setFieldValue(name, newValues);
-    } else if (!multiple){
+    } else {
       formik.setFieldValue(name, val);
       setVisible(false);
     }
@@ -128,13 +125,7 @@ const FormDropdown = <Values extends object>({
         {items.map((item) => {
           let isCurrentlySelected = false;
           if (multiple && Array.isArray(value)) {
-            if (isSkill) {
-              // Caso SkillConNivel[]
-              isCurrentlySelected = (value as SkillConNivel[]).some(v => v.idskill === item.value);
-            } else {
-              // Caso string[]
-              isCurrentlySelected = (value as string[]).includes(item.value);
-            }
+            isCurrentlySelected = (value as string[]).includes(item.value);          
           }
           return (
             <Menu.Item
@@ -149,28 +140,6 @@ const FormDropdown = <Values extends object>({
       </Menu>
       {hasError && (
         <Text style={styles.errorText}>{errors[name] as string}</Text>
-      )}
-
-      {multiple &&
-        name === 'habilidades' &&
-        Array.isArray(value) &&
-        value.length > 0 && (
-          <View style={styles.chipContainer}>
-            {(value as string[]).map((val: string) => {
-              const itemLabel =
-                items.find((i) => i.value === val)?.label || val;
-              return (
-                <Chip
-                  key={val}
-                  onClose={() => handleSelect(val)}
-                  style={styles.chip}
-                  closeIcon="close"
-                >
-                  <Text>{itemLabel}</Text>
-                </Chip>
-              );
-            })}
-          </View>
         )}
     </View>
   );

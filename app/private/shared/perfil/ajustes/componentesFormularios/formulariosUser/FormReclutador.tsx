@@ -86,15 +86,7 @@ const FormularioReclutador = ({ formik, fieldPositions }: Props) => {
           formik.setFieldValue('lng', newLng);
         }}
       />
-
-      {/* <Text style={styles.titulo}>Palabras clave:</Text>
-      <FormDropdown
-        name="palabrasClave"
-        formik={formik}
-        items={[{ label: 'Empleabilidad', value: 'empleabilidad' }]}
-        placeholder="Selecciona palabras clave"
-        multiple={true}
-      /> */}
+      
     </>
   );
 };

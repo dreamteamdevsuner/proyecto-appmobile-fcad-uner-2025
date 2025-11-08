@@ -52,8 +52,6 @@ const EditarPerfilScreen = () => {
     listasTiposEnlace: DropdownItem[];
     modalidades: DropdownItem[];
     tiposJornada: DropdownItem[];
-    tiposContratacion: DropdownItem[];
-    niveles: DropdownItem[];
   }>({
     herramientas: [],
     habilidades: [],
@@ -61,8 +59,6 @@ const EditarPerfilScreen = () => {
     listasTiposEnlace: [],
     modalidades: [],
     tiposJornada: [],
-    tiposContratacion: [],
-    niveles: [],
   });
 
   useEffect(() => {
@@ -86,7 +82,11 @@ const EditarPerfilScreen = () => {
           cargarDatosInicialesPerfil(userId, tipo),
         ]);
 
-        setListasDropdown(listas);
+        setListasDropdown((estadoAnterior) => ({
+          ...estadoAnterior,
+          ...listas,
+        }));
+        
         setInitialData(datosGuardados);
       } catch (error) {
         console.error('Error cargando datos:', error);
@@ -234,9 +234,7 @@ const EditarPerfilScreen = () => {
                       }}
                       listasTiposEnlace={listasDropdown.listasTiposEnlace}
                       listasModalidades={listasDropdown.modalidades}
-                      listasTiposJornada={listasDropdown.tiposJornada}
-                      listasTiposContratacion={listasDropdown.tiposContratacion}
-                      listasNiveles={listasDropdown.niveles}
+                      listasTiposJornada={listasDropdown.tiposJornada}                      
                     />
                     <Button
                       onPress={async () => {
