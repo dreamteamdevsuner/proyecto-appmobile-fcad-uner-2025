@@ -34,8 +34,6 @@ export default function AppContent() {
         .from('usuario')
         .update({ expo_push_token: token })
         .eq('id', state.user?.id); // Actualiza el token en la base de datos *le puse ? porque a veces state.user es null
-
-      console.log('Expo push token guardado en BD:', token);
     }
 
     saveToken();
