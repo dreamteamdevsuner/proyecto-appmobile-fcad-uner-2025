@@ -5,11 +5,6 @@ import { supabase } from '../../supabase/supabaseClient';
 // Función para registrar push token en Expo
 export async function registerForPushNotifications(): Promise<string | null> {
   if (!Device.isDevice) {
-    if (__DEV__) {
-      console.warn(
-        'Solo se pueden enviar notificaciones push desde un dispositivo físico',
-      );
-    }
     return null;
   }
 

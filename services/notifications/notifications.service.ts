@@ -5,17 +5,32 @@ export type AppNotification = {
   texto: string;
   tipo: string;
   idestadonotificacion: number; // 1 pendiente, 2 enviado, 3 leído
-  created_at?: string;
+  activo: boolean;
+  idofertatrabajo?: string | null;
+  ofertatrabajo?: { titulo?: string } | null;
 };
 
 // Obtener las notificaciones del usuario logueado
 export async function getUserNotifications(userId: string) {
   const { data, error } = await supabase
     .from('notificacion')
-    .select('*')
+    .select(
+      `
+      id,
+      texto,
+      tipo,
+      idestadonotificacion,
+      activo,
+      idofertatrabajo,
+      created_at,
+      ofertatrabajo (
+        titulo
+      )
+    `,
+    )
     .eq('idusuario', userId)
     .eq('activo', true)
-    .order('id', { ascending: false });
+    .order('created_at', { ascending: false });
 
   if (error) {
     console.error('Error trayendo notificaciones:', error);

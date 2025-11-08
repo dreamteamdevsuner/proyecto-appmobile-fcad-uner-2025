@@ -188,7 +188,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           const expoToken = await registerForPushNotifications();
           if (expoToken && signedUser?.id) {
             await savePushTokenToDatabase(signedUser.id.toString(), expoToken);
-            console.log('✅ Push token guardado en BD:', expoToken);
           }
         } catch (err) {
           console.warn('⚠️ Error guardando push token:', err);
