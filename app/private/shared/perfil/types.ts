@@ -1,8 +1,8 @@
 import ROUTES from '../../recruiter/navigator/routes';
 import CAND_ROUTES from '../../candidates/navigator/routes';
 import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
-import { PerfilView } from './ProfileScreen';
 import { OfertaConDetalles } from '@services/profile/ProfileService';
+import { PerfilView } from '@models/PerfilView';
 
 export enum PROFILE_ROUTES {
   ACTIVE_OFFERS = 'ActiveOffers',
@@ -50,5 +50,6 @@ export type TopTabScreenParams = {
   offers?: OfertaConDetalles[];
   // Pull-to-refresh props (opcionales) que pueden ser pasados desde la pantalla contenedora
   refreshing?: boolean;
+  type?: string;
   onRefresh?: () => void | Promise<void>;
 };
