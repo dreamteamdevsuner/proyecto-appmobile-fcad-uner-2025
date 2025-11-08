@@ -18,16 +18,17 @@ const CandidatePortfolioCarouselItem = ({
     container: {
       width: '100%',
       flex: 1,
-      backgroundColor: 'white',
+      backgroundColor: 'black',
       justifyContent: 'center',
       alignItems: 'center',
       maxWidth: 'auto',
     },
   });
+
   if (checkIsLinkImage(item)) {
     innerContent = (
       <CarouselPortfolioCarouselImage
-        link={item.link}
+        link={item?.link ?? ''}
       ></CarouselPortfolioCarouselImage>
     );
   }
@@ -40,7 +41,8 @@ const CandidatePortfolioCarouselItem = ({
     innerContent = (
       <Pressable style={{ flex: 1, justifyContent: 'center' }}>
         <Text style={{ color: 'white', maxWidth: '80%' }}>
-          {item.portfolioText}
+          {(item.portfolioText.length > 0 && item.portfolioText) ||
+            'placeholder text'}
         </Text>
       </Pressable>
     );

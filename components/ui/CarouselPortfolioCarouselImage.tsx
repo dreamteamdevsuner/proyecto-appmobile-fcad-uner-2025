@@ -7,8 +7,7 @@ const CarouselPortfolioCarouselImage = ({ link }: { link: string }) => {
     link,
     '../../assets/images/candidatePortfolioPlaceholder.jpg',
   );
-  console.log('LINKKK');
-  console.log('LINK', link);
+
   return (
     <View style={{ width: '100%', flex: 1 }}>
       {/* profile_avatar_placeholder.png */}
