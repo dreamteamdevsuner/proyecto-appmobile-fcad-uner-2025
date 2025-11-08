@@ -266,7 +266,8 @@ const FormularioCandidato = ({
                       mode="outlined"
                       color="#b58df1"
                       onPress={() => arrayHelpers.remove(index)}
-                    >Quitar Estudio
+                    >
+                      Quitar Estudio
                     </Button>
                   </View>
                 );
@@ -289,12 +290,13 @@ const FormularioCandidato = ({
                   activo: false,
                 })
               }
-            >Añadir Estudio
+            >
+              Añadir Estudio
             </Button>
           </View>
         )}
       </FieldArray>
-      <View style={{ height: 20 }} /> {/* Espaciador */}
+      <View style={{ height: 20 }} />
       <Text style={styles.titulo}>Idiomas</Text>
       <FormDropdown
         name="idiomasSeleccionados"
@@ -440,7 +442,6 @@ const FormularioCandidato = ({
           onSaveLevel={handleSaveLevel}
         />
       )}
-         {' '}
     </>
   );
 };

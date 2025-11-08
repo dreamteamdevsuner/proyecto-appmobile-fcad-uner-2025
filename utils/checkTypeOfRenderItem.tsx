@@ -1,24 +1,28 @@
-import { boolean } from "yup"
+import { boolean } from 'yup';
 import ProfileUser from '../types/ProfileUser';
-import { ImageSourcePropType } from "react-native";
+import { ImageSourcePropType } from 'react-native';
 
 /* export interface LinkImage {
   link: (id: string) => any
 } */
 export interface LinkImage {
-  link: any
+  link: any;
 }
 export interface PortfolioText {
-  portfolioText: string
+  portfolioText: string;
 }
 
-export const checkIsLinkImage = (item: Record<string, any>): item is LinkImage => {
-  return (item?.link)
-}
+export const checkIsLinkImage = (
+  item: Record<string, any>,
+): item is LinkImage => {
+  return item?.link || Object.hasOwn(item, 'link');
+};
 
-export const checkIsPortfolioText = (item: Record<string, any>): item is PortfolioText => {
-  return item?.portfolioText
-}
+export const checkIsPortfolioText = (
+  item: Record<string, any>,
+): item is PortfolioText => {
+  return item?.portfolioText || Object.hasOwn(item, 'portfolioText');
+};
 /* {
     id: 5,
     name: 'Camilo Cuevas',
@@ -48,5 +52,5 @@ export const checkIsPortfolioText = (item: Record<string, any>): item is Portfol
     ],
   }, */
 export const isUser = (item: Record<string, any>): item is ProfileUser => {
-  return item?.id
-}
+  return item?.id;
+};
