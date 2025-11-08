@@ -2,12 +2,16 @@ import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 
 // Configura cómo se muestran las notificaciones
+
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
+  handleNotification: async () => {
+    return {
+      shouldShowBanner: true,
+      shouldShowList: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+    };
+  },
 });
 
 // Función base para pedir permisos (la usamos en ambas notificaciones)
