@@ -50,7 +50,6 @@ const Conversacion: React.FC<Props> = ({ route }) => {
           sender: message.idusuario,
         })) ?? [];
       setMessages(messagesItem);
-      console.log('Mensajes fetched:', messagesData);
     } catch (error) {
       console.error('Error fetching mensajes:', error);
     } finally {
