@@ -176,10 +176,15 @@ export const cargarDatosInicialesPerfil = async (
         .eq('idprofesional', profesionalId);
 
       if (skillsBD) {
-
-        habilidades = skillsBD.filter((s) => s.skill?.[0]?.idtiposkill === 1).map((s) => String(s.skill![0].id));
-        herramientas = skillsBD.filter((s) => s.skill?.[0]?.idtiposkill === 2).map((s) => String(s.skill![0].id));
-        idiomas = skillsBD.filter((s) => s.skill?.[0]?.idtiposkill === 3).map((s) => String(s.skill![0].id));
+        habilidades = skillsBD
+          .filter((s) => (s.skill as unknown as { id: string, idtiposkill: number})?.idtiposkill === 1)
+          .map((s) => String((s.skill as unknown as { id: string, idtiposkill: number})!.id));
+        herramientas = skillsBD
+          .filter((s) => (s.skill as unknown as { id: string, idtiposkill: number})?.idtiposkill === 2)
+          .map((s) => String((s.skill as unknown as { id: string, idtiposkill: number})!.id));
+        idiomas = skillsBD
+          .filter((s) => (s.skill as unknown as { id: string, idtiposkill: number})?.idtiposkill === 3)
+          .map((s) => String((s.skill as unknown as { id: string, idtiposkill: number})!.id));
       }
       //Carga estudios
       const { data: estudiosBD } = await supabase
