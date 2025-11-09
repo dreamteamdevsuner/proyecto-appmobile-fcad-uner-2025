@@ -1,5 +1,5 @@
 export type OfertaItem = {
-  id: number;
+  id: number | string;
   title: string;
   subtitle?: string;
   time?: string;

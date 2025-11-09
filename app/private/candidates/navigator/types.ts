@@ -5,6 +5,11 @@ export type PrivateStackParamList = {
   [ROUTES.CANDIDATE_SETTING]: undefined;
   [ROUTES.CANDIDATE_PROFILE_TAB]: undefined;
 
+  [ROUTES.CANDIDATE_FAVORITOS_TAB]: {
+    screen?: keyof CandidateFavoritosTabParamList;
+    params?: CandidateFavoritosTabParamList[keyof CandidateFavoritosTabParamList];
+  };
+
   [ROUTES.CANDIDATE_FAVORITOS]: undefined;
   [ROUTES.CANDIDATE_FAVORITOS_MATCHS]: { title: string };
   [ROUTES.CANDIDATE_FAVORITOS_INTERESANTES]: { title: string };
@@ -23,4 +28,9 @@ export type PrivateStackParamList = {
   };
   [ROUTES.CANDIDATE_PROFILE]: { userId?: string; title?: string };
   [ROUTES.CANDIDATE_NOTIFICATIONS]: undefined;
+};
+
+export type CandidateFavoritosTabParamList = {
+  [ROUTES.CANDIDATE_FAVORITOS_MATCHS]: { title: string };
+  [ROUTES.CANDIDATE_FAVORITOS_INTERESANTES]: { title: string };
 };

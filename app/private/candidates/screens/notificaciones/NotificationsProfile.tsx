@@ -10,8 +10,16 @@ import {
 import { timeAgo } from '../../../../../utils/timeAgo';
 import { supabase } from '../../../../../supabase/supabaseClient';
 
+import { useNavigation } from '@react-navigation/native';
+import ROUTES from '../../../candidates/navigator/routes';
+import { PrivateStackParamList } from '../../../candidates/navigator/types';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
 export default function NotificationsProfile() {
   const { state } = useAuth();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<PrivateStackParamList>>();
+
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -28,7 +36,22 @@ export default function NotificationsProfile() {
 
   const handlePress = async (notif: any) => {
     await markNotificationAsRead(notif.id);
-    loadNotifications();
+
+    switch (notif.tipo) {
+      case 'match':
+        navigation.navigate(ROUTES.CANDIDATE_FAVORITOS_TAB, {
+          screen: ROUTES.CANDIDATE_FAVORITOS_MATCHS,
+          params: { title: 'Mis Matchs' },
+        });
+        break;
+
+      case 'mensaje':
+        navigation.navigate(ROUTES.CANDIDATE_MENSAJERIA_TAB);
+        break;
+
+      default:
+        console.log('Tipo de notificación no manejado:', notif.tipo);
+    }
   };
 
   const handleDelete = async (notif: any) => {
@@ -42,13 +65,13 @@ export default function NotificationsProfile() {
       return;
     }
 
-    loadNotifications(); // recargar lista
+    loadNotifications();
   };
 
   if (loading) {
     return (
       <View style={styles.loading}>
-        <ActivityIndicator size="large" color="#BEB52C" />
+        <ActivityIndicator size="large" color="#A06FA6" />
       </View>
     );
   }
@@ -67,9 +90,9 @@ export default function NotificationsProfile() {
         ofertas={notifications.map((n) => ({
           id: n.id,
           title: n.ofertatrabajo?.titulo || 'Nueva notificación 💬',
-          //subtitle: `${n.texto} · ${timeAgo(n.created_at ?? '')}`,
           subtitle: `${n.texto}`,
           time: timeAgo(n.created_at ?? ''),
+          tipo: n.tipo,
         }))}
         onSelectOferta={handlePress}
         onDeleteOferta={handleDelete}

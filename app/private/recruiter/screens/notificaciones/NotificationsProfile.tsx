@@ -10,8 +10,16 @@ import {
 import { timeAgo } from '../../../../../utils/timeAgo';
 import { supabase } from '../../../../../supabase/supabaseClient';
 
+import { useNavigation } from '@react-navigation/native';
+import ROUTES from '../../../recruiter/navigator/routes';
+import { PrivateStackParamList } from '../../../recruiter/navigator/types';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
 export default function NotificationsProfile() {
   const { state } = useAuth();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<PrivateStackParamList>>();
+
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -27,7 +35,21 @@ export default function NotificationsProfile() {
   }, [state.user?.id]);
 
   const handlePress = async (notif: any) => {
+    console.log('🟣 Notificación presionada:', notif);
+
     await markNotificationAsRead(notif.id);
+
+    if (notif.tipo === 'match' && notif.idofertatrabajo) {
+      navigation.navigate(ROUTES.RECRUITER_FAVORITOS_OFERTA, {
+        title: notif.title || 'Mis Matchs',
+        ofertaId: notif.idofertatrabajo,
+      });
+    } else if (notif.tipo === 'mensaje') {
+      navigation.navigate(ROUTES.RECRUITER_MENSAJERIA_TAB);
+    } else {
+      console.log('Tipo de notificación no manejado:', notif.tipo);
+    }
+
     loadNotifications();
   };
 
@@ -42,13 +64,13 @@ export default function NotificationsProfile() {
       return;
     }
 
-    loadNotifications(); // recargar lista
+    loadNotifications();
   };
 
   if (loading) {
     return (
       <View style={styles.loading}>
-        <ActivityIndicator size="large" color="#BEB52C" />
+        <ActivityIndicator size="large" color="#A06FA6" />
       </View>
     );
   }
@@ -67,9 +89,10 @@ export default function NotificationsProfile() {
         ofertas={notifications.map((n) => ({
           id: n.id,
           title: n.ofertatrabajo?.titulo || 'Nueva notificación 💬',
-          //subtitle: `${n.texto} · ${timeAgo(n.created_at ?? '')}`,
           subtitle: `${n.texto}`,
           time: timeAgo(n.created_at ?? ''),
+          tipo: n.tipo,
+          idofertatrabajo: n.idofertatrabajo,
         }))}
         onSelectOferta={handlePress}
         onDeleteOferta={handleDelete}
