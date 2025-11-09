@@ -93,7 +93,7 @@ export const AboutMe = () => {
                     await Linking.openURL(item.url);
                   }}
                 >
-                  <Avatar.Text size={45} label={item.name.slice(0, 1)} />
+                  <Avatar.Text size={45} label={item.name?.slice(0, 1)} />
                   <Text style={styles.textContent}>{item.name}</Text>
                 </Pressable>
               )}

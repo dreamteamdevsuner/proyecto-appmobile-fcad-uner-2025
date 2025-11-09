@@ -225,12 +225,15 @@ export const cargarDatosInicialesPerfil = async (
       .eq('idusuario', userId)
       .eq('activo', true);
 
-    const redes = enlacesBD ? enlacesBD
-      .filter(e => e.tipoenlace?.[0])
-      .map(e => ({
-        tipo: e.tipoenlace![0].nombre,
-        url: e.url,
-      })) : [];
+    const redes = enlacesBD 
+      ? enlacesBD.map((e) => {
+          const tipoEnlace = e.tipoenlace as unknown as { nombre: string };
+          return {
+            tipo: tipoEnlace.nombre,
+            url: e.url,
+          };
+        })        
+      : [];
 
     return {
       ...datosBase,
@@ -368,14 +371,18 @@ export const guardarPerfilProfesional = async (
     }
 
     //Borrar e insertar enlaces
-    await supabase.from('enlace').delete().eq('idusuario', userId);
-    const { data: tiposEnlace } = await supabase.from('tipoenlace').select('id, nombre').throwOnError();
+    // await supabase.from('enlace').delete().eq('idusuario', userId);
+    const { data: tiposEnlace } = await supabase
+      .from('tipoenlace')
+      .select('id, nombre')
+      .throwOnError();
     if (!tiposEnlace) throw new Error("No se pudieron cargar los tipos de enlace");
-    const mapaTipos = new Map<string, number>(tiposEnlace.map(t => [t.nombre, t.id]));
-    const enlacesParaInsertar = values.redes.map(red => ({
+
+    const enlacesParaInsertar = values.redes
+      .map((red) => ({
       idusuario: userId,
       url: red.url,
-      idtipoenlace: mapaTipos.get(red.tipo),
+      idtipoenlace: parseInt(red.tipo),
       activo: true,
     })).filter(e => e.idtipoenlace);
     if (enlacesParaInsertar.length > 0) {
