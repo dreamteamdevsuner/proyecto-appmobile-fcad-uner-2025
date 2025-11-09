@@ -4,6 +4,7 @@ export type AppNotification = {
   id: string;
   texto: string;
   tipo: string;
+  created_at: string;
   idestadonotificacion: number; // 1 pendiente, 2 enviado, 3 leído
   activo: boolean;
   idofertatrabajo?: string | null;

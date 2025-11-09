@@ -65,7 +65,7 @@ export default function NotificationsProfile() {
       return;
     }
 
-    loadNotifications(); // recargar lista
+    loadNotifications();
   };
 
   if (loading) {
@@ -92,7 +92,7 @@ export default function NotificationsProfile() {
           title: n.ofertatrabajo?.titulo || 'Nueva notificación 💬',
           subtitle: `${n.texto}`,
           time: timeAgo(n.created_at ?? ''),
-          tipo: n.tipo, // 👈 lo necesitamos para saber a dónde navegar
+          tipo: n.tipo,
         }))}
         onSelectOferta={handlePress}
         onDeleteOferta={handleDelete}
