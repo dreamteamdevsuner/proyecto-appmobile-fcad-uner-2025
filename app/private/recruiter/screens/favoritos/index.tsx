@@ -1,7 +1,7 @@
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ActivityIndicator, Text } from 'react-native-paper';
 import { UserListHorizontal, ItemList } from '../../../../../components/listas';
-import { UserItem, Item } from '@models/index';
+import { UserItemInfo, Item } from '@models/index';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { PrivateStackParamList as RecruiterStackParamList } from '../../navigator/types';
 import { PrivateStackParamList as CandidateStackParamList } from '../../../candidates/navigator/types';
@@ -30,7 +30,7 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
   } = useAuth();
 
   const [ofertas, setOfertas] = useState<Item[]>([]);
-  const [matchs, setMatchs] = useState<UserItem[]>([]);
+  const [matchs, setMatchs] = useState<UserItemInfo[]>([]);
   const [loading, setLoading] = useState(false);
 
   const handleSelectOferta = (oferta: Item) => {
@@ -39,7 +39,7 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
       ofertaId: oferta.id,
     });
   };
-  const handleSelectUser = (user: UserItem) => {
+  const handleSelectUser = (user: UserItemInfo) => {
     navigation.navigate(CAND_ROUTES.CANDIDATE_PROFILE, {
       userId: user.id,
       title: user.name,
@@ -52,7 +52,6 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
 
         const matchsData = await getMatchRecientes(usuarioLogueado.id);
         setMatchs(matchsData);
-        console.log('Matchs fetched:', matchsData);
       }
     } catch (error) {
       console.error('Error fetching matchs:', error);
@@ -71,7 +70,6 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
           subtitulo: `Postulantes: ${oferta.postulantes}`,
         }));
         setOfertas(ofertasItem);
-        console.log('Ofertas fetched:', ofertasData);
       }
     } catch (error) {
       console.error('Error fetching ofertas:', error);

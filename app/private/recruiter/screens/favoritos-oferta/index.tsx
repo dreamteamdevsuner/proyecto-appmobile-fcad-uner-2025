@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 import { UserList } from '../../../../../components/listas';
-import { UserItem } from '@models/index';
+import { UserItemInfo } from '@models/index';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { PrivateStackParamList as RecruiterStackParamList } from '../../navigator/types';
 import { PrivateStackParamList as CandidateStackParamList } from '../../../candidates/navigator/types';
@@ -37,7 +37,7 @@ const FavoritosOferta: React.FC = () => {
     useNavigation<CompositeNavigationProp<PrivateNav, CandidateNav>>();
   const route = useRoute<RouteProps>();
   const [loading, setLoading] = React.useState(false);
-  const [usuarios, setUsuarios] = React.useState<UserItem[]>([]);
+  const [usuarios, setUsuarios] = React.useState<UserItemInfo[]>([]);
   const {
     state: { user: usuarioLogueado },
   } = useAuth();
@@ -47,7 +47,7 @@ const FavoritosOferta: React.FC = () => {
       const usuariosData: UsuarioMatch[] = await getUsuariosMatchOferta(
         route.params.ofertaId,
       );
-      const usuariosItem: UserItem[] = usuariosData.map((usuario) => ({
+      const usuariosItem: UserItemInfo[] = usuariosData.map((usuario) => ({
         id: usuario.id,
         name: `${usuario.nombre} ${usuario.apellido}`,
         role: usuario.rol,
@@ -67,16 +67,14 @@ const FavoritosOferta: React.FC = () => {
     fetchData();
   }, []);
 
-  const handleSelectUser = (user: UserItem) => {
-    console.log(user);
-
+  const handleSelectUser = (user: UserItemInfo) => {
     navigation.navigate(CAND_ROUTES.CANDIDATE_PROFILE, {
       userId: user.id,
       title: user.name,
     });
   };
 
-  const handleSelectConversation = (user: UserItem) => {
+  const handleSelectConversation = (user: UserItemInfo) => {
     if (usuarioLogueado) {
       navigation.navigate(ROUTES.RECRUITER_CONVERSACION, {
         title: user.name,

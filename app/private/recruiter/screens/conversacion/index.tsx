@@ -14,7 +14,6 @@ import { PrivateStackParamList } from '../../navigator/types';
 import { Message } from '../../../../../types/models/Message';
 import ROUTES from '../../navigator/routes';
 import { getChatConMensajes } from '@services/ChatService';
-import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 
 type Props = NativeStackScreenProps<
   PrivateStackParamList,
@@ -50,7 +49,6 @@ const Conversacion: React.FC<Props> = ({ route }) => {
           sender: message.idusuario,
         })) ?? [];
       setMessages(messagesItem);
-      console.log('Mensajes fetched:', messagesData);
     } catch (error) {
       console.error('Error fetching mensajes:', error);
     } finally {
@@ -116,33 +114,27 @@ const Conversacion: React.FC<Props> = ({ route }) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={90}
-    >
-      <Container>
-        <FlatList
-          ref={flatListRef}
-          data={messages}
-          keyExtractor={(item) => item.id}
-          renderItem={renderItem}
-          contentContainerStyle={{ padding: 10 }}
-          onContentSizeChange={() => {
-            flatListRef.current?.scrollToEnd({ animated: true });
-          }}
-        />
+    <Container>
+      <FlatList
+        ref={flatListRef}
+        data={messages}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        contentContainerStyle={{ padding: 10 }}
+        onContentSizeChange={() => {
+          flatListRef.current?.scrollToEnd({ animated: true });
+        }}
+      />
 
-        <InputContainer>
-          <StyledTextInput
-            placeholder="Escribe un mensaje..."
-            value={inputText}
-            onChangeText={setInputText}
-          />
-          <IconButton icon="send" onPress={handleSend} />
-        </InputContainer>
-      </Container>
-    </KeyboardAvoidingView>
+      <InputContainer>
+        <StyledTextInput
+          placeholder="Escribe un mensaje..."
+          value={inputText}
+          onChangeText={setInputText}
+        />
+        <IconButton icon="send" onPress={handleSend} />
+      </InputContainer>
+    </Container>
   );
 };
 

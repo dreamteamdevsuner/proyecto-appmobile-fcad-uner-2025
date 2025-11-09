@@ -2,40 +2,32 @@ import React, { useState } from 'react';
 import { View, FlatList, StyleSheet, ListRenderItem } from 'react-native';
 import { List, Avatar, IconButton } from 'react-native-paper';
 import Confirmacion from '../../confirmacion/Confirmacion';
-import { UserItem } from '../../../types/UserItem';
-
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { PrivateStackParamList } from '../../../app/private/recruiter/navigator/types';
-import ROUTES from '../../../app/private/recruiter/navigator/routes';
-
-type NavigationProp = NativeStackNavigationProp<
-  PrivateStackParamList,
-  ROUTES.RECRUITER_MENSAJERIA
->;
+import { UserItemInfo } from '@models/index';
 
 type Props = {
   showOferta?: boolean;
-  users: UserItem[];
+  users: UserItemInfo[];
   showMessageIcon?: boolean;
-  onUserPress?: (user: UserItem) => void;
-  onMessagePress?: (user: UserItem) => void;
+  showDeleteIcon?: boolean;
+  showChevronIcon?: boolean;
+  onUserPress?: (user: UserItemInfo) => void;
+  onMessagePress?: (user: UserItemInfo) => void;
 };
 
 const UserList: React.FC<Props> = ({
   showOferta = false,
   users,
   showMessageIcon = true,
+  showDeleteIcon = true,
+  showChevronIcon = false,
   onUserPress,
   onMessagePress,
 }) => {
-  const navigation = useNavigation<NavigationProp>();
-
   const [pressedId, setPressedId] = useState<string | null>(null);
-  const [selectedUser, setSelectedUser] = useState<UserItem | null>(null);
+  const [selectedUser, setSelectedUser] = useState<UserItemInfo | null>(null);
   const [dialogVisible, setDialogVisible] = useState(false);
 
-  const openDialog = (user: UserItem) => {
+  const openDialog = (user: UserItemInfo) => {
     setSelectedUser(user);
     setDialogVisible(true);
   };
@@ -53,7 +45,7 @@ const UserList: React.FC<Props> = ({
     }
     closeDialog();
   };
-  const renderItem: ListRenderItem<UserItem> = ({ item }) => {
+  const renderItem: ListRenderItem<UserItemInfo> = ({ item }) => {
     return (
       <List.Item
         title={item.name}
@@ -86,13 +78,16 @@ const UserList: React.FC<Props> = ({
                 }}
               />
             )}
-            <IconButton
-              icon="delete"
-              onPress={() => {
-                console.log(`Eliminar a ${item.name}`);
-                openDialog(item);
-              }}
-            />
+            {showDeleteIcon && (
+              <IconButton
+                icon="delete"
+                onPress={() => {
+                  console.log(`Eliminar a ${item.name}`);
+                  openDialog(item);
+                }}
+              />
+            )}
+            {showChevronIcon && <IconButton icon="chevron-right" />}
           </View>
         )}
         onPressIn={() => setPressedId(item.id)}
@@ -102,7 +97,7 @@ const UserList: React.FC<Props> = ({
   };
   return (
     <View style={styles.container}>
-      <FlatList<UserItem>
+      <FlatList<UserItemInfo>
         data={users}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString() + item.name}

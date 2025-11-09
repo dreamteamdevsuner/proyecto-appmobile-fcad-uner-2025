@@ -1,13 +1,11 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
 import { Formik } from 'formik';
-import DropDownPicker, { ItemType } from 'react-native-dropdown-picker';
-import { UserItem } from '../../../../../types';
+import DropDownPicker from 'react-native-dropdown-picker';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import ROUTES from '../../navigator/routes';
 import * as Yup from 'yup';
-import { useInputTheme } from '../../../shared/constants/theme/useInputTheme';
 import MapSearch from '@components/mapas/buscador-mapa';
 import { crearOferta } from '@services/OfertaService';
 import { useContext } from 'react';
@@ -92,25 +90,24 @@ const CrearOferta = ({ navigation }: any) => {
   const hardSkillsList = hardSkills.map((x) => {
     return { label: x.nombre, value: x.id };
   });
-  const inputTheme = useInputTheme();
   const [modalidadOpen, setModalidadOpen] = useState(false);
   const [jornadaOpen, setJornadaOpen] = useState(false);
   const [contratoOpen, setContratoOpen] = useState(false);
   const [softSkillsOpen, setSoftSkillsOpen] = useState(false);
   const [hardSkillsOpen, setHardSkillsOpen] = useState(false);
-  const [idiomasOpen, setIdiomasOpen] = useState<boolean[]>([false]);
-  const [nivelesOpen, setNivelesOpen] = useState<boolean[]>([false]);
-  const {
-    state: { user },
-  } = useAuth();
-
+  // const [idiomasOpen, setIdiomasOpen] = useState<boolean[]>([false]);
+  // const [nivelesOpen, setNivelesOpen] = useState<boolean[]>([false]);
   // const [idiomasNivelesPickers, setIdiomasNivelesPickers] = useState<
   //   IdiomaNivel[]
   // >([{ idioma: '', nivel: '' }]);
 
-  const [formValues, setFormValues] = useState<OfertaValues>({
-    ...initialValues,
-  });
+  const [hardSkillsValue, setHardSkillsValue] = useState<string[]>([]);
+  const [softSkillsValue, setSoftSkillsValue] = useState<string[]>([]);
+
+  const {
+    state: { user },
+  } = useAuth();
+  const formikRef = useRef<any>(null);
 
   const handleSubmit = async (values: OfertaValues) => {
     try {
@@ -122,11 +119,10 @@ const CrearOferta = ({ navigation }: any) => {
           idmodalidad: values.modalidad,
           idtipojornada: values.jornada,
           idcontratacion: values.contrato,
-          idsoftskills: formValues.softSkills,
-          idhardskills: formValues.hardSkills,
+          idsoftskills: values.softSkills,
+          idhardskills: values.hardSkills,
         });
 
-        console.log('Oferta creada:', nuevaOferta);
         if (nuevaOferta) alert('Oferta publicada con éxito 🎉');
       }
     } catch (error: any) {
@@ -144,7 +140,7 @@ const CrearOferta = ({ navigation }: any) => {
             onPress={() => {
               navigation.navigate(ROUTES.RECRUITER_CREAR_OFERTA_PREVIEW, {
                 data: {
-                  ...formValues,
+                  ...formikRef.current?.values,
                 },
               });
             }}
@@ -161,67 +157,67 @@ const CrearOferta = ({ navigation }: any) => {
         </View>
       ),
     });
-  }, [navigation, formValues]);
+  }, [navigation]);
 
-  const IdiomaNivelPicker = ({
-    item,
-    index,
-  }: {
-    item: IdiomaNivel;
-    index: number;
-  }) => {
-    const handleOpenIdiomas: React.Dispatch<React.SetStateAction<boolean>> = (
-      value,
-    ) => {
-      const isOpen =
-        typeof value === 'function' ? value(idiomasOpen[index]) : value;
-      setIdiomasOpen((prev) => prev.map((v, i) => (i === index ? isOpen : v)));
-    };
-    const handleOpenNiveles: React.Dispatch<React.SetStateAction<boolean>> = (
-      value,
-    ) => {
-      const isOpen =
-        typeof value === 'function' ? value(nivelesOpen[index]) : value;
-      setNivelesOpen((prev) => prev.map((v, i) => (i === index ? isOpen : v)));
-    };
+  // const IdiomaNivelPicker = ({
+  //   item,
+  //   index,
+  // }: {
+  //   item: IdiomaNivel;
+  //   index: number;
+  // }) => {
+  //   const handleOpenIdiomas: React.Dispatch<React.SetStateAction<boolean>> = (
+  //     value,
+  //   ) => {
+  //     const isOpen =
+  //       typeof value === 'function' ? value(idiomasOpen[index]) : value;
+  //     setIdiomasOpen((prev) => prev.map((v, i) => (i === index ? isOpen : v)));
+  //   };
+  //   const handleOpenNiveles: React.Dispatch<React.SetStateAction<boolean>> = (
+  //     value,
+  //   ) => {
+  //     const isOpen =
+  //       typeof value === 'function' ? value(nivelesOpen[index]) : value;
+  //     setNivelesOpen((prev) => prev.map((v, i) => (i === index ? isOpen : v)));
+  //   };
 
-    // return (
-    //   <View>
-    //     <DropDownPicker
-    //       key={`idioma_${index}`}
-    //       open={idiomasOpen[index]}
-    //       setOpen={handleOpenIdiomas}
-    //       value={formValues.idiomasNiveles[index].idioma}
-    //       setValue={(callback) => {
-    //         setFormValues((prev) => ({
-    //           ...prev,
-    //           idiomasNiveles: callback(prev.idiomasNiveles),
-    //         }));
-    //       }}
-    //       items={idioma}
-    //       placeholder="Selecciona idioma"
-    //       style={styles.dropdown}
-    //       zIndex={index === 0 ? 1000 : 0}
-    //     />
-    //     <DropDownPicker
-    //       key={`nivel_${index}`}
-    //       open={nivelesOpen[index]}
-    //       setOpen={handleOpenNiveles}
-    //       value={formValues.idiomasNiveles[index].nivel}
-    //       setValue={(callback) => {
-    //         setFormValues((prev) => ({
-    //           ...prev,
-    //           idiomasNiveles: callback(prev.idiomasNiveles),
-    //         }));
-    //       }}
-    //       items={nivel}
-    //       placeholder="Selecciona nivel"
-    //       style={styles.dropdown}
-    //       zIndex={index === 0 ? 900 : 0}
-    //     />
-    //   </View>
-    // );
-  };
+  // return (
+  //   <View>
+  //     <DropDownPicker
+  //       key={`idioma_${index}`}
+  //       open={idiomasOpen[index]}
+  //       setOpen={handleOpenIdiomas}
+  //       value={formValues.idiomasNiveles[index].idioma}
+  //       setValue={(callback) => {
+  //         setFormValues((prev) => ({
+  //           ...prev,
+  //           idiomasNiveles: callback(prev.idiomasNiveles),
+  //         }));
+  //       }}
+  //       items={idioma}
+  //       placeholder="Selecciona idioma"
+  //       style={styles.dropdown}
+  //       zIndex={index === 0 ? 1000 : 0}
+  //     />
+  //     <DropDownPicker
+  //       key={`nivel_${index}`}
+  //       open={nivelesOpen[index]}
+  //       setOpen={handleOpenNiveles}
+  //       value={formValues.idiomasNiveles[index].nivel}
+  //       setValue={(callback) => {
+  //         setFormValues((prev) => ({
+  //           ...prev,
+  //           idiomasNiveles: callback(prev.idiomasNiveles),
+  //         }));
+  //       }}
+  //       items={nivel}
+  //       placeholder="Selecciona nivel"
+  //       style={styles.dropdown}
+  //       zIndex={index === 0 ? 900 : 0}
+  //     />
+  //   </View>
+  // );
+  // };
 
   return (
     <View style={styles.container}>
@@ -230,6 +226,7 @@ const CrearOferta = ({ navigation }: any) => {
         showsHorizontalScrollIndicator={false}
       >
         <Formik
+          innerRef={formikRef}
           initialValues={initialValues}
           onSubmit={handleSubmit}
           validationSchema={ofertaSchema}
@@ -243,17 +240,6 @@ const CrearOferta = ({ navigation }: any) => {
             touched,
             setFieldValue,
           }) => {
-            useEffect(() => {
-              setFormValues((prev) => ({
-                ...prev,
-                softSkills: prev.softSkills,
-                hardSkills: prev.hardSkills,
-                localizacion: prev.localizacion,
-                lat: prev.lat,
-                lng: prev.lng,
-              }));
-            }, [values]);
-
             return (
               <View style={styles.formContainer}>
                 <Text style={styles.titulo}>Título</Text>
@@ -287,24 +273,19 @@ const CrearOferta = ({ navigation }: any) => {
                 <Text style={styles.titulo}>Localización</Text>
 
                 <MapSearch
-                  value={formValues.localizacion}
+                  value={values.localizacion}
                   errors={
                     errors.localizacion && touched.localizacion
                       ? errors.localizacion
                       : undefined
                   }
-                  lat={formValues.lat}
-                  lng={formValues.lng}
-                  onChange={(text) => {
-                    setFormValues((prev) => ({
-                      ...prev,
-                      localizacion: text,
-                    }));
-                    setFieldValue('localizacion', text);
+                  lat={values.lat}
+                  lng={values.lng}
+                  onChange={(text) => setFieldValue('localizacion', text)}
+                  onCoordsChange={(lat, lng) => {
+                    setFieldValue('lat', lat);
+                    setFieldValue('lng', lng);
                   }}
-                  onCoordsChange={(lat, lng) =>
-                    setFormValues((prev) => ({ ...prev, lat, lng }))
-                  }
                 />
 
                 <Text style={styles.titulo}>Modalidad</Text>
@@ -394,13 +375,14 @@ const CrearOferta = ({ navigation }: any) => {
                   open={softSkillsOpen}
                   setOpen={setSoftSkillsOpen}
                   theme="DARK"
-                  value={formValues.softSkills}
-                  setValue={(callback: (prev: string[]) => string[]) =>
-                    setFormValues((prev) => ({
-                      ...prev,
-                      softSkills: callback(prev.softSkills),
-                    }))
-                  }
+                  value={softSkillsValue}
+                  setValue={(callback) => {
+                    setSoftSkillsValue((prev) => {
+                      const result = callback(prev);
+                      setFieldValue('softSkills', result);
+                      return result;
+                    });
+                  }}
                   items={softSkillsList}
                   placeholder="Selecciona soft skill"
                   zIndex={2000}
@@ -415,13 +397,14 @@ const CrearOferta = ({ navigation }: any) => {
                   open={hardSkillsOpen}
                   setOpen={setHardSkillsOpen}
                   theme="DARK"
-                  value={formValues.hardSkills}
-                  setValue={(callback: (prev: string[]) => string[]) =>
-                    setFormValues((prev) => ({
-                      ...prev,
-                      hardSkills: callback(prev.hardSkills),
-                    }))
-                  }
+                  value={hardSkillsValue}
+                  setValue={(callback) => {
+                    setHardSkillsValue((prev) => {
+                      const result = callback(prev);
+                      setFieldValue('hardSkills', result);
+                      return result;
+                    });
+                  }}
                   items={hardSkillsList}
                   placeholder="Selecciona hard skill"
                   zIndex={1000}

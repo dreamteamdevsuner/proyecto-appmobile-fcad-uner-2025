@@ -1,91 +1,14 @@
 import { FlatList, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { OfertaItem, UserItem } from '../../../../../types';
+import { UserItemInfo } from '@models/index';
 import { PrivateStackParamList } from '../../navigator/types';
 import { UserList } from '../../../../../components/listas';
 import ROUTES from '../../navigator/routes';
-
-const ofertas: OfertaItem[] = [
-  { id: 1, title: 'UX Santander' },
-  { id: 2, title: 'Frontend Naranja' },
-  { id: 3, title: 'Developer Shopify' },
-  { id: 4, title: 'UI Desegner', subtitle: 'Subtítulo 4' },
-  { id: 5, title: 'Full Stack Banco Provincia', subtitle: 'Subtítulo 5' },
-  { id: 6, title: 'Backend Santender', subtitle: 'Subtítulo 6' },
-  { id: 7, title: 'Backend Naranja', subtitle: 'Subtítulo 7' },
-  { id: 8, title: 'DevOs Globant', subtitle: 'Subtítulo 8' },
-  { id: 9, title: 'RRHH Santender', subtitle: 'Subtítulo 9' },
-  { id: 10, title: 'RRHH Naranja', subtitle: 'Subtítulo 10' },
-  { id: 11, title: 'RRHH Globant', subtitle: 'Subtítulo 11' },
-];
-
-const users: UserItem[] = [
-  {
-    id: '100',
-    name: 'Ana Lopez Gonzales',
-    role: 'UX/UI',
-    avatarUrl: 'https://i.pravatar.cc/150?img=1',
-    ofertaId: 1,
-  },
-  {
-    id: '2',
-    name: 'Juan Rio Bravo',
-    role: 'Frontend',
-    avatarUrl: 'https://i.pravatar.cc/150?img=2',
-    ofertaId: 2,
-  },
-  {
-    id: '3',
-    name: 'Juana Costa',
-    role: 'Developer',
-    ofertaId: 3,
-  },
-  {
-    id: '4',
-    name: 'Martín Pérez',
-    role: 'Frontend',
-    ofertaId: 2,
-  },
-  {
-    id: '5',
-    name: 'Camilo Cuevas',
-    role: 'UX /UI',
-    avatarUrl: 'https://i.pravatar.cc/150?img=1',
-    ofertaId: 2,
-  },
-  {
-    id: '6',
-    name: 'Sofia Reyes',
-    avatarUrl: 'https://i.pravatar.cc/150?img=1',
-    role: 'UX /UI',
-    ofertaId: 5,
-  },
-  {
-    id: '7',
-    name: 'Rosa Ramos',
-    role: 'UX /UI',
-    avatarUrl: 'https://i.pravatar.cc/150?img=2',
-    ofertaId: 5,
-  },
-  { id: '8', name: 'John Doe', role: 'UX /UI', ofertaId: 1 },
-  {
-    id: '9',
-    name: 'Jude Smith',
-    role: 'UX /UI',
-    avatarUrl: 'https://i.pravatar.cc/150?img=1',
-    ofertaId: 2,
-  },
-  {
-    id: '10',
-    name: 'Leonor Lewis',
-    role: 'UX /UI',
-    avatarUrl: 'https://i.pravatar.cc/150?img=2',
-    ofertaId: 3,
-  },
-  { id: '11', name: 'Luis García', role: 'UX /UI', ofertaId: 7 },
-  { id: '12', name: 'Elba Gomez', role: 'UX /UI', ofertaId: 9 },
-];
+import { useEffect, useState } from 'react';
+import { useAuth } from '@appContext/authContext';
+import { getOfertasUsuariosChat } from '@services/ChatService';
+import { OfertasUsuariosChat } from '@models/OfertasUsuariosChat';
 
 type Props = NativeStackScreenProps<
   PrivateStackParamList,
@@ -93,7 +16,31 @@ type Props = NativeStackScreenProps<
 >;
 
 const Mensajeria: React.FC<Props> = ({ navigation }) => {
-  const handleSelectUser = (user: UserItem) => {
+  const {
+    state: { user: usuarioLogueado },
+  } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [ofertasChats, setOfertasChats] = useState<OfertasUsuariosChat[]>([]);
+
+  const fetchOfertasUsuariosChat = async () => {
+    try {
+      if (usuarioLogueado) {
+        setLoading(true);
+        const chatsData = await getOfertasUsuariosChat(usuarioLogueado.id);
+        setOfertasChats(chatsData);
+      }
+    } catch (error) {
+      console.error('Error fetching chats:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOfertasUsuariosChat();
+  }, []);
+
+  const handleSelectUser = (user: UserItemInfo) => {
     navigation.navigate(ROUTES.RECRUITER_CONVERSACION, {
       title: user.name,
       myName: 'Renata',
@@ -102,17 +49,27 @@ const Mensajeria: React.FC<Props> = ({ navigation }) => {
       idOfertaTrabajoMatch: '',
       idUsuarioProfesional: '',
     });
+
+    if (usuarioLogueado) {
+      navigation.navigate(ROUTES.RECRUITER_CONVERSACION, {
+        title: user.name,
+        myName: usuarioLogueado?.nombre,
+        otherAvatarUrl: user.avatarUrl,
+        myAvatarUrl: usuarioLogueado.fotoperfil || undefined,
+        idOfertaTrabajoMatch: user.idOfertaTrabajoMatch,
+        idUsuarioProfesional: user.idProfesional,
+      });
+    }
   };
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={ofertas}
-        keyExtractor={(item) => item.id.toString()}
+        data={ofertasChats}
+        keyExtractor={(item) => item.idOferta}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => {
-          // Filtrar los usuarios que se postularon a esta oferta
-          const postulantes = users.filter((u) => u.ofertaId === item.id);
+          const profesionales = item.chats;
 
           return (
             <View style={styles.section}>
@@ -134,13 +91,15 @@ const Mensajeria: React.FC<Props> = ({ navigation }) => {
                   })
                 }
               >
-                <Text style={styles.title}>Oferta: {item.title} </Text>
+                <Text style={styles.title}>Oferta: {item.nombreOferta}</Text>
               </View>
-              {postulantes.length > 0 ? (
+              {profesionales.length > 0 ? (
                 <UserList
-                  users={postulantes}
+                  users={profesionales}
                   showOferta={false}
                   showMessageIcon={false}
+                  showDeleteIcon={false}
+                  showChevronIcon={true}
                   onUserPress={handleSelectUser}
                 />
               ) : (
