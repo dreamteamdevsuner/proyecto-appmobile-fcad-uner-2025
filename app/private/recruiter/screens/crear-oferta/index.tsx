@@ -123,7 +123,6 @@ const CrearOferta = ({ navigation }: any) => {
           idhardskills: values.hardSkills,
         });
 
-        console.log('Oferta creada:', nuevaOferta);
         if (nuevaOferta) alert('Oferta publicada con éxito 🎉');
       }
     } catch (error: any) {

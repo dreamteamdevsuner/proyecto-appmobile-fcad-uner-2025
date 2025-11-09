@@ -1,4 +1,5 @@
-export { UserItem } from './UserItem';
+export { UserItemInfo } from './UserItemInfo';
 export { Message } from './Message';
 export { Item } from './Item';
 export { OfertaTrabajoData } from './OfertaTrabajoData';
+export { OfertasUsuariosChat } from './OfertasUsuariosChat';

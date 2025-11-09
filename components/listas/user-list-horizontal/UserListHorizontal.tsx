@@ -6,15 +6,15 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Avatar, List, Text } from 'react-native-paper';
-import { UserItem } from '../../../types/UserItem';
+import { UserItemInfo } from '@models/index';
 
 type Props = {
-  users: UserItem[];
-  onSelectUser?: (user: UserItem) => void;
+  users: UserItemInfo[];
+  onSelectUser?: (user: UserItemInfo) => void;
 };
 
 const UserListHorizontal: React.FC<Props> = ({ users, onSelectUser }) => {
-  const renderItem: ListRenderItem<UserItem> = ({ item }) => (
+  const renderItem: ListRenderItem<UserItemInfo> = ({ item }) => (
     <TouchableOpacity
       style={styles.card}
       onPress={() => {
@@ -38,7 +38,7 @@ const UserListHorizontal: React.FC<Props> = ({ users, onSelectUser }) => {
   );
 
   return (
-    <FlatList<UserItem>
+    <FlatList<UserItemInfo>
       data={users}
       renderItem={renderItem}
       keyExtractor={(item) => item.id.toString() + item.name}

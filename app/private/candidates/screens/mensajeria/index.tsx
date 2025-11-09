@@ -1,7 +1,8 @@
 import { FlatList, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { OfertaItem, UserItem } from '../../../../../types';
+import { OfertaItem } from '../../../../../types';
+import { UserItemInfo } from '@models/index';
 import { PrivateStackParamList } from '../../navigator/types';
 import { UserList } from '../../../../../components/listas';
 import ROUTES from '../../navigator/routes';
@@ -20,70 +21,14 @@ const ofertas: OfertaItem[] = [
   { id: 11, title: 'RRHH Globant', subtitle: 'Subtítulo 11' },
 ];
 
-var users: UserItem[] = [
+var users: UserItemInfo[] = [
   {
-    id: 100,
+    id: '100',
     name: 'Ana Lopez Gonzales',
     role: 'UX/UI',
     avatarUrl: 'https://i.pravatar.cc/150?img=1',
     ofertaId: 1,
   },
-  {
-    id: 2,
-    name: 'Juan Rio Bravo',
-    role: 'Frontend',
-    avatarUrl: 'https://i.pravatar.cc/150?img=2',
-    ofertaId: 2,
-  },
-  {
-    id: 3,
-    name: 'Juana Costa',
-    role: 'Developer',
-    ofertaId: 3,
-  },
-  {
-    id: 4,
-    name: 'Martín Pérez',
-    role: 'Frontend',
-    ofertaId: 4,
-  },
-  {
-    id: 5,
-    name: 'Camilo Cuevas',
-    role: 'UX /UI',
-    avatarUrl: 'https://i.pravatar.cc/150?img=1',
-    ofertaId: 5,
-  },
-  {
-    id: 6,
-    name: 'Sofia Reyes',
-    avatarUrl: 'https://i.pravatar.cc/150?img=1',
-    role: 'UX /UI',
-    ofertaId: 6,
-  },
-  {
-    id: 7,
-    name: 'Rosa Ramos',
-    role: 'UX /UI',
-    avatarUrl: 'https://i.pravatar.cc/150?img=2',
-    ofertaId: 7,
-  },
-  { id: 8, name: 'John Doe', role: 'UX /UI', ofertaId: 8 },
-  {
-    id: 9,
-    name: 'Jude Smith',
-    role: 'UX /UI',
-    avatarUrl: 'https://i.pravatar.cc/150?img=1',
-    ofertaId: 9,
-  },
-  {
-    id: 10,
-    name: 'Leonor Lewis',
-    role: 'UX /UI',
-    avatarUrl: 'https://i.pravatar.cc/150?img=2',
-    ofertaId: 10,
-  },
-  { id: 11, name: 'Luis García', role: 'UX /UI', ofertaId: 11 },
 ];
 
 users.map(
@@ -99,7 +44,7 @@ type Props = NativeStackScreenProps<
 >;
 
 const Mensajeria: React.FC<Props> = ({ navigation }) => {
-  const handleSelectUser = (user: UserItem) => {
+  const handleSelectUser = (user: UserItemInfo) => {
     navigation.navigate(ROUTES.CANDIDATE_CONVERSACION, {
       title: user.name,
       myName: 'Profesional',
