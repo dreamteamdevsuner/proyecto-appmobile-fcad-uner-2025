@@ -10,6 +10,7 @@ import {
 import { StyleSheet } from 'react-native';
 import { Surface, Avatar, Divider } from 'react-native-paper';
 import { useProfileContext } from '@appContext/ProfileContext';
+import { toTitleCase } from '@utils/titleCase';
 
 export const AboutMe = () => {
   const { user, refreshing, onRefresh } = useProfileContext();
@@ -93,8 +94,13 @@ export const AboutMe = () => {
                     await Linking.openURL(item.url);
                   }}
                 >
-                  <Avatar.Text size={45} label={item.name?.slice(0, 1)} />
-                  <Text style={styles.textContent}>{item.name}</Text>
+                  <Avatar.Text
+                    size={45}
+                    label={item.tipoenlace.nombre?.charAt(0).toUpperCase()}
+                  />
+                  <Text style={styles.textContent}>
+                    {toTitleCase(item.tipoenlace.nombre || '')}
+                  </Text>
                 </Pressable>
               )}
             />
