@@ -85,13 +85,6 @@ const AuthForm = ({ navigation }: AuthFormProps) => {
   }, []);
 
   const handleLogin = async (values: UserDTO) => {
-    // console.log("handle login");
-    // console.log('values', values);
-    // await handleSignIn(values);
-    //MOCKUP LOGIN SUCCESS
-    // const u = await userService.getOne();
-    // console.log('user by id', u);
-
     const ok = await signIn({ email: values.email, password: values.password });
 
     if (!ok) {

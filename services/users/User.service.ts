@@ -18,7 +18,7 @@ class UserService implements EntityCRUD<IUser> {
 
         .from('usuario')
         .select('* ,tipousuario( id, nombre ) ')
-        .eq('id', '21500e90-f8f4-45f0-8bbd-04910fe4c91a')
+        .eq('id', id)
         .maybeSingle();
 
       if (error) {
