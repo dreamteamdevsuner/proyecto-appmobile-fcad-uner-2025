@@ -151,7 +151,7 @@ function JobOfferCard({ item }: JobOfferCardProps) {
         >
           <View>
             <Text variant="headlineSmall">{item.titulo}</Text>
-            <Text variant="labelMedium">{item.idempresa.nombre}</Text>
+            <Text variant="labelMedium">{item.idempresa?.nombre}</Text>
           </View>
           <View
             style={{
@@ -176,10 +176,10 @@ function JobOfferCard({ item }: JobOfferCardProps) {
             }}
           >
             <View style={{ flex: 1 }}>
-              <Text variant="labelSmall">{item.idmodalidad.nombre}</Text>
+              <Text variant="labelSmall">{item.idmodalidad?.nombre}</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text variant="labelSmall">{item.idtipojornada.nombre}</Text>
+              <Text variant="labelSmall">{item.idtipojornada?.nombre}</Text>
             </View>
             <View style={{ flex: 1 }}>
               <Text variant="labelSmall">Inmediato</Text>
