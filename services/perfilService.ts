@@ -1,6 +1,6 @@
 import { supabase } from "../supabase/supabaseClient";
-import { CandidatoValues, ReclutadorValues, SkillConNivel } from "@interfaces/EditarPerfil";
-import { DBUsuario, DBEstudio, DBModalidad, DBTipoJornada, DBContratacion, DBNivel } from "@database/index";
+import { CandidatoValues, ReclutadorValues } from "@interfaces/EditarPerfil";
+import { DBUsuario, DBEstudio, DBModalidad, DBTipoJornada } from "@database/index";
 
 export interface DropdownItem {
   label: string;
@@ -56,15 +56,12 @@ export const cargarListasParaFormularios = async () => {
       tiposEnlaceResult,
       modalidadesResult,
       tiposJornadaResult,
-      tiposContratacionResult,
-      nivelesResult
+
     ] = await Promise.all([
       supabase.from('skill').select('id, nombre, idtiposkill'),
       supabase.from('tipoenlace').select('id, nombre').eq('activo', true),
       supabase.from('modalidad').select('id, nombre'),
       supabase.from('tipojornada').select('id, nombre'),
-      supabase.from('contratacion').select('id, nombre'),
-      supabase.from('nivel').select('id, nombre')
     ]);
 
     const habilidades: DropdownItem[] = [];
@@ -111,20 +108,6 @@ export const cargarListasParaFormularios = async () => {
       console.error('Error al cargar tipos de jornadas: ', tiposJornadaResult.error);
     }
 
-    const tiposContratacion: DropdownItem[] = tiposContratacionResult.data
-      ? tiposContratacionResult.data.map((c: DBContratacion) => ({ label: c.nombre, value: String(c.id) }))
-      : [];
-    if (tiposContratacionResult.error) {
-      console.error('Error al cargar tipos de contratación: ', tiposContratacionResult.error);
-    }
-
-    const niveles: DropdownItem[] = nivelesResult.data
-      ? nivelesResult.data.map((n: DBNivel) => ({ label: n.nombre, value: String(n.id) }))
-      : [];
-    if (nivelesResult.error) {
-      console.error('Error cargando niveles: ', nivelesResult.error);
-    }
-
     return {
       habilidades,
       herramientas,
@@ -132,14 +115,12 @@ export const cargarListasParaFormularios = async () => {
       listasTiposEnlace,
       modalidades,
       tiposJornada,
-      tiposContratacion,
-      niveles
     };
   } catch (error) {
     console.error('Error general cargando listas para formularios: ', error);
     return {
       habilidades: [], herramientas: [], idiomas: [], listasTiposEnlace: [],
-      modalidades: [], tiposJornada: [], tiposContratacion: [], niveles: []
+      modalidades: [], tiposJornada: []
     };
   }
 };
@@ -185,7 +166,7 @@ export const cargarDatosInicialesPerfil = async (
 
     //Obtener skills del profesional
     const profesionalId = prof?.id;
-    let habilidades: string[] = [], herramientas: SkillConNivel[] = [], idiomas: SkillConNivel[] = [];
+    let habilidades: string[] = [], herramientas: string[] = [], idiomas: string[] = [];
     let estudios: DBEstudio[] = [];
 
     if (profesionalId) {
@@ -195,13 +176,15 @@ export const cargarDatosInicialesPerfil = async (
         .eq('idprofesional', profesionalId);
 
       if (skillsBD) {
-        const mapearSkill = (s: any): SkillConNivel => ({
-          idskill: String(s.skill![0].id),
-          idnivel: s.idnivel ? String(s.idnivel) : null
-        });
-        habilidades = skillsBD.filter(s => s.skill?.[0]?.idtiposkill === 1).map(s => String(s.skill![0].id));
-        herramientas = skillsBD.filter(s => s.skill?.[0]?.idtiposkill === 2).map(mapearSkill);
-        idiomas = skillsBD.filter(s => s.skill?.[0]?.idtiposkill === 3).map(mapearSkill);
+        habilidades = skillsBD
+          .filter((s) => (s.skill as unknown as { id: string, idtiposkill: number})?.idtiposkill === 1)
+          .map((s) => String((s.skill as unknown as { id: string, idtiposkill: number})!.id));
+        herramientas = skillsBD
+          .filter((s) => (s.skill as unknown as { id: string, idtiposkill: number})?.idtiposkill === 2)
+          .map((s) => String((s.skill as unknown as { id: string, idtiposkill: number})!.id));
+        idiomas = skillsBD
+          .filter((s) => (s.skill as unknown as { id: string, idtiposkill: number})?.idtiposkill === 3)
+          .map((s) => String((s.skill as unknown as { id: string, idtiposkill: number})!.id));
       }
       //Carga estudios
       const { data: estudiosBD } = await supabase
@@ -225,12 +208,15 @@ export const cargarDatosInicialesPerfil = async (
       .eq('idusuario', userId)
       .eq('activo', true);
 
-    const redes = enlacesBD ? enlacesBD
-      .filter(e => e.tipoenlace?.[0])
-      .map(e => ({
-        tipo: e.tipoenlace![0].nombre,
-        url: e.url,
-      })) : [];
+    const redes = enlacesBD 
+      ? enlacesBD.map((e) => {
+          const tipoEnlace = e.tipoenlace as unknown as { nombre: string };
+          return {
+            tipo: tipoEnlace.nombre,
+            url: e.url,
+          };
+        })        
+      : [];
 
     return {
       ...datosBase,
@@ -243,7 +229,6 @@ export const cargarDatosInicialesPerfil = async (
       redes,
       redSeleccionada: '',
       aboutMe: usuario.bio || '',
-      contratoSeleccionado: '',
       lat: usuario.direccion?.latitud ?? null,
       lng: usuario.direccion?.longitud ?? null,
     };
@@ -329,13 +314,13 @@ export const guardarPerfilProfesional = async (
 
     // Normalizar las listas: todas como objetos { idskill: string, idnivel: string | number | null }
     const todasLasSkills = [
-      ...values.habilidades.map(id => ({ idskill: String(id), idnivel: null })),
-      ...values.herramientas.map(h => ({ idskill: String(h.idskill), idnivel: h.idnivel ?? null })),
-      ...values.idiomasSeleccionados.map(i => ({ idskill: String(i.idskill), idnivel: i.idnivel ?? null })),
+      ...values.habilidades.map((id) => ({ idskill: String(id), idnivel: null, })),
+      ...values.herramientas.map((id) => ({ idskill: String(id), idnivel: null, })),
+      ...values.idiomasSeleccionados.map((id) => ({ idskill: String(id), idnivel: null, })),
     ];
 
     // Preparar payload respetando los tipos de la BD: idskill es string (uuid), idnivel es number | null
-    const skillsParaInsertar = todasLasSkills.map(s => ({
+    const skillsParaInsertar = todasLasSkills.map((s) => ({
       idprofesional: profesionalId,
       idskill: s.idskill,
       idnivel: s.idnivel ? Number(s.idnivel) : null,
@@ -368,14 +353,18 @@ export const guardarPerfilProfesional = async (
     }
 
     //Borrar e insertar enlaces
-    await supabase.from('enlace').delete().eq('idusuario', userId);
-    const { data: tiposEnlace } = await supabase.from('tipoenlace').select('id, nombre').throwOnError();
+    // await supabase.from('enlace').delete().eq('idusuario', userId);
+    const { data: tiposEnlace } = await supabase
+      .from('tipoenlace')
+      .select('id, nombre')
+      .throwOnError();
     if (!tiposEnlace) throw new Error("No se pudieron cargar los tipos de enlace");
-    const mapaTipos = new Map<string, number>(tiposEnlace.map(t => [t.nombre, t.id]));
-    const enlacesParaInsertar = values.redes.map(red => ({
+
+    const enlacesParaInsertar = values.redes
+      .map((red) => ({
       idusuario: userId,
       url: red.url,
-      idtipoenlace: mapaTipos.get(red.tipo),
+      idtipoenlace: parseInt(red.tipo),
       activo: true,
     })).filter(e => e.idtipoenlace);
     if (enlacesParaInsertar.length > 0) {
@@ -420,8 +409,8 @@ export const guardarPerfilReclutador = async (
     const { data: userData } = await supabase.from('usuario').select('iddireccion').eq('id', userId).single();
     let direccionId = userData?.iddireccion;
     const direccionData = {
-      pais: values.localizacion.split(',')[1]?.trim() || values.localizacion,
-      ciudad: values.localizacion.split(',')[0]?.trim() || '',
+      pais: values.localizacion.split(', ')[1]?.trim() || values.localizacion,
+      ciudad: values.localizacion.split(', ')[0]?.trim() || '',
       // latitud: values.lat, 
       // longitud: values.lng,
     };

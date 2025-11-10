@@ -10,7 +10,14 @@ export type PerfilView = {
   rol?: string;
   direccion?: { ciudad?: string } | null;
   tipoUsuario?: { nombre?: string } | null;
-  enlaces?: any[];
+  enlaces?: {
+    activo: boolean;
+    id: string;
+    idtipoenlace: number;
+    idusuario: string;
+    url: string;
+    tipoenlace: { activo: boolean; id: string; nombre: string };
+  }[];
   estudios?: {
     activo: boolean;
     fechafin: string | null;
