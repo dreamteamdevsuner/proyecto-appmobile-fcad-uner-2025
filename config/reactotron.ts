@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Reactotron from 'reactotron-react-native';
 
 // Only configure Reactotron in development
-// if (__DEV__) {
+if (__DEV__) {
 Reactotron.setAsyncStorageHandler(AsyncStorage) // Enable AsyncStorage inspection
   .configure({
     name: 'YourAppName',
@@ -23,6 +23,6 @@ Reactotron.setAsyncStorageHandler(AsyncStorage) // Enable AsyncStorage inspectio
 Reactotron.clear!();
 
 console.log('Reactotron Configured');
-// }
+}
 
 export default Reactotron;

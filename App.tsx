@@ -23,9 +23,9 @@ import AppContent from './AppContent';
 import { navigationRef } from './navigator/navigationRef';
 
 //import * as NavigationBar from 'expo-navigation-bar';
-// if (__DEV__) {
+if (__DEV__) {
 require('./config/reactotron');
-// }
+}
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
