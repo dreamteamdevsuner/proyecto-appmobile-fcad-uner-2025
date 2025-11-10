@@ -4,7 +4,6 @@ import { FormikProps } from 'formik';
 import { Menu, TextInput, useTheme, Chip, Text } from 'react-native-paper';
 import { useInputTheme } from '../../../constants/theme/useInputTheme';
 import { DropdownItem } from '@services/perfilService';
-import { SkillConNivel } from '@interfaces/EditarPerfil';
 
 type OptionType = { label: string; value: string };
 
@@ -16,7 +15,6 @@ type FormDropdownProps<Values> = {
   multiple?: boolean;
   onLayout?: (event: LayoutChangeEvent) => void;
   onItemSelected?: (value: string, name: keyof Values & string) => boolean;
-  niveles?: DropdownItem[]; 
   isSkill?: boolean;
 };
 
@@ -35,7 +33,7 @@ const FormDropdown = <Values extends object>({
   const { theme } = useInputTheme();
 
   const { values, errors, touched } = formik;
-  const value = formik.values[name] as string | string[] | SkillConNivel[];
+  const value = formik.values[name] as string | string[] | string[];
   const hasError = touched[name] && errors[name];
 
   const handleSelect = (val: string) => {
@@ -64,7 +62,7 @@ const FormDropdown = <Values extends object>({
       return;
     }
 
-    if (multiple && !isSkill) {
+    if (multiple) {
       const selected: string[] = Array.isArray(value) ? (value as string[]) : [];
       const newValues = selected.includes(val)
         ? selected.filter((v) => v !== val)
@@ -128,11 +126,7 @@ const FormDropdown = <Values extends object>({
         {items.map((item) => {
           let isCurrentlySelected = false;
           if (multiple && Array.isArray(value)) {
-            if (isSkill) {
-              // Caso SkillConNivel[]
-              isCurrentlySelected = (value as SkillConNivel[]).some(v => v.idskill === item.value);
-            } else {
-              // Caso string[]
+            if (isSkill) {            
               isCurrentlySelected = (value as string[]).includes(item.value);
             }
           }

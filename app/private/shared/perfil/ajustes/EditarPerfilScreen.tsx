@@ -52,8 +52,6 @@ const EditarPerfilScreen = () => {
     listasTiposEnlace: DropdownItem[];
     modalidades: DropdownItem[];
     tiposJornada: DropdownItem[];
-    tiposContratacion: DropdownItem[];
-    niveles: DropdownItem[];
   }>({
     herramientas: [],
     habilidades: [],
@@ -61,8 +59,6 @@ const EditarPerfilScreen = () => {
     listasTiposEnlace: [],
     modalidades: [],
     tiposJornada: [],
-    tiposContratacion: [],
-    niveles: [],
   });
 
   useEffect(() => {
@@ -235,8 +231,6 @@ const EditarPerfilScreen = () => {
                       listasTiposEnlace={listasDropdown.listasTiposEnlace}
                       listasModalidades={listasDropdown.modalidades}
                       listasTiposJornada={listasDropdown.tiposJornada}
-                      listasTiposContratacion={listasDropdown.tiposContratacion}
-                      listasNiveles={listasDropdown.niveles}
                     />
                     <Button
                       onPress={async () => {
