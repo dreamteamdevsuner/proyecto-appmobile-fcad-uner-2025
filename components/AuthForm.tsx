@@ -17,8 +17,8 @@ import { UserDTO } from '../services/interfaces/UserDTO';
 import useSnackbar from '../hooks/useSnackbar';
 import candidateService from '../services/users/Candidate';
 // import useAuth from '../hooks/useAuth';
-import userService from '../services/users/User.service';
-import { signIn, signUp } from '@services/apiAuth';
+
+import { signIn } from '@services/apiAuth';
 import PUBLIC_NAVIGATOR_ROUTES from '@app/public/PUBLIC_NAVIGATOR_ROUTES';
 
 interface AuthFormProps {
@@ -93,7 +93,7 @@ const AuthForm = ({ navigation }: AuthFormProps) => {
     // console.log('user by id', u);
 
     const ok = await signIn({ email: values.email, password: values.password });
-    console.log('OK', ok);
+
     if (!ok) {
       handleShowSnackbar();
     }
@@ -164,10 +164,13 @@ const AuthForm = ({ navigation }: AuthFormProps) => {
                 ></FormInputWithHelper>
 
                 <View style={authStyles.forgotPasswordContainer}>
-                  <TouchableWithoutFeedback 
+                  <TouchableWithoutFeedback
                     style={authStyles.forgotPassword}
-                    onPress={() => 
-                      navigation.navigate(PUBLIC_NAVIGATOR_ROUTES.RESET_PASSWORD)}
+                    onPress={() =>
+                      navigation.navigate(
+                        PUBLIC_NAVIGATOR_ROUTES.RESET_PASSWORD,
+                      )
+                    }
                   >
                     <Text
                       variant="labelMedium"
@@ -178,7 +181,8 @@ const AuthForm = ({ navigation }: AuthFormProps) => {
                         fontWeight: 'bold',
                         top: -10,
                       }}
-                    >¿Olvidaste tu contraseña ?
+                    >
+                      ¿Olvidaste tu contraseña ?
                     </Text>
                   </TouchableWithoutFeedback>
                 </View>

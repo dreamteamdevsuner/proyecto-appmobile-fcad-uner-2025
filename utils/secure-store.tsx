@@ -1,5 +1,7 @@
 import * as SecureStore from 'expo-secure-store';
 import { UserItem } from '../types';
+import Reactotron from '../config/reactotron';
+import { string } from 'yup';
 
 const STORAGE_NAME = 'JOBSY_';
 
@@ -19,8 +21,11 @@ export async function setItemAsync<T>(
   item: T,
 ): Promise<void> {
   try {
-    const jsonString = JSON.stringify(item);
-    await SecureStore.setItemAsync(key, jsonString);
+    Reactotron.log('setting item', item);
+    Reactotron.log('setting item key', key);
+
+    const valueToSave = typeof item === 'string' ? item : JSON.stringify(item);
+    await SecureStore.setItemAsync(key, valueToSave);
   } catch (error) {
     console.error('Error al guardar en SS');
   }
@@ -34,10 +39,15 @@ export async function setItemAsync<T>(
 export async function getItemAsync<T>(key: SecureStoreItem): Promise<T | null> {
   try {
     const jsonString = await SecureStore.getItemAsync(key);
+    Reactotron.log('data', jsonString);
     if (jsonString === null) {
       return null;
     }
-    return JSON.parse(jsonString) as T;
+    if (key === SecureStoreItem.USER) {
+      return JSON.parse(jsonString) as T;
+    }
+
+    return jsonString as T;
   } catch (error) {
     console.error('Error al leer de SS');
     return null;

@@ -13,14 +13,23 @@ class UserService implements EntityCRUD<IUser> {
     return query;
   }
   async getOne(id: string) {
-    const { data, error } = await this.supabase
-      .from('usuario')
-      .select('* ,tipousuario( id, nombre )')
-      .eq('id', id);
-    if (error) {
-      throw error;
+    try {
+      const { data, error } = await this.supabase
+
+        .from('usuario')
+        .select('* ,tipousuario( id, nombre ) ')
+        .eq('id', '21500e90-f8f4-45f0-8bbd-04910fe4c91a')
+        .maybeSingle();
+      console.log('FOUND DATA', data);
+      if (error) {
+        console.log('error in getOne', error);
+        throw error;
+      }
+      console.log('FOUND DATA', data);
+      return (data && (data as unknown as IUser)) || null;
+    } catch (error) {
+      console.log('ERR', error);
     }
-    return data?.at(0) as IUser;
   }
 }
 
