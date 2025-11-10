@@ -35,14 +35,20 @@ export default function NotificationsProfile() {
   }, [state.user?.id]);
 
   const handlePress = async (notif: any) => {
+    // 🔹 Actualizamos visualmente antes de la llamada
+    setNotifications((prev) =>
+      prev.map((n) =>
+        n.id === notif.id ? { ...n, idestadonotificacion: 3 } : n,
+      ),
+    );
+
+    // 🔹 Marcamos como leída en la base
     await markNotificationAsRead(notif.id);
 
+    // 🔹 Navegamos según tipo
     switch (notif.tipo) {
       case 'match':
-        navigation.navigate(ROUTES.CANDIDATE_FAVORITOS_TAB, {
-          screen: ROUTES.CANDIDATE_FAVORITOS_MATCHS,
-          params: { title: 'Mis Matchs' },
-        });
+        navigation.navigate(ROUTES.CANDIDATE_FAVORITOS_MATCHS);
         break;
 
       case 'mensaje':
@@ -93,6 +99,7 @@ export default function NotificationsProfile() {
           subtitle: `${n.texto}`,
           time: timeAgo(n.created_at ?? ''),
           tipo: n.tipo,
+          read: n.idestadonotificacion === 3,
         }))}
         onSelectOferta={handlePress}
         onDeleteOferta={handleDelete}
