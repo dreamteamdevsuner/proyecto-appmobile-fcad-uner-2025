@@ -35,22 +35,32 @@ export default function NotificationsProfile() {
   }, [state.user?.id]);
 
   const handlePress = async (notif: any) => {
-    console.log('🟣 Notificación presionada:', notif);
+    // 🔹 Actualizamos visualmente antes de la llamada
+    setNotifications((prev) =>
+      prev.map((n) =>
+        n.id === notif.id ? { ...n, idestadonotificacion: 3 } : n,
+      ),
+    );
 
+    // 🔹 Marcamos como leída en la base
     await markNotificationAsRead(notif.id);
 
-    if (notif.tipo === 'match' && notif.idofertatrabajo) {
-      navigation.navigate(ROUTES.RECRUITER_FAVORITOS_OFERTA, {
-        title: notif.title || 'Mis Matchs',
-        ofertaId: notif.idofertatrabajo,
-      });
-    } else if (notif.tipo === 'mensaje') {
-      navigation.navigate(ROUTES.RECRUITER_MENSAJERIA_TAB);
-    } else {
-      console.log('Tipo de notificación no manejado:', notif.tipo);
-    }
+    // 🔹 Navegamos según tipo
+    switch (notif.tipo) {
+      case 'match':
+        navigation.navigate(ROUTES.RECRUITER_FAVORITOS_OFERTA, {
+          title: notif.title || 'Mis Matchs',
+          ofertaId: notif.idofertatrabajo,
+        });
+        break;
 
-    loadNotifications();
+      case 'mensaje':
+        navigation.navigate(ROUTES.RECRUITER_MENSAJERIA_TAB);
+        break;
+
+      default:
+        console.log('Tipo de notificación no manejado:', notif.tipo);
+    }
   };
 
   const handleDelete = async (notif: any) => {
@@ -92,7 +102,7 @@ export default function NotificationsProfile() {
           subtitle: `${n.texto}`,
           time: timeAgo(n.created_at ?? ''),
           tipo: n.tipo,
-          idofertatrabajo: n.idofertatrabajo,
+          read: n.idestadonotificacion === 3,
         }))}
         onSelectOferta={handlePress}
         onDeleteOferta={handleDelete}

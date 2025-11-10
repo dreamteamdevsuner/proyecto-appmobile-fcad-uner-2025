@@ -48,7 +48,12 @@ export default function NotificationsProfile() {
     // 🔹 Navegamos según tipo
     switch (notif.tipo) {
       case 'match':
-        navigation.navigate(ROUTES.CANDIDATE_FAVORITOS_MATCHS);
+        navigation.navigate(ROUTES.CANDIDATE_FAVORITOS_TAB, {
+          screen: ROUTES.CANDIDATE_FAVORITOS_MATCHS,
+          params: {
+            title: 'Mis Matches',
+          },
+        });
         break;
 
       case 'mensaje':
