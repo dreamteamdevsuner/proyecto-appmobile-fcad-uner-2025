@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { TextInput, Button, ActivityIndicator, Text } from 'react-native-paper';
 import MapView, { Marker } from 'react-native-maps';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LOCATIONIQ_API_KEY } from '@env';
 import axios from 'axios';
+import * as Location from '@utils/location';
 
 interface MapSearchProps {
   value: string;
@@ -26,21 +27,18 @@ const MapSearch: React.FC<MapSearchProps> = ({
   onChange,
   onCoordsChange,
 }) => {
-  const [coords, setCoords] = useState<{
-    latitud: number;
-    longitud: number;
-  }>({
+  const [coords, setCoords] = useState({
     latitud: lat ?? DEFAULT_LAT,
     longitud: lng ?? DEFAULT_LNG,
   });
   const [loading, setLoading] = useState(false);
+  const [tienePermiso, setTienePermiso] = useState(false);
   const [options, setOptions] = useState<
     { display_name: string; lat: string; lon: string }[]
   >([]);
 
   const searchPlace = async () => {
     if (!value) return;
-    setLoading(true);
     try {
       setLoading(true);
 
@@ -72,21 +70,23 @@ const MapSearch: React.FC<MapSearchProps> = ({
           setOptions(data);
         }
       } else {
-        setCoords({ latitud: DEFAULT_LAT, longitud: DEFAULT_LNG });
-        onCoordsChange(DEFAULT_LAT, DEFAULT_LNG);
-        setOptions([]);
-        onChange('');
         Alert.alert('No se encontraron resultados');
+        resetToDefault();
       }
     } catch (err) {
       console.error('Error buscando lugar:', err);
       Alert.alert('Error', 'Ocurrió un error al buscar el lugar.');
-      setCoords({ latitud: DEFAULT_LAT, longitud: DEFAULT_LNG });
-      onCoordsChange(DEFAULT_LAT, DEFAULT_LNG);
-      setOptions([]);
+      resetToDefault();
     } finally {
       setLoading(false);
     }
+  };
+
+  const resetToDefault = () => {
+    setCoords({ latitud: DEFAULT_LAT, longitud: DEFAULT_LNG });
+    onCoordsChange(DEFAULT_LAT, DEFAULT_LNG);
+    setOptions([]);
+    onChange('');
   };
 
   const selectOption = (option: {
@@ -104,9 +104,28 @@ const MapSearch: React.FC<MapSearchProps> = ({
 
   const clearText = () => {
     onChange('');
-    setCoords({ latitud: DEFAULT_LAT, longitud: DEFAULT_LNG });
-    onCoordsChange(DEFAULT_LAT, DEFAULT_LNG);
-    setOptions([]);
+    resetToDefault();
+  };
+
+  useEffect(() => {
+    Location.getPermissions(() => setTienePermiso(true));
+  }, []);
+
+  const handleGetCurrentLocation = async () => {
+    if (tienePermiso) {
+      const ubicacion = await Location.getCurrentLocation();
+      console.log(ubicacion);
+      if (!ubicacion) {
+        return;
+      }
+      const { latitude, longitude, direccion } = ubicacion;
+      setCoords({ latitud: latitude, longitud: longitude });
+      onCoordsChange(latitude, longitude);
+
+      onChange(direccion);
+    } else {
+      Location.getPermissions(() => setTienePermiso(true));
+    }
   };
 
   return (
@@ -168,17 +187,23 @@ const MapSearch: React.FC<MapSearchProps> = ({
           longitudeDelta: 5,
         }}
       >
-        {coords.latitud !== null && coords.longitud !== null && (
-          <Marker
-            coordinate={{
-              latitude: coords.latitud,
-              longitude: coords.longitud,
-            }}
-            title={value}
-            description={`Lat: ${coords.latitud.toFixed(5)}, Lng: ${coords.longitud.toFixed(5)}`}
-          />
-        )}
+        <Marker
+          coordinate={{
+            latitude: coords.latitud,
+            longitude: coords.longitud,
+          }}
+          title={value || 'Ubicación seleccionada'}
+          description={`Lat: ${coords.latitud.toFixed(5)}, Lng: ${coords.longitud.toFixed(5)}`}
+        />
       </MapView>
+      <Button
+        icon="crosshairs-gps"
+        mode="outlined"
+        onPress={handleGetCurrentLocation}
+        style={{ marginTop: 10 }}
+      >
+        Usar mi ubicación actual
+      </Button>
     </View>
   );
 };
