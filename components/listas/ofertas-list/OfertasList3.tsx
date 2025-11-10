@@ -22,14 +22,26 @@ const OfertasList3: React.FC<Props> = ({
         title={item.title}
         description={() => (
           <View style={styles.descContainer}>
-            <Text style={styles.subtitle}>{item.subtitle}</Text>
-            {item.time && <Text style={styles.time}>{item.time}</Text>}
+            <Text style={[styles.subtitle, item.read && styles.readText]}>
+              {item.subtitle}
+            </Text>
+            {item.time && (
+              <Text style={[styles.time, item.read && styles.readText]}>
+                {item.time}
+              </Text>
+            )}
           </View>
         )}
-        style={pressedId === item.id ? styles.selectedItem : undefined}
+        // 👉 Si la notificación está leída, se aplica un fondo más suave
+        style={[
+          styles.item,
+          pressedId === item.id && styles.selectedItem,
+          item.read && styles.readItem, // 💜 Agregado
+        ]}
         titleStyle={[
           styles.title,
           pressedId === item.id ? styles.selectedTitle : undefined,
+          item.read && styles.readText, // 💜 texto del título más clarito si ya fue leída
         ]}
         onPress={() => onSelectOferta(item)}
         onPressIn={() => setPressedId(item.id)}
@@ -104,6 +116,17 @@ const styles = StyleSheet.create({
   actions: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  item: {
+    backgroundColor: '#1D1C21', // fondo base
+  },
+
+  readItem: {
+    backgroundColor: '#1d1c214d', // gris muy suave de fondo para "leídas"
+  },
+
+  readText: {
+    color: '#585959ff', // texto gris claro para indicar que ya fue leída
   },
 });
 
