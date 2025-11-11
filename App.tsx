@@ -38,6 +38,11 @@ registerTranslation('es', {
   close: 'Cerrar',
 } as any);
 
+
+if (__DEV__) {
+require('./config/reactotron');
+}
+
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {

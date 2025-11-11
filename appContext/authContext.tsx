@@ -145,7 +145,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const user = await getItemAsync<IUser>(SecureStoreItem.USER);
       if (!user) {
         throw Error("Error al obtener usuario:'");
-        return;
       }
       dispatch({
         type: AUTH_ACTIONS.RESTORE_TOKEN,
@@ -170,6 +169,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       try {
         const signedUser = await userService.getOne(id);
+
         if (!signedUser) {
           throw Error('Error obteniendo perfil de usuario');
         }
@@ -195,6 +195,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
         return true;
       } catch (error: any) {
+        console.log('CATCHING ERROR', error);
         dispatch({
           type: AUTH_ACTIONS.LOGIN_ERROR,
           payload: { error: error.message },

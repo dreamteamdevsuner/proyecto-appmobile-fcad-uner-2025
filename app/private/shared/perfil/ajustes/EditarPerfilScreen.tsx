@@ -34,12 +34,13 @@ import {
 } from './validacion';
 
 const EditarPerfilScreen = () => {
+   const { state } = useAuth();
   const navigation = useNavigation();
   const [dialogVisible, setDialogVisible] = useState(false);
   const [dialogMessage, setDialogMessage] = useState({ message: '', type: '' });
   const scrollRef = useRef<ScrollView>(null);
   const fieldPositions = useRef<{ [key: string]: number }>({});
-  const { state } = useAuth();
+ 
   const esReclutador = state.user?.tipousuario?.nombre === Role.RECLUTADOR;
 
   const [initialData, setInitialData] = useState<
