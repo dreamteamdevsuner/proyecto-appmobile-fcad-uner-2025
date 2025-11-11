@@ -8,6 +8,7 @@ import { CandidatoValues } from '../../../../../../../interfaces/EditarPerfil';
 import { DropdownItem } from '@services/perfilService';
 import MapSearch from '@components/mapas/buscador-mapa';
 import AvatarPicker from '@components/ui/AvatarPicker';
+import { DatePickerModal } from 'react-native-paper-dates';
 
 const SectionTitle = ({ children }: { children: string }) => (
   <Text style={styles.sectionTitle}>{children}</Text>
@@ -34,6 +35,48 @@ const FormularioCandidato = ({
   listasModalidades,
   listasTiposJornada,
 }: Props) => {
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [fechaActual, setFechaActual] = useState<{
+    index: number;
+    fieldName: 'fechainicio' | 'fechafin';
+  } | null>(null);
+
+  const abrirCalendario = (index: number, fieldName: 'fechainicio' | 'fechafin') => {
+    setFechaActual({ index, fieldName });
+    setModalVisible(true);
+  };
+
+  const onDismiss = () => {
+    setModalVisible(false);
+    setFechaActual(null);
+  };
+
+  const onConfirm = ({ date }: { date: Date | undefined }) => {
+    if (date && fechaActual) {
+      const { index, fieldName } = fechaActual;
+      const formattedDate = date.toISOString().split('T')[0];
+      formik.setFieldValue(`estudios[${index}].${fieldName}`, formattedDate);
+    }
+    onDismiss();
+  };
+
+  const getFechaDisplay = (fecha: string | null | undefined) => {
+    if (!fecha) return null;
+    try {
+      const [year, month, day] = fecha.split('-');
+      return `${day}/${month}/${year}`;
+    } catch (e) {
+      return fecha;
+    }
+  };
+
+  const getInitialDateForModal = () => {
+    if (!fechaActual) return new Date();
+    const { index, fieldName } = fechaActual;
+    const fecha = formik.values.estudios[index]?.[fieldName];
+    return fecha ? new Date(fecha) : new Date();
+  };
 
   const removeSkill = (
     fieldName: 'herramientas' | 'idiomasSeleccionados',
@@ -147,6 +190,10 @@ const FormularioCandidato = ({
           <View>
             {formik.values.estudios && formik.values.estudios.length > 0 ? (
               formik.values.estudios.map((estudio, index) => {
+
+                const fechaInicioDisplay = getFechaDisplay(estudio.fechainicio);
+                const fechaFinDisplay = getFechaDisplay(estudio.fechafin);
+
                 return (
                   <View key={index} style={styles.estudioContainer}>
                     <Text style={styles.estudioTitulo}>
@@ -161,36 +208,50 @@ const FormularioCandidato = ({
                     <FormField
                       name={`estudios[${index}].nombreinstitucion`}
                       formik={formik}
-                      placeholder="Institución (Ej: UBA)"
+                      placeholder="Institución"
                       style={{ marginBottom: 10 }}
                     />
 
-                    <FormField
-                      name={`estudios[${index}].fechainicio`}
-                      formik={formik}
-                      placeholder="Fecha inicio"
-                      style={{ marginBottom: 10 }}
-                    />
+                    <TouchableOpacity                      
+                      style={styles.datePickerButton}
+                      onPress={() => abrirCalendario(index, 'fechainicio')}
+                    >
+                      <Text style={styles.datePickerButtonText}>
+                        {fechaInicioDisplay || 'Fecha Inicio'}
+                      </Text>
+                    </TouchableOpacity>
 
-                    <FormField
-                      name={`estudios[${index}].fechafin`}
-                      formik={formik}
-                      placeholder="Fecha Fin"
-                      style={{ marginBottom: 10 }}
-                    />
+                    <TouchableOpacity                      
+                      style={styles.datePickerButton}
+                      onPress={() => abrirCalendario(index, 'fechafin')}
+                      disabled={estudio.activo}
+                    >
+                      <Text style={[
+                          styles.datePickerButtonText,
+                          estudio.activo && styles.datePickerButtonTextDisabled 
+                        ]
+                      }>
+                        {estudio.activo ? 'En curso' : (fechaFinDisplay || 'Fecha Fin')}
+                      </Text>
+                    </TouchableOpacity>
+
                     <View style={styles.checkboxContainer}>
                       <Checkbox.Android
                         status={
-                          formik.values.estudios[index].activo
+                          estudio.activo
                             ? 'checked'
                             : 'unchecked'
                         }
-                        onPress={() =>
+                        onPress={() =>{
+                          const nuevoEstado = !estudio.activo;
                           formik.setFieldValue(
                             `estudios[${index}].activo`,
-                            !formik.values.estudios[index].activo,
-                          )
-                        }
+                            nuevoEstado,
+                          );
+                          if (nuevoEstado) {
+                            formik.setFieldValue(`estudios[${index}].fechafin`, null);
+                          }
+                        }}
                       />
                       <Text style={{ color: 'white' }}>Estudio en curso</Text>
                     </View>
@@ -353,6 +414,15 @@ const FormularioCandidato = ({
           })}
         </View>
       )}
+      <DatePickerModal   
+        locale="es"     
+        mode="single"
+        visible={modalVisible}
+        onConfirm={onConfirm}
+        onDismiss={onDismiss}
+        date={getInitialDateForModal()}
+        saveLabel="Guardar"
+      />
     </>
   );
 };
@@ -427,6 +497,20 @@ const styles = StyleSheet.create({
   },
   chip: {
     backgroundColor: '#2C2C2C',
+  },
+  datePickerButton: {
+    borderRadius: 10,
+    padding: 16, 
+    marginBottom: 10,
+    borderColor: '#3C3C3C',
+    borderWidth: 1,
+  },
+  datePickerButtonText: {
+    color: '#EAEAEA',
+    fontSize: 14,
+  },
+  datePickerButtonTextDisabled: {
+    color: '#777', 
   },
 });
 

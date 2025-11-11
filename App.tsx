@@ -21,8 +21,22 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { DataProvider } from './providers/DataContext';
 import AppContent from './AppContent';
 import { navigationRef } from './navigator/navigationRef';
+import { registerTranslation } from 'react-native-paper-dates';
+import 'react-native-gesture-handler';
 
 //import * as NavigationBar from 'expo-navigation-bar';
+
+registerTranslation('es', {
+  save: 'Guardar',
+  selectSingle: 'Seleccionar fecha',
+  notAccordingToDateFormat: (inputFormat: string) => `Formato debe ser ${inputFormat}`,
+  dateIsDisabled: 'Día no disponible',
+  previous: 'Anterior',
+  next: 'Siguiente',
+  typeInDate: 'Escribir fecha',
+  pickDateFromCalendar: 'Seleccionar fecha del calendario',
+  close: 'Cerrar',
+} as any);
 
 SplashScreen.preventAutoHideAsync();
 
