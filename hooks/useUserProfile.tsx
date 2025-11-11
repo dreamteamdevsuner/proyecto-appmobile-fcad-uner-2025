@@ -104,13 +104,13 @@ export const useUserProfile = (userId?: string) => {
         if (!silent) setLoading(false);
       }
     },
-    [userId , refreshing === false ],
+    [userId , refreshing  ],
   );
 
   useEffect(() => {
     console.log("RENDERING")
     fetchProfile();
-  }, [fetchProfile, refreshing === false  ]);
+  }, [fetchProfile  ]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);

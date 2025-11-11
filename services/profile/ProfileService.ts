@@ -61,7 +61,7 @@ export interface PerfilCompletoReclutador {
 export const getUsuarioBase = async (
   userId: string,
 ): Promise<UsuarioConDetalles | null> => {
-  console.log("GETTING USUARIO BASE")
+   
   const { data, error } = await supabase
     .from('usuario')
     .select(
@@ -73,7 +73,7 @@ export const getUsuarioBase = async (
     )
     .eq('id', userId)
     .single();
- console.log("DATAAAA",data)
+ 
   if (error) {
     console.error('Error en getUsuarioBase:', error);
     return null;

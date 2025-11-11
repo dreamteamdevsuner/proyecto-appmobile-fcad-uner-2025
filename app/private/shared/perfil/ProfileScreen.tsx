@@ -63,16 +63,16 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
     onRefresh,
     refreshing,
   } = useUserProfile(searchId);
-  useEffect(() => {
+  /* useEffect(() => {
     console.log('profileUser updated in screen:', profileUser);
   }, [profileUser]);
-
-  const onRefreshRef = useRef(onRefresh);
+ */
+ /*  const onRefreshRef = useRef(onRefresh);
   useEffect(() => {
     onRefreshRef.current = onRefresh;
   }, [onRefresh]);
-
-  useEffect(() => {
+ */
+/*   useEffect(() => {
     let loggedUserUpdatesListener: RealtimeChannel;
     if (state.user) {
       console.log('listening');
@@ -98,13 +98,13 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
         .subscribe();
     }
     return () => {
-      console.log('LISTENDER', loggedUserUpdatesListener);
+      
       if (loggedUserUpdatesListener) {
-        console.log('LISTENDER', loggedUserUpdatesListener);
+         
         loggedUserUpdatesListener.unsubscribe();
       }
     };
-  }, [state.user?.id]);
+  }, []); */
   const [fabState, setFabState] = useState({ open: false });
   const onStateChange = ({ open }: any) => setFabState({ open });
   const { open } = fabState;
