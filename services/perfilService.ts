@@ -204,15 +204,16 @@ export const cargarDatosInicialesPerfil = async (
     //Obtener enlaces redes
     const { data: enlacesBD } = await supabase
       .from('enlace')
-      .select('url, tipoenlace (nombre)')
+      .select('url, idtipoenlace, tipoenlace (nombre)')
       .eq('idusuario', userId)
       .eq('activo', true);
 
     const redes = enlacesBD 
       ? enlacesBD.map((e) => {
-          const tipoEnlace = e.tipoenlace as unknown as { nombre: string };
+          // const tipoEnlace = e.tipoenlace as unknown as { nombre: string };
           return {
-            tipo: tipoEnlace.nombre,
+            // tipo: tipoEnlace.nombre,
+            tipo: String(e.idtipoenlace),
             url: e.url,
           };
         })        
@@ -332,18 +333,14 @@ export const guardarPerfilProfesional = async (
 
     //Manejar estudios (Borrar e insertar)
     await supabase.from('estudio').delete().eq('idprofesional', profesionalId);
+    
     const estudiosPararInsertar = values.estudios.map(est => {
-      const formatoFecha = (fechaString: string | null | undefined): string | null => {
-        if (!fechaString || !/^\d{4}$/.test(fechaString.trim())) {
-          return null;
-        }
-        return `${fechaString.trim()}-01-01`;
-      };
+
       return {
-        activo: est.activo || true,
+        activo: est.activo || false,
         titulo: est.titulo,
-        fechainicio: formatoFecha(est.fechainicio),
-        fechafin: formatoFecha(est.fechafin),
+        fechainicio: est.fechainicio || null,
+        fechafin: est.fechafin || null,
         nombreinstitucion: est.nombreinstitucion,
         idprofesional: profesionalId,
       };
@@ -353,7 +350,7 @@ export const guardarPerfilProfesional = async (
     }
 
     //Borrar e insertar enlaces
-    // await supabase.from('enlace').delete().eq('idusuario', userId);
+    await supabase.from('enlace').delete().eq('idusuario', userId);
     const { data: tiposEnlace } = await supabase
       .from('tipoenlace')
       .select('id, nombre')
@@ -366,7 +363,7 @@ export const guardarPerfilProfesional = async (
       url: red.url,
       idtipoenlace: parseInt(red.tipo),
       activo: true,
-    })).filter(e => e.idtipoenlace);
+    })).filter(e => e.idtipoenlace && e.url && e.url.length > 0);
     if (enlacesParaInsertar.length > 0) {
       await supabase.from('enlace').insert(enlacesParaInsertar).throwOnError();
     }
