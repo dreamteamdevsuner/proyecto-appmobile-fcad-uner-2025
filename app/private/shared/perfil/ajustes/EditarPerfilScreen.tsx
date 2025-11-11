@@ -34,6 +34,7 @@ import {
 } from './validacion';
 
 const EditarPerfilScreen = () => {
+  const { state } = useAuth();
   const navigation = useNavigation();
   const [dialogVisible, setDialogVisible] = useState(false);
   const [dialogMessage, setDialogMessage] = useState({ message: '', type: '' });

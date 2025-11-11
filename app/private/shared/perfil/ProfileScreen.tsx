@@ -63,7 +63,48 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
     onRefresh,
     refreshing,
   } = useUserProfile(searchId);
+  useEffect(() => {
+    console.log('profileUser updated in screen:', profileUser);
+  }, [profileUser]);
 
+  const onRefreshRef = useRef(onRefresh);
+  useEffect(() => {
+    onRefreshRef.current = onRefresh;
+  }, [onRefresh]);
+
+  useEffect(() => {
+    let loggedUserUpdatesListener: RealtimeChannel;
+    if (state.user) {
+      console.log('listening');
+
+      // Assuming a 'profiles' table with user-specific data
+      loggedUserUpdatesListener = supabase
+        .channel('public:usuario')
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'usuario',
+            filter: `id=eq.${state.user.id}`,
+          },
+          async (payload) => {
+            console.log('Profile updated:', payload.new);
+            console.log('UPDATING ');
+            await onRefreshRef.current();
+            // Update UI or application state with new profile data
+          },
+        )
+        .subscribe();
+    }
+    return () => {
+      console.log('LISTENDER', loggedUserUpdatesListener);
+      if (loggedUserUpdatesListener) {
+        console.log('LISTENDER', loggedUserUpdatesListener);
+        loggedUserUpdatesListener.unsubscribe();
+      }
+    };
+  }, [state.user?.id]);
   const [fabState, setFabState] = useState({ open: false });
   const onStateChange = ({ open }: any) => setFabState({ open });
   const { open } = fabState;
@@ -238,6 +279,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
       <View style={styles.container}>
         <View style={{ paddingVertical: 8 }}>
           <ProfileHeader
+            key={profileUser.id + refreshing}
             nombre={profileUser.nombre ?? ''}
             rol={profileUser.rol ?? ''}
             fotoperfil={profileUser.fotoPerfil ?? ''}

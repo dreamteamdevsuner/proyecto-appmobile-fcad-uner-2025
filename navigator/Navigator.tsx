@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { useAuth } from '../appContext/authContext';
 import PrivateNavigator from '../app/private/privateNavigator/PrivateNavigator';
@@ -10,12 +10,14 @@ import { getUser, SecureStoreItem } from '@utils/secure-store';
 import { getItemAsync, setItemAsync } from 'expo-secure-store';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { View, ActivityIndicator, Text } from 'react-native';
+import { useUserProfile } from '../hooks/useUserProfile';
 
 //Agregar Root Stack Params Luego
 const Stack = createNativeStackNavigator();
 const Navigator = () => {
   const { state, logout, restoreToken, login } = useAuth();
   const [loadSession, setLoadSession] = useState(false);
+  const {  onRefresh } = useUserProfile(state.user?.id)
   useEffect(() => {
     setLoadSession(true);
     const { data: onAuthStateSubscription } = supabase.auth.onAuthStateChange(
