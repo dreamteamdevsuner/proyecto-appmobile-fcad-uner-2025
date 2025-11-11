@@ -40,7 +40,6 @@ const EditarPerfilScreen = () => {
   const [dialogMessage, setDialogMessage] = useState({ message: '', type: '' });
   const scrollRef = useRef<ScrollView>(null);
   const fieldPositions = useRef<{ [key: string]: number }>({});
-  const { state } = useAuth();
 
   const esReclutador = state.user?.tipousuario?.nombre === Role.RECLUTADOR;
 
