@@ -12,7 +12,7 @@ import { Formik } from 'formik';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../../../../appContext/authContext';
 import { Role } from '../../../../../services/interfaces/TipoUsuario.interface';
-import { supabase } from "../../../../../supabase/supabaseClient";
+import { supabase } from '../../../../../supabase/supabaseClient';
 
 import FormularioCandidato from '../ajustes/componentesFormularios/formulariosUser/FormCandidato';
 import FormularioReclutador from '../ajustes/componentesFormularios/formulariosUser/FormReclutador';
@@ -40,6 +40,7 @@ const EditarPerfilScreen = () => {
   const scrollRef = useRef<ScrollView>(null);
   const fieldPositions = useRef<{ [key: string]: number }>({});
   const { state } = useAuth();
+
   const esReclutador = state.user?.tipousuario?.nombre === Role.RECLUTADOR;
 
   const [initialData, setInitialData] = useState<
@@ -63,7 +64,10 @@ const EditarPerfilScreen = () => {
 
   useEffect(() => {
     const cargarDatos = async () => {
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser();
       if (authError || !user) {
         console.error('Error de autenticación:', authError);
         setDialogMessage({
@@ -200,14 +204,18 @@ const EditarPerfilScreen = () => {
                                 animated: true,
                               });
                             }
-                          } else { formik.handleSubmit(); }
+                          } else {
+                            formik.handleSubmit();
+                          }
                         });
                       }}
                       mode="contained"
                       style={styles.boton}
                       disabled={formik.isSubmitting}
                       loading={formik.isSubmitting}
-                    >{formik.isSubmitting ? 'Guardando...' : 'Guardar cambios'}</Button>
+                    >
+                      {formik.isSubmitting ? 'Guardando...' : 'Guardar cambios'}
+                    </Button>
                   </>
                 )}
               </Formik>
@@ -245,14 +253,18 @@ const EditarPerfilScreen = () => {
                                 animated: true,
                               });
                             }
-                          } else { formik.handleSubmit(); }
+                          } else {
+                            formik.handleSubmit();
+                          }
                         });
                       }}
                       mode="contained"
                       style={styles.boton}
                       disabled={formik.isSubmitting}
                       loading={formik.isSubmitting}
-                    >{formik.isSubmitting ? 'Guardando...' : 'Guardar cambios'}</Button>
+                    >
+                      {formik.isSubmitting ? 'Guardando...' : 'Guardar cambios'}
+                    </Button>
                   </>
                 )}
               </Formik>
@@ -268,7 +280,9 @@ const EditarPerfilScreen = () => {
           style={styles.dialog}
         >
           <Dialog.Icon
-            icon={dialogMessage.type === 'success' ? 'check-circle' : 'alert-circle'}
+            icon={
+              dialogMessage.type === 'success' ? 'check-circle' : 'alert-circle'
+            }
             size={40}
             color={dialogMessage.type === 'success' ? '#789a78' : '#ff9b92'}
           />
@@ -284,7 +298,9 @@ const EditarPerfilScreen = () => {
                   navigation.goBack();
                 }
               }}
-            >Aceptar</Button>
+            >
+              Aceptar
+            </Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>

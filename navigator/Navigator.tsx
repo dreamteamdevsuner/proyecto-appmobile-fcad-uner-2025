@@ -73,35 +73,6 @@ const Navigator = () => {
     };
   }, []);
 
-  useEffect(() => {
-    let loggedUserUpdatesListener: RealtimeChannel;
-    if (state.user) {
-      console.log('listening');
-
-      // Assuming a 'profiles' table with user-specific data
-      loggedUserUpdatesListener = supabase
-        .channel('public:usuario')
-        .on(
-          'postgres_changes',
-          {
-            event: 'UPDATE',
-            schema: 'public',
-            table: 'usuario',
-            filter: `id=eq.${state.user.id}`,
-          },
-          (payload) => {
-            console.log('Profile updated:', payload.new);
-            // Update UI or application state with new profile data
-          },
-        )
-        .subscribe();
-    }
-    return () => {
-      if (loggedUserUpdatesListener) {
-        loggedUserUpdatesListener.unsubscribe();
-      }
-    };
-  }, [state.user]);
   if (loadSession) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { PrivateStackParamList as RecruiterStackParamList } from '../../recruiter/navigator/types';
 import { PrivateStackParamList as CandidateStackParamList } from '../../candidates/navigator/types';
@@ -31,6 +31,8 @@ import { Role } from '@services/interfaces/TipoUsuario.interface';
 import { useUserProfile } from '../../../../hooks/useUserProfile';
 import { ProfileContext } from '@appContext/ProfileContext';
 import { PerfilView } from '@models/PerfilView';
+import { RealtimeChannel } from '@supabase/supabase-js';
+import { supabase } from '../../../../supabase/supabaseClient';
 
 type Props = NativeStackScreenProps<
   ProfileStackParams,
@@ -170,7 +172,38 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
       closedOffers,
     ],
   );
+  console.log('RENDERINGGGGG');
 
+  useEffect(() => {
+    let loggedUserUpdatesListener: RealtimeChannel;
+    if (state.user) {
+      console.log('listening');
+
+      // Assuming a 'profiles' table with user-specific data
+      loggedUserUpdatesListener = supabase
+        .channel('public:usuario')
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'usuario',
+            filter: `id=eq.${state.user.id}`,
+          },
+          async (payload) => {
+            console.log('Profile updated:', payload.new);
+            await onRefresh();
+            // Update UI or application state with new profile data
+          },
+        )
+        .subscribe();
+    }
+    return () => {
+      if (loggedUserUpdatesListener) {
+        loggedUserUpdatesListener.unsubscribe();
+      }
+    };
+  }, []);
   if (loading) {
     return (
       <View
