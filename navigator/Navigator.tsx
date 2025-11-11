@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { useAuth } from '../appContext/authContext';
 import PrivateNavigator from '../app/private/privateNavigator/PrivateNavigator';
@@ -10,12 +10,14 @@ import { getUser, SecureStoreItem } from '@utils/secure-store';
 import { getItemAsync, setItemAsync } from 'expo-secure-store';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { View, ActivityIndicator, Text } from 'react-native';
+import { useUserProfile } from '../hooks/useUserProfile';
 
 //Agregar Root Stack Params Luego
 const Stack = createNativeStackNavigator();
 const Navigator = () => {
   const { state, logout, restoreToken, login } = useAuth();
   const [loadSession, setLoadSession] = useState(false);
+  const {  onRefresh } = useUserProfile(state.user?.id)
   useEffect(() => {
     setLoadSession(true);
     const { data: onAuthStateSubscription } = supabase.auth.onAuthStateChange(
@@ -73,35 +75,6 @@ const Navigator = () => {
     };
   }, []);
 
-  useEffect(() => {
-    let loggedUserUpdatesListener: RealtimeChannel;
-    if (state.user) {
-      console.log('listening');
-
-      // Assuming a 'profiles' table with user-specific data
-      loggedUserUpdatesListener = supabase
-        .channel('public:usuario')
-        .on(
-          'postgres_changes',
-          {
-            event: 'UPDATE',
-            schema: 'public',
-            table: 'usuario',
-            filter: `id=eq.${state.user.id}`,
-          },
-          (payload) => {
-            console.log('Profile updated:', payload.new);
-            // Update UI or application state with new profile data
-          },
-        )
-        .subscribe();
-    }
-    return () => {
-      if (loggedUserUpdatesListener) {
-        loggedUserUpdatesListener.unsubscribe();
-      }
-    };
-  }, [state.user]);
   if (loadSession) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

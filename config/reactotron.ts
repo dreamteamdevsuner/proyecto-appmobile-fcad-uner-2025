@@ -22,7 +22,7 @@ Reactotron.setAsyncStorageHandler(AsyncStorage) // Enable AsyncStorage inspectio
 // Clear Reactotron on app load for a fresh start
 Reactotron.clear!();
 
-console.log('Reactotron Configured');
+ 
 }
 
 export default Reactotron;
