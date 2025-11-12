@@ -146,7 +146,6 @@ const FormDropdown = <Values extends object>({
       )}
 
       {multiple &&
-        name === 'habilidades' &&
         Array.isArray(value) &&
         value.length > 0 && (
           <View style={styles.chipContainer}>
