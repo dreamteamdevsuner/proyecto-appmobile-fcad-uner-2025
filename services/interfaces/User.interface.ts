@@ -11,7 +11,7 @@
 //   rol: string;
 
 import { ITipousuario } from './TipoUsuario.interface';
-
+import { IDireccion } from './IDireccion.interface';
 // }
 export interface IUser {
   activo: boolean;
@@ -19,7 +19,7 @@ export interface IUser {
   email: string;
   fotoperfil: null | string;
   id: string;
-  iddireccion: null;
+  direccion: IDireccion;
   idplan: number;
   idtipousuario: number;
   nombre: string;

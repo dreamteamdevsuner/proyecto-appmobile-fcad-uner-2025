@@ -69,11 +69,11 @@ export async function getCurrentLocation(): Promise<
       if (results.length > 0) {
         const place = results[0];
         direccion = [
+          place.city,
+          place.country,
           place.name,
           place.street,
-          place.city,
           place.region,
-          place.country,
         ]
           .filter(Boolean)
           .join(', ');

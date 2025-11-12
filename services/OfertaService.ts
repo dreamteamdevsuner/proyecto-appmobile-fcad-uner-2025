@@ -103,6 +103,20 @@ export async function crearOferta(data: OfertaTrabajoData) {
 
     if (pubError) throw pubError;
 
+    const { data: direccion, error: direccionError } = await supabase
+      .from('direccion')
+      .insert([
+        {
+          direccion: data.direccion,
+          latitud: data.latitud,
+          longitud: data.longitud,
+        },
+      ])
+      .select()
+      .single();
+
+    if (direccionError) throw direccionError;
+
     const { data: oferta, error: ofertaError } = await supabase
       .from('ofertatrabajo')
       .insert([
@@ -116,7 +130,7 @@ export async function crearOferta(data: OfertaTrabajoData) {
           idestadooferta: 1,
           idcontratacion: data.idcontratacion ?? null,
           iddepartamento: data.iddepartamento ?? null,
-          iddireccion: data.iddireccion ?? null,
+          iddireccion: direccion.id ?? null,
         },
       ])
       .select()
