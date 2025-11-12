@@ -279,60 +279,6 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
           {isProfesional(profileUser) && horizontalChipsSkills.length > 0 && (
             <HorizontalChips skills={horizontalChipsSkills} />
           )}
-          {/* {isProfesional(profileUser) &&
-            profileUser?.skills?.habilidades?.length! > 0 && (
-              <HorizontalChips
-                skills={
-                  profileUser?.skills?.habilidades?.map(
-                    (e) => e?.nombre ?? '',
-                  ) ?? []
-                }
-              />
-            )} */}
-
-          {/*    {(profileUser?.skills && isProfesional(profileUser) && (
-            <HorizontalChips
-              skills={Object.keys(profileUser.skills).reduce(
-                (acc: Array<any>, curr) => {
-                  const idx = curr as keyof typeof profileUser.skills;
-                  console.log('CURR', curr);
-                  acc.push(
-                    profileUser?.skills?.[idx] &&
-                      profileUser?.skills?.[idx].map((el) => el?.nombre),
-                  );
-                  return acc.flat();
-                },
-                [],
-              )}
-            ></HorizontalChips>
-          )) ||
-            null} */}
-
-          {/*    {(profileUser?.skills && isProfesional(profileUser) && (
-            <FlatList
-              renderItem={({ item }) => {
-                console.log('item', item);
-                return (
-                  <View>
-                    <Text style={{ color: 'white' }}>{item}</Text>
-                  </View>
-                );
-              }}
-              data={Object.keys(profileUser.skills).reduce(
-                (acc: Array<any>, curr) => {
-                  const idx = curr as keyof typeof profileUser.skills;
-                  console.log('CURR', curr);
-                  acc.push(
-                    profileUser?.skills?.[idx] &&
-                      profileUser?.skills?.[idx].map((el) => el?.nombre),
-                  );
-                  return acc.flat();
-                },
-                [],
-              )}
-            ></FlatList>
-          )) ||
-            null}*/}
         </View>
 
         <Tab.Navigator
