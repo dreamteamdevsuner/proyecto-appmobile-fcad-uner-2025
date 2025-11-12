@@ -1,6 +1,6 @@
 import { View, StyleSheet, Keyboard, KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import React, { useState } from 'react';
-import { Button, Text, Portal, Dialog } from 'react-native-paper';
+import { Button, Text, Portal, Dialog, TextInput } from 'react-native-paper';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -9,9 +9,10 @@ import FormField from '@app/private/shared/perfil/ajustes/componentesFormularios
 import { resetPasswordWithToken } from '../../services/apiAuth';
 import PUBLIC_NAVIGATOR_ROUTES from './PUBLIC_NAVIGATOR_ROUTES';
 import Logo from '../../components/Logo';
+import { PublicNavigatorParamList } from './PublicNavigator';
 
 type UpdatePasswordProps = NativeStackScreenProps<
-  Record<string, any>,
+  PublicNavigatorParamList,
   PUBLIC_NAVIGATOR_ROUTES.UPDATE_PASSWORD
 >;
 
@@ -45,6 +46,9 @@ const UpdatePasswordScreen = ({ navigation, route }: UpdatePasswordProps) => {
     message: '',
     onOk: () => {},
   });
+
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
   const handleUpdatePassword = async (values: { 
     email: string;
@@ -150,14 +154,26 @@ const UpdatePasswordScreen = ({ navigation, route }: UpdatePasswordProps) => {
                     formik={formikProps}
                     label="Nueva contraseña"
                     placeholder="Escribe tu nueva contraseña"
-                    secureTextEntry
+                    secureTextEntry={!passwordVisible} 
+                    right={
+                      <TextInput.Icon 
+                        icon={passwordVisible ? "eye-off-outline" : "eye-outline"}
+                        onPress={() => setPasswordVisible(!passwordVisible)}
+                      />
+                    }
                   />
                   <FormField
                     name="confirmPassword"
                     formik={formikProps}
                     label="Confirmar contraseña"
                     placeholder="Vuelve a escribir la contraseña"
-                    secureTextEntry
+                    secureTextEntry={!confirmPasswordVisible} 
+                    right={
+                      <TextInput.Icon 
+                        icon={confirmPasswordVisible ? "eye-off-outline" : "eye-outline"}
+                        onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
+                      />
+                    }
                   />
 
                   <Button
