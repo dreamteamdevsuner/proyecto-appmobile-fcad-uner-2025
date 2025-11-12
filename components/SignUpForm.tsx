@@ -86,7 +86,7 @@ const SignUpForm = () => {
       };
 
       const user: UserDTO = { password: values.password, email: values.email };
-      console.log('user', user);
+
       const { user: createdUser, session } = await signUp(user, extras);
 
       if (!createdUser) {

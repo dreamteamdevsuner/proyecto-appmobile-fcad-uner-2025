@@ -19,7 +19,7 @@ export const AboutMe = () => {
     return <ActivityIndicator />;
   }
 
-  console.log(user);
+  console.log('USER', JSON.stringify(user, null, 2));
   console.log('Estudios: ', user.estudios);
   console.log('Exp: ', user.experiencia);
 

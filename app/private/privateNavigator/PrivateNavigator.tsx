@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SeguridadScreen from '../shared/perfil/ajustes/SeguridadScreen';
 import DatosCuentaScreen from '../shared/perfil/ajustes/DatosCuentaScreen';
@@ -22,42 +22,6 @@ export const privateNavigatorRootParams = {
 
 const Stack = createNativeStackNavigator<typeof privateNavigatorRootParams>();
 const PrivateNavigator = () => {
-  const { state} = useAuth()
-  const { onRefresh} = useUserProfile(state.user?.id)
-  useEffect(() => {
-    let loggedUserUpdatesListener: RealtimeChannel;
-    if (state.user) {
-      console.log('listening');
-
-      // Assuming a 'profiles' table with user-specific data
-      loggedUserUpdatesListener = supabase
-        .channel('public:usuario')
-        .on(
-          'postgres_changes',
-          {
-            event: 'UPDATE',
-            schema: 'public',
-            table: 'usuario',
-            filter: `id=eq.${state.user.id}`,
-          },
-          async (payload) => {
-            console.log('Profile updated:', payload.new);
-            console.log('UPDATING ');
-            await onRefresh()
-            // Update UI or application state with new profile data
-          },
-        )
-        .subscribe();
-    }
-    return () => {
-      
-      if (loggedUserUpdatesListener) {
-         
-        loggedUserUpdatesListener.unsubscribe();
-      }
-    };
-  }, []);
-
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false, orientation: 'portrait' }}

@@ -30,7 +30,6 @@ export const HorizontalChips = ({
       contentContainerStyle={styles.chipContainer}
       renderItem={({ item }) => (
         <Chip
-          key={item}
           style={{
             backgroundColor: backgroundColor ? backgroundColor : '#1D1C21',
             borderRadius: borderRadius ? borderRadius : 20,

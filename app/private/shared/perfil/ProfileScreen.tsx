@@ -1,5 +1,11 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  StyleSheet,
+  FlatList,
+} from 'react-native';
 import { PrivateStackParamList as RecruiterStackParamList } from '../../recruiter/navigator/types';
 import { PrivateStackParamList as CandidateStackParamList } from '../../candidates/navigator/types';
 import { ProfileScreenType } from '../../../../components/profile/ProfileHeader';
@@ -61,20 +67,18 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
     notFound,
     isOwnProfile,
     onRefresh,
+    fetchProfile,
     refreshing,
   } = useUserProfile(searchId);
-  /* useEffect(() => {
-    console.log('profileUser updated in screen:', profileUser);
-  }, [profileUser]);
- */
- /*  const onRefreshRef = useRef(onRefresh);
+
+  const fetchProfileRef = useRef(fetchProfile);
   useEffect(() => {
-    onRefreshRef.current = onRefresh;
-  }, [onRefresh]);
- */
-/*   useEffect(() => {
+    fetchProfileRef.current = fetchProfile;
+  }, [fetchProfile]); // Runs whenever onRefresh changes
+  useEffect(() => {
     let loggedUserUpdatesListener: RealtimeChannel;
-    if (state.user) {
+    console.log('IN EFFECT');
+    if (state.user?.id) {
       console.log('listening');
 
       // Assuming a 'profiles' table with user-specific data
@@ -89,22 +93,29 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
             filter: `id=eq.${state.user.id}`,
           },
           async (payload) => {
-            console.log('Profile updated:', payload.new);
+            console.log('updating ');
+            console.log(
+              'GOT SUPABASE PAYLOAD:',
+              JSON.stringify(payload, null, 3),
+            ); // 👈 Add this
+
             console.log('UPDATING ');
-            await onRefreshRef.current();
+            await fetchProfileRef.current(true);
+
             // Update UI or application state with new profile data
           },
         )
         .subscribe();
     }
     return () => {
-      
+      console.log('UNMOUNTING');
+
       if (loggedUserUpdatesListener) {
-         
         loggedUserUpdatesListener.unsubscribe();
       }
     };
-  }, []); */
+  }, [isOwnProfile, state.user?.id]);
+
   const [fabState, setFabState] = useState({ open: false });
   const onStateChange = ({ open }: any) => setFabState({ open });
   const { open } = fabState;
@@ -124,14 +135,17 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
   const isReclutador = (p?: PerfilView | null): boolean =>
     Boolean(p && p.tipoUsuario?.nombre === Role.RECLUTADOR);
 
-  const horizontalChipsSkills: string[] = isProfesional(profileUser)
-    ? ([
-        ...(profileUser?.skills?.habilidades?.map((s) => s.nombre) || []),
-        ...(profileUser?.skills?.herramientas?.map((s) => s.nombre) || []),
-        ...(profileUser?.skills?.idiomas?.map((s) => s.nombre) || []),
-        ...(profileUser?.skills?.otras?.map((s) => s.nombre) || []),
-      ].filter(Boolean) as string[])
-    : [];
+  const horizontalChipsSkills: string[] = useMemo(() => {
+    console.log('LOOOP');
+    return isProfesional(profileUser)
+      ? ([
+          ...(profileUser?.skills?.habilidades?.map((s) => s.nombre) || []),
+          ...(profileUser?.skills?.herramientas?.map((s) => s.nombre) || []),
+          ...(profileUser?.skills?.idiomas?.map((s) => s.nombre) || []),
+          ...(profileUser?.skills?.otras?.map((s) => s.nombre) || []),
+        ].filter(Boolean) as string[])
+      : [];
+  }, [JSON.stringify(profileUser?.skills)]);
 
   // offers del recruiter (TODO: cambiar estados por enum)
   const { activeOffers, pausedOffers, closedOffers } = useMemo(() => {
@@ -204,47 +218,18 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
       closedOffers,
     }),
     [
+      fetchProfileRef,
       profileUser,
       refreshing,
       onRefresh,
       isOwnProfile,
+
       activeOffers,
       pausedOffers,
       closedOffers,
     ],
   );
-  console.log('RENDERINGGGGG');
 
-  useEffect(() => {
-    let loggedUserUpdatesListener: RealtimeChannel;
-    if (state.user) {
-      console.log('listening');
-
-      // Assuming a 'profiles' table with user-specific data
-      loggedUserUpdatesListener = supabase
-        .channel('public:usuario')
-        .on(
-          'postgres_changes',
-          {
-            event: 'UPDATE',
-            schema: 'public',
-            table: 'usuario',
-            filter: `id=eq.${state.user.id}`,
-          },
-          async (payload) => {
-            console.log('Profile updated:', payload.new);
-            await onRefresh();
-            // Update UI or application state with new profile data
-          },
-        )
-        .subscribe();
-    }
-    return () => {
-      if (loggedUserUpdatesListener) {
-        loggedUserUpdatesListener.unsubscribe();
-      }
-    };
-  }, []);
   if (loading) {
     return (
       <View
@@ -294,6 +279,60 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
           {isProfesional(profileUser) && horizontalChipsSkills.length > 0 && (
             <HorizontalChips skills={horizontalChipsSkills} />
           )}
+          {/* {isProfesional(profileUser) &&
+            profileUser?.skills?.habilidades?.length! > 0 && (
+              <HorizontalChips
+                skills={
+                  profileUser?.skills?.habilidades?.map(
+                    (e) => e?.nombre ?? '',
+                  ) ?? []
+                }
+              />
+            )} */}
+
+          {/*    {(profileUser?.skills && isProfesional(profileUser) && (
+            <HorizontalChips
+              skills={Object.keys(profileUser.skills).reduce(
+                (acc: Array<any>, curr) => {
+                  const idx = curr as keyof typeof profileUser.skills;
+                  console.log('CURR', curr);
+                  acc.push(
+                    profileUser?.skills?.[idx] &&
+                      profileUser?.skills?.[idx].map((el) => el?.nombre),
+                  );
+                  return acc.flat();
+                },
+                [],
+              )}
+            ></HorizontalChips>
+          )) ||
+            null} */}
+
+          {/*    {(profileUser?.skills && isProfesional(profileUser) && (
+            <FlatList
+              renderItem={({ item }) => {
+                console.log('item', item);
+                return (
+                  <View>
+                    <Text style={{ color: 'white' }}>{item}</Text>
+                  </View>
+                );
+              }}
+              data={Object.keys(profileUser.skills).reduce(
+                (acc: Array<any>, curr) => {
+                  const idx = curr as keyof typeof profileUser.skills;
+                  console.log('CURR', curr);
+                  acc.push(
+                    profileUser?.skills?.[idx] &&
+                      profileUser?.skills?.[idx].map((el) => el?.nombre),
+                  );
+                  return acc.flat();
+                },
+                [],
+              )}
+            ></FlatList>
+          )) ||
+            null}*/}
         </View>
 
         <Tab.Navigator
