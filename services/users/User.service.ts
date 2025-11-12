@@ -17,7 +17,9 @@ class UserService implements EntityCRUD<IUser> {
       const { data, error } = await this.supabase
 
         .from('usuario')
-        .select('* ,tipousuario( id, nombre ) ')
+        .select(
+          '* ,tipousuario( id, nombre ),direccion(id, pais, ciudad,latitud,longitud) ',
+        )
         .eq('id', id)
         .maybeSingle();
 

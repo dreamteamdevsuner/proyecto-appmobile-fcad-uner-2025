@@ -121,6 +121,9 @@ const CrearOferta = ({ navigation }: any) => {
           idcontratacion: values.contrato,
           idsoftskills: values.softSkills,
           idhardskills: values.hardSkills,
+          latitud: values.lat.toString(),
+          longitud: values.lng.toString(),
+          direccion: values.localizacion,
         });
 
         if (nuevaOferta) alert('Oferta publicada con éxito 🎉');
