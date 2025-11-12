@@ -159,23 +159,7 @@ const FormularioCandidato = ({
         multiple
         isSkill
       />
-      <View style={styles.chipContainer}>
-        {formik.values.herramientas.map((skillId: string) => {
-          const skillLabel =
-            listasSkills.herramientas.find((item) => item.value === skillId)
-              ?.label || skillId;
 
-          return (
-            <Chip
-              key={skillId}
-              onClose={() => removeSkill('herramientas', skillId)}
-              style={styles.chip}
-            >
-              <Text>{skillLabel}</Text>
-            </Chip>
-          );
-        })}
-      </View>
       <Text style={styles.titulo}>Habilidades</Text>
       <FormDropdown
         name="habilidades"
@@ -183,6 +167,7 @@ const FormularioCandidato = ({
         items={listasSkills.habilidades}
         placeholder="Selecciona habilidades"
         multiple
+        isSkill
       />
       <SectionTitle>Formación</SectionTitle>
       <FieldArray name="estudios">
@@ -299,22 +284,7 @@ const FormularioCandidato = ({
         multiple
         isSkill
       />
-      <View style={styles.chipContainer}>
-        {formik.values.idiomasSeleccionados.map((skillId: string) => {
-          const skillLabel =
-            listasSkills.idiomas.find((item) => item.value === skillId)
-              ?.label || skillId;
-          return (
-            <Chip
-              key={skillId}
-              onClose={() => removeSkill('idiomasSeleccionados', skillId)}
-              style={styles.chip}
-            >
-              <Text>{skillLabel}</Text>
-            </Chip>
-          );
-        })}
-      </View>
+
       <SectionTitle>Mis preferencias</SectionTitle>
       <Text style={styles.titulo}>Modalidad</Text>
       <FormDropdown
