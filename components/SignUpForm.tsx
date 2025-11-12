@@ -7,7 +7,7 @@ import { signUp } from '../services/apiAuth';
 import { FormInputWithHelper } from './ui/FormInputs';
 import { Keyboard } from 'react-native';
 
-import { Button, Checkbox, Text, useTheme } from 'react-native-paper';
+import { Button, Checkbox, Text, useTheme, TextInput } from 'react-native-paper';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { PaperSelect } from 'react-native-paper-select';
 import FormDropdown from '../app/private/shared/perfil/ajustes/componentesFormularios/FormDropdown';
@@ -15,13 +15,16 @@ import GenericFormDropdown from '../app/private/shared/perfil/ajustes/componente
 import { Alert } from 'react-native';
 import { AppSnackBar } from './AuthForm';
 import useSnackbar from '../hooks/useSnackbar';
+import AlertaModal from './AlertaModal';
 
 import { useNavigation } from '@react-navigation/native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { privateNavigatorRootParams } from '../app/private/privateNavigator/PrivateNavigator';
 import PRIVATE_NAVIGATOR_ROUTES from '../app/private/privateNavigator/privateNavigatorRoutes';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useAuth } from '../appContext/authContext';
+import { PublicNavigatorParamList } from '@app/public/PublicNavigator';
+import PUBLIC_NAVIGATOR_ROUTES from '@app/public/PUBLIC_NAVIGATOR_ROUTES';
 
 export enum Roles {
   PROFESIONAL = 1,
@@ -73,8 +76,18 @@ const SignUpForm = () => {
   const [message, setMessage] = useState('Error al registrarse');
   const { handleHideSnackbar, handleShowSnackbar, showSnackbar } =
     useSnackbar();
+
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const hideDialog = () => setDialogVisible(false);
+
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+
   let navigation =
-    useNavigation<StackNavigationProp<typeof privateNavigatorRootParams>>();
+    useNavigation<NativeStackNavigationProp<PublicNavigatorParamList>>();
+
+  const [emailParaVerificar, setEmailParaVerificar] = useState('');
+  
   const handleSignUp = async (values: SignUpForm) => {
     try {
       const extras = {
@@ -92,6 +105,10 @@ const SignUpForm = () => {
       if (!createdUser) {
         throw Error('Error al registrarse');
       }
+
+      setEmailParaVerificar(values.email);
+      setDialogVisible(true);
+
       // await login(values.email, values.password);
     } catch (error: any) {
       if (error?.message === 'User already registered') {
@@ -103,6 +120,12 @@ const SignUpForm = () => {
       handleShowSnackbar();
     }
   };
+
+
+  const handleModalDismiss = () => {
+    setDialogVisible(false);
+    navigation.navigate(PUBLIC_NAVIGATOR_ROUTES.VERIFY_REGISTER, { email: emailParaVerificar });
+  }
 
   return (
     <KeyboardAwareScrollView bottomOffset={62}>
@@ -195,7 +218,13 @@ const SignUpForm = () => {
                 formKey="password"
                 value={values.password}
                 placeholder="Escribí tu contraseña"
-                secureTextEntry={true}
+                secureTextEntry={!passwordVisible} 
+                right={
+                  <TextInput.Icon 
+                    icon={passwordVisible ? "eye-off-outline" : "eye-outline"}
+                    onPress={() => setPasswordVisible(!passwordVisible)}
+                  />
+                }
                 key={'password'}
                 label="Contraseña"
                 onBlur={() => handleBlur('password')}
@@ -210,7 +239,13 @@ const SignUpForm = () => {
                 formKey="password2"
                 value={values.password2}
                 placeholder="Escribí tu contraseña"
-                secureTextEntry={true}
+                secureTextEntry={!confirmPasswordVisible} 
+                right={
+                  <TextInput.Icon 
+                    icon={confirmPasswordVisible ? "eye-off-outline" : "eye-outline"}
+                    onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
+                  />
+                }
                 key={'password2'}
                 label="Repetir Contraseña"
                 onBlur={() => handleBlur('password2')}
@@ -267,6 +302,14 @@ const SignUpForm = () => {
           );
         }}
       </Formik>
+
+      <AlertaModal
+        visible={dialogVisible}
+        onDismiss={handleModalDismiss}
+        title="¡Registro exitoso!"
+        message="Te enviamos un email a tu correo. Por favor, revisa tu bandeja de entrada o spam para confirmar tu cuenta."
+      />
+
     </KeyboardAwareScrollView>
   );
 };

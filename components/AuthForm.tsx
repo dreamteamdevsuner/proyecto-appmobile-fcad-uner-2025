@@ -5,8 +5,8 @@ import {
   KeyboardAvoidingView,
   Keyboard,
 } from 'react-native';
-import React, { useEffect } from 'react';
-import { Button, Portal, Snackbar, Text } from 'react-native-paper';
+import React, { useEffect, useState } from 'react';
+import { Button, Portal, Snackbar, Text, TextInput } from 'react-native-paper';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useAuth } from '../appContext/authContext';
@@ -80,6 +80,9 @@ const AuthForm = ({ navigation }: AuthFormProps) => {
   const { handleHideSnackbar, handleShowSnackbar, showSnackbar } =
     useSnackbar();
   const service = candidateService;
+
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
   useEffect(() => {
     // service.list();
   }, []);
@@ -144,7 +147,13 @@ const AuthForm = ({ navigation }: AuthFormProps) => {
                   formKey="password"
                   value={values.password}
                   placeholder="Escribí tu contraseña"
-                  secureTextEntry={true}
+                  secureTextEntry={!passwordVisible} 
+                  right={
+                    <TextInput.Icon 
+                      icon={passwordVisible ? "eye-off-outline" : "eye-outline"}
+                      onPress={() => setPasswordVisible(!passwordVisible)}
+                    />
+                  }
                   key={'password'}
                   label="Contraseña"
                   onBlur={() => handleTextInputBlur('password')}

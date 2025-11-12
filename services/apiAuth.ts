@@ -1,4 +1,4 @@
-import { AuthError, Session, User, WeakPassword } from '@supabase/supabase-js';
+import { AuthError, Session, User, WeakPassword, AuthResponse } from '@supabase/supabase-js';
 // import supabase from '../supabase/supabase';
 import { UserDTO } from './interfaces/UserDTO';
 import { supabase } from '../supabase/supabaseClient';
@@ -43,6 +43,25 @@ export const signUp = async (user: UserDTO, extras: Record<string, any>) => {
   return data;
 };
 
+//Api para verificar email de registro
+export const verifySignUpOtp = async (
+  email: string,
+  token: string,
+) : Promise<AuthResponse['data']> => {
+  const { data, error } = await supabase.auth.verifyOtp({
+    email: email,
+    token: token,
+    type: 'signup',
+  });
+
+  if (error) {
+    console.error('Error al verificar OTP de registro:', error.message);
+    throw new Error(error.message);
+  }
+
+  return data;
+};
+
 export const sendPasswordResetEmail = async (email: string) => {
   console.log('Enviando email de reseteo para:', email);
 
@@ -72,12 +91,12 @@ export const resetPasswordWithToken = async (
   token: string,
   newPassword: string
 ) => {
-  // 1. Verificar el token y el email.
+  // Verificar el token y el email.
   const { data: verifyData, error: verifyError } =
     await supabase.auth.verifyOtp({
       email: email,
       token: token,
-      type: 'recovery', // ¡Importante que sea 'recovery'!
+      type: 'recovery', 
     });
 
   if (verifyError) {
@@ -85,7 +104,6 @@ export const resetPasswordWithToken = async (
     return { success: false, error: verifyError };
   }
 
-  // 2. Si el token es válido, actualizamos la contraseña del usuario.
   const { data, error } = await supabase.auth.updateUser({
     password: newPassword,
   });
@@ -95,6 +113,5 @@ export const resetPasswordWithToken = async (
     return { success: false, error: error };
   }
 
-  // ¡Éxito!
   return { success: true, data };
 };

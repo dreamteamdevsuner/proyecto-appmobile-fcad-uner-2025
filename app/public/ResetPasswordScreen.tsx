@@ -9,9 +9,10 @@ import FormField from '@app/private/shared/perfil/ajustes/componentesFormularios
 import PUBLIC_NAVIGATOR_ROUTES from './PUBLIC_NAVIGATOR_ROUTES';
 import Logo from '../../components/Logo';
 import { sendPasswordResetEmail } from '@services/apiAuth';
+import { PublicNavigatorParamList } from './PublicNavigator';
 
 type ResetPasswordProps = NativeStackScreenProps<
-  Record<string, any>,
+  PublicNavigatorParamList,
   PUBLIC_NAVIGATOR_ROUTES.RESET_PASSWORD
 >;
 
@@ -53,8 +54,8 @@ const ResetPasswordScreen = ({ navigation }: ResetPasswordProps) => {
     } else if (success) {
       setDialog({
         visible: true,
-        title: '¡Revisa tu correo electrónico!',
-        message: 'Te hemos enviado un token para recuperar tu contraseña.',
+        title: '¡Petición Enviada!',
+        message: 'Si ese correo está registrado en JOBSY, en breve recibirás un correo con un código para recuperar tu contraseña. No olvides revisar tu carpeta de spam.',
         onOk: () => {
           setDialog({ ...dialog, visible: false });
           navigation.navigate(PUBLIC_NAVIGATOR_ROUTES.UPDATE_PASSWORD, {
