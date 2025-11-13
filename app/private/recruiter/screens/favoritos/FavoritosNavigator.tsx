@@ -3,11 +3,11 @@ import Favoritos from '.';
 import FavoritosOferta from '../favoritos-oferta';
 import ROUTES from '../../navigator/routes';
 import CAND_ROUTES from '../../../candidates/navigator/routes';
-import Conversacion from '../conversacion';
 import { KeyboardAvoidingView, Platform } from 'react-native';
 import ProfileScreen from '../../../candidates/screens/perfil';
 import { PrivateStackParamList as RecruiterStackParamList } from '../../navigator/types';
 import { PrivateStackParamList as CandidateStackParamList } from '../../../candidates/navigator/types';
+import ConversacionRecruiter from '../conversacionRecruiter';
 
 type CombinedStackParamList = RecruiterStackParamList & CandidateStackParamList;
 
@@ -35,7 +35,7 @@ const FavoritosNavigator = () => (
       />
       <FavoritosStack.Screen
         name={ROUTES.RECRUITER_CONVERSACION}
-        component={Conversacion}
+        component={ConversacionRecruiter}
         options={({ route }) => ({
           title: route.params?.title ?? 'Conversación',
           orientation: 'default',
