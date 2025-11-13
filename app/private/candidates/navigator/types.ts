@@ -25,6 +25,7 @@ export type PrivateStackParamList = {
     myName: string;
     otherAvatarUrl?: string;
     myAvatarUrl?: string;
+    idOfertaTrabajoMatch?: string;
   };
   [ROUTES.CANDIDATE_PROFILE]: { userId?: string; title?: string };
   [ROUTES.CANDIDATE_NOTIFICATIONS]: undefined;
