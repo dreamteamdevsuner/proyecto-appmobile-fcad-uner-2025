@@ -5,7 +5,7 @@ import Favoritos from './index';
 import FavoritosMatchsScreen from '../favoritos-matchs';
 import FavoritosInteresantesScreen from '../favoritos-interesan';
 import CandidateTestScreen from '../CandidateTestScreen';
-import Conversacion from '../conversacion';
+import Conversacion from '../conversacionProfesional';
 import { PrivateStackParamList } from '../../../candidates/navigator/types';
 import JobsyHeader from '../../../../../components/ui/JobsyHeader';
 

@@ -6,37 +6,12 @@ import { UserItemInfo } from '@models/index';
 import { PrivateStackParamList } from '../../navigator/types';
 import { UserList } from '../../../../../components/listas';
 import ROUTES from '../../navigator/routes';
-
-const ofertas: OfertaItem[] = [
-  { id: 1, title: 'UX Santander' },
-  { id: 2, title: 'Frontend Naranja' },
-  { id: 3, title: 'Developer Shopify' },
-  { id: 4, title: 'UI Desegner', subtitle: 'Subtítulo 4' },
-  { id: 5, title: 'Full Stack Banco Provincia', subtitle: 'Subtítulo 5' },
-  { id: 6, title: 'Backend Santender', subtitle: 'Subtítulo 6' },
-  { id: 7, title: 'Backend Naranja', subtitle: 'Subtítulo 7' },
-  { id: 8, title: 'DevOs Globant', subtitle: 'Subtítulo 8' },
-  { id: 9, title: 'RRHH Santender', subtitle: 'Subtítulo 9' },
-  { id: 10, title: 'RRHH Naranja', subtitle: 'Subtítulo 10' },
-  { id: 11, title: 'RRHH Globant', subtitle: 'Subtítulo 11' },
-];
-
-var users: UserItemInfo[] = [
-  {
-    id: '100',
-    name: 'Ana Lopez Gonzales',
-    role: 'UX/UI',
-    avatarUrl: 'https://i.pravatar.cc/150?img=1',
-    ofertaId: 1,
-  },
-];
-
-users.map(
-  (user) =>
-    (user.ofertaName = ofertas.find(
-      (oferta) => oferta.id === user.ofertaId,
-    )?.title),
-);
+import { useAuth } from '@appContext/authContext';
+import { useEffect, useState } from 'react';
+import {
+  getOfertasUsuariosChat,
+  getProfesionalChat,
+} from '@services/ChatService';
 
 type Props = NativeStackScreenProps<
   PrivateStackParamList,
@@ -44,13 +19,39 @@ type Props = NativeStackScreenProps<
 >;
 
 const Mensajeria: React.FC<Props> = ({ navigation }) => {
+  const {
+    state: { user: usuarioLogueado },
+  } = useAuth();
+  const [loading, setLoading] = useState(false);
+
+  const [chats, setChats] = useState<UserItemInfo[]>([]);
+  const fetchOfertasUsuariosChat = async () => {
+    try {
+      if (usuarioLogueado) {
+        setLoading(true);
+        const chatsData = await getProfesionalChat(usuarioLogueado.id);
+        setChats(chatsData);
+      }
+    } catch (error) {
+      console.error('Error fetching chats:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOfertasUsuariosChat();
+  }, []);
   const handleSelectUser = (user: UserItemInfo) => {
-    navigation.navigate(ROUTES.CANDIDATE_CONVERSACION, {
-      title: user.name,
-      myName: 'Profesional',
-      otherAvatarUrl: user.avatarUrl,
-      myAvatarUrl: undefined,
-    });
+    if (usuarioLogueado) {
+      navigation.navigate(ROUTES.CANDIDATE_CONVERSACION, {
+        title: user.name,
+        myName: usuarioLogueado?.nombre,
+        otherAvatarUrl: user.avatarUrl,
+        myAvatarUrl: usuarioLogueado.fotoperfil || undefined,
+        idOfertaTrabajoMatch: user.idOfertaTrabajoMatch,
+      });
+    }
   };
 
   return (
@@ -77,7 +78,7 @@ const Mensajeria: React.FC<Props> = ({ navigation }) => {
       </View>
       <UserList
         showOferta={true}
-        users={users}
+        users={chats}
         showMessageIcon={false}
         onUserPress={handleSelectUser}
       />

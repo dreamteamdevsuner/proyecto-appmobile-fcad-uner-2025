@@ -5,6 +5,7 @@ import {
   RealtimeChannel,
 } from '@supabase/supabase-js';
 import { Message } from '@models/Message';
+import { UserItemInfo } from '@models/UserItemInfo';
 
 type MensajeRecord = {
   id: string;
@@ -52,14 +53,14 @@ export function unsubscribeFromChat(channel: RealtimeChannel) {
 
 export async function getChatConMensajes(
   idOfertaTrabajoMatch: string,
-  idUsuarioProfesional: string,
+  idUsuarioLogueado: string,
 ) {
   const { data, error } = await supabase
     .from('chat')
     .select(
       `
       id,
-      idusuarioprofesional,
+      idusuarioprofesional (idusuario),
       idusuarioreclutador,
       idofertatrabajomatch,
       mensaje (
@@ -76,7 +77,7 @@ export async function getChatConMensajes(
     `,
     )
     .eq('idofertatrabajomatch', idOfertaTrabajoMatch)
-    .eq('idusuarioprofesional', idUsuarioProfesional)
+    .eq('idusuarioprofesional.idusuario', idUsuarioLogueado)
     .maybeSingle();
 
   if (error) {
@@ -222,4 +223,70 @@ export async function getOfertasUsuariosChat(
     ofertaUsuarios,
   );
   return ofertaUsuarios;
+}
+
+export async function getProfesionalChat(
+  idUsuarioProfesional: string,
+): Promise<UserItemInfo[]> {
+  const { data, error } = await supabase
+    .from('chat')
+    .select(
+      `
+      id,
+      activo,
+      profesional: idusuarioprofesional (
+        id,
+        usuario: idusuario(
+           id,
+           rol,
+           fotoperfil,
+           nombre
+        )
+      ),
+      idusuarioreclutador (
+         idusuario
+      ),
+      idofertatrabajomatch (
+        id,
+        ofertatrabajo: idofertatrabajo (
+          id,
+          titulo
+        )
+      )
+    `,
+    )
+    .eq('activo', true)
+    .eq('idusuarioreclutador.idusuario', idUsuarioProfesional);
+
+  if (error) throw new Error(error.message);
+  if (!data) return [];
+
+  const chats: UserItemInfo[] = [];
+
+  for (const chat of data) {
+    const ofertaTrabajoMatch = Array.isArray(chat.idofertatrabajomatch)
+      ? chat.idofertatrabajomatch[0]
+      : chat.idofertatrabajomatch;
+    const ofertaTrabajo = Array.isArray(ofertaTrabajoMatch.ofertatrabajo)
+      ? ofertaTrabajoMatch.ofertatrabajo[0]
+      : ofertaTrabajoMatch.ofertatrabajo;
+    const profesional = Array.isArray(chat.profesional)
+      ? chat.profesional[0]
+      : chat?.profesional;
+    const usuario = Array.isArray(profesional?.usuario)
+      ? profesional.usuario[0]
+      : profesional?.usuario;
+
+    chats.push({
+      id: usuario.id,
+      name: usuario.nombre,
+      role: usuario.rol,
+      avatarUrl: usuario.fotoperfil,
+      idProfesional: profesional.id,
+      idOfertaTrabajoMatch: ofertaTrabajoMatch.id,
+      ofertaName: ofertaTrabajo.titulo,
+    });
+  }
+
+  return chats;
 }

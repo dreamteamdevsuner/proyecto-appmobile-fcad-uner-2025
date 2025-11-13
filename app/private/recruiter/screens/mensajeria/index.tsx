@@ -41,15 +41,6 @@ const Mensajeria: React.FC<Props> = ({ navigation }) => {
   }, []);
 
   const handleSelectUser = (user: UserItemInfo) => {
-    navigation.navigate(ROUTES.RECRUITER_CONVERSACION, {
-      title: user.name,
-      myName: 'Renata',
-      otherAvatarUrl: user.avatarUrl,
-      myAvatarUrl: undefined,
-      idOfertaTrabajoMatch: '',
-      idUsuarioProfesional: '',
-    });
-
     if (usuarioLogueado) {
       navigation.navigate(ROUTES.RECRUITER_CONVERSACION, {
         title: user.name,

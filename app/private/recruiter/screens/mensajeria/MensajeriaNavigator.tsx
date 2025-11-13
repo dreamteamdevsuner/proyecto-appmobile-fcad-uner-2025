@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { PrivateStackParamList } from '../../navigator/types';
 import ROUTES from '../../navigator/routes';
 import Mensajeria from '.';
-import Conversacion from '../conversacion';
+import ConversacionRecruiter from '../conversacionRecruiter';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import { Platform } from 'react-native';
 
@@ -22,7 +22,7 @@ const MensajeriaNavigator = () => (
       />
       <MensajeriaStack.Screen
         name={ROUTES.RECRUITER_CONVERSACION}
-        component={Conversacion}
+        component={ConversacionRecruiter}
         options={({ route }) => ({
           title: route.params?.title ?? 'Conversación',
           orientation: 'default',

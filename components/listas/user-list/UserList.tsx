@@ -78,7 +78,7 @@ const UserList: React.FC<Props> = ({
                 }}
               />
             )}
-            {showDeleteIcon && (
+            {/* {showDeleteIcon && (
               <IconButton
                 icon="delete"
                 onPress={() => {
@@ -87,7 +87,7 @@ const UserList: React.FC<Props> = ({
                 }}
               />
             )}
-            {showChevronIcon && <IconButton icon="chevron-right" />}
+            {showChevronIcon && <IconButton icon="chevron-right" />} */}
           </View>
         )}
         onPressIn={() => setPressedId(item.id)}
