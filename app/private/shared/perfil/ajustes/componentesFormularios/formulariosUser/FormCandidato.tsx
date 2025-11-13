@@ -318,6 +318,7 @@ const FormularioCandidato = ({
         formik={formik}
         items={listasTiposEnlace}
         placeholder="Selecciona una red social"
+        checkAgainstList={formik.values.redes.map(red => red.tipo)}
         onLayout={(event) => {
           fieldPositions.current['redSeleccionada'] =
             event.nativeEvent.layout.y;

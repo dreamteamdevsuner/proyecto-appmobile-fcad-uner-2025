@@ -14,6 +14,7 @@ type FormDropdownProps<Values> = {
   placeholder?: string;
   multiple?: boolean;
   onLayout?: (event: LayoutChangeEvent) => void;
+  checkAgainstList?: string[];
   onItemSelected?: (value: string, name: keyof Values & string) => boolean;
   isSkill?: boolean;
 };
@@ -25,6 +26,7 @@ const FormDropdown = <Values extends object>({
   onLayout,
   placeholder = 'Seleccionar...',
   multiple = false,
+  checkAgainstList,
   onItemSelected,
   isSkill,
 }: FormDropdownProps<Values>) => {
@@ -37,30 +39,6 @@ const FormDropdown = <Values extends object>({
   const hasError = touched[name] && errors[name];
 
   const handleSelect = (val: string) => {
-    let shouldProceed = true;
-    if (onItemSelected) {
-      shouldProceed = onItemSelected(val, name);
-    }
-
-    if (!shouldProceed) {
-      setVisible(false);
-      return;
-    }
-
-    if (name === 'redSeleccionada') {
-      const redesActuales =
-        (formik.values as { redes?: { tipo: string; url: string }[] }).redes ||
-        [];
-      if (!redesActuales.some((r) => r.tipo === val)) {
-        formik.setFieldValue('redes', [
-          ...redesActuales,
-          { tipo: val, url: '' },
-        ]);
-      }
-      formik.setFieldValue('redSeleccionada', '');
-      setVisible(false);
-      return;
-    }
 
     if (multiple) {
       const selected: string[] = Array.isArray(value) ? (value as string[]) : [];
@@ -75,9 +53,7 @@ const FormDropdown = <Values extends object>({
   };
 
   const selectedText = React.useMemo(() => {
-    if (name === 'redSeleccionada') {
-      return placeholder;
-    }
+
     if (multiple) {
       if (Array.isArray(value) && value.length > 0) {
         return `${value.length} seleccionados`;
@@ -125,18 +101,18 @@ const FormDropdown = <Values extends object>({
       >
         {items.map((item) => {
           let isCurrentlySelected = false;
-          if (multiple && Array.isArray(value)) {
-            if (isSkill) {            
+          if (multiple && Array.isArray(value)) {       
               isCurrentlySelected = (value as string[]).includes(item.value);
-            }
+          } else if (checkAgainstList) {
+            isCurrentlySelected = checkAgainstList.includes(item.value);
           }
+
           return (
             <Menu.Item
               key={item.value}
               title={item.label}
               onPress={() => handleSelect(item.value)}
-              trailingIcon={
-                multiple && isCurrentlySelected ? 'check' : undefined}
+              trailingIcon={isCurrentlySelected ? 'check' : undefined}
             />
           );
         })}
