@@ -13,7 +13,12 @@ import {
 import { PrivateStackParamList } from '../../navigator/types';
 import { Message } from '../../../../../types/models/Message';
 import ROUTES from '../../navigator/routes';
-import { getChatConMensajes, enviarMensaje } from '@services/ChatService';
+import {
+  getChatConMensajes,
+  enviarMensaje,
+  subscribeToChat,
+  unsubscribeFromChat,
+} from '@services/ChatService';
 import { useAuth } from '@appContext/authContext';
 
 type Props = NativeStackScreenProps<
@@ -91,6 +96,7 @@ const Conversacion: React.FC<Props> = ({ route }) => {
       console.error('Error enviando mensaje:', error);
     }
   };
+
   const renderItem = ({ item }: { item: Message }) => {
     const isMe = item.sender === usuarioLogueado?.id;
     return (
@@ -136,6 +142,26 @@ const Conversacion: React.FC<Props> = ({ route }) => {
       </MessageRow>
     );
   };
+
+  useEffect(() => {
+    if (!chatID || !usuarioLogueado) return;
+
+    const channel = subscribeToChat(
+      chatID,
+      usuarioLogueado.id,
+      (newMessage) => {
+        console.log('new mensajes', newMessage);
+        setMessages((prev) => {
+          if (prev.some((m) => m.id === newMessage.id)) return prev;
+          return [...prev, newMessage];
+        });
+      },
+    );
+
+    return () => {
+      unsubscribeFromChat(channel);
+    };
+  }, [chatID]);
 
   return (
     <Container>

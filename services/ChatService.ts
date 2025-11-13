@@ -1,5 +1,54 @@
 import { OfertasUsuariosChat } from '@models/OfertasUsuariosChat';
 import { supabase } from '../supabase/supabaseClient';
+import {
+  RealtimePostgresInsertPayload,
+  RealtimeChannel,
+} from '@supabase/supabase-js';
+import { Message } from '@models/Message';
+
+type MensajeRecord = {
+  id: string;
+  idchat: string;
+  texto: string;
+  idusuario: string;
+  fechacreacion: string;
+};
+
+export function subscribeToChat(
+  chatID: string,
+  userID: string,
+  onNewMessage: (msg: Message) => void,
+): RealtimeChannel {
+  console.log('Subscribe To Chat');
+  const channel = supabase
+    .channel(`chat-${chatID}`)
+    .on(
+      'postgres_changes',
+      {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'mensaje',
+        filter: `idchat=eq.${chatID}`,
+      },
+      (payload: RealtimePostgresInsertPayload<MensajeRecord>) => {
+        const nuevo = payload.new;
+        onNewMessage({
+          id: nuevo.id,
+          text: nuevo.texto,
+          sender: nuevo.idusuario,
+        });
+      },
+    )
+    .subscribe((status) => {
+      console.log('Channel:', status);
+    });
+
+  return channel;
+}
+
+export function unsubscribeFromChat(channel: RealtimeChannel) {
+  supabase.removeChannel(channel);
+}
 
 export async function getChatConMensajes(
   idOfertaTrabajoMatch: string,
