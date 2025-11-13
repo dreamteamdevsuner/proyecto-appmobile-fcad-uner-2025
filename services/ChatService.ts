@@ -57,6 +57,42 @@ export async function getChatConMensajes(
   };
 }
 
+export async function enviarMensaje({
+  idChat,
+  idUsuario,
+  texto,
+}: {
+  idChat: string;
+  idUsuario: string;
+  texto: string;
+}) {
+  const { data, error } = await supabase
+    .from('mensaje')
+    .insert([
+      {
+        idchat: idChat,
+        idusuario: idUsuario,
+        texto,
+      },
+    ])
+    .select(
+      `
+      id,
+      texto,
+      fechacreacion,
+      idusuario
+    `,
+    )
+    .single();
+
+  if (error) {
+    console.error('Error al enviar mensaje:', error.message);
+    throw error;
+  }
+
+  return data;
+}
+
 export async function getOfertasUsuariosChat(
   idUsuarioReclutador: string,
 ): Promise<OfertasUsuariosChat[]> {
