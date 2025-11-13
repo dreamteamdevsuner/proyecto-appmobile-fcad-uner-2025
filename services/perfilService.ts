@@ -147,9 +147,11 @@ export const cargarDatosInicialesPerfil = async (
   const datosBase = {
     nombre: usuario.nombre || '',
     apellido: usuario.apellido || '',
-    profesion: usuario.rol || '',   //Mapeo: profesion -> rol(BD)
+    profesion: usuario.rol || '',   //Profesion -> rol(BD)
     email: usuario.email || '',
-    localizacion: usuario.direccion?.pais || usuario.direccion?.ciudad || '',
+    localizacion: [usuario.direccion?.ciudad, usuario.direccion?.pais]
+      .filter(Boolean) 
+      .join(', '),
     lat: usuario.direccion?.latitud ?? null,
     lng: usuario.direccion?.longitud ?? null,
     avatar_url: usuario.fotoperfil || null,

@@ -226,47 +226,69 @@ const EditarPerfilScreen = () => {
                 onSubmit={handleSubmit as any}
                 enableReinitialize
               >
-                {(formik) => (
-                  <>
-                    <FormularioCandidato
-                      formik={formik}
-                      fieldPositions={fieldPositions}
-                      listasSkills={{
-                        herramientas: listasDropdown.herramientas,
-                        habilidades: listasDropdown.habilidades,
-                        idiomas: listasDropdown.idiomas,
-                      }}
-                      listasTiposEnlace={listasDropdown.listasTiposEnlace}
-                      listasModalidades={listasDropdown.modalidades}
-                      listasTiposJornada={listasDropdown.tiposJornada}
-                    />
-                    <Button
-                      onPress={async () => {
-                        formik.validateForm().then((errors) => {
-                          if (Object.keys(errors).length > 0) {
-                            const firstErrorField = Object.keys(errors)[0];
-                            const yPositions =
-                              fieldPositions.current[firstErrorField];
-                            if (yPositions !== undefined) {
-                              scrollRef.current?.scrollTo({
-                                y: yPositions,
-                                animated: true,
-                              });
+                {(formik) => {
+                  
+                  React.useEffect(() => {
+                    const redSeleccionada = formik.values.redSeleccionada;
+                    if (redSeleccionada) {
+                      const redesActuales = formik.values.redes || [];
+                      if (
+                        !redesActuales.some((r) => r.tipo === redSeleccionada)
+                      ) {
+                        formik.setFieldValue('redes', [
+                          ...redesActuales,
+                          { tipo: redSeleccionada, url: '' },
+                        ]);
+                      }
+                      // Limpiamos el dropdown para la próxima selección
+                      formik.setFieldValue('redSeleccionada', '');
+                    }
+                  }, [formik.values.redSeleccionada]);
+
+                  return (
+                    <>
+                      <FormularioCandidato
+                        formik={formik}
+                        fieldPositions={fieldPositions}
+                        listasSkills={{
+                          herramientas: listasDropdown.herramientas,
+                          habilidades: listasDropdown.habilidades,
+                          idiomas: listasDropdown.idiomas,
+                        }}
+                        listasTiposEnlace={listasDropdown.listasTiposEnlace}
+                        listasModalidades={listasDropdown.modalidades}
+                        listasTiposJornada={listasDropdown.tiposJornada}
+                      />
+                      <Button
+                        onPress={async () => {
+                          formik.validateForm().then((errors) => {
+                            if (Object.keys(errors).length > 0) {
+                              const firstErrorField = Object.keys(errors)[0];
+                              const yPositions =
+                                fieldPositions.current[firstErrorField];
+                              if (yPositions !== undefined) {
+                                scrollRef.current?.scrollTo({
+                                  y: yPositions,
+                                  animated: true,
+                                });
+                              }
+                            } else {
+                              formik.handleSubmit();
                             }
-                          } else {
-                            formik.handleSubmit();
-                          }
-                        });
-                      }}
-                      mode="contained"
-                      style={styles.boton}
-                      disabled={formik.isSubmitting}
-                      loading={formik.isSubmitting}
-                    >
-                      {formik.isSubmitting ? 'Guardando...' : 'Guardar cambios'}
-                    </Button>
-                  </>
-                )}
+                          });
+                        }}
+                        mode="contained"
+                        style={styles.boton}
+                        disabled={formik.isSubmitting}
+                        loading={formik.isSubmitting}
+                      >
+                        {formik.isSubmitting
+                          ? 'Guardando...'
+                          : 'Guardar cambios'}
+                      </Button>
+                    </>
+                  );
+                }}
               </Formik>
             )}
           </View>
