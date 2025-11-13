@@ -9,7 +9,7 @@ import {
 import { FormikProps } from 'formik';
 import { Menu, TextInput, Chip } from 'react-native-paper';
 import { useInputTheme } from '../../../constants/theme/useInputTheme';
-import { StyledTextInput } from '../../../../candidates/screens/conversacion/styles';
+import { StyledTextInput } from '@components/conversacion/styles';
 import { StyleSheet } from 'react-native';
 
 type OptionType<T = string> = { label: string; value: T };

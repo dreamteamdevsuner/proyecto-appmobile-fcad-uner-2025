@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FlatList, Platform } from 'react-native';
-import { Avatar, IconButton } from 'react-native-paper';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { Avatar, IconButton, Text } from 'react-native-paper';
+
 import {
   Container,
   MessageRow,
@@ -10,46 +10,46 @@ import {
   InputContainer,
   StyledTextInput,
 } from './styles';
-import { PrivateStackParamList } from '../../navigator/types';
-import { Message } from '../../../../../types/models/Message';
-import ROUTES from '../../navigator/routes';
+
+import { Message } from '@models/Message';
 import {
   getChatConMensajes,
   enviarMensaje,
   subscribeToChat,
   unsubscribeFromChat,
 } from '@services/ChatService';
-import { useAuth } from '@appContext/authContext';
 
-type Props = NativeStackScreenProps<
-  PrivateStackParamList,
-  ROUTES.RECRUITER_CONVERSACION
->;
+import { IUser } from '@services/interfaces/User.interface';
 
-const Conversacion: React.FC<Props> = ({ route }) => {
-  const {
-    title,
-    myName,
-    otherAvatarUrl,
-    myAvatarUrl,
-    idOfertaTrabajoMatch,
-    idUsuarioProfesional,
-  } = route.params;
+type ConversacionProps = {
+  title: string;
+  myName: string;
+  otherAvatarUrl: string | undefined;
+  myAvatarUrl: string | undefined;
+  idOfertaTrabajoMatch: string | undefined;
+  idUsuarioProfesional?: string | undefined;
+  usuarioLogueado: IUser | null;
+};
+
+const Conversacion: React.FC<ConversacionProps> = ({
+  title,
+  myName,
+  otherAvatarUrl,
+  myAvatarUrl,
+  idOfertaTrabajoMatch,
+  usuarioLogueado,
+}) => {
   const [inputText, setInputText] = useState('');
   const [chatID, setChatID] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
-  const {
-    state: { user: usuarioLogueado },
-  } = useAuth();
   const flatListRef = useRef<FlatList>(null);
-
   const getMessages = async () => {
     try {
       setLoading(true);
       const messagesData = await getChatConMensajes(
         idOfertaTrabajoMatch!,
-        idUsuarioProfesional!,
+        usuarioLogueado?.id!,
       );
       const messagesItem =
         messagesData?.mensajes.map((message) => ({
@@ -165,25 +165,31 @@ const Conversacion: React.FC<Props> = ({ route }) => {
 
   return (
     <Container>
-      <FlatList
-        ref={flatListRef}
-        data={messages}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        contentContainerStyle={{ padding: 10 }}
-        onContentSizeChange={() => {
-          flatListRef.current?.scrollToEnd({ animated: true });
-        }}
-      />
+      {loading ? (
+        <Text>Cargando mensajes...</Text>
+      ) : (
+        <>
+          <FlatList
+            ref={flatListRef}
+            data={messages}
+            keyExtractor={(item) => item.id}
+            renderItem={renderItem}
+            contentContainerStyle={{ padding: 10 }}
+            onContentSizeChange={() => {
+              flatListRef.current?.scrollToEnd({ animated: true });
+            }}
+          />
 
-      <InputContainer>
-        <StyledTextInput
-          placeholder="Escribe un mensaje..."
-          value={inputText}
-          onChangeText={setInputText}
-        />
-        <IconButton icon="send" onPress={handleSend} />
-      </InputContainer>
+          <InputContainer>
+            <StyledTextInput
+              placeholder="Escribe un mensaje..."
+              value={inputText}
+              onChangeText={setInputText}
+            />
+            <IconButton icon="send" onPress={handleSend} />
+          </InputContainer>
+        </>
+      )}
     </Container>
   );
 };
