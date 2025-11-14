@@ -20,6 +20,7 @@ import {
 } from '@services/ChatService';
 
 import { IUser } from '@services/interfaces/User.interface';
+import { detectBadWords } from '@services/BadWordsAPI';
 
 type ConversacionProps = {
   title: string;
@@ -75,10 +76,12 @@ const Conversacion: React.FC<ConversacionProps> = ({
 
     try {
       if (usuarioLogueado) {
+        const textoSeguro = await detectBadWords(inputText.trim());
+
         const nuevoMensaje = await enviarMensaje({
           idChat: chatID,
           idUsuario: usuarioLogueado?.id,
-          texto: inputText.trim(),
+          texto: textoSeguro,
         });
         console.log('Mensaje', nuevoMensaje);
         setMessages((prev) => [
