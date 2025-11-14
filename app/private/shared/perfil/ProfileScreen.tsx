@@ -33,6 +33,7 @@ import { ProfileContext } from '@appContext/ProfileContext';
 import { PerfilView } from '@models/PerfilView';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { supabase } from '../../../../supabase/supabaseClient';
+import CurriculumPDF from '@components/curriculum/CurriculumPDF';
 
 type Props = NativeStackScreenProps<
   ProfileStackParams,
@@ -290,7 +291,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
                 : ProfileScreenType.OTHER_PROFILE
             }
           />
-
+          <CurriculumPDF profileUser={profileUser} />
           {isProfesional(profileUser) && horizontalChipsSkills.length > 0 && (
             <HorizontalChips skills={horizontalChipsSkills} />
           )}
