@@ -11,7 +11,7 @@ const MensajeriaNavigator = () => (
   <KeyboardAvoidingView
     style={{ flex: 1 }}
     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    keyboardVerticalOffset={30}
+    keyboardVerticalOffset={90}
   >
     <MensajeriaStack.Navigator>
       <MensajeriaStack.Screen
