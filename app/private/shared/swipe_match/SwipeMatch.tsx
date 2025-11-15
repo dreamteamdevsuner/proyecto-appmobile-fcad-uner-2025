@@ -127,3 +127,5 @@ const styles = StyleSheet.create({
   },
 });
 export default SwipeMatch;
+
+// El código anterior está en SwipeMatch.txt
