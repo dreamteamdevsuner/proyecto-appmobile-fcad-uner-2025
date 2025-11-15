@@ -1,3 +1,4 @@
+// Código anterior
 import { View, Text, Dimensions, StyleSheet } from 'react-native';
 import React, { PropsWithChildren, useContext } from 'react';
 import Carousel, {
@@ -36,7 +37,6 @@ export interface CarouselItemProps<T> extends PropsWithChildren {
  *
  * @template T – Type of the data items supplied to the carousel.
  */
-
 const SwipeMatch = <T,>({
   data,
   handleScrollEnd,
@@ -62,9 +62,6 @@ const SwipeMatch = <T,>({
     ref,
   });
 
-  console.log('🔵 SWIPE RENDER — data.length:', data?.length);
-  console.log('🟣 currentIndex:', ref.current?.getCurrentIndex?.());
-
   return (
     <View style={styles.container}>
       <View style={styles.carouselContainer}>
@@ -77,25 +74,10 @@ const SwipeMatch = <T,>({
             enabledScroll,
             handleScrollEnabled,
             renderItem,
-            handleLike,
           }}
         ></AppCarousel>
       </View>
-      <SwipeMatchButtons
-        handleLike={(like) => {
-          const currentIndex = ref.current?.getCurrentIndex?.() ?? 0;
-          const currentItem = data[currentIndex];
-
-          console.log('❤️ LIKE BTN PRESSED:', like);
-          console.log('📍 currentIndex:', currentIndex);
-          console.log('🧩 currentItem:', currentItem);
-          console.log('💾 currentOfferId:', currentItem?.id);
-
-          const currentOfferId = currentItem?.id;
-
-          handleLike(like, currentOfferId);
-        }}
-      />
+      <SwipeMatchButtons {...{ handleLike }}></SwipeMatchButtons>
     </View>
   );
 };
