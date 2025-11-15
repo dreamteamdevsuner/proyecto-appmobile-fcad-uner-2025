@@ -4,7 +4,7 @@ import { Text, TextInput } from 'react-native-paper';
 
 export const Container = styled(View)`
   flex: 1;
-  background-color: #0A090F;
+  background-color: #0a090f;
 `;
 
 export const MessageRow = styled(View)<{ isMe: boolean }>`
@@ -25,8 +25,11 @@ export const Bubble = styled(View)<{ isMe: boolean }>`
   background-color: ${(props) => (props.isMe ? '#3a2f4e' : '#f2f2f2')};
 `;
 
-export const MessageText = styled(Text)<{ isMe: boolean }>`
-  font-size: 15px;
+export const MessageText = styled(Text)<{
+  isMe: boolean;
+  singleEmoji: boolean;
+}>`
+  font-size: ${(props) => (props.singleEmoji ? '50px' : '15px')};
   color: ${(props) => (props.isMe ? '#fff' : '#000')};
   flex-shrink: 1;
   word-wrap: break-word;
