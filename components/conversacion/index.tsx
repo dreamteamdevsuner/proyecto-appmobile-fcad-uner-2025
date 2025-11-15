@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { FlatList, Platform } from 'react-native';
 import { Avatar, IconButton, Text } from 'react-native-paper';
 
+import { TextInput } from 'react-native';
+
 import {
   Container,
   MessageRow,
@@ -21,6 +23,7 @@ import {
 
 import { IUser } from '@services/interfaces/User.interface';
 import { detectBadWords } from '@services/BadWordsAPI';
+import { Emoji } from '@components/emojis/Emoji';
 
 type ConversacionProps = {
   title: string;
@@ -45,6 +48,9 @@ const Conversacion: React.FC<ConversacionProps> = ({
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const flatListRef = useRef<FlatList>(null);
+  const [showEmojiBar, setShowEmojiBar] = useState(false);
+  const inputRef = useRef<TextInput>(null);
+
   const getMessages = async () => {
     try {
       setLoading(true);
@@ -99,9 +105,39 @@ const Conversacion: React.FC<ConversacionProps> = ({
       console.error('Error enviando mensaje:', error);
     }
   };
+  function checkIsSingleEmoji(text: string): boolean {
+    if (!text) return false;
+    const trimmed = text.trim();
+
+    try {
+      if (typeof Intl !== 'undefined' && (Intl as any).Segmenter) {
+        const segmenter = new (Intl as any).Segmenter('en', {
+          granularity: 'grapheme',
+        });
+
+        const graphemes = [...segmenter.segment(trimmed)];
+        return graphemes.length === 1 && isEmoji(graphemes[0].segment);
+      }
+    } catch {}
+
+    return isSingleEmojiFallback(trimmed);
+  }
+
+  function isEmoji(str: string): boolean {
+    return /\p{Emoji}/u.test(str);
+  }
+
+  function isSingleEmojiFallback(text: string): boolean {
+    const emojiRegex =
+      /^(\p{Emoji}|\p{Emoji_Modifier_Base}\p{Emoji_Modifier}|[\u{1F1E6}-\u{1F1FF}]{2})$/u;
+
+    return emojiRegex.test(text);
+  }
 
   const renderItem = ({ item }: { item: Message }) => {
     const isMe = item.sender === usuarioLogueado?.id;
+    const isSingleEmoji: boolean = checkIsSingleEmoji(item.text);
+
     return (
       <MessageRow isMe={isMe}>
         {!isMe &&
@@ -124,6 +160,7 @@ const Conversacion: React.FC<ConversacionProps> = ({
             isMe={isMe}
             numberOfLines={0}
             ellipsizeMode="clip"
+            singleEmoji={isSingleEmoji}
           >
             {item.text}
           </MessageText>
@@ -184,13 +221,33 @@ const Conversacion: React.FC<ConversacionProps> = ({
           />
 
           <InputContainer>
+            <IconButton
+              icon={showEmojiBar ? 'keyboard-outline' : 'emoticon-outline'}
+              onPress={() => {
+                setShowEmojiBar((prev) => {
+                  if (prev) {
+                    setTimeout(() => inputRef.current?.focus(), 50);
+                  }
+                  return !prev;
+                });
+              }}
+            />
+
             <StyledTextInput
+              ref={inputRef}
               placeholder="Escribe un mensaje..."
               value={inputText}
               onChangeText={setInputText}
+              onFocus={() => setShowEmojiBar(false)}
             />
+
             <IconButton icon="send" onPress={handleSend} />
           </InputContainer>
+          <Emoji
+            setInputText={setInputText}
+            showEmojiBar={showEmojiBar}
+            setShowEmojiBar={setShowEmojiBar}
+          />
         </>
       )}
     </Container>
