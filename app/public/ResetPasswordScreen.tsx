@@ -95,8 +95,9 @@ const ResetPasswordScreen = ({ navigation }: ResetPasswordProps) => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.container}>
             <Logo />
+            <Text variant="titleLarge" style={styles.title}>¿Olvidaste tu contraseña?</Text>
             <Text variant="bodyMedium" style={styles.subtitle}>
-              Ingresa tu correo electrónico y te enviaremos un código para recuperar tu contraseña.
+              No te preocupes, suele pasar. Ingresa tu correo electrónico y te enviaremos un código para recuperar tu contraseña.
             </Text>
 
             <Formik 
@@ -126,7 +127,7 @@ const ResetPasswordScreen = ({ navigation }: ResetPasswordProps) => {
                       { opacity: loading || !formikProps.isValid ? 0.5 : 1 },
                     ]}
                   >
-                    <Text style={{ color: '#1D1C21' }}>Enviar link</Text>
+                    <Text style={{ color: '#1D1C21' }}>Enviar</Text>
                   </Button>
                 </View>
               )}
@@ -163,13 +164,12 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: 'center',
-    marginTop: 20,
     marginBottom: 10,
   },
   subtitle: {
     textAlign: 'center',
     marginBottom: 30,
-    color: '#9d9d9d',
+    color: '#b5b3b3',
   },
   formContainer: {
     gap: 20,
