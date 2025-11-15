@@ -7,19 +7,6 @@ interface CandidateWithOffer extends CandidatePreview {
   ofertaTitulo: string;
 }
 
-// 📌 Objeto único reutilizable para todos los returns vacíos
-const EMPTY_PAGINATION: Pagination<any> = {
-  data: [],
-  count: 0,
-  next: false,
-  prev: false,
-  nextPage: null,
-  prevPage: null,
-};
-
-const returnEmpty = () => EMPTY_PAGINATION;
-const isEmpty = (arr?: any[]) => !arr || arr.length === 0;
-
 export const getCandidatePreview = async (
   page = 1,
   itemsPerPage = 5,
@@ -28,10 +15,17 @@ export const getCandidatePreview = async (
   try {
     if (!idUsuarioReclutador) {
       console.warn('No se recibió idUsuarioReclutador');
-      return returnEmpty();
+      return {
+        data: [],
+        count: 0,
+        next: false,
+        prev: false,
+        nextPage: null,
+        prevPage: null,
+      };
     }
 
-    // 📌 1. Obtener ofertas activas del reclutador
+    // Obtener ofertas activas del reclutador
     const { data: ofertas, error: ofertasError } = await supabase
       .from('ofertatrabajo')
       .select('id, titulo, activo, idestadooferta, publicacion(id, idusuario)')
@@ -39,11 +33,32 @@ export const getCandidatePreview = async (
       .eq('idestadooferta', 1)
       .eq('publicacion.idusuario', idUsuarioReclutador);
 
-    if (ofertasError || isEmpty(ofertas)) return returnEmpty();
+    if (ofertasError) {
+      console.error('Error obteniendo ofertas:', ofertasError);
+      return {
+        data: [],
+        count: 0,
+        next: false,
+        prev: false,
+        nextPage: null,
+        prevPage: null,
+      };
+    }
+
+    if (!ofertas || ofertas.length === 0) {
+      return {
+        data: [],
+        count: 0,
+        next: false,
+        prev: false,
+        nextPage: null,
+        prevPage: null,
+      };
+    }
 
     const ofertaIds = ofertas.map((o) => o.id);
 
-    // 📌 2. Obtener likes pendientes
+    // Obtener likes pendientes (idestadomatch = 1)
     const { data: matches, error: matchError } = await supabase
       .from('ofertatrabajomatch')
       .select('idprofesional, idofertatrabajo')
@@ -51,59 +66,126 @@ export const getCandidatePreview = async (
       .eq('activo', true)
       .eq('idestadomatch', 1);
 
-    if (matchError || isEmpty(matches)) return returnEmpty();
+    if (matchError) {
+      console.error('Error obteniendo matches:', matchError);
+      return {
+        data: [],
+        count: 0,
+        next: false,
+        prev: false,
+        nextPage: null,
+        prevPage: null,
+      };
+    }
 
-    // 📌 3. Datos de profesionales
+    if (!matches || matches.length === 0) {
+      return {
+        data: [],
+        count: 0,
+        next: false,
+        prev: false,
+        nextPage: null,
+        prevPage: null,
+      };
+    }
+
+    // Traer info de profesionales
     const idsProfesionales = matches.map((m) => m.idprofesional);
-
     const { data: profesionalesDB, error: usuariosError } = await supabase
       .from('profesional')
       .select('idusuario, id')
       .in('id', idsProfesionales);
 
-    if (usuariosError || isEmpty(profesionalesDB)) return returnEmpty();
+    if (usuariosError || !profesionalesDB || profesionalesDB.length === 0) {
+      console.error(
+        'Error obteniendo profesionales en tabla profesional:',
+        usuariosError,
+      );
+      return {
+        data: [],
+        count: 0,
+        next: false,
+        prev: false,
+        nextPage: null,
+        prevPage: null,
+      };
+    }
 
-    // Mapear profesional → usuario
+    // Mapear idprofesional => idusuario
     const profesionalIdToUsuarioId = Object.fromEntries(
       profesionalesDB.map((p) => [p.id, p.idusuario]),
     );
 
     const idsUsuarios = [...new Set(profesionalesDB.map((p) => p.idusuario))];
 
-    // 📌 4. Info de usuario
+    // 4️⃣ Traer info de usuario (profesionales)
     const { data: usuarios, error: usuariosInfoError } = await supabase
       .from('usuario')
       .select('id, nombre, apellido, fotoperfil, bio, iddireccion(ciudad)')
       .in('id', idsUsuarios);
 
-    if (usuariosInfoError || isEmpty(usuarios)) return returnEmpty();
+    if (usuariosInfoError || !usuarios) {
+      console.error('Error obteniendo info de usuarios:', usuariosInfoError);
+      return {
+        data: [],
+        count: 0,
+        next: false,
+        prev: false,
+        nextPage: null,
+        prevPage: null,
+      };
+    }
 
-    // 📌 5. Construir resultado (una fila por like)
+    // Construir array profesional+oferta (una fila por like)
+
+    //console.log('🟦 matches:', matches);
+    //console.log('🟧 usuarios:', usuarios);
+    //console.log('🟩 profesionalIdToUsuarioId:', profesionalIdToUsuarioId);
+    //console.log('🟨 ofertas:', ofertas);
+
     const result: CandidateWithOffer[] = matches
-      .map((match) => {
-        const usuarioId = profesionalIdToUsuarioId[match.idprofesional];
+      .map((m) => {
+        console.log('➡️ Procesando match:', m);
+
+        const usuarioId = profesionalIdToUsuarioId[m.idprofesional];
+        console.log('   🔵 usuarioId obtenido:', usuarioId);
+
         const usuario = usuarios.find((u) => u.id === usuarioId);
-        const oferta = ofertas.find((o) => o.id === match.idofertatrabajo);
+        console.log('   🟢 usuario encontrado:', usuario);
 
-        if (!usuario || !oferta) return null;
+        const oferta = ofertas.find((o) => o.id === m.idofertatrabajo);
+        console.log('   🟣 oferta encontrada:', oferta);
 
-        return {
+        if (!usuario || !oferta) {
+          console.log(
+            '   ⚠️ usuario u oferta no encontrada → devolviendo null',
+          );
+          return null;
+        }
+
+        const fila = {
           ...usuario,
-          profesionalId: match.idprofesional,
+          profesionalId: m.idprofesional,
           ofertaId: oferta.id,
-          ofertaTitulo: oferta.titulo ?? 'Oferta',
+          ofertaTitulo: oferta.titulo || 'Oferta',
         };
+
+        console.log('   ✅ fila generada:', fila);
+        return fila;
       })
       .filter(Boolean) as CandidateWithOffer[];
 
-    if (isEmpty(result)) return returnEmpty();
+    console.log(
+      '🟩 RESULT FINAL:',
+      result.map((r) => (r ? `${r.nombre} ${r.apellido}` : null)),
+    );
 
-    // 📌 6. Paginación
+    // Paginación simple
     const totalCount = result.length;
     const start = (page - 1) * itemsPerPage;
     const end = start + itemsPerPage;
-
     const paginatedData = result.slice(start, end);
+
     const totalPages = Math.ceil(totalCount / itemsPerPage);
 
     return {
@@ -116,7 +198,14 @@ export const getCandidatePreview = async (
     };
   } catch (err) {
     console.error('Error interno en getCandidatePreview:', err);
-    return returnEmpty();
+    return {
+      data: [],
+      count: 0,
+      next: false,
+      prev: false,
+      nextPage: null,
+      prevPage: null,
+    };
   }
 };
 

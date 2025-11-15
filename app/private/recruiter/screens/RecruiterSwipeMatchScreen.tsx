@@ -20,7 +20,7 @@ interface RecruiterSwipeMatchScreenProps
 const RecruiterSwipeMatchScreen = ({
   navigation,
 }: RecruiterSwipeMatchScreenProps) => {
-  // 🧠 Obtener usuario logueado (reclutador)
+  // Obtener usuario logueado (reclutador)
   const {
     state: { user },
   } = useAuth();
