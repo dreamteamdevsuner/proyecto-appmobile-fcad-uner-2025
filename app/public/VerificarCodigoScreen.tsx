@@ -42,10 +42,10 @@ const VerificarCodigoScreen = ({ route }: VerificarCodigoProps) => {
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
       <Text variant="headlineSmall" style={styles.title}>
-        Verifica tu cuenta
+        Verificá tu correo electrónico
       </Text>
       <Text style={[styles.subtitle, { color: theme.colors.onSurfaceVariant }]}>
-        Ingresa el código de 6 dígitos que enviamos a:
+        Por favor  ingresá el código de 6 dígitos que enviamos a:
       </Text>
       <Text style={styles.email}>{email}</Text>
 

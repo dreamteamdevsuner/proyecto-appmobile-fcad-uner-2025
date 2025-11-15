@@ -116,7 +116,7 @@ const UpdatePasswordScreen = ({ navigation, route }: UpdatePasswordProps) => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.container}>
             <Logo />
-            <Text variant="titleLarge" style={styles.title}>Crea tu nueva contraseña</Text>
+            <Text style={styles.title}>Creá una nueva contraseña</Text>
             <Text variant="bodyMedium" style={styles.subtitle}>Revisa tu correo electrónico, copia el código y regresa a crear tu nueva contraseña.</Text>
 
             <Formik
@@ -186,7 +186,7 @@ const UpdatePasswordScreen = ({ navigation, route }: UpdatePasswordProps) => {
                       { opacity: loading || !formikProps.isValid ? 0.5 : 1 },
                     ]}
                   >
-                    <Text style={{ color: '#1D1C21' }}>Actualizar contraseña
+                    <Text style={{ color: '#1D1C21' }}>Guardar
                     </Text>
                   </Button>
                 </View>
@@ -212,9 +212,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 60,
     paddingTop: 40,
     justifyContent: 'flex-start',
-    paddingBottom: 40,
+    paddingBottom: 80,
   },
   title: {
+    fontSize: 21,
     textAlign: 'center',
     marginTop: 20,
     marginBottom: 10,
@@ -222,13 +223,13 @@ const styles = StyleSheet.create({
   subtitle: {
     textAlign: 'center',
     marginBottom: 30,
-    color: '#9d9d9d',
+    color: '#b5b3b3',
   },
   formContainer: {
     gap: 20,
   },
   button: {
-    backgroundColor: '#BEB52C',
+    backgroundColor: '#A06FA6',
   },
 });
 
