@@ -1,11 +1,11 @@
 import { View, StyleSheet, StyleProp, ViewStyle, FlatList } from 'react-native';
 import React, { PropsWithChildren, useMemo } from 'react';
 import { Card, Chip, Icon, Text } from 'react-native-paper';
-
 import { CandidatePreview } from '@database/DBCandidatePreview';
 import useImageSourceFallback from '../../hooks/useImageSourceFallback';
+
 export interface CandidateCardProps extends PropsWithChildren {
-  item: CandidatePreview;
+  item: CandidatePreview & { ofertaTitulo?: string }; // Oferta título
   styles?: StyleProp<ViewStyle>;
   handleScrollEnabled?: (val: boolean) => void | undefined;
 }
@@ -26,6 +26,17 @@ function CandidateCard({
           maxHeight: 340,
         }}
       >
+        {item.ofertaTitulo && (
+          <View style={styles.chipContainer}>
+            <Chip
+              mode="outlined"
+              textStyle={{ color: 'white' }}
+              style={styles.chip}
+            >
+              {item.ofertaTitulo}
+            </Chip>
+          </View>
+        )}
         <View
           style={{
             paddingVertical: 25,
