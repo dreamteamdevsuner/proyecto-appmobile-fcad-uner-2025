@@ -87,12 +87,14 @@ export const AboutMe = () => {
               data={user!.enlaces}
               keyExtractor={(item, index) => index.toString()}
               horizontal={true}
+              ItemSeparatorComponent={() => <Text style={{ width: 12 }}></Text>}
               renderItem={({ item, index }) => (
                 <Pressable
                   key={index}
                   onPress={async () => {
                     await Linking.openURL(item.url);
                   }}
+                  style={{ alignItems: 'center', gap: 4 }}
                 >
                   <Avatar.Text
                     size={45}
