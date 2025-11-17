@@ -24,7 +24,7 @@ export const WhatIDo = () => {
       }
     >
       <Surface mode="flat" elevation={2} style={styles.surfaceDescription}>
-        <Portfolio></Portfolio>
+        <Portfolio userId={user.id}></Portfolio>
       </Surface>
     </ScrollView>
   );

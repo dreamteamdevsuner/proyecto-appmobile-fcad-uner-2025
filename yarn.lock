@@ -2831,6 +2831,13 @@ expo-asset@~12.0.9:
     "@expo/image-utils" "^0.8.7"
     expo-constants "~18.0.9"
 
+expo-camera@~17.0.9:
+  version "17.0.9"
+  resolved "https://registry.npmjs.org/expo-camera/-/expo-camera-17.0.9.tgz"
+  integrity sha512-KgticPGurqEsaPBIwbG0T6mzAVnqZasDdM/6OoJt5zPh6tWB09+th6cBF1WafIBMPy8AWbfyUQSqQXqOrNJClg==
+  dependencies:
+    invariant "^2.2.4"
+
 expo-constants@^18.0.10, expo-constants@~18.0.8, expo-constants@~18.0.9:
   version "18.0.10"
   resolved "https://registry.npmjs.org/expo-constants/-/expo-constants-18.0.10.tgz"
@@ -4739,7 +4746,7 @@ react-native-vector-icons@*:
     prop-types "^15.7.2"
     yargs "^16.1.1"
 
-react-native-web@^0.21.0, "react-native-web@>= 0.11":
+react-native-web@*, react-native-web@^0.21.0, "react-native-web@>= 0.11":
   version "0.21.1"
   resolved "https://registry.npmjs.org/react-native-web/-/react-native-web-0.21.1.tgz"
   integrity sha512-BeNsgwwe4AXUFPAoFU+DKjJ+CVQa3h54zYX77p7GVZrXiiNo3vl03WYDYVEy5R2J2HOPInXtQZB5gmj3vuzrKg==
