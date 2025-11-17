@@ -1,6 +1,7 @@
 import {
   Text,
   FlatList,
+  View,
   ScrollView,
   Pressable,
   Linking,
@@ -87,7 +88,7 @@ export const AboutMe = () => {
               data={user!.enlaces}
               keyExtractor={(item, index) => index.toString()}
               horizontal={true}
-              ItemSeparatorComponent={() => <Text style={{ width: 12 }}></Text>}
+              ItemSeparatorComponent={() => <View style={{ width: 12 }}></View>}
               renderItem={({ item, index }) => (
                 <Pressable
                   key={index}
