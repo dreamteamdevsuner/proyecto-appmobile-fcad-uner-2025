@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, ActivityIndicator, Text } from 'react-native';
+import { View, ActivityIndicator, Text, StyleSheet } from 'react-native';
 import SwipeMatch from '../../shared/swipe_match/SwipeMatch';
 import JobOfferCard from '../../../../components/ui/JobOfferCard';
 import { getJobOffersPreview } from '@services/jobOffer/JobOfferPreview.service';
 import usePaginatedData from '../../../../hooks/usePaginatedData';
 import { DBJobPreview } from '@database/DBJobPreview';
+
 import { useAuth } from '@appContext/authContext';
 
 const CandidateHomeScreen = () => {
@@ -31,7 +32,7 @@ const CandidateHomeScreen = () => {
   if (!offers || offers.length === 0)
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>No hay ofertas disponibles.</Text>
+        <Text style={styles.emptyText}>No hay ofertas disponibles.</Text>
       </View>
     );
 
@@ -45,6 +46,12 @@ const CandidateHomeScreen = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  emptyText: {
+    color: '#ffffff',
+  },
+});
 
 export default CandidateHomeScreen;
 
