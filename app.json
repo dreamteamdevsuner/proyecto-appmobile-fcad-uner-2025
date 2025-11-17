@@ -47,6 +47,12 @@
           "locationAlwaysAndWhenInUsePermission": "Permitir que Jobsy acceda a tu ubicación",
           "isIosBackgroundLocationEnabled": "Permitir que Jobsy acceda a la geolocalización en background."
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Jobsy necesita acceso a tu cámara para tomar fotos de perfil y fotos para ofertas laborales."
+        }
       ]
     ],
 

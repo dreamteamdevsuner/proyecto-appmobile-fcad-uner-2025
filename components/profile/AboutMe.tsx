@@ -1,6 +1,7 @@
 import {
   Text,
   FlatList,
+  View,
   ScrollView,
   Pressable,
   Linking,
@@ -87,12 +88,14 @@ export const AboutMe = () => {
               data={user!.enlaces}
               keyExtractor={(item, index) => index.toString()}
               horizontal={true}
+              ItemSeparatorComponent={() => <View style={{ width: 12 }}></View>}
               renderItem={({ item, index }) => (
                 <Pressable
                   key={index}
                   onPress={async () => {
                     await Linking.openURL(item.url);
                   }}
+                  style={{ alignItems: 'center', gap: 4 }}
                 >
                   <Avatar.Text
                     size={45}

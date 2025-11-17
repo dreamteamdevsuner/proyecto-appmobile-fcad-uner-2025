@@ -8,6 +8,8 @@ import SettingProfile from '../../../shared/perfil/ajustes/SettingProfile';
 import NotificationsProfile from '../../../candidates/screens/notificaciones/NotificationsProfile';
 
 import { Ionicons } from '@expo/vector-icons';
+import { PostPhotoScreen } from '@app/private/shared/perfil/post/PostPhotoScreen';
+import { PreviewPhotoScreen } from '@app/private/shared/perfil/post/PreviewPhotoScreen';
 
 const ProfileStack = createNativeStackNavigator<PrivateStackParamList>();
 
@@ -59,6 +61,16 @@ const ProfileNavigator = () => (
         name={ROUTES.CANDIDATE_NOTIFICATIONS}
         component={NotificationsProfile}
         options={{ title: 'Notificaciones' }}
+      />
+      <ProfileStack.Screen
+        name={ROUTES.CANDIDATE_POST_PHOTO_SCREEN}
+        component={PostPhotoScreen}
+        options={{ title: 'Postear foto' }}
+      />
+      <ProfileStack.Screen
+        name={ROUTES.CANDIDATE_PREVIEW_PHOTO_SCREEN}
+        component={PreviewPhotoScreen}
+        options={{ title: 'Vista previa del post' }}
       />
     </ProfileStack.Navigator>
   </KeyboardAvoidingView>
