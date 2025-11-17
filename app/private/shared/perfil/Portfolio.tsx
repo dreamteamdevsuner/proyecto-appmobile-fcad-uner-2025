@@ -1,5 +1,4 @@
-// DeveloperGallery.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Image,
@@ -9,6 +8,8 @@ import {
   StyleSheet,
   StatusBar,
   Text,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, {
@@ -17,22 +18,116 @@ import Animated, {
   withTiming,
   runOnJS,
 } from 'react-native-reanimated';
+import { supabase } from '../../../../supabase/supabaseClient';
+import { deleteImage } from '@services/ImageService';
+import { postEventEmitter } from '@services/postEventEmitter';
+import { useProfileContext } from '@appContext/ProfileContext';
 
 const { width, height } = Dimensions.get('window');
 
-const Portfolio = () => {
+interface PostImage {
+  id: string;
+  url: string;
+  nombre: string;
+}
+
+interface PortfolioProps {
+  userId: string | number | null | undefined;
+}
+
+const Portfolio = ({ userId }: PortfolioProps) => {
+  const { isOwnProfile } = useProfileContext();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
-
-  const images = [
-    'https://picsum.photos/800/1200?random=1',
-    'https://picsum.photos/800/1200?random=2',
-    'https://picsum.photos/800/1200?random=3',
-    'https://picsum.photos/800/1200?random=4',
-  ];
+  const [images, setImages] = useState<PostImage[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState<string | null>(null);
 
   const scale = useSharedValue(0);
   const opacity = useSharedValue(0);
+
+  useEffect(() => {
+    const loadUserPosts = async () => {
+      try {
+        if (!userId) {
+          setLoading(false);
+          return;
+        }
+
+        const { data: publicaciones, error: pubError } = await supabase
+          .from('publicacion')
+          .select('id, idusuario')
+          .eq('idusuario', userId)
+          .eq('activo', true);
+
+        if (pubError) {
+          throw new Error(`Error cargando publicaciones: ${pubError.message}`);
+        }
+
+        if (!publicaciones || publicaciones.length === 0) {
+          setImages([]);
+          setLoading(false);
+          return;
+        }
+
+        const publicacionIds = publicaciones.map((p: any) => p.id);
+        const { data: archivosPublicacion, error: apError } = await supabase
+          .from('archivopublicacion')
+          .select('idarchivo')
+          .in('idpublicacion', publicacionIds);
+
+        if (apError) {
+          throw new Error(`Error cargando relaciones: ${apError.message}`);
+        }
+
+        if (!archivosPublicacion || archivosPublicacion.length === 0) {
+          setImages([]);
+          setLoading(false);
+          return;
+        }
+
+        const archivoIds = archivosPublicacion.map((ap: any) => ap.idarchivo);
+        const { data: archivos, error: arError } = await supabase
+          .from('archivo')
+          .select('id, url, nombre')
+          .in('id', archivoIds)
+          .eq('activo', true);
+
+        if (arError) {
+          throw new Error(`Error cargando archivos: ${arError.message}`);
+        }
+
+        const postsImages: PostImage[] = (archivos || []).map(
+          (archivo: any) => ({
+            id: archivo.id,
+            url: archivo.url,
+            nombre: archivo.nombre,
+          }),
+        );
+
+        setImages(postsImages);
+      } catch (error) {
+        console.error('Error al cargar posts del usuario:', error);
+        setImages([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUserPosts();
+
+    // Suscribirse a los cambios de posts
+    const unsubscribe = postEventEmitter.subscribe((changedUserId) => {
+      if (changedUserId === userId) {
+        console.log('Actualizando posts para el usuario:', userId);
+        loadUserPosts();
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [userId]);
 
   const openModal = (imageUrl: string) => {
     setSelectedImage(imageUrl);
@@ -55,19 +150,92 @@ const Portfolio = () => {
     };
   });
 
+  const handleDeleteImage = async (imageId: string) => {
+    if (!isOwnProfile) {
+      Alert.alert(
+        'No permitido',
+        'Solo puedes eliminar imágenes de tu propio perfil',
+      );
+      return;
+    }
+
+    Alert.alert(
+      'Eliminar publicación',
+      '¿Estás seguro de que deseas eliminar esta publicación? Esta acción no se puede deshacer.',
+      [
+        {
+          text: 'Cancelar',
+          onPress: () => {},
+          style: 'cancel',
+        },
+        {
+          text: 'Eliminar',
+          onPress: async () => {
+            setDeleting(imageId);
+            try {
+              const success = await deleteImage(imageId);
+              if (success) {
+                // Remover la imagen de la lista localmente
+                setImages((prevImages) =>
+                  prevImages.filter((img) => img.id !== imageId),
+                );
+                Alert.alert('Éxito', 'Publicación eliminada correctamente');
+              } else {
+                Alert.alert('Error', 'No se pudo eliminar la publicación');
+              }
+            } catch (error) {
+              console.error('Error eliminando imagen:', error);
+              Alert.alert(
+                'Error',
+                'Ocurrió un error al eliminar la publicación',
+              );
+            } finally {
+              setDeleting(null);
+            }
+          },
+          style: 'destructive',
+        },
+      ],
+    );
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.thumbnailsContainer}>
-        {images.map((img, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.thumbnail}
-            onPress={() => openModal(img)}
-          >
-            <Image source={{ uri: img }} style={styles.thumbnailImage} />
-          </TouchableOpacity>
-        ))}
-      </View>
+      {loading ? (
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" color="#00A699" />
+        </View>
+      ) : images.length === 0 ? (
+        <View style={styles.centerContainer}>
+          <Text style={styles.noImagesText}>No hay publicaciones aún</Text>
+        </View>
+      ) : (
+        <View style={styles.thumbnailsContainer}>
+          {images.map((img) => (
+            <View key={img.id} style={styles.thumbnailWrapper}>
+              <TouchableOpacity
+                style={[
+                  styles.thumbnail,
+                  deleting === img.id && styles.deletingThumbnail,
+                ]}
+                onPress={() => openModal(img.url)}
+                onLongPress={() => isOwnProfile && handleDeleteImage(img.id)}
+                disabled={deleting === img.id}
+              >
+                <Image
+                  source={{ uri: img.url }}
+                  style={styles.thumbnailImage}
+                />
+              </TouchableOpacity>
+              {deleting === img.id && (
+                <View style={styles.deletingOverlay}>
+                  <ActivityIndicator size="small" color="#fff" />
+                </View>
+              )}
+            </View>
+          ))}
+        </View>
+      )}
 
       {/* TODO: Por ahora es un modal, cambiar a componente separado*/}
       <Modal
@@ -114,12 +282,31 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     flexWrap: 'wrap',
   },
-  thumbnail: {
+  thumbnailWrapper: {
     width: width / 2 - 28,
     height: width / 2 - 28,
+    position: 'relative',
+  },
+  thumbnail: {
+    width: '100%',
+    height: '100%',
     borderRadius: 16,
     overflow: 'hidden',
     backgroundColor: '#eee',
+  },
+  deletingThumbnail: {
+    opacity: 0.6,
+  },
+  deletingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 16,
   },
   thumbnailImage: {
     width: '100%',
@@ -164,6 +351,16 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 24,
     fontWeight: 'bold',
+  },
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noImagesText: {
+    fontSize: 16,
+    color: '#999',
+    textAlign: 'center',
   },
 });
 

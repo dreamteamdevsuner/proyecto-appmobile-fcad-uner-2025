@@ -29,6 +29,11 @@ export type PrivateStackParamList = {
   };
   [ROUTES.CANDIDATE_PROFILE]: { userId?: string; title?: string };
   [ROUTES.CANDIDATE_NOTIFICATIONS]: undefined;
+  [ROUTES.CANDIDATE_PREVIEW_PHOTO_SCREEN]: {
+    uri: string;
+    base64: string;
+  };
+  [ROUTES.CANDIDATE_POST_PHOTO_SCREEN]: undefined;
 };
 
 export type CandidateFavoritosTabParamList = {

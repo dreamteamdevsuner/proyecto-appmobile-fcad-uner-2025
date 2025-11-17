@@ -12,6 +12,8 @@ enum ROUTES {
   CANDIDATE_MENSAJERIA = 'CandidateMensajeria',
   CANDIDATE_CONVERSACION = 'CandidateConversacion',
   CANDIDATE_MENSAJERIA_TAB = 'CandidateMensajeriaTab',
+  CANDIDATE_PREVIEW_PHOTO_SCREEN = 'CandidatePreviewPhotoScreen',
+  CANDIDATE_POST_PHOTO_SCREEN = 'CandidatePostPhotoScreen',
 }
 
 export default ROUTES;

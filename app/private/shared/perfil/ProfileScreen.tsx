@@ -184,7 +184,8 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
         {
           icon: 'image-outline',
           label: 'Publicar foto',
-          onPress: () => console.log('Pressed Editar Perfil'),
+          onPress: () =>
+            navigator.navigate(CAND_ROUTES.CANDIDATE_POST_PHOTO_SCREEN),
           style: { backgroundColor: '#A06FA6' },
           color: '#1D1C21',
           size: 'medium',

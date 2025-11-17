@@ -24,7 +24,7 @@ export const useUserProfile = (userId?: string) => {
 
   const fetchProfile = useCallback(
     async (silent = false) => {
-      console.log("USER ID",userId)
+      console.log('USER ID', userId);
       if (!userId) {
         setNotFound(true);
         return;
@@ -92,11 +92,11 @@ export const useUserProfile = (userId?: string) => {
           ]);
           normalized.ofertasPublicadas = ofertas || [];
         }
-        setProfileUser(prev => {
-  const changed = JSON.stringify(prev) !== JSON.stringify(normalized);
-  if (changed) console.log('Profile changed, updating state');
-  return changed ? normalized : prev;
-});
+        setProfileUser((prev) => {
+          const changed = JSON.stringify(prev) !== JSON.stringify(normalized);
+          if (changed) console.log('Profile changed, updating state');
+          return changed ? normalized : prev;
+        });
       } catch (error) {
         console.error('Error fetching profile:', error);
         setNotFound(true);
@@ -104,17 +104,17 @@ export const useUserProfile = (userId?: string) => {
         if (!silent) setLoading(false);
       }
     },
-    [userId , refreshing === false ],
+    [userId, refreshing === false],
   );
 
   useEffect(() => {
-    console.log("RENDERING")
+    console.log('RENDERING');
     fetchProfile();
-  }, [fetchProfile, refreshing === false  ]);
+  }, [refreshing === false]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    
+
     try {
       await fetchProfile(true);
     } finally {
