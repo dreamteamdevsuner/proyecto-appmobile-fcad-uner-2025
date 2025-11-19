@@ -304,7 +304,7 @@ const FormularioCandidato = ({
         placeholder="Selecciona jornada"
       />
 
-      <Text style={styles.titulo}>Área de interés</Text>
+      <Text style={styles.titulo}>Ofertas que me interesan</Text>
       <FormDropdown
         name="areaSeleccionada"
         formik={formik}
