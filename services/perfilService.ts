@@ -7,7 +7,7 @@ export interface DropdownItem {
   value: string;
 }
 
-export const uploadAvatar = async (base64Data: string, userId: string) : Promise<string> => {
+export const uploadAvatar = async (base64Data: string, userId: string): Promise<string> => {
   try {
     const filePath = `${userId}/avatar.png`;
 
@@ -56,12 +56,14 @@ export const cargarListasParaFormularios = async () => {
       tiposEnlaceResult,
       modalidadesResult,
       tiposJornadaResult,
+      areasResult,
 
     ] = await Promise.all([
       supabase.from('skill').select('id, nombre, idtiposkill'),
       supabase.from('tipoenlace').select('id, nombre').eq('activo', true),
       supabase.from('modalidad').select('id, nombre'),
       supabase.from('tipojornada').select('id, nombre'),
+      supabase.from('area').select('id, nombre'),
     ]);
 
     const habilidades: DropdownItem[] = [];
@@ -108,6 +110,17 @@ export const cargarListasParaFormularios = async () => {
       console.error('Error al cargar tipos de jornadas: ', tiposJornadaResult.error);
     }
 
+    const listasAreas: DropdownItem[] = (areasResult && (areasResult as any).data)
+      ? (areasResult as any).data.map((a: any) => ({ label: a.nombre, value: String(a.id) }))
+      : [];
+    // areasResult puede ser undefined si algo falló en Promise.all, revisamos error
+    // (no tipamos DBArea para evitar import extra)
+    // @ts-ignore
+    if (areasResult?.error) {
+      // @ts-ignore
+      console.error('Error al cargar areas: ', areasResult.error);
+    }
+
     return {
       habilidades,
       herramientas,
@@ -115,12 +128,13 @@ export const cargarListasParaFormularios = async () => {
       listasTiposEnlace,
       modalidades,
       tiposJornada,
+      listasAreas,
     };
   } catch (error) {
     console.error('Error general cargando listas para formularios: ', error);
     return {
       habilidades: [], herramientas: [], idiomas: [], listasTiposEnlace: [],
-      modalidades: [], tiposJornada: []
+      modalidades: [], tiposJornada: [], listasAreas: []
     };
   }
 };
@@ -150,8 +164,8 @@ export const cargarDatosInicialesPerfil = async (
     profesion: usuario.rol || '',   //Profesion -> rol(BD)
     email: usuario.email || '',
     localizacion: [usuario.direccion?.ciudad, usuario.direccion?.pais]
-      .filter(Boolean) 
-      .join(', '),
+      .filter(Boolean)
+      .join(', '),
     lat: usuario.direccion?.latitud ?? null,
     lng: usuario.direccion?.longitud ?? null,
     avatar_url: usuario.fotoperfil || null,
@@ -162,7 +176,7 @@ export const cargarDatosInicialesPerfil = async (
   if (tipoUsuario === 'profesional') {
     const { data: prof } = await supabase
       .from('profesional')
-      .select('id, idmodalidad, idtipojornada')
+      .select('id, idmodalidad, idtipojornada, idarea')
       .eq('idusuario', userId)
       .maybeSingle();
 
@@ -179,14 +193,14 @@ export const cargarDatosInicialesPerfil = async (
 
       if (skillsBD) {
         habilidades = skillsBD
-          .filter((s) => (s.skill as unknown as { id: string, idtiposkill: number})?.idtiposkill === 1)
-          .map((s) => String((s.skill as unknown as { id: string, idtiposkill: number})!.id));
+          .filter((s) => (s.skill as unknown as { id: string, idtiposkill: number })?.idtiposkill === 1)
+          .map((s) => String((s.skill as unknown as { id: string, idtiposkill: number })!.id));
         herramientas = skillsBD
-          .filter((s) => (s.skill as unknown as { id: string, idtiposkill: number})?.idtiposkill === 2)
-          .map((s) => String((s.skill as unknown as { id: string, idtiposkill: number})!.id));
+          .filter((s) => (s.skill as unknown as { id: string, idtiposkill: number })?.idtiposkill === 2)
+          .map((s) => String((s.skill as unknown as { id: string, idtiposkill: number })!.id));
         idiomas = skillsBD
-          .filter((s) => (s.skill as unknown as { id: string, idtiposkill: number})?.idtiposkill === 3)
-          .map((s) => String((s.skill as unknown as { id: string, idtiposkill: number})!.id));
+          .filter((s) => (s.skill as unknown as { id: string, idtiposkill: number })?.idtiposkill === 3)
+          .map((s) => String((s.skill as unknown as { id: string, idtiposkill: number })!.id));
       }
       //Carga estudios
       const { data: estudiosBD } = await supabase
@@ -210,21 +224,22 @@ export const cargarDatosInicialesPerfil = async (
       .eq('idusuario', userId)
       .eq('activo', true);
 
-    const redes = enlacesBD 
+    const redes = enlacesBD
       ? enlacesBD.map((e) => {
-          // const tipoEnlace = e.tipoenlace as unknown as { nombre: string };
-          return {
-            // tipo: tipoEnlace.nombre,
-            tipo: String(e.idtipoenlace),
-            url: e.url,
-          };
-        })        
+        // const tipoEnlace = e.tipoenlace as unknown as { nombre: string };
+        return {
+          // tipo: tipoEnlace.nombre,
+          tipo: String(e.idtipoenlace),
+          url: e.url,
+        };
+      })
       : [];
 
     return {
       ...datosBase,
       modalidadSeleccionada: String(prof?.idmodalidad || ''),
       jornadaSeleccionada: String(prof?.idtipojornada || ''),
+      areaSeleccionada: String(prof?.idarea || ''),
       habilidades,
       herramientas,
       idiomasSeleccionados: idiomas,
@@ -279,7 +294,7 @@ export const guardarPerfilProfesional = async (
     }
 
     await supabase.from('usuario')
-      .update(datosUsuario)   
+      .update(datosUsuario)
       .eq('id', userId)
       .throwOnError();
 
@@ -305,6 +320,10 @@ export const guardarPerfilProfesional = async (
       idusuario: userId,
       idmodalidad: values.modalidadSeleccionada ? Number(values.modalidadSeleccionada) : null,
       idtipojornada: values.jornadaSeleccionada ? Number(values.jornadaSeleccionada) : null,
+      // Manejar idarea: puede venir como string numérico o uuid; detectamos si es entero
+      idarea: values.areaSeleccionada
+        ? (/^\d+$/.test(values.areaSeleccionada) ? Number(values.areaSeleccionada) : values.areaSeleccionada)
+        : null,
     }, { onConflict: 'idusuario' }).throwOnError();
 
     // Borrar e insertar skills
@@ -335,7 +354,7 @@ export const guardarPerfilProfesional = async (
 
     //Manejar estudios (Borrar e insertar)
     await supabase.from('estudio').delete().eq('idprofesional', profesionalId);
-    
+
     const estudiosPararInsertar = values.estudios.map(est => {
 
       return {
@@ -361,11 +380,11 @@ export const guardarPerfilProfesional = async (
 
     const enlacesParaInsertar = values.redes
       .map((red) => ({
-      idusuario: userId,
-      url: red.url,
-      idtipoenlace: parseInt(red.tipo),
-      activo: true,
-    })).filter(e => e.idtipoenlace && e.url && e.url.length > 0);
+        idusuario: userId,
+        url: red.url,
+        idtipoenlace: parseInt(red.tipo),
+        activo: true,
+      })).filter(e => e.idtipoenlace && e.url && e.url.length > 0);
     if (enlacesParaInsertar.length > 0) {
       await supabase.from('enlace').insert(enlacesParaInsertar).throwOnError();
     }
@@ -401,7 +420,7 @@ export const guardarPerfilReclutador = async (
     }
 
     await supabase.from('usuario')
-      .update(datosUsuario)      
+      .update(datosUsuario)
       .eq('id', userId)
       .throwOnError();
 
@@ -427,7 +446,6 @@ export const guardarPerfilReclutador = async (
       nombreempresa: values.institucion,
     }, { onConflict: 'idusuario' }).throwOnError();
 
-    // console.warn("El campo 'palabraClave' no se guarda porque no existe en la base de datos.");
     return { success: true };
   } catch (error) {
     console.error('Error al guardar perfil reclutador: ', error);

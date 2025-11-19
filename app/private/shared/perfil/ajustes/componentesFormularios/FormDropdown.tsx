@@ -105,6 +105,8 @@ const FormDropdown = <Values extends object>({
               isCurrentlySelected = (value as string[]).includes(item.value);
           } else if (checkAgainstList) {
             isCurrentlySelected = checkAgainstList.includes(item.value);
+          } else {
+            isCurrentlySelected = item.value === value;
           }
 
           return (
