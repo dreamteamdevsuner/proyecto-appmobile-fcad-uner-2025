@@ -11,7 +11,8 @@ export const perfilValidacionSchema= Yup.object().shape({
       tipo: Yup.string().required(),
       url: Yup.string().url('URL inválida').required('La URL es requerida')
     })
-  )
+  ),
+  areaSeleccionada: Yup.string().required('El área de interes es requerida'),
 });
 
 export const reclutadorValidacionSchema = Yup.object().shape({

@@ -53,6 +53,7 @@ const EditarPerfilScreen = () => {
     listasTiposEnlace: DropdownItem[];
     modalidades: DropdownItem[];
     tiposJornada: DropdownItem[];
+    listasAreas: DropdownItem[];
   }>({
     herramientas: [],
     habilidades: [],
@@ -60,6 +61,7 @@ const EditarPerfilScreen = () => {
     listasTiposEnlace: [],
     modalidades: [],
     tiposJornada: [],
+    listasAreas: [],
   });
 
   useEffect(() => {
@@ -227,7 +229,6 @@ const EditarPerfilScreen = () => {
                 enableReinitialize
               >
                 {(formik) => {
-                  
                   React.useEffect(() => {
                     const redSeleccionada = formik.values.redSeleccionada;
                     if (redSeleccionada) {
@@ -258,6 +259,7 @@ const EditarPerfilScreen = () => {
                         listasTiposEnlace={listasDropdown.listasTiposEnlace}
                         listasModalidades={listasDropdown.modalidades}
                         listasTiposJornada={listasDropdown.tiposJornada}
+                        listasAreas={listasDropdown.listasAreas}
                       />
                       <Button
                         onPress={async () => {

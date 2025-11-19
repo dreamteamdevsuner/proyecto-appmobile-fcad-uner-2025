@@ -25,6 +25,7 @@ interface Props {
   listasTiposEnlace: DropdownItem[];
   listasModalidades: DropdownItem[];
   listasTiposJornada: DropdownItem[];
+  listasAreas?: DropdownItem[];
 }
 
 const FormularioCandidato = ({
@@ -34,15 +35,18 @@ const FormularioCandidato = ({
   listasTiposEnlace,
   listasModalidades,
   listasTiposJornada,
+  listasAreas = [],
 }: Props) => {
-
   const [modalVisible, setModalVisible] = useState(false);
   const [fechaActual, setFechaActual] = useState<{
     index: number;
     fieldName: 'fechainicio' | 'fechafin';
   } | null>(null);
 
-  const abrirCalendario = (index: number, fieldName: 'fechainicio' | 'fechafin') => {
+  const abrirCalendario = (
+    index: number,
+    fieldName: 'fechainicio' | 'fechafin',
+  ) => {
     setFechaActual({ index, fieldName });
     setModalVisible(true);
   };
@@ -83,9 +87,7 @@ const FormularioCandidato = ({
     idskillToRemove: string,
   ) => {
     const currentValues = formik.values[fieldName] as string[];
-    const newValues = currentValues.filter(
-      (v) => v !== idskillToRemove,
-    );
+    const newValues = currentValues.filter((v) => v !== idskillToRemove);
     formik.setFieldValue(fieldName, newValues);
   };
 
@@ -175,7 +177,6 @@ const FormularioCandidato = ({
           <View>
             {formik.values.estudios && formik.values.estudios.length > 0 ? (
               formik.values.estudios.map((estudio, index) => {
-
                 const fechaInicioDisplay = getFechaDisplay(estudio.fechainicio);
                 const fechaFinDisplay = getFechaDisplay(estudio.fechafin);
 
@@ -197,7 +198,7 @@ const FormularioCandidato = ({
                       style={{ marginBottom: 10 }}
                     />
 
-                    <TouchableOpacity                      
+                    <TouchableOpacity
                       style={styles.datePickerButton}
                       onPress={() => abrirCalendario(index, 'fechainicio')}
                     >
@@ -206,35 +207,37 @@ const FormularioCandidato = ({
                       </Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity                      
+                    <TouchableOpacity
                       style={styles.datePickerButton}
                       onPress={() => abrirCalendario(index, 'fechafin')}
                       disabled={estudio.activo}
                     >
-                      <Text style={[
+                      <Text
+                        style={[
                           styles.datePickerButtonText,
-                          estudio.activo && styles.datePickerButtonTextDisabled 
-                        ]
-                      }>
-                        {estudio.activo ? 'En curso' : (fechaFinDisplay || 'Fecha Fin')}
+                          estudio.activo && styles.datePickerButtonTextDisabled,
+                        ]}
+                      >
+                        {estudio.activo
+                          ? 'En curso'
+                          : fechaFinDisplay || 'Fecha Fin'}
                       </Text>
                     </TouchableOpacity>
 
                     <View style={styles.checkboxContainer}>
                       <Checkbox.Android
-                        status={
-                          estudio.activo
-                            ? 'checked'
-                            : 'unchecked'
-                        }
-                        onPress={() =>{
+                        status={estudio.activo ? 'checked' : 'unchecked'}
+                        onPress={() => {
                           const nuevoEstado = !estudio.activo;
                           formik.setFieldValue(
                             `estudios[${index}].activo`,
                             nuevoEstado,
                           );
                           if (nuevoEstado) {
-                            formik.setFieldValue(`estudios[${index}].fechafin`, null);
+                            formik.setFieldValue(
+                              `estudios[${index}].fechafin`,
+                              null,
+                            );
                           }
                         }}
                       />
@@ -301,6 +304,14 @@ const FormularioCandidato = ({
         placeholder="Selecciona jornada"
       />
 
+      <Text style={styles.titulo}>Área de interés</Text>
+      <FormDropdown
+        name="areaSeleccionada"
+        formik={formik}
+        items={listasAreas}
+        placeholder="Selecciona un área"
+      />
+
       <SectionTitle>Contactos</SectionTitle>
       <Text style={styles.titulo}>Correo electrónico</Text>
       <FormField
@@ -318,7 +329,7 @@ const FormularioCandidato = ({
         formik={formik}
         items={listasTiposEnlace}
         placeholder="Selecciona una red social"
-        checkAgainstList={formik.values.redes.map(red => red.tipo)}
+        checkAgainstList={formik.values.redes.map((red) => red.tipo)}
         onLayout={(event) => {
           fieldPositions.current['redSeleccionada'] =
             event.nativeEvent.layout.y;
@@ -385,8 +396,8 @@ const FormularioCandidato = ({
           })}
         </View>
       )}
-      <DatePickerModal   
-        locale="es"     
+      <DatePickerModal
+        locale="es"
         mode="single"
         visible={modalVisible}
         onConfirm={onConfirm}
@@ -471,7 +482,7 @@ const styles = StyleSheet.create({
   },
   datePickerButton: {
     borderRadius: 10,
-    padding: 16, 
+    padding: 16,
     marginBottom: 10,
     borderColor: '#3C3C3C',
     borderWidth: 1,
@@ -481,7 +492,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   datePickerButtonTextDisabled: {
-    color: '#777', 
+    color: '#777',
   },
 });
 

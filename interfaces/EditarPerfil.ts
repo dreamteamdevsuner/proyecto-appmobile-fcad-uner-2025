@@ -14,6 +14,7 @@ export interface CandidatoValues {
   idiomasSeleccionados: string[];
   modalidadSeleccionada: string;
   jornadaSeleccionada: string;
+  areaSeleccionada?: string;
   email: string;
   redes: { tipo: string; url: string }[];
   redSeleccionada?: string;
