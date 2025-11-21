@@ -5,7 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 interface Props {
   currentImageUrl?: string | null;
-  onImageSelected: (base64: string) => void;
+  onImageSelected: (base64: string, uri: string) => void;
   size?: number;
 }
 
@@ -84,7 +84,7 @@ const AvatarPicker = ({
     if (!result.canceled) {
       const asset = result.assets[0];
       setLocalImageUri(asset.uri);
-      onImageSelected(asset.base64!);
+      onImageSelected(asset.base64!, asset.uri);
     }
   };
 
@@ -103,7 +103,7 @@ const AvatarPicker = ({
     if (!result.canceled) {
       const asset = result.assets[0];
       setLocalImageUri(asset.uri);
-      onImageSelected(asset.base64!);
+      onImageSelected(asset.base64!, asset.uri);
     }
   };
 
