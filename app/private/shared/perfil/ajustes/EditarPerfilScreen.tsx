@@ -32,6 +32,8 @@ import {
   perfilValidacionSchema,
   reclutadorValidacionSchema,
 } from './validacion';
+import { verificarImagenSegura } from '@services/SeguridadImagenService';
+
 
 const EditarPerfilScreen = () => {
   const { state } = useAuth();
@@ -121,6 +123,29 @@ const EditarPerfilScreen = () => {
       return;
     }
     try {
+      const uriParaAnalizar = (values as any)['uri_temporal_seguridad'];
+
+      if (uriParaAnalizar) {
+        // Mostramos un mensajito opcional de "Analizando..."
+        setDialogMessage({ message: 'Verificando imagen...', type: 'info' });
+        setDialogVisible(true);
+
+        const esSegura = await verificarImagenSegura(uriParaAnalizar);
+        
+        if (!esSegura) {
+          setDialogMessage({
+            message: 'La imagen seleccionada tiene contenido inapropiado. Por favor elige otra.',
+            type: 'error',
+          });
+          setDialogVisible(true);
+          setSubmitting(false);
+          return; // <--- AQUÍ SE DETIENE TODO SI ES OBSCENA
+        }
+        
+        // Si es segura, cerramos el dialog para seguir
+        setDialogVisible(false); 
+      }
+      
       let resultado;
       if (esReclutador) {
         resultado = await guardarPerfilReclutador(

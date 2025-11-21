@@ -13,6 +13,7 @@ export const perfilValidacionSchema= Yup.object().shape({
     })
   ),
   areaSeleccionada: Yup.string().required('El área de interes es requerida'),
+  uri_temporal_seguridad: Yup.string().notRequired().nullable(),
 });
 
 export const reclutadorValidacionSchema = Yup.object().shape({
@@ -21,4 +22,5 @@ export const reclutadorValidacionSchema = Yup.object().shape({
   profesion: Yup.string().required('La profesión es requerida'),
   institucion: Yup.string().required('La institución es requerida'),
   localizacion: Yup.string().required('La localización es requerida'),
+  uri_temporal_seguridad: Yup.string().notRequired().nullable(),
 });
