@@ -22,8 +22,9 @@ const FormularioReclutador = ({ formik, fieldPositions }: Props) => {
     <>
       <AvatarPicker
         currentImageUrl={formik.values.avatar_url}
-        onImageSelected={(base64) => {
+        onImageSelected={(base64, uri) => {
           formik.setFieldValue('avatarBase64', base64);
+          formik.setFieldValue('uri_temporal_seguridad', uri);
         }}
       />
 

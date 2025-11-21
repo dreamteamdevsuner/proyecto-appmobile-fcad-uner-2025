@@ -95,8 +95,9 @@ const FormularioCandidato = ({
     <>
       <AvatarPicker
         currentImageUrl={formik.values.avatar_url}
-        onImageSelected={(base64) => {
+        onImageSelected={(base64, uri) => {
           formik.setFieldValue('avatarBase64', base64);
+          formik.setFieldValue('uri_temporal_seguridad', uri);
         }}
       />
       <SectionTitle>Datos Personales</SectionTitle>
@@ -310,6 +311,9 @@ const FormularioCandidato = ({
         formik={formik}
         items={listasAreas}
         placeholder="Selecciona un área"
+        onLayout={(event) => {
+          fieldPositions.current['areaSeleccionada'] = event.nativeEvent.layout.y;
+        }}
       />
 
       <SectionTitle>Contactos</SectionTitle>
