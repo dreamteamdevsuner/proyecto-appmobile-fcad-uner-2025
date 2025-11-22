@@ -19,7 +19,7 @@ import { Idusuario } from '../../types/database/DBJobPreview';
 import moment from 'moment';
 import { date } from 'yup';
 import useImageSourceFallback from '../../hooks/useImageSourceFallback';
-//aca va la info de RRHH que publica
+
 const HrAbout = ({
   firstName,
   lastName,
@@ -111,7 +111,6 @@ export interface JobOfferCardProps extends PropsWithChildren {
   handleScrollEnabled?: (val: boolean) => void | undefined;
 }
 function JobOfferCard({ item }: JobOfferCardProps) {
-  // const { recruiterFirstName, recruiterLastName } = item;
   const jobOfferDate = moment(
     new Date(item.idpublicacion.fechacreacion.toString()),
   );

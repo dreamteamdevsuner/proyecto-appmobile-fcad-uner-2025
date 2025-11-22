@@ -26,9 +26,13 @@ export const getCandidatePreview = async (
     }
 
     // Obtener ofertas activas del reclutador
+    // ⚠️ CAMBIO REALIZADO: Agregamos "!inner" a la relación 'publicacion'
+    // Esto obliga a que la oferta SÍ O SÍ pertenezca al usuario filtrado abajo.
     const { data: ofertas, error: ofertasError } = await supabase
       .from('ofertatrabajo')
-      .select('id, titulo, activo, idestadooferta, publicacion(id, idusuario)')
+      .select(
+        'id, titulo, activo, idestadooferta, publicacion!inner(id, idusuario)',
+      ) // <--- AQUÍ ESTABA EL DETALLE
       .eq('activo', true)
       .eq('idestadooferta', 1)
       .eq('publicacion.idusuario', idUsuarioReclutador);
@@ -137,29 +141,23 @@ export const getCandidatePreview = async (
     }
 
     // Construir array profesional+oferta (una fila por like)
-
-    //console.log('🟦 matches:', matches);
-    //console.log('🟧 usuarios:', usuarios);
-    //console.log('🟩 profesionalIdToUsuarioId:', profesionalIdToUsuarioId);
-    //console.log('🟨 ofertas:', ofertas);
-
     const result: CandidateWithOffer[] = matches
       .map((m) => {
-        console.log('➡️ Procesando match:', m);
+        // console.log('➡️ Procesando match:', m);
 
         const usuarioId = profesionalIdToUsuarioId[m.idprofesional];
-        console.log('   🔵 usuarioId obtenido:', usuarioId);
+        // console.log('   🔵 usuarioId obtenido:', usuarioId);
 
         const usuario = usuarios.find((u) => u.id === usuarioId);
-        console.log('   🟢 usuario encontrado:', usuario);
+        // console.log('   🟢 usuario encontrado:', usuario);
 
         const oferta = ofertas.find((o) => o.id === m.idofertatrabajo);
-        console.log('   🟣 oferta encontrada:', oferta);
+        // console.log('   🟣 oferta encontrada:', oferta);
 
         if (!usuario || !oferta) {
-          console.log(
-            '   ⚠️ usuario u oferta no encontrada → devolviendo null',
-          );
+          // console.log(
+          //   '   ⚠️ usuario u oferta no encontrada → devolviendo null',
+          // );
           return null;
         }
 
@@ -170,15 +168,15 @@ export const getCandidatePreview = async (
           ofertaTitulo: oferta.titulo || 'Oferta',
         };
 
-        console.log('   ✅ fila generada:', fila);
+        // console.log('   ✅ fila generada:', fila);
         return fila;
       })
       .filter(Boolean) as CandidateWithOffer[];
 
-    console.log(
-      '🟩 RESULT FINAL:',
-      result.map((r) => (r ? `${r.nombre} ${r.apellido}` : null)),
-    );
+    // console.log(
+    //   '🟩 RESULT FINAL:',
+    //   result.map((r) => (r ? `${r.nombre} ${r.apellido}` : null)),
+    // );
 
     // Paginación simple
     const totalCount = result.length;
