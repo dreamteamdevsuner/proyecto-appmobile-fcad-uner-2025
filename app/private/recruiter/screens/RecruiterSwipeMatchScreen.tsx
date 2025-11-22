@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  ActivityIndicator,
+  Text,
+  StyleSheet,
+} from 'react-native'; // <--- 1. Importar ActivityIndicator y Text
 import { Button } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import SwipeMatch from '../../shared/swipe_match/SwipeMatch';
@@ -20,7 +26,6 @@ interface RecruiterSwipeMatchScreenProps
 const RecruiterSwipeMatchScreen = ({
   navigation,
 }: RecruiterSwipeMatchScreenProps) => {
-  // Obtener usuario logueado (reclutador)
   const {
     state: { user },
   } = useAuth();
@@ -32,6 +37,27 @@ const RecruiterSwipeMatchScreen = ({
   } = usePaginatedData<CandidatePreview>(5, (page, itemsPerPage) =>
     getCandidatePreview(page, itemsPerPage, user?.id),
   );
+
+  // 2. LÓGICA DE CARGA (Igual que en Professional Home)
+  // Esto evita que se renderice SwipeMatch con data vacía temporalmente
+  if (loading && (!professionals || professionals.length === 0)) {
+    return (
+      <View style={styles.centerContainer}>
+        <ActivityIndicator size="large" color="#000" />
+      </View>
+    );
+  }
+
+  // 3. Manejo si realmente no hay datos (después de cargar)
+  // Opcional: Si prefieres que lo maneje SwipeMatch con su mensaje de "Estás al día",
+  // puedes omitir este bloque, pero este ayuda a evitar renderizar el carrusel vacío.
+  if (!loading && (!professionals || professionals.length === 0)) {
+    return (
+      <View style={styles.centerContainer}>
+        <Text style={styles.emptyText}>No se encontraron candidatos.</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -74,6 +100,18 @@ const RecruiterSwipeMatchScreen = ({
     </View>
   );
 };
+
+// 4. Estilos simples para centrar el loader
+const styles = StyleSheet.create({
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    color: '#ffffff',
+  },
+});
 
 export default RecruiterSwipeMatchScreen;
 
