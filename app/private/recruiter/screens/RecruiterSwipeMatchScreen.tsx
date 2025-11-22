@@ -5,10 +5,9 @@ import {
   ActivityIndicator,
   Text,
   StyleSheet,
-} from 'react-native'; // <--- 1. Importar ActivityIndicator y Text
-import { Button } from 'react-native-paper';
+} from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import SwipeMatch from '../../shared/swipe_match/SwipeMatch';
+import SwipeMatch from '@app/private/shared/swipe_match/SwipeMatch';
 import CandidateCard from '../../../../components/ui/CandidateCard';
 import usePaginatedData from '../../../../hooks/usePaginatedData';
 import { getCandidatePreview } from '@services/candidatePreview/candidatePreview.service';
@@ -16,6 +15,7 @@ import { CandidatePreview } from '@database/DBCandidatePreview';
 import ROUTES from '../navigator/routes';
 import { RootStackParams } from '../navigator/SwipeStack';
 import { useAuth } from '@appContext/authContext';
+import { IconButton } from 'react-native-paper'; // Agrega IconButton
 
 interface RecruiterSwipeMatchScreenProps
   extends NativeStackScreenProps<
@@ -38,19 +38,14 @@ const RecruiterSwipeMatchScreen = ({
     getCandidatePreview(page, itemsPerPage, user?.id),
   );
 
-  // 2. LÓGICA DE CARGA (Igual que en Professional Home)
-  // Esto evita que se renderice SwipeMatch con data vacía temporalmente
   if (loading && (!professionals || professionals.length === 0)) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#000" />
+        <ActivityIndicator size="large" color="#ffffff" />
       </View>
     );
   }
 
-  // 3. Manejo si realmente no hay datos (después de cargar)
-  // Opcional: Si prefieres que lo maneje SwipeMatch con su mensaje de "Estás al día",
-  // puedes omitir este bloque, pero este ayuda a evitar renderizar el carrusel vacío.
   if (!loading && (!professionals || professionals.length === 0)) {
     return (
       <View style={styles.centerContainer}>
@@ -85,12 +80,20 @@ const RecruiterSwipeMatchScreen = ({
                   alignItems: 'center',
                 }}
               >
-                <Button
-                  style={{ width: 24 }}
-                  buttonColor="transparent"
-                  textColor="black"
+                <IconButton
                   icon="plus-circle-outline"
-                  mode="contained"
+                  iconColor="black"
+                  size={24}
+                  onPress={() =>
+                    navigation.navigate(
+                      ROUTES.RECRUITER_CANDIDATE_PROFILE_PREVIEW,
+                      {
+                        userId: item.id,
+                        bio: item.bio,
+                        fotoperfil: item.fotoperfil,
+                      },
+                    )
+                  }
                 />
               </View>
             </TouchableOpacity>
@@ -101,7 +104,6 @@ const RecruiterSwipeMatchScreen = ({
   );
 };
 
-// 4. Estilos simples para centrar el loader
 const styles = StyleSheet.create({
   centerContainer: {
     flex: 1,

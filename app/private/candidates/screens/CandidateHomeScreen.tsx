@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, ActivityIndicator, Text, StyleSheet } from 'react-native';
-import SwipeMatch from '../../shared/swipe_match/SwipeMatch';
+import SwipeMatch from '@app/private/shared/swipe_match/SwipeMatch';
 import JobOfferCard from '../../../../components/ui/JobOfferCard';
 import { getJobOffersPreview } from '@services/jobOffer/JobOfferPreview.service';
 import usePaginatedData from '../../../../hooks/usePaginatedData';

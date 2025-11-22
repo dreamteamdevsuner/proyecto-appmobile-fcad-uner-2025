@@ -1,5 +1,5 @@
 import { View, Text, Dimensions, StyleSheet } from 'react-native';
-import React, { PropsWithChildren, useState, useEffect } from 'react'; // 1. Importamos useState
+import React, { PropsWithChildren, useState, useEffect } from 'react';
 import { ICarouselInstance } from 'react-native-reanimated-carousel';
 import { useSharedValue } from 'react-native-reanimated';
 
@@ -7,7 +7,6 @@ import SwipeMatchButtons from './SwipeMatchButtons';
 import useSwipeMatch from '../../../../hooks/useSwipeMatch';
 import AppCarousel from '../swipe/AppCarousel';
 
-// Mantenemos tus interfaces intactas
 const width = Dimensions.get('window').width;
 
 export interface CarouselItemProps<T> extends PropsWithChildren {
@@ -31,21 +30,18 @@ const SwipeMatch = <
   const ref = React.useRef<ICarouselInstance>(null);
   const progress = useSharedValue<number>(0);
 
-  // 2. Estado local para controlar cuándo ocultar el carrusel
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const { enabledScroll, handleLike, handleScrollEnabled } = useSwipeMatch({
     ref,
   });
 
-  // Reiniciar índice si la data cambia drásticamente (opcional, por seguridad)
   useEffect(() => {
     if (!data || data.length === 0) {
       setCurrentIndex(0);
     }
   }, [data]);
 
-  // 3. CONDICIÓN DE FIN: Si el índice supera la cantidad de items, mostramos mensaje
   if (data && currentIndex >= data.length) {
     return (
       <View style={styles.emptyContainer}>
@@ -74,31 +70,25 @@ const SwipeMatch = <
             handleScrollEnabled,
             renderItem,
             handleLike,
-            // 4. Sincronizamos el swipe manual del dedo con nuestro estado
-            onSnapToItem: (index) => setCurrentIndex(index),
+
+            onSnapToItem: (index: number) => setCurrentIndex(index),
           }}
         />
       </View>
 
       <SwipeMatchButtons
         handleLike={(like) => {
-          // Usamos currentIndex del estado para asegurar precisión
           const currentItem = data[currentIndex];
 
           if (!currentItem) return;
 
           console.log('❤️ LIKE BTN PRESSED:', like);
 
-          // Lógica para detectar IDs (Reclutador vs Profesional)
           const currentOfferId = currentItem?.ofertaId || currentItem?.id;
           const targetProfesionalId = currentItem?.profesionalId;
 
-          // Ejecutar la lógica de base de datos
           handleLike(like, currentOfferId, targetProfesionalId);
 
-          // 5. CRUCIAL: Forzamos el avance del índice visualmente
-          // Esto hará que se cumpla la condición (currentIndex >= data.length)
-          // y se oculte la tarjeta inmediatamente.
           setCurrentIndex((prev) => prev + 1);
         }}
       />
@@ -110,9 +100,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    // backgroundColor: 'rgba(50, 50, 50, 0.4)', // Puedes descomentar si te gusta el fondo oscuro
   },
-  // Estilos para la pantalla de "Fin"
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -135,7 +123,6 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
   },
-  // Tus estilos existentes
   buttonsContainer: {
     flexDirection: 'row',
     flex: 2,
