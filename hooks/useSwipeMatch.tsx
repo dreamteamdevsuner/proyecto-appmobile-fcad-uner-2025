@@ -21,7 +21,6 @@ const useSwipeMatch = ({
     setEnabledScroll(val);
   };
 
-  // ... (resolveProfesionalId queda igual, no hace falta tocarlo)
   const resolveProfesionalId = async (): Promise<string | null> => {
     if (profesionalIdRef.current) return profesionalIdRef.current;
     if (!user?.id) return null;
@@ -35,7 +34,7 @@ const useSwipeMatch = ({
         .from('profesional')
         .select('id')
         .eq('idusuario', user.id)
-        .maybeSingle(); // Usar maybeSingle para evitar error si no encuentra filas (caso reclutador)
+        .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
         console.warn('Error buscando profesional:', error);
@@ -52,7 +51,6 @@ const useSwipeMatch = ({
     }
   };
 
-  // MODIFICAMOS LA FIRMA DE LA FUNCIÓN: Agregamos targetProfesionalId opcional
   const handleLike = async (
     like: boolean,
     currentOfferId?: string,
@@ -70,53 +68,36 @@ const useSwipeMatch = ({
       return;
     }
 
-    // ==========================================
-    // 🅰️ MODO RECLUTADOR (UPDATE)
-    // ==========================================
     if (targetProfesionalId) {
       console.log(
         '🛠️ MODO RECLUTADOR DETECTADO: Actualizando match existente...',
       );
 
       try {
-        // Buscamos el match existente entre esa oferta y ese profesional
-        // y actualizamos el estado (2: Match/Aceptado, 3: Descartado por reclutador)
-        // Nota: Si el reclutador da dislike, podrías poner 3 (descartado) o dejarlo en 1.
-        // Asumo 3 para que no vuelva a aparecer.
-
         const nuevoEstado = like ? 2 : 3;
 
         const { data, error } = await supabase
           .from('ofertatrabajomatch')
           .update({
             idestadomatch: nuevoEstado,
-            activo: true, // Aseguramos que siga activo
-            // fechamatch: new Date() // Si tuvieras un campo fecha de match, iría aquí
+            activo: true,
           })
           .eq('idofertatrabajo', currentOfferId)
           .eq('idprofesional', targetProfesionalId)
           .select();
 
         if (error) {
-          console.error('❌ Error actualizando match (Reclutador):', error);
+          console.error('❌ Error actualizando match.');
         } else {
-          console.log('✅ Match actualizado por reclutador:', data);
-          // AQUÍ PODRÍAS DISPARAR LA NOTIFICACIÓN PUSH
+          console.log('✅ Match actualizado correctamente.');
         }
       } catch (err) {
-        console.error('💥 Exception actualizando match:', err);
+        console.error('💥 Exception actualizando match:');
       }
 
       ref.current?.next();
-      return; // 🛑 SALIMOS AQUÍ PARA NO EJECUTAR LÓGICA DE PROFESIONAL
+      return;
     }
-
-    // ==========================================
-    // 🅱️ MODO PROFESIONAL (INSERT)
-    // ==========================================
-
-    // Si llegamos acá, es porque targetProfesionalId es undefined,
-    // así que asumimos que soy un profesional dando like.
 
     if (!user?.id) {
       console.warn('No hay usuario logueado');
@@ -125,15 +106,13 @@ const useSwipeMatch = ({
 
     const idProfesional = await resolveProfesionalId();
 
-    // Validación extra: Si no hay targetProfesionalId Y tampoco soy profesional, algo está mal
     if (!idProfesional) {
       console.warn(
-        '⚠️ Usuario no es profesional y no se pasó targetProfesionalId. Abortando.',
+        'Usuario no es profesional y no se pasó targetProfesionalId. Abortando.',
       );
       return;
     }
 
-    // Revisar si ya existe (Lógica original)
     const { data: existing } = await supabase
       .from('ofertatrabajomatch')
       .select('id')
@@ -142,14 +121,11 @@ const useSwipeMatch = ({
       .maybeSingle();
 
     if (existing) {
-      console.log(
-        'Esta oferta ya fue votada por este profesional — skip insert',
-      );
+      console.log('Esta oferta ya fue votada por este profesional.');
       ref.current?.next();
       return;
     }
 
-    // Insertar el match (Lógica original)
     try {
       const { data, error } = await supabase
         .from('ofertatrabajomatch')
@@ -158,7 +134,7 @@ const useSwipeMatch = ({
             id: uuid.v4().toString(),
             idofertatrabajo: currentOfferId,
             idprofesional: idProfesional,
-            idestadomatch: like ? 1 : 3, // 1: Esperando (si like), 3: Descartado (si dislike)
+            idestadomatch: like ? 1 : 3,
             activo: true,
             fechacreacion: new Date(),
           },
@@ -166,12 +142,12 @@ const useSwipeMatch = ({
         .select('*');
 
       if (error) {
-        console.error('❌ Error insertando match:', error);
+        console.error('❌ Error insertando like.');
       } else {
-        console.log('✅ Match insertado por profesional:', data);
+        console.log('✅ Like insertado por profesional.');
       }
     } catch (err) {
-      console.error('💥 Exception insertando match:', err);
+      console.error('💥 Exception insertando like.');
     }
 
     ref.current?.next();

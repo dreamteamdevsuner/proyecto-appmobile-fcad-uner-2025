@@ -7,11 +7,9 @@ export const getJobOffersPreview = async (
   itemsPerPage = 5,
 ): Promise<Pagination<DBJobPreview>> => {
   try {
-    // 1. Obtener usuario
     const { data: userData } = await supabase.auth.getUser();
     if (!userData?.user) return emptyPagination();
 
-    // 2. Obtener datos del profesional (ID y Area)
     const { data: profesional } = await supabase
       .from('profesional')
       .select('id, idarea')
@@ -20,7 +18,6 @@ export const getJobOffersPreview = async (
 
     if (!profesional?.idarea) return emptyPagination();
 
-    // 3. Obtener IDs de ofertas ya votadas por este profesional
     const { data: matches } = await supabase
       .from('ofertatrabajomatch')
       .select('idofertatrabajo')
@@ -28,8 +25,7 @@ export const getJobOffersPreview = async (
 
     const excludedIds = matches?.map((m) => m.idofertatrabajo) || [];
 
-    // 4. Construir Query Manualmente
-    // NOTA: No usamos getEntityPreview para tener control total del filtro .not()
+    // No usamos getEntityPreview para tener control total del filtro .not()
     let query = supabase
       .from('ofertatrabajo')
       .select(
@@ -49,13 +45,11 @@ export const getJobOffersPreview = async (
       .eq('idarea', profesional.idarea)
       .eq('activo', true);
 
-    // 5. Aplicar Exclusión (Crucial)
     if (excludedIds.length > 0) {
-      // Filtramos las que NO estén en la lista de matches
       query = query.not('id', 'in', `(${excludedIds.join(',')})`);
     }
 
-    // 6. Paginación y Orden
+    // Paginación y Orden
     const from = (page - 1) * itemsPerPage;
     const to = from + itemsPerPage - 1;
 

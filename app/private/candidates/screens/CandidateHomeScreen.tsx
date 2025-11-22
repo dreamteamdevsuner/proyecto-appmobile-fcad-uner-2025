@@ -9,7 +9,6 @@ import { DBJobPreview } from '@database/DBJobPreview';
 import { useAuth } from '@appContext/authContext';
 
 const CandidateHomeScreen = () => {
-  // Traemos el usuario logueado desde el contexto
   const {
     state: { user },
   } = useAuth();
@@ -22,13 +21,10 @@ const CandidateHomeScreen = () => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Oferta actual en base al índice
   const currentOffer = offers?.[currentIndex];
 
-  // Si está cargando, mostramos loader
   if (loading) return <ActivityIndicator size="large" color="#000" />;
 
-  // Si no hay ofertas disponibles
   if (!offers || offers.length === 0)
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
