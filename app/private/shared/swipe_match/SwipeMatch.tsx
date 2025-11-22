@@ -84,16 +84,21 @@ const SwipeMatch = <T,>({
       <SwipeMatchButtons
         handleLike={(like) => {
           const currentIndex = ref.current?.getCurrentIndex?.() ?? 0;
-          const currentItem = data[currentIndex];
+          // Forzamos el tipo 'any' temporalmente para acceder a propiedades dinámicas
+          // sin complicar la interfaz genérica <T>
+          const currentItem = data[currentIndex] as any;
 
           console.log('❤️ LIKE BTN PRESSED:', like);
-          console.log('📍 currentIndex:', currentIndex);
-          console.log('🧩 currentItem:', currentItem);
-          console.log('💾 currentOfferId:', currentItem?.id);
 
-          const currentOfferId = currentItem?.id;
+          // LÓGICA DE DETECCIÓN DE CONTEXTO
+          // Si soy Profesional: currentItem es una Oferta (tiene id).
+          // Si soy Reclutador: currentItem es un Candidato (tiene ofertaId y profesionalId).
 
-          handleLike(like, currentOfferId);
+          const offerId = currentItem?.ofertaId || currentItem?.id;
+          const candidateProfesionalId = currentItem?.profesionalId; // Solo existirá para el reclutador
+
+          // Pasamos el tercer parámetro (opcional)
+          handleLike(like, offerId, candidateProfesionalId);
         }}
       />
     </View>
