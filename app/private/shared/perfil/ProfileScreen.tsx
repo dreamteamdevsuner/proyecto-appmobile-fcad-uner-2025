@@ -76,8 +76,6 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
   useEffect(() => {
     let loggedUserUpdatesListener: RealtimeChannel;
     if (state.user) {
-      console.log('listening');
-
       // Assuming a 'profiles' table with user-specific data
       loggedUserUpdatesListener = supabase
         .channel('public:usuario')

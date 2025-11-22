@@ -1,12 +1,15 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import React from 'react';
 import SwipeMatchButton from './SwipeMatchButton';
 interface SwipeMatchButtonsProps {
   handleLike: (val: boolean) => void;
+  styles?: StyleProp<ViewStyle>;
 }
-const SwipeMatchButtons = ({ handleLike }: SwipeMatchButtonsProps) => {
+const SwipeMatchButtons = ({ handleLike, styles }: SwipeMatchButtonsProps) => {
   return (
-    <View style={styles.buttonsContainer}>
+    <View
+      style={{ ...baseStyles.buttonsContainer, ...StyleSheet.flatten(styles) }}
+    >
       <SwipeMatchButton
         iconSize={20.75}
         iconColor="#1D1C21"
@@ -15,6 +18,7 @@ const SwipeMatchButtons = ({ handleLike }: SwipeMatchButtonsProps) => {
         styles={{
           width: 80,
           height: 80,
+
           backgroundColor: 'rgba(217, 217, 217, 0.2)',
         }}
       ></SwipeMatchButton>
@@ -31,7 +35,7 @@ const SwipeMatchButtons = ({ handleLike }: SwipeMatchButtonsProps) => {
 
 export default SwipeMatchButtons;
 
-const styles = StyleSheet.create({
+const baseStyles = StyleSheet.create({
   buttonsContainer: {
     flexDirection: 'row',
     flex: 2,

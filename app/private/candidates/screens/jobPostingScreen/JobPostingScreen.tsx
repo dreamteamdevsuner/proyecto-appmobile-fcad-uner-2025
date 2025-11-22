@@ -1,3 +1,4 @@
+import SwipeMatchButtons from '@app/private/shared/swipe_match/SwipeMatchButtons';
 import React, { useState } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import {
@@ -151,7 +152,7 @@ const JobPostingScreen = () => {
       </ScrollView>
 
       {/* Bottom action bar */}
-      <View style={styles.fabContainer}>
+      {/* <View style={styles.fabContainer}>
         <FAB
           icon="account-group"
           style={styles.fab}
@@ -171,10 +172,25 @@ const JobPostingScreen = () => {
           onPress={() => {}}
           color="#fff"
         />
-      </View>
+      </View> */}
 
-      {/* Modal for actions */}
-      <Portal>
+      <SwipeMatchButtons
+        styles={{ ...styles.fabContainer }}
+        handleLike={(like = false) => {
+          // const currentItem = data[currentIndex];
+          // if (!currentItem) return;
+          // console.log('❤️ LIKE BTN PRESSED:', like);
+          // const currentOfferId = currentItem?.ofertaId || currentItem?.id;
+          // const targetProfesionalId = currentItem?.profesionalId;
+          // handleLike(like, currentOfferId, targetProfesionalId);
+          // setCurrentIndex((prev) => prev + 1);
+        }}
+      />
+    </View>
+  );
+};
+{
+  /*   <Portal>
         <Modal
           visible={showActions}
           onDismiss={() => setShowActions(false)}
@@ -195,10 +211,8 @@ const JobPostingScreen = () => {
             />
           </View>
         </Modal>
-      </Portal>
-    </View>
-  );
-};
+      </Portal> */
+}
 
 const styles = StyleSheet.create({
   container: {
