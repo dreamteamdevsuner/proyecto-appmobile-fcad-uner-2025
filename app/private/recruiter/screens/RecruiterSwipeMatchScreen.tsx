@@ -1,8 +1,13 @@
 import React from 'react';
-import { View, TouchableOpacity } from 'react-native';
-import { Button } from 'react-native-paper';
+import {
+  View,
+  TouchableOpacity,
+  ActivityIndicator,
+  Text,
+  StyleSheet,
+} from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import SwipeMatch from '../../shared/swipe_match/SwipeMatch';
+import SwipeMatch from '@app/private/shared/swipe_match/SwipeMatch';
 import CandidateCard from '../../../../components/ui/CandidateCard';
 import usePaginatedData from '../../../../hooks/usePaginatedData';
 import { getCandidatePreview } from '@services/candidatePreview/candidatePreview.service';
@@ -10,6 +15,7 @@ import { CandidatePreview } from '@database/DBCandidatePreview';
 import ROUTES from '../navigator/routes';
 import { RootStackParams } from '../navigator/SwipeStack';
 import { useAuth } from '@appContext/authContext';
+import { IconButton } from 'react-native-paper'; // Agrega IconButton
 
 interface RecruiterSwipeMatchScreenProps
   extends NativeStackScreenProps<
@@ -20,7 +26,6 @@ interface RecruiterSwipeMatchScreenProps
 const RecruiterSwipeMatchScreen = ({
   navigation,
 }: RecruiterSwipeMatchScreenProps) => {
-  // Obtener usuario logueado (reclutador)
   const {
     state: { user },
   } = useAuth();
@@ -32,6 +37,22 @@ const RecruiterSwipeMatchScreen = ({
   } = usePaginatedData<CandidatePreview>(5, (page, itemsPerPage) =>
     getCandidatePreview(page, itemsPerPage, user?.id),
   );
+
+  if (loading && (!professionals || professionals.length === 0)) {
+    return (
+      <View style={styles.centerContainer}>
+        <ActivityIndicator size="large" color="#ffffff" />
+      </View>
+    );
+  }
+
+  if (!loading && (!professionals || professionals.length === 0)) {
+    return (
+      <View style={styles.centerContainer}>
+        <Text style={styles.emptyText}>No se encontraron candidatos.</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -59,12 +80,20 @@ const RecruiterSwipeMatchScreen = ({
                   alignItems: 'center',
                 }}
               >
-                <Button
-                  style={{ width: 24 }}
-                  buttonColor="transparent"
-                  textColor="black"
+                <IconButton
                   icon="plus-circle-outline"
-                  mode="contained"
+                  iconColor="black"
+                  size={24}
+                  onPress={() =>
+                    navigation.navigate(
+                      ROUTES.RECRUITER_CANDIDATE_PROFILE_PREVIEW,
+                      {
+                        userId: item.id,
+                        bio: item.bio,
+                        fotoperfil: item.fotoperfil,
+                      },
+                    )
+                  }
                 />
               </View>
             </TouchableOpacity>
@@ -74,6 +103,17 @@ const RecruiterSwipeMatchScreen = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    color: '#ffffff',
+  },
+});
 
 export default RecruiterSwipeMatchScreen;
 
