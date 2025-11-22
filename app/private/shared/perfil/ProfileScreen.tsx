@@ -215,7 +215,6 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
       closedOffers,
     ],
   );
-  console.log('RENDERINGGGGG');
 
   useEffect(() => {
     let loggedUserUpdatesListener: RealtimeChannel;
