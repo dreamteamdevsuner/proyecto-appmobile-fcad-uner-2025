@@ -9,24 +9,25 @@ import {
   IdModalidad,
 } from '../../../../types/database/DBJobPreview';
 import { Ionicons } from '@expo/vector-icons';
+import { JobOfferFullDescription } from '../../../../types/JobOfferFullDescription';
+import { Idusuario } from '../../../../types/database/DBJobPreview';
 
-const JobOfferCard = ({ jobOffer }: { jobOffer: OfertaTrabajoData }) => {
-  const {
-    idusuario: user,
-    idmodalidad: modalidadList,
-    idtipojornada: jornadaList,
-    ...data
-  } = jobOffer;
+const JobOfferCard = ({ jobOffer }: { jobOffer: JobOfferFullDescription }) => {
   return (
     <ScrollView style={{ padding: 20 }}>
       <Card style={styles.card}>
         <View style={styles.header}>
           <Image
-            source={
+            // source={
+            //   jobOffer.idusuario.f
+            //     ? { uri: user.fotoperfil }
+            //     : require('@assets/images/default_profile_picture.jpg')
+            // }
+            /* source={
               user.fotoperfil
                 ? { uri: user.fotoperfil }
                 : require('@assets/images/default_profile_picture.jpg')
-            }
+            } */
             style={styles.squareAvatar}
           />
           <View style={styles.textContainer}>

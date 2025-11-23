@@ -58,7 +58,6 @@ const OfertaScreen = ({ route }: any) => {
               <Text style={styles.text}>{user.rol}</Text>
               <Text style={styles.text}>
                 {`${user.direccion?.ciudad ? user.direccion?.ciudad : ''}${user.direccion?.pais ? ', ' + user.direccion?.pais : ''}`}
-                {/* {user.direccion?.direccion && `${user.direccion?.direccion}`} */}
               </Text>
             </View>
           </View>

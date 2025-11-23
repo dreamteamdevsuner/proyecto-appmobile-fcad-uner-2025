@@ -2,8 +2,14 @@ import { DBJobPreview } from '@database/DBJobPreview';
 import { supabase } from '../../supabase/supabaseClient';
 import { OfertaTrabajoData } from '@models/OfertaTrabajoData';
 import { PostgrestError, PostgrestSingleResponse } from '@supabase/supabase-js';
+import {
+  JobOfferFullDescription,
+  Skill,
+} from '../../types/JobOfferFullDescription';
 
-export const getJobOffer = async (jobOfferId: string) => {
+export const getJobOffer = async (
+  jobOfferId: string,
+): Promise<JobOfferFullDescription> => {
   const { data: userData } = await supabase.auth.getUser();
   if (!userData?.user) throw Error('No user');
   try {
@@ -25,8 +31,9 @@ export const getJobOffer = async (jobOfferId: string) => {
         *,
         iddireccion(*),
         idmodalidad(*),
-        idpublicacion(fechacreacion),
+        idpublicacion(fechacreacion , idusuario(nombre , apellido , fotoperfil  , rol, iddireccion( pais , ciudad ,direccion  ))),
         idtipojornada (nombre)  ,
+        idempresa(nombre , iddireccion( pais , ciudad ,direccion  )),
         idarea(nombre)
          
       `,
@@ -45,13 +52,21 @@ export const getJobOffer = async (jobOfferId: string) => {
     }
     const { data: skills, error: skillsError } = await supabase
       .from('ofertatrabajoskill')
-      .select('*')
-      .eq('idofertrabajo', jobOfferId);
-    console.log('skills', skills);
-    return ofertaTrabajo;
+      .select('idskill(nombre)')
+      .eq('idofertatrabajo', jobOfferId);
+
+    if (skillsError) {
+      throw Error('Error getting skills ');
+    }
+    const jobOfferFullDescription: JobOfferFullDescription = {
+      ...ofertaTrabajo,
+      skills,
+    };
+
+    return jobOfferFullDescription;
   } catch (err) {
     const parsedError = err as unknown as PostgrestError;
-    console.log('parsed error', parsedError);
+
     throw Error(parsedError.message);
   }
 };

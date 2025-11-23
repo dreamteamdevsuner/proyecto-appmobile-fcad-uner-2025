@@ -18,6 +18,7 @@ import { CandidateSwipeStackRootParams } from '../../navigator/SwipeStack';
 import ROUTES from '../../navigator/routes';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { getJobOffer } from '@services/jobOffer/JobOffer.service';
+import { JobOfferFullDescription } from '../../../../../types/JobOfferFullDescription';
 
 interface JobPostingScreenProps
   extends NativeStackScreenProps<
@@ -28,8 +29,10 @@ const JobPostingScreen = ({ route }: JobPostingScreenProps) => {
   const [showActions, setShowActions] = useState(false);
   console.log(route.params.jobOfferId);
   const handleJobOffer = async () => {
-    const jobOffer = await getJobOffer(route.params.jobOfferId);
-    console.log('job offer', jobOffer);
+    const jobOffer: JobOfferFullDescription = await getJobOffer(
+      route.params.jobOfferId,
+    );
+    console.log(JSON.stringify(jobOffer, null, 2));
   };
   useEffect(() => {
     handleJobOffer();
