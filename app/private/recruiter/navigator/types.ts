@@ -20,6 +20,8 @@ export type PrivateStackParamList = {
   [ROUTES.RECRUITER_SETTINGS]: undefined;
   [ROUTES.RECRUITER_NOTIFICATIONS]: undefined;
 
+  [ROUTES.RECRUITER_CREAR_OFERTA_TAB]: undefined;
   [ROUTES.RECRUITER_CREAR_OFERTA]: undefined;
-  [ROUTES.RECRUITER_CREAR_OFERTA_PREVIEW]: undefined;
+  [ROUTES.RECRUITER_EDITAR_OFERTA]: { ofertaId: string };
+  [ROUTES.RECRUITER_CREAR_OFERTA_PREVIEW]: { ofertaId: string };
 };

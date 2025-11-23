@@ -99,6 +99,7 @@ const Mensajeria: React.FC<Props> = ({ navigation }) => {
             </View>
           );
         }}
+        ListEmptyComponent={<Text>No hay chats aún</Text>}
       />
     </View>
   );

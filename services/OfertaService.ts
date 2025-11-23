@@ -1,7 +1,6 @@
 import { supabase } from '../supabase/supabaseClient';
-import { DBOfertaTrabajoSkill } from '@database/index';
-import { OfertaTrabajoData } from '@models/OfertaTrabajoData';
-import { DBUsuario } from '@database/index';
+import { DBOfertaTrabajoSkill, DBUsuario } from '@database/index';
+import { OfertaTrabajoData, OfertaValues } from '@models/index';
 
 export async function getOfertasConMatch(
   userId: string,
@@ -71,7 +70,6 @@ export async function getMatchRecientes(userId: string): Promise<
   if (error) throw new Error(error.message);
 
   return data.map((m: any) => {
-    // Manejar ambos casos: array u objeto
     const profesional = Array.isArray(m.profesional)
       ? m.profesional[0]
       : m.profesional;
@@ -122,7 +120,7 @@ export async function crearOferta(data: OfertaTrabajoData) {
       .insert([
         {
           idpublicacion: publicacion.id,
-          idempresa: null,
+          idempresa: data.idempresa,
           titulo: data.titulo,
           descripcion: data.descripcion,
           idmodalidad: data.idmodalidad ?? null,
@@ -131,6 +129,8 @@ export async function crearOferta(data: OfertaTrabajoData) {
           idcontratacion: data.idcontratacion ?? null,
           iddepartamento: data.iddepartamento ?? null,
           iddireccion: direccion.id ?? null,
+          idarea: data.idarea ?? null,
+          beneficios: data.beneficios,
         },
       ])
       .select()
@@ -171,6 +171,99 @@ export async function crearOferta(data: OfertaTrabajoData) {
     throw err;
   }
 }
+
+export async function editarOferta(data: OfertaTrabajoData) {
+  try {
+    let direccion;
+
+    if (data.iddireccion) {
+      const { data: direccionData, error: direccionError } = await supabase
+        .from('direccion')
+        .update({
+          direccion: data.direccion,
+          latitud: data.latitud,
+          longitud: data.longitud,
+        })
+        .eq('id', data.iddireccion)
+        .select()
+        .single();
+      if (direccionError) throw direccionError;
+      direccion = direccionData;
+    } else {
+      const { data: direccionData, error: direccionError } = await supabase
+        .from('direccion')
+        .insert([
+          {
+            direccion: data.direccion,
+            latitud: data.latitud,
+            longitud: data.longitud,
+          },
+        ])
+        .select()
+        .single();
+
+      if (direccionError) throw direccionError;
+      direccion = direccionData;
+    }
+
+    const { data: oferta, error: ofertaError } = await supabase
+      .from('ofertatrabajo')
+      .update({
+        titulo: data.titulo,
+        descripcion: data.descripcion,
+        idempresa: data.idempresa ?? null,
+        idmodalidad: data.idmodalidad ?? null,
+        idtipojornada: data.idtipojornada ?? null,
+        idcontratacion: data.idcontratacion ?? null,
+        iddepartamento: data.iddepartamento ?? null,
+        iddireccion: direccion ? direccion.id : null,
+        idarea: data.idarea ?? null,
+        beneficios: data.beneficios,
+      })
+      .eq('id', data.id)
+      .select()
+      .single();
+
+    if (ofertaError) throw ofertaError;
+
+    // borramos todas las skills para actualizar a las nuevas
+    await supabase
+      .from('ofertatrabajoskill')
+      .delete()
+      .eq('idofertatrabajo', oferta.id);
+
+    let registrosHard: DBOfertaTrabajoSkill[] = [];
+    let registrosSoft: DBOfertaTrabajoSkill[] = [];
+
+    if (data.idsoftskills?.length) {
+      registrosSoft = data.idsoftskills.map((id) => ({
+        idskill: id,
+        idofertatrabajo: oferta.id,
+      }));
+    }
+    if (data.idhardskills?.length) {
+      registrosHard = data.idhardskills.map((id) => ({
+        idskill: id,
+        idofertatrabajo: oferta.id,
+      }));
+    }
+    const registros = [...registrosHard, ...registrosSoft];
+
+    if (registros.length > 0) {
+      const { data: ofertatrabajoskill, error } = await supabase
+        .from('ofertatrabajoskill')
+        .insert(registros)
+        .select();
+
+      if (error) throw error;
+    }
+    return oferta;
+  } catch (err: any) {
+    console.error('Error editando oferta:', err);
+    throw err;
+  }
+}
+
 export type UsuarioMatch = DBUsuario & {
   idOfertaTrabajoMatch: string;
   idProfesional: string;
@@ -222,4 +315,99 @@ export async function getUsuariosMatchOferta(
 
   console.log(`Usuarios fetched ofertaId ${ofertaId}:`, usuarios);
   return usuarios;
+}
+
+export async function getOferta(ofertaId: string): Promise<OfertaValues> {
+  const { data: oferta, error } = await supabase
+    .from('ofertatrabajo')
+    .select(
+      `
+    id,
+    activo,
+    titulo,
+    descripcion,
+    beneficios,
+    idmodalidad,
+    idtipojornada,
+    idcontratacion,
+    iddepartamento,
+    idarea,
+    empresa: idempresa (
+      id,
+      nombre
+    ),
+    direccion: iddireccion (
+      id,
+      direccion,
+      latitud,
+      longitud
+    ),
+
+    skills: ofertatrabajoskill (
+      id,
+      nombre,
+      nivel: idnivel (id, nombre),
+      skill: idskill (
+        id,
+        nombre,
+        idtiposkill
+      )
+    )
+  `,
+    )
+    .eq('id', ofertaId)
+    .eq('activo', true)
+    .single();
+
+  if (error) throw new Error(error.message);
+  if (!oferta) throw new Error('Oferta no encontrada');
+
+  const direccion = Array.isArray(oferta.direccion)
+    ? oferta.direccion[0]
+    : oferta.direccion;
+  const empresa = Array.isArray(oferta.empresa)
+    ? oferta.empresa[0]
+    : oferta.empresa;
+  const skills = Array.isArray(oferta.skills) ? oferta.skills : [oferta.skills];
+
+  const ofertaMapped: OfertaValues = {
+    id: oferta.id,
+    titulo: oferta.titulo,
+    institucion: empresa?.nombre ?? null,
+    idinstitucion: empresa?.id ?? null,
+    localizacion: direccion?.direccion ?? '',
+    lat: Number(direccion?.latitud ?? 0),
+    lng: Number(direccion?.longitud ?? 0),
+    iddireccion: direccion?.id ?? null,
+
+    area: oferta.idarea ?? null,
+    modalidad: oferta.idmodalidad ?? null,
+    jornada: oferta.idtipojornada ?? null,
+    contrato: oferta.idcontratacion ?? null,
+
+    descripcion: oferta.descripcion ?? '',
+    beneficios: oferta.beneficios ?? '',
+    idiomasNiveles: [],
+
+    softSkills: skills
+      ?.filter((s) => {
+        const skill = Array.isArray(s.skill) ? s.skill[0] : s.skill;
+        return skill?.idtiposkill === 1;
+      })
+      .map((s) => {
+        const skill = Array.isArray(s.skill) ? s.skill[0] : s.skill;
+        return skill?.id;
+      }),
+
+    hardSkills: skills
+      ?.filter((s) => {
+        const skill = Array.isArray(s.skill) ? s.skill[0] : s.skill;
+        return skill?.idtiposkill === 2;
+      })
+      .map((s) => {
+        const skill = Array.isArray(s.skill) ? s.skill[0] : s.skill;
+        return skill?.id;
+      }),
+  };
+  return ofertaMapped;
 }

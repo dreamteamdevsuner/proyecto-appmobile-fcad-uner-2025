@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { FlatList, View, ListRenderItem, StyleSheet } from 'react-native';
-import { Divider, List } from 'react-native-paper';
+import { Divider, IconButton, List } from 'react-native-paper';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import ROUTES from '../../app/private/recruiter/navigator/routes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -48,15 +48,35 @@ const OffersTab = (): React.JSX.Element => {
       <List.Item
         title={item.titulo}
         description={item.descripcion}
-        right={(props) => <List.Icon {...props} icon={'chevron-right'} />}
-        onPress={() => {
-          console.log('Pressing: ', item.titulo);
+        right={(props) => (
+          <>
+            <IconButton
+              icon="pencil"
+              onPress={() => {
+                navigator.navigate(ROUTES.RECRUITER_EDITAR_OFERTA, {
+                  ofertaId: item.id.toString(),
+                });
+              }}
+            />
+            <IconButton
+              icon="eye"
+              onPress={() => {
+                navigator.navigate(ROUTES.RECRUITER_CREAR_OFERTA_PREVIEW, {
+                  ofertaId: item.id.toString(),
+                });
+              }}
+            />
+            {/* <List.Icon {...props} icon={'chevron-right'} /> */}
+          </>
+        )}
+        // onPress={() => {
+        //   console.log('Pressing: ', item.titulo);
 
-          navigator.navigate(ROUTES.RECRUITER_FAVORITOS_OFERTA, {
-            ofertaId: item.id.toString(),
-            title: item.titulo,
-          });
-        }}
+        //   navigator.navigate(ROUTES.RECRUITER_FAVORITOS_OFERTA, {
+        //     ofertaId: item.id.toString(),
+        //     title: item.titulo,
+        //   });
+        // }}
       />
     );
   };
@@ -65,7 +85,7 @@ const OffersTab = (): React.JSX.Element => {
       <FlatList
         data={offersToShow}
         renderItem={renderItem}
-        keyExtractor={(item) => item.titulo.toString()}
+        keyExtractor={(item) => item.id}
         ListEmptyComponent={
           <List.Item
             title="No hay elementos."

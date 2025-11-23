@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { FlatList, Platform } from 'react-native';
-import { Avatar, IconButton, Text } from 'react-native-paper';
-
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { FlatList, View } from 'react-native';
+import { Avatar, Button, IconButton, Text } from 'react-native-paper';
 import { TextInput } from 'react-native';
 
 import {
@@ -24,6 +23,7 @@ import {
 import { IUser } from '@services/interfaces/User.interface';
 import { detectBadWords } from '@services/BadWordsAPI';
 import { Emoji } from '@components/emojis/Emoji';
+import sanitizeText from '@utils/sanitize';
 
 type ConversacionProps = {
   title: string;
@@ -46,65 +46,147 @@ const Conversacion: React.FC<ConversacionProps> = ({
   const [inputText, setInputText] = useState('');
   const [chatID, setChatID] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
-  const [loading, setLoading] = useState(false);
   const flatListRef = useRef<FlatList>(null);
   const [showEmojiBar, setShowEmojiBar] = useState(false);
   const inputRef = useRef<TextInput>(null);
+  const [offset, setOffset] = useState(0);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [noMasMensajes, setNoMasMensajes] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  const getMessages = async () => {
+  const getMessages = useCallback(async () => {
+    if (!idOfertaTrabajoMatch || !usuarioLogueado?.id) return;
+
     try {
-      setLoading(true);
+      setLoadingMore(true);
       const messagesData = await getChatConMensajes(
-        idOfertaTrabajoMatch!,
-        usuarioLogueado?.id!,
+        idOfertaTrabajoMatch,
+        usuarioLogueado.id,
+        offset,
       );
+
+      if (!messagesData) {
+        setNoMasMensajes(true);
+        return;
+      }
+
       const messagesItem =
-        messagesData?.mensajes.map((message) => ({
+        messagesData?.mensajes?.map((message: any) => ({
           id: message.id,
           text: message.texto,
           sender: message.idusuario,
         })) ?? [];
-      setMessages(messagesItem);
+
       setChatID(messagesData?.idChat);
+
+      if (messagesItem.length === 0) {
+        setNoMasMensajes(true);
+        return;
+      }
+
+      setMessages((prev) => {
+        const existingIds = new Set(prev.map((msg) => msg.id));
+        const newMessages = messagesItem.filter(
+          (msg: any) => !existingIds.has(msg.id),
+        );
+
+        if (isInitialLoad) {
+          setIsInitialLoad(false);
+
+          return newMessages.reverse();
+        } else {
+          return [...newMessages, ...prev];
+        }
+      });
     } catch (error) {
       console.error('Error fetching mensajes:', error);
+      setNoMasMensajes(true);
     } finally {
-      setLoading(false);
+      setLoadingMore(false);
     }
-  };
+  }, [idOfertaTrabajoMatch, usuarioLogueado?.id, offset, isInitialLoad]);
+
+  const loadMore = useCallback(async () => {
+    if (loadingMore || noMasMensajes) return;
+
+    await getMessages();
+    setOffset((prev) => prev + 5);
+  }, [loadingMore, noMasMensajes, getMessages]);
 
   useEffect(() => {
-    getMessages();
-  }, []);
+    setMessages([]);
+    setOffset(0);
+    setNoMasMensajes(false);
+    setIsInitialLoad(true);
+  }, [idOfertaTrabajoMatch, usuarioLogueado?.id]);
+
+  useEffect(() => {
+    if (isInitialLoad) {
+      loadMore();
+    }
+  }, [isInitialLoad, loadMore]);
 
   const handleSend = async () => {
-    if (!inputText.trim()) return;
+    const trimmed = inputText.trim();
+    if (!trimmed || !chatID || !usuarioLogueado) return;
 
     try {
-      if (usuarioLogueado) {
-        const textoSeguro = await detectBadWords(inputText.trim());
+      const limpioHTML: string = sanitizeText(trimmed);
+      const textoSeguro: string = await detectBadWords(limpioHTML);
 
-        const nuevoMensaje = await enviarMensaje({
-          idChat: chatID,
-          idUsuario: usuarioLogueado?.id,
-          texto: textoSeguro,
-        });
-        console.log('Mensaje', nuevoMensaje);
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: nuevoMensaje.id,
-            text: nuevoMensaje.texto,
-            sender: nuevoMensaje.idusuario,
-          },
-        ]);
+      await enviarMensaje({
+        idChat: chatID,
+        idUsuario: usuarioLogueado.id,
+        texto: textoSeguro,
+      });
 
-        setInputText('');
-      }
+      setInputText('');
+
+      setTimeout(() => {
+        flatListRef.current?.scrollToEnd({ animated: true });
+      }, 100);
     } catch (error) {
       console.error('Error enviando mensaje:', error);
     }
   };
+
+  const handleNewMessage = useCallback((newMessage: Message) => {
+    setMessages((prev) => {
+      const messageExists = prev.some((msg) => msg.id === newMessage.id);
+      if (messageExists) {
+        return prev;
+      }
+
+      return [...prev, newMessage];
+    });
+
+    setTimeout(() => {
+      flatListRef.current?.scrollToEnd({ animated: true });
+    }, 100);
+  }, []);
+
+  useEffect(() => {
+    if (!chatID || !usuarioLogueado) return;
+
+    const channel = subscribeToChat(
+      chatID,
+      usuarioLogueado.id,
+      handleNewMessage,
+    );
+
+    return () => {
+      unsubscribeFromChat(channel);
+    };
+  }, [chatID, usuarioLogueado, handleNewMessage]);
+
+  useEffect(() => {
+    if (messages.length > 0 && isInitialLoad) {
+      setTimeout(() => {
+        flatListRef.current?.scrollToEnd({ animated: false });
+      }, 100);
+    }
+  }, [messages.length, isInitialLoad]);
+
   function checkIsSingleEmoji(text: string): boolean {
     if (!text) return false;
     const trimmed = text.trim();
@@ -183,73 +265,90 @@ const Conversacion: React.FC<ConversacionProps> = ({
     );
   };
 
-  useEffect(() => {
-    if (!chatID || !usuarioLogueado) return;
-
-    const channel = subscribeToChat(
-      chatID,
-      usuarioLogueado.id,
-      (newMessage) => {
-        console.log('new mensajes', newMessage);
-        setMessages((prev) => {
-          if (prev.some((m) => m.id === newMessage.id)) return prev;
-          return [...prev, newMessage];
-        });
-      },
-    );
-
-    return () => {
-      unsubscribeFromChat(channel);
-    };
-  }, [chatID]);
-
   return (
     <Container>
-      {loading ? (
-        <Text>Cargando mensajes...</Text>
-      ) : (
-        <>
-          <FlatList
-            ref={flatListRef}
-            data={messages}
-            keyExtractor={(item) => item.id}
-            renderItem={renderItem}
-            contentContainerStyle={{ padding: 10 }}
-            onContentSizeChange={() => {
-              flatListRef.current?.scrollToEnd({ animated: true });
-            }}
-          />
-
-          <InputContainer>
-            <IconButton
-              icon={showEmojiBar ? 'keyboard-outline' : 'emoticon-outline'}
-              onPress={() => {
-                setShowEmojiBar((prev) => {
-                  if (prev) {
-                    setTimeout(() => inputRef.current?.focus(), 50);
-                  }
-                  return !prev;
-                });
+      <FlatList
+        ref={flatListRef}
+        data={messages}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        inverted={false}
+        contentContainerStyle={{
+          padding: 10,
+          flexGrow: 1,
+        }}
+        style={{ flex: 1 }}
+        ListHeaderComponent={
+          !noMasMensajes ? (
+            <View style={{ padding: 10, alignItems: 'center' }}>
+              <Button onPress={loadMore} disabled={loadingMore} mode="outlined">
+                {loadingMore ? 'Cargando...' : 'Cargar mensajes más antiguos'}
+              </Button>
+            </View>
+          ) : messages.length > 0 ? (
+            <View style={{ padding: 10, alignItems: 'center' }}>
+              <Text style={{ color: 'gray' }}>
+                No hay mensajes más antiguos
+              </Text>
+            </View>
+          ) : null
+        }
+        ListEmptyComponent={
+          !loadingMore ? (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                padding: 20,
               }}
-            />
+            >
+              <Text>No hay mensajes aún</Text>
+            </View>
+          ) : null
+        }
+        onContentSizeChange={() => {
+          if (!loadingMore && isInitialLoad) {
+            flatListRef.current?.scrollToEnd({ animated: false });
+          }
+        }}
+      />
 
-            <StyledTextInput
-              ref={inputRef}
-              placeholder="Escribe un mensaje..."
-              value={inputText}
-              onChangeText={setInputText}
-              onFocus={() => setShowEmojiBar(false)}
-            />
+      <InputContainer>
+        <IconButton
+          icon={showEmojiBar ? 'keyboard-outline' : 'emoticon-outline'}
+          onPress={() => {
+            setShowEmojiBar((prev) => {
+              if (prev) {
+                setTimeout(() => inputRef.current?.focus(), 50);
+              }
+              return !prev;
+            });
+          }}
+        />
 
-            <IconButton icon="send" onPress={handleSend} />
-          </InputContainer>
-          <Emoji
-            setInputText={setInputText}
-            showEmojiBar={showEmojiBar}
-            setShowEmojiBar={setShowEmojiBar}
-          />
-        </>
-      )}
+        <StyledTextInput
+          ref={inputRef}
+          placeholder="Escribe un mensaje..."
+          value={inputText}
+          onChangeText={setInputText}
+          onFocus={() => setShowEmojiBar(false)}
+          onSubmitEditing={handleSend}
+          multiline
+        />
+
+        <IconButton
+          icon="send"
+          onPress={handleSend}
+          disabled={!inputText.trim()}
+        />
+      </InputContainer>
+
+      <Emoji
+        setInputText={setInputText}
+        showEmojiBar={showEmojiBar}
+        setShowEmojiBar={setShowEmojiBar}
+      />
     </Container>
   );
 };
