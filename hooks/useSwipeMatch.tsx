@@ -3,11 +3,14 @@ import { ICarouselInstance } from 'react-native-reanimated-carousel';
 import { supabase } from '../supabase/supabaseClient';
 import uuid from 'react-native-uuid';
 import { useAuth } from '../appContext/authContext';
+import { sendPushNotification } from '@services/notifications/pushNotification.service';
 
 const useSwipeMatch = ({
   ref,
+  onMatchSuccess,
 }: {
   ref: React.RefObject<ICarouselInstance | null>;
+  onMatchSuccess?: (candidateName: string) => void;
 }) => {
   const [enabledScroll, setEnabledScroll] = useState(true);
   const {
@@ -51,27 +54,101 @@ const useSwipeMatch = ({
     }
   };
 
+  const handleMatchSuccess = async (
+    recruiterUserId: string,
+    profesionalId: string,
+    ofertaId: string,
+  ) => {
+    try {
+      const { data: profData } = await supabase
+        .from('profesional')
+        .select(
+          'idusuario, usuario!inner(id, nombre, apellido, expo_push_token)',
+        )
+        .eq('id', profesionalId)
+        .single();
+
+      const { data: offerData } = await supabase
+        .from('ofertatrabajo')
+        .select('titulo')
+        .eq('id', ofertaId)
+        .single();
+
+      const usuarioPro = profData?.usuario as any;
+      const tituloOferta = offerData?.titulo || 'una oferta';
+
+      const idUserPro = usuarioPro?.id;
+      const tokenPro = usuarioPro?.expo_push_token;
+      const nombrePro =
+        `${usuarioPro?.nombre || ''} ${usuarioPro?.apellido || ''}`.trim();
+
+      const notificationsToInsert = [];
+      const timestamp = new Date();
+
+      if (idUserPro) {
+        const msgPro = `¡Felicitaciones! Tu perfil interesó para el puesto: ${tituloOferta}`;
+
+        notificationsToInsert.push({
+          id: uuid.v4().toString(),
+          idusuario: idUserPro,
+          texto: msgPro,
+          tipo: 'match',
+          idestadonotificacion: 1,
+          activo: true,
+          idofertatrabajo: ofertaId,
+          created_at: timestamp,
+        });
+
+        if (tokenPro) {
+          console.log('🚀 Enviando push al Profesional:', tokenPro);
+          await sendPushNotification(tokenPro, '¡Es un Match! 🎉', msgPro, {
+            type: 'match',
+            offerId: ofertaId,
+          });
+        }
+      }
+
+      if (recruiterUserId) {
+        const msgRecruiter = `¡Hiciste Match con ${nombrePro || 'un candidato'}!`;
+
+        notificationsToInsert.push({
+          id: uuid.v4().toString(),
+          idusuario: recruiterUserId,
+          texto: msgRecruiter,
+          tipo: 'match',
+          idestadonotificacion: 1,
+          activo: true,
+          idofertatrabajo: ofertaId,
+          created_at: timestamp,
+        });
+      }
+
+      if (notificationsToInsert.length > 0) {
+        const { error } = await supabase
+          .from('notificacion')
+          .insert(notificationsToInsert);
+
+        if (error) console.error('Error creando notificaciones en BD');
+        else console.log('✅ Notificaciones guardadas para ambos usuarios');
+      }
+
+      if (onMatchSuccess) {
+        onMatchSuccess(nombrePro || 'el candidato');
+      }
+    } catch (error) {
+      console.error('Error en handleMatchSuccess:', error);
+    }
+  };
+
   const handleLike = async (
     like: boolean,
     currentOfferId?: string,
     targetProfesionalId?: string,
   ) => {
-    console.log('❤️ LIKE:', like);
-    console.log('💾 currentOfferId:', currentOfferId);
-    console.log(
-      '👤 targetProfesionalId (Reclutador mode):',
-      targetProfesionalId,
-    );
-
-    if (!currentOfferId) {
-      console.warn('No hay oferta seleccionada — skip');
-      return;
-    }
+    if (!currentOfferId) return;
 
     if (targetProfesionalId) {
-      console.log(
-        '🛠️ MODO RECLUTADOR DETECTADO: Actualizando match existente...',
-      );
+      console.log('🛠️ MODO RECLUTADOR DETECTADO...');
 
       try {
         const nuevoEstado = like ? 2 : 3;
@@ -87,31 +164,30 @@ const useSwipeMatch = ({
           .select();
 
         if (error) {
-          console.error('❌ Error actualizando match.');
+          console.error('❌ Error actualizando match (Reclutador)');
         } else {
-          console.log('✅ Match actualizado correctamente.');
+          console.log('✅ Match actualizado por reclutador');
+
+          if (like && user?.id) {
+            await handleMatchSuccess(
+              user.id,
+              targetProfesionalId,
+              currentOfferId,
+            );
+          }
         }
       } catch (err) {
-        console.error('💥 Exception actualizando match:');
+        console.error('💥 Exception actualizando match:', err);
       }
 
       ref.current?.next();
       return;
     }
 
-    if (!user?.id) {
-      console.warn('No hay usuario logueado');
-      return;
-    }
+    if (!user?.id) return;
 
     const idProfesional = await resolveProfesionalId();
-
-    if (!idProfesional) {
-      console.warn(
-        'Usuario no es profesional y no se pasó targetProfesionalId. Abortando.',
-      );
-      return;
-    }
+    if (!idProfesional) return;
 
     const { data: existing } = await supabase
       .from('ofertatrabajomatch')
@@ -121,7 +197,6 @@ const useSwipeMatch = ({
       .maybeSingle();
 
     if (existing) {
-      console.log('Esta oferta ya fue votada por este profesional.');
       ref.current?.next();
       return;
     }
@@ -141,13 +216,9 @@ const useSwipeMatch = ({
         ])
         .select('*');
 
-      if (error) {
-        console.error('❌ Error insertando like.');
-      } else {
-        console.log('✅ Like insertado por profesional.');
-      }
+      if (error) console.error('❌ Error insertando match:', error);
     } catch (err) {
-      console.error('💥 Exception insertando like.');
+      console.error('💥 Exception insertando match:', err);
     }
 
     ref.current?.next();
