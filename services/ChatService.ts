@@ -20,9 +20,9 @@ export function subscribeToChat(
   userID: string,
   onNewMessage: (msg: Message) => void,
 ): RealtimeChannel {
-  console.log('Subscribe To Chat');
+  console.log('Subscribe To Chat', chatID);
   const channel = supabase
-    .channel(`chat-${chatID}`)
+    .channel(`chat-${chatID}-${Date.now()}`)
     .on(
       'postgres_changes',
       {
@@ -33,6 +33,7 @@ export function subscribeToChat(
       },
       (payload: RealtimePostgresInsertPayload<MensajeRecord>) => {
         const nuevo = payload.new;
+        console.log('Nuevo mensaje recibido:', nuevo.id);
         onNewMessage({
           id: nuevo.id,
           text: nuevo.texto,
@@ -41,7 +42,7 @@ export function subscribeToChat(
       },
     )
     .subscribe((status) => {
-      console.log('Channel:', status);
+      console.log('Channel status:', status);
     });
 
   return channel;
@@ -54,7 +55,22 @@ export function unsubscribeFromChat(channel: RealtimeChannel) {
 export async function getChatConMensajes(
   idOfertaTrabajoMatch: string,
   idUsuarioLogueado: string,
+  offset: number,
 ) {
+  const { data: match, error: matchError } = await supabase
+    .from('ofertatrabajomatch')
+    .select('idprofesional')
+    .eq('id', idOfertaTrabajoMatch)
+    .single();
+
+  if (matchError) {
+    console.error(
+      'Error al obtener match para obtener mensajes:',
+      matchError.message,
+    );
+    return null;
+  }
+
   const { data, error } = await supabase
     .from('chat')
     .select(
@@ -77,7 +93,8 @@ export async function getChatConMensajes(
     `,
     )
     .eq('idofertatrabajomatch', idOfertaTrabajoMatch)
-    .eq('idusuarioprofesional.idusuario', idUsuarioLogueado)
+    .order('fechacreacion', { referencedTable: 'mensaje', ascending: false })
+    .range(offset, offset + 4, { referencedTable: 'mensaje' })
     .maybeSingle();
 
   if (error) {
@@ -86,24 +103,54 @@ export async function getChatConMensajes(
   }
 
   if (!data) {
-    console.warn('No se encontró chat para esta oferta y profesional');
-    return null;
-  }
+    console.log(
+      'No se encontró chat para esta oferta y profesional. Se creará uno.',
+    );
 
-  // Ordenar los mensajes por fecha de creación
-  const mensajesOrdenados = data.mensaje
-    ? [...data.mensaje].sort(
-        (a, b) =>
-          new Date(a.fechacreacion).getTime() -
-          new Date(b.fechacreacion).getTime(),
-      )
-    : [];
+    const { data: reclutador, error: recError } = await supabase
+      .from('reclutador')
+      .select('id')
+      .eq('idusuario', idUsuarioLogueado)
+      .single();
+
+    if (recError) {
+      console.error(
+        'Error al obtener reclutador para crear chat:',
+        recError.message,
+      );
+      return null;
+    }
+    const { data: newChat, error: insertError } = await supabase
+      .from('chat')
+      .insert([
+        {
+          idusuarioprofesional: match.idprofesional,
+          idusuarioreclutador: reclutador.id, // solo el reclutador puede iniciar un chat
+          idofertatrabajomatch: idOfertaTrabajoMatch,
+          idestadochat: 2,
+        },
+      ])
+      .select()
+      .single();
+
+    if (insertError) {
+      console.error('Error creando chat:', insertError.message);
+      return null;
+    }
+
+    return {
+      idChat: newChat.id,
+      idProfesional: newChat.idusuarioprofesional,
+      idReclutador: newChat.idusuarioreclutador,
+      mensajes: newChat.mensaje || [],
+    };
+  }
 
   return {
     idChat: data.id,
     idProfesional: data.idusuarioprofesional,
     idReclutador: data.idusuarioreclutador,
-    mensajes: mensajesOrdenados,
+    mensajes: data.mensaje || [],
   };
 }
 
@@ -152,16 +199,16 @@ export async function getOfertasUsuariosChat(
       `
       id,
       activo,
-      profesional: idusuarioprofesional (
+      profesional: idusuarioprofesional!inner (
         id,
-        usuario: idusuario(
+        usuario: idusuario!inner(
            id,
            rol,
            fotoperfil,
            nombre
         )
       ),
-      idusuarioreclutador (
+      idusuarioreclutador!inner (
          idusuario
       ),
       idofertatrabajomatch (
@@ -234,9 +281,9 @@ export async function getProfesionalChat(
       `
       id,
       activo,
-      profesional: idusuarioprofesional (
+      profesional: idusuarioprofesional!inner (
         id,
-        usuario: idusuario(
+        usuario: idusuario!inner(
            id,
            rol,
            fotoperfil,
@@ -256,11 +303,11 @@ export async function getProfesionalChat(
     `,
     )
     .eq('activo', true)
-    .eq('idusuarioreclutador.idusuario', idUsuarioProfesional);
+    .eq('profesional.usuario.id', idUsuarioProfesional);
+  // .not('profesional', 'is', null);
 
   if (error) throw new Error(error.message);
   if (!data) return [];
-
   const chats: UserItemInfo[] = [];
 
   for (const chat of data) {

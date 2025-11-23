@@ -1,16 +1,11 @@
-import React from 'react';
-import { Button } from 'react-native-paper';
-import { StyleSheet } from 'react-native';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
+import { File, Directory, Paths } from 'expo-file-system';
+
 import { PerfilView } from '@models/PerfilView';
 
-type CVProps = {
-  profileUser: PerfilView;
-};
-
-export default function CurriculumPDF({ profileUser }: CVProps) {
-  const generarPDF = async () => {
+export const generarPDF = async (profileUser: PerfilView) => {
+  try {
     const html = `
       <html>
         <head>
@@ -134,7 +129,7 @@ export default function CurriculumPDF({ profileUser }: CVProps) {
         </head>
 
         <body>
-        <div class="watermark"></div>
+          <div class="watermark"></div>
           <!-- HEADER -->
           <div class="header">
             ${profileUser.fotoPerfil ? `<img class="photo" src="${profileUser.fotoPerfil}" />` : ''}
@@ -164,12 +159,12 @@ export default function CurriculumPDF({ profileUser }: CVProps) {
               profileUser.estudios
                 .map(
                   (est) => `
-              <div class="item">
-                <div class="item-title">${est.titulo}</div>
-                <div>${est.nombreinstitucion || ''}</div>
-                <div>${est.fechainicio || ''} – ${est.fechafin || 'Actual'}</div>
-              </div>
-            `,
+                <div class="item">
+                  <div class="item-title">${est.titulo}</div>
+                  <div>${est.nombreinstitucion || ''}</div>
+                  <div>${est.fechainicio || ''} – ${est.fechafin || 'Actual'}</div>
+                </div>
+              `,
                 )
                 .join('')
             }
@@ -183,21 +178,21 @@ export default function CurriculumPDF({ profileUser }: CVProps) {
               profileUser.experiencia
                 .map(
                   (job) => `
-              <div class="item">
-                <div class="item-title">${job.posicion}</div>
-                <div>${job.nombreempresa || job.empresa || ''}</div>
-                <div>${job.fechainicio || ''} – ${job.fechafin || 'Actual'}</div>
-              </div>
-            `,
+                <div class="item">
+                  <div class="item-title">${job.posicion}</div>
+                  <div>${job.nombreempresa || job.empresa || ''}</div>
+                  <div>${job.fechainicio || ''} – ${job.fechafin || 'Actual'}</div>
+                </div>
+              `,
                 )
                 .join('')
             }
           </div>
 
     <!-- SKILLS – CHIPS -->
-    <div class="section">
-      <div class="section-title">Habilidades</div>
-      <div class="chips">
+          <div class="section">
+            <div class="section-title">Habilidades</div>
+            <div class="chips">
         ${
           profileUser.skills?.habilidades &&
           profileUser.skills?.habilidades
@@ -208,9 +203,9 @@ export default function CurriculumPDF({ profileUser }: CVProps) {
             )
             .join('')
         }
-      </div>
+            </div>
       
-    </div>
+          </div>
 
           <!-- ENLACES -->
           <div class="section">
@@ -234,21 +229,18 @@ export default function CurriculumPDF({ profileUser }: CVProps) {
 
     `;
 
-    const { uri } = await Print.printToFileAsync({ html });
+    const { uri: tempUri } = await Print.printToFileAsync({ html });
 
-    await Sharing.shareAsync(uri);
-  };
+    const pdfDir = new Directory(Paths.document, 'pdfs');
+    pdfDir.create({ idempotent: true, intermediates: true });
 
-  return (
-    <Button style={styles.botonDescargar} mode="contained" onPress={generarPDF}>
-      Descargar CV PDF
-    </Button>
-  );
-}
-const styles = StyleSheet.create({
-  botonDescargar: {
-    marginHorizontal: 20,
-    marginTop: 10,
-    marginBottom: 10,
-  },
-});
+    const fileName = `mi_archivo_${Date.now()}.pdf`;
+    const destFile = new File(pdfDir, fileName);
+    const tempFile = new File(tempUri);
+    await tempFile.move(destFile);
+
+    await Sharing.shareAsync(destFile.uri);
+  } catch (error) {
+    console.error('Error generando PDF:', error);
+  }
+};

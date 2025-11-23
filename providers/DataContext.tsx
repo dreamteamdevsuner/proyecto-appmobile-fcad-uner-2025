@@ -1,9 +1,12 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '../supabase/supabaseClient';
-import { DBModalidad } from '@database/DBModalidad';
-import { DBTipoJornada } from '@database/DBTipoJornada';
-import { DBContratacion } from '@database/DBContratacion';
-import { DBSkill } from '@database/DBSkill';
+import {
+  DBModalidad,
+  DBTipoJornada,
+  DBContratacion,
+  DBSkill,
+  DBAreas,
+} from '@database/index';
 
 interface DataContextType {
   modalidad: DBModalidad[];
@@ -11,6 +14,7 @@ interface DataContextType {
   contratacion: DBContratacion[];
   softSkills: DBSkill[];
   hardSkills: DBSkill[];
+  areas: DBAreas[];
   loading: boolean;
 }
 
@@ -20,6 +24,7 @@ export const DataContext = createContext<DataContextType>({
   contratacion: [],
   softSkills: [],
   hardSkills: [],
+  areas: [],
   loading: true,
 });
 
@@ -33,6 +38,8 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
   const [contratacion, setContratacion] = useState<DBContratacion[]>([]);
   const [softSkills, setSoftSkills] = useState<DBSkill[]>([]);
   const [hardSkills, setHardSkills] = useState<DBSkill[]>([]);
+  const [areas, setAreas] = useState<DBAreas[]>([]);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -49,6 +56,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
         .from('contratacion')
         .select('*');
       const { data: skillData } = await supabase.from('skill').select('*');
+      const { data: areaData } = await supabase.from('area').select('*');
 
       modalidadData && setModalidad(modalidadData);
       jornadaData && setJornada(jornadaData);
@@ -57,6 +65,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
         setSoftSkills(skillData.filter((x) => x.idtiposkill === 1));
         setHardSkills(skillData.filter((x) => x.idtiposkill === 2));
       }
+      areaData && setAreas(areaData);
 
       setLoading(false);
     };
@@ -72,6 +81,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
         contratacion,
         softSkills,
         hardSkills,
+        areas,
         loading,
       }}
     >
