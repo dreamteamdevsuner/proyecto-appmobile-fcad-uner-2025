@@ -290,8 +290,11 @@ export async function getProfesionalChat(
            nombre
         )
       ),
-      idusuarioreclutador (
-         idusuario
+      reclutador: idusuarioreclutador!inner (
+      id,
+         usuario: idusuario!inner(
+         id, rol, fotoperfil, nombre
+         )
       ),
       idofertatrabajomatch (
         id,
@@ -308,6 +311,7 @@ export async function getProfesionalChat(
 
   if (error) throw new Error(error.message);
   if (!data) return [];
+
   const chats: UserItemInfo[] = [];
 
   for (const chat of data) {
@@ -317,18 +321,21 @@ export async function getProfesionalChat(
     const ofertaTrabajo = Array.isArray(ofertaTrabajoMatch.ofertatrabajo)
       ? ofertaTrabajoMatch.ofertatrabajo[0]
       : ofertaTrabajoMatch.ofertatrabajo;
+    const reclutador = Array.isArray(chat.reclutador)
+      ? chat.reclutador[0]
+      : chat?.reclutador;
     const profesional = Array.isArray(chat.profesional)
       ? chat.profesional[0]
       : chat?.profesional;
-    const usuario = Array.isArray(profesional?.usuario)
-      ? profesional.usuario[0]
-      : profesional?.usuario;
+    const usuarioReclutador = Array.isArray(reclutador?.usuario)
+      ? reclutador.usuario[0]
+      : reclutador?.usuario;
 
     chats.push({
-      id: usuario.id,
-      name: usuario.nombre,
-      role: usuario.rol,
-      avatarUrl: usuario.fotoperfil,
+      id: usuarioReclutador.id,
+      name: usuarioReclutador.nombre,
+      role: usuarioReclutador.rol,
+      avatarUrl: usuarioReclutador.fotoperfil,
       idProfesional: profesional.id,
       idOfertaTrabajoMatch: ofertaTrabajoMatch.id,
       ofertaName: ofertaTrabajo.titulo,
