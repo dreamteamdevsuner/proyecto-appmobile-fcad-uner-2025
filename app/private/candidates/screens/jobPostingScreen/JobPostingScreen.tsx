@@ -21,6 +21,7 @@ import { getJobOffer } from '@services/jobOffer/JobOffer.service';
 import { JobOfferFullDescription } from '../../../../../types/JobOfferFullDescription';
 import JobOfferCard from '@components/ui/JobOfferCard';
 import JobOfferCardFullDescription from '@app/private/shared/JobOfferCardFullDescription/JobOfferCardFullDescription';
+import AppLoading from '@components/ui/AppLoading';
 
 interface JobPostingScreenProps
   extends NativeStackScreenProps<
@@ -32,13 +33,14 @@ const JobPostingScreen = ({ route }: JobPostingScreenProps) => {
   console.log(route.params.jobOfferId);
 
   const [loading, setLoading] = useState(false);
+  const [jobOffer, setJobOffer] = useState<JobOfferFullDescription>();
   const handleJobOffer = async () => {
     setLoading(true);
     try {
-      const jobOffer: JobOfferFullDescription = await getJobOffer(
+      const jobOfferData: JobOfferFullDescription = await getJobOffer(
         route.params.jobOfferId,
       );
-      console.log(JSON.stringify(jobOffer, null, 2));
+      setJobOffer(jobOfferData);
     } catch (error) {
     } finally {
       setLoading(false);
@@ -47,6 +49,16 @@ const JobPostingScreen = ({ route }: JobPostingScreenProps) => {
   useEffect(() => {
     handleJobOffer();
   }, []);
+  if (loading) {
+    return <AppLoading></AppLoading>;
+  }
+  if (!jobOffer) {
+    return (
+      <View>
+        <Text>Error buscando oferta de trabajo</Text>
+      </View>
+    );
+  }
 
   return (
     <JobOfferCardFullDescription

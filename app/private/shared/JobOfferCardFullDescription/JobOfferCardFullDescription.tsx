@@ -1,7 +1,6 @@
-import Divider from '@components/ui/Divider';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import { Badge, Card, DataTable, Text } from 'react-native-paper';
+import { Badge, Card, DataTable, Icon, Text } from 'react-native-paper';
 
 import { Ionicons } from '@expo/vector-icons';
 import {
@@ -52,13 +51,14 @@ const JobOfferCardFullDescription = ({
               {user.nombre + ' ' + user.apellido}
             </Text>
             <Text style={styles.text}>{user.rol}</Text>
-            <Text style={styles.text}>
-              {`${direccion.ciudad}, ${direccion.pais}`}
-              {/* {user.direccion?.direccion && `${user.direccion?.direccion}`} */}
-            </Text>
+            {direccion.ciudad && direccion.pais && (
+              <Text style={styles.text}>
+                {`${direccion.ciudad}, ${direccion.pais}`}
+              </Text>
+            )}
           </View>
         </View>
-        <Divider />
+
         <Text style={[styles.subtitle, styles.text]}>{jobOffer.titulo}</Text>
         <Text style={styles.text}>{jobOffer.idempresa.nombre}</Text>
         {localizacion.latitud && localizacion.longitud && (
@@ -68,18 +68,20 @@ const JobOfferCardFullDescription = ({
               {localizacion.direccion}
             </Text>
             <MapView
+              scrollEnabled={false}
               style={styles.map}
+              onPanDrag={() => {}}
               region={{
                 latitude: Number(localizacion.latitud),
                 longitude: Number(localizacion.longitud),
-                latitudeDelta: 5,
-                longitudeDelta: 5,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
               }}
             >
               <Marker
                 coordinate={{
                   latitude: Number(localizacion.latitud),
-                  longitude: Number(localizacion.latitud),
+                  longitude: Number(localizacion.longitud),
                 }}
                 title={jobOffer.titulo}
                 description={`Lat: ${Number(localizacion.latitud).toFixed(5)}, Lng: ${Number(localizacion.longitud).toFixed(5)}`}
