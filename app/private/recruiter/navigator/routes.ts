@@ -14,6 +14,7 @@ enum ROUTES {
   RECRUITER_CREAR_OFERTA_TAB = 'NuevaOfertaTab',
   RECRUITER_CREAR_OFERTA = 'NuevaOferta',
   RECRUITER_CREAR_OFERTA_PREVIEW = 'NuevaOfertaPreview',
+  RECRUITER_EDITAR_OFERTA = 'EditarOferta',
   RECRUITER_SWIPE_MATCH_SCREEN = 'RecruiterSwipeMatchScreen',
   RECRUITER_CANDIDATE_PROFILE_PREVIEW = 'RecruiterCandidateProfilePreview',
   RECRUITER_CANDIDATE_PROFILE = 'RecruiterCandidateProfile',

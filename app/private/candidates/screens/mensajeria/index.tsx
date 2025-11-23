@@ -8,10 +8,7 @@ import { UserList } from '../../../../../components/listas';
 import ROUTES from '../../navigator/routes';
 import { useAuth } from '@appContext/authContext';
 import { useEffect, useState } from 'react';
-import {
-  getOfertasUsuariosChat,
-  getProfesionalChat,
-} from '@services/ChatService';
+import { getProfesionalChat } from '@services/ChatService';
 
 type Props = NativeStackScreenProps<
   PrivateStackParamList,
