@@ -1,33 +1,50 @@
 import Divider from '@components/ui/Divider';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import { Card, DataTable, Text } from 'react-native-paper';
-import { JobOffer } from '../../../../interfaces/JobOffer';
-import { OfertaTrabajoData } from '@models/OfertaTrabajoData';
-import {
-  Idusuario,
-  IdModalidad,
-} from '../../../../types/database/DBJobPreview';
-import { Ionicons } from '@expo/vector-icons';
-import { JobOfferFullDescription } from '../../../../types/JobOfferFullDescription';
-import { Idusuario } from '../../../../types/database/DBJobPreview';
+import { Badge, Card, DataTable, Text } from 'react-native-paper';
 
-const JobOfferCard = ({ jobOffer }: { jobOffer: JobOfferFullDescription }) => {
+import { Ionicons } from '@expo/vector-icons';
+import {
+  JobOfferFullDescription,
+  Skill,
+} from '../../../../types/JobOfferFullDescription';
+
+const JobOfferCardFullDescription = ({
+  jobOffer,
+}: {
+  jobOffer: JobOfferFullDescription;
+}) => {
+  const {
+    idpublicacion: { idusuario: user },
+    idcontratacion: contrato,
+    iddireccion: localizacion,
+    idmodalidad: modalidad,
+    idtipojornada: jornada,
+  } = jobOffer;
+  const { iddireccion: direccion } = user;
+  const skillsByType = jobOffer.skills.reduce(
+    (acc: { softSkills: Array<Skill>; hardSkills: Array<Skill> }, curr) => {
+      if (curr.idskill.idtiposkill === 1) {
+        acc.softSkills.push(curr);
+      }
+      if (curr.idskill.idtiposkill === 2) {
+        acc.hardSkills.push(curr);
+      }
+      return acc;
+    },
+    { softSkills: [], hardSkills: [] },
+  );
+  const { hardSkills, softSkills } = skillsByType;
   return (
     <ScrollView style={{ padding: 20 }}>
       <Card style={styles.card}>
         <View style={styles.header}>
           <Image
-            // source={
-            //   jobOffer.idusuario.f
-            //     ? { uri: user.fotoperfil }
-            //     : require('@assets/images/default_profile_picture.jpg')
-            // }
-            /* source={
+            source={
               user.fotoperfil
                 ? { uri: user.fotoperfil }
                 : require('@assets/images/default_profile_picture.jpg')
-            } */
+            }
             style={styles.squareAvatar}
           />
           <View style={styles.textContainer}>
@@ -36,86 +53,82 @@ const JobOfferCard = ({ jobOffer }: { jobOffer: JobOfferFullDescription }) => {
             </Text>
             <Text style={styles.text}>{user.rol}</Text>
             <Text style={styles.text}>
-              {`${user.direccion.ciudad}, ${user.direccion.pais}`}
+              {`${direccion.ciudad}, ${direccion.pais}`}
               {/* {user.direccion?.direccion && `${user.direccion?.direccion}`} */}
             </Text>
           </View>
         </View>
-        <Divider style={styles.line} />
-        <Text style={[styles.subtitle, styles.text]}>{data.titulo}</Text>
-        <Text style={styles.text}>{data.institucion}</Text>
-        {data.localizacion && (
+        <Divider />
+        <Text style={[styles.subtitle, styles.text]}>{jobOffer.titulo}</Text>
+        <Text style={styles.text}>{jobOffer.idempresa.nombre}</Text>
+        {localizacion.latitud && localizacion.longitud && (
           <View style={styles.mapContainer}>
             <Text style={styles.text}>
               <Ionicons name="location-outline" size={20} color="grey" />
-              {data.localizacion}
+              {localizacion.direccion}
             </Text>
             <MapView
               style={styles.map}
               region={{
-                latitude: data.lat,
-                longitude: data.lng,
+                latitude: Number(localizacion.latitud),
+                longitude: Number(localizacion.longitud),
                 latitudeDelta: 5,
                 longitudeDelta: 5,
               }}
             >
               <Marker
                 coordinate={{
-                  latitude: data.lat,
-                  longitude: data.lng,
+                  latitude: Number(localizacion.latitud),
+                  longitude: Number(localizacion.latitud),
                 }}
-                title={data.titulo}
-                description={`Lat: ${data.lat.toFixed(5)}, Lng: ${data.lng.toFixed(5)}`}
+                title={jobOffer.titulo}
+                description={`Lat: ${Number(localizacion.latitud).toFixed(5)}, Lng: ${Number(localizacion.longitud).toFixed(5)}`}
               />
             </MapView>
           </View>
         )}
         <DataTable.Row>
           <DataTable.Cell style={[styles.styleTable]}>
-            {modalidadList?.find((item) => item.id === data.modalidad)?.nombre}
+            {modalidad.nombre}
           </DataTable.Cell>
           <DataTable.Cell style={[styles.styleTable]}>
-            {jornadaList?.find((item) => item.id === data.jornada)?.nombre ||
-              data.jornada}
+            {jornada.nombre}
           </DataTable.Cell>
           <DataTable.Cell style={[styles.styleTable]}>
-            {contratoList.find((item) => item.id === data.contrato)?.nombre ||
-              data.contrato}
+            {contrato.nombre}
           </DataTable.Cell>
         </DataTable.Row>
 
         <View style={{ marginTop: 10, padding: 15 }}>
-          {data.descripcion && (
+          {jobOffer.descripcion && (
             <>
               <Text style={[styles.sectionTitle]}>Acerca del empleo:</Text>
-              <Text style={styles.text}>{data.descripcion}</Text>
+              <Text style={styles.text}>{jobOffer.descripcion}</Text>
             </>
           )}
 
-          {data.softSkills?.length > 0 && (
+          {softSkills.length > 0 && (
             <>
               <Text style={[styles.sectionTitle]}>Habilidades:</Text>
               <View style={styles.skillsContainer}>
-                {data.softSkills?.map((idskill: string, index: number) => {
-                  const skill = softSkillsList.find((s) => s.id === idskill);
+                {softSkills?.map(({ idskill: { idtiposkill, nombre } }) => {
                   return (
-                    <Badge key={index} style={styles.chip}>
-                      {skill?.nombre}
+                    <Badge key={nombre + idtiposkill} style={styles.chip}>
+                      {nombre}
                     </Badge>
                   );
                 })}
               </View>
             </>
           )}
-          {data.hardSkills?.length > 0 && (
+          {hardSkills.length > 0 && (
             <>
-              <Text style={[styles.sectionTitle]}>Herramientas:</Text>
+              <Text style={[styles.sectionTitle]}>Habilidades:</Text>
               <View style={styles.skillsContainer}>
-                {data.hardSkills?.map((idskill: string, index: number) => {
-                  const skill = hardSkillsList.find((s) => s.id === idskill);
+                {hardSkills?.map(({ idskill: { idtiposkill, nombre } }) => {
                   return (
-                    <Badge key={index} style={styles.chip}>
-                      {skill?.nombre}
+                    <Badge key={nombre} style={styles.chip}>
+                      {nombre}
                     </Badge>
                   );
                 })}
@@ -123,17 +136,19 @@ const JobOfferCard = ({ jobOffer }: { jobOffer: JobOfferFullDescription }) => {
             </>
           )}
 
-          {data.beneficios && (
+          {jobOffer.beneficios && (
             <>
               <Text style={[styles.sectionTitle]}>Beneficios:</Text>
               <View style={{ marginTop: 4 }}>
-                {Array.isArray(data.beneficios)
-                  ? data.beneficios.map((beneficio: string, index: number) => (
-                      <Text key={index} style={styles.beneficioItem}>
-                        • {beneficio}
-                      </Text>
-                    ))
-                  : data.beneficios
+                {Array.isArray(jobOffer.beneficios)
+                  ? jobOffer.beneficios.map(
+                      (beneficio: string, index: number) => (
+                        <Text key={index} style={styles.beneficioItem}>
+                          • {beneficio}
+                        </Text>
+                      ),
+                    )
+                  : jobOffer.beneficios
                       .split('\n')
                       .map((beneficio: string, index: number) => (
                         <Text key={index} style={styles.beneficioItem}>
@@ -214,4 +229,4 @@ const styles = StyleSheet.create({
     marginVertical: 12,
   },
 });
-export default JobOfferCard;
+export default JobOfferCardFullDescription;

@@ -19,6 +19,8 @@ import ROUTES from '../../navigator/routes';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { getJobOffer } from '@services/jobOffer/JobOffer.service';
 import { JobOfferFullDescription } from '../../../../../types/JobOfferFullDescription';
+import JobOfferCard from '@components/ui/JobOfferCard';
+import JobOfferCardFullDescription from '@app/private/shared/JobOfferCardFullDescription/JobOfferCardFullDescription';
 
 interface JobPostingScreenProps
   extends NativeStackScreenProps<
@@ -28,165 +30,166 @@ interface JobPostingScreenProps
 const JobPostingScreen = ({ route }: JobPostingScreenProps) => {
   const [showActions, setShowActions] = useState(false);
   console.log(route.params.jobOfferId);
+
+  const [loading, setLoading] = useState(false);
   const handleJobOffer = async () => {
-    const jobOffer: JobOfferFullDescription = await getJobOffer(
-      route.params.jobOfferId,
-    );
-    console.log(JSON.stringify(jobOffer, null, 2));
+    setLoading(true);
+    try {
+      const jobOffer: JobOfferFullDescription = await getJobOffer(
+        route.params.jobOfferId,
+      );
+      console.log(JSON.stringify(jobOffer, null, 2));
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
   };
   useEffect(() => {
     handleJobOffer();
   }, []);
 
   return (
-    <View style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        <Card style={styles.card}>
-          <Card.Content>
-            {/* Header with recruiter info */}
-            <View style={styles.header}>
-              <Avatar.Image
-                size={48}
-                source={{ uri: 'https://via.placeholder.com/150' }}
-              />
-              <View style={styles.headerText}>
-                <Text variant="titleMedium" style={styles.bold}>
-                  Renata Scheneider
-                </Text>
-                <Text variant="bodySmall">Talent Acquisition</Text>
-                <Text variant="bodySmall">Córdoba</Text>
-              </View>
-            </View>
-
-            {/* Job title and company */}
-            <Text variant="headlineSmall" style={styles.jobTitle}>
-              Diseñador UX/UI
-            </Text>
-            <Text variant="bodyLarge" style={styles.company}>
-              Banco Santander
-            </Text>
-
-            {/* Location and job details */}
-            <View style={styles.infoRow}>
-              <IconButton icon="map-marker" size={16} style={styles.icon} />
-              <Text>Argentina</Text>
-            </View>
-
-            <View style={styles.tagsRow}>
-              <Chip compact>REMOTO</Chip>
-              <Chip compact>Full-Time</Chip>
-              <Chip compact>Inmediato</Chip>
-            </View>
-
-            {/* Job description */}
-            <Text variant="titleSmall" style={styles.sectionTitle}>
-              Acerca del empleo:
-            </Text>
-            <Text variant="bodyMedium" style={styles.paragraph}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </Text>
-            <Text variant="bodyMedium" style={styles.paragraph}>
-              Duis aute irure dolor in reprehenderit in voluptate velit esse
-              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-              cupidatat non proident, sunt in culpa qui officia deserunt mollit
-              anim id est laborum.
-            </Text>
-
-            {/* Tools */}
-            <Text variant="titleSmall" style={styles.sectionTitle}>
-              Herramientas:
-            </Text>
-            <View style={styles.chipsRow}>
-              <Chip
-                mode="flat"
-                style={styles.darkChip}
-                textStyle={styles.whiteText}
-              >
-                Figma
-              </Chip>
-              <Chip
-                mode="flat"
-                style={styles.darkChip}
-                textStyle={styles.whiteText}
-              >
-                Illustrator
-              </Chip>
-              <Chip
-                mode="flat"
-                style={styles.darkChip}
-                textStyle={styles.whiteText}
-              >
-                Whimsical
-              </Chip>
-            </View>
-
-            {/* Skills */}
-            <Text variant="titleSmall" style={styles.sectionTitle}>
-              Habilidades:
-            </Text>
-            <View style={styles.chipsRow}>
-              <Chip
-                mode="flat"
-                style={styles.darkChip}
-                textStyle={styles.whiteText}
-              >
-                Creatividad
-              </Chip>
-              <Chip
-                mode="flat"
-                style={styles.darkChip}
-                textStyle={styles.whiteText}
-              >
-                Organización
-              </Chip>
-            </View>
-
-            {/* Languages */}
-            <Text variant="titleSmall" style={styles.sectionTitle}>
-              Idiomas:
-            </Text>
-            <View style={styles.languageRow}>
-              <IconButton icon="flag" size={20} />
-              <Text style={styles.flex}>Español</Text>
-              <Text>Nativo</Text>
-            </View>
-            <View style={styles.languageRow}>
-              <IconButton icon="flag" size={20} />
-              <Text style={styles.flex}>Inglés</Text>
-              <Text>B2</Text>
-            </View>
-
-            {/* Benefits */}
-            <Text variant="titleSmall" style={styles.sectionTitle}>
-              Beneficios:
-            </Text>
-            <Text>• Obra social</Text>
-            <Text>• Vacaciones pagas 15 días</Text>
-            <Text>• Día de cumpleaños libre</Text>
-            <Text>• 2 días libres al mes</Text>
-            <Text>• Pase gym</Text>
-            <Text>• Bonificación Wifi</Text>
-          </Card.Content>
-        </Card>
-      </ScrollView>
-
-      <SwipeMatchButtons
-        styles={{ ...styles.fabContainer }}
-        handleLike={(like = false) => {
-          // const currentItem = data[currentIndex];
-          // if (!currentItem) return;
-          // console.log('❤️ LIKE BTN PRESSED:', like);
-          // const currentOfferId = currentItem?.ofertaId || currentItem?.id;
-          // const targetProfesionalId = currentItem?.profesionalId;
-          // handleLike(like, currentOfferId, targetProfesionalId);
-          // setCurrentIndex((prev) => prev + 1);
-        }}
-      />
-    </View>
+    <JobOfferCardFullDescription
+      {...{ jobOffer }}
+    ></JobOfferCardFullDescription>
   );
+  // return (
+  //   <View style={styles.container}>
+  //     <ScrollView style={styles.scrollView}>
+  //       <Card style={styles.card}>
+  //         <Card.Content>
+  //           {/* Header with recruiter info */}
+  //           <View style={styles.header}>
+  //             <Avatar.Image
+  //               size={48}
+  //               source={{ uri: 'https://via.placeholder.com/150' }}
+  //             />
+  //             <View style={styles.headerText}>
+  //               <Text variant="titleMedium" style={styles.bold}>
+  //                 Renata Scheneider
+  //               </Text>
+  //               <Text variant="bodySmall">Talent Acquisition</Text>
+  //               <Text variant="bodySmall">Córdoba</Text>
+  //             </View>
+  //           </View>
+
+  //           {/* Job title and company */}
+  //           <Text variant="headlineSmall" style={styles.jobTitle}>
+  //             Diseñador UX/UI
+  //           </Text>
+  //           <Text variant="bodyLarge" style={styles.company}>
+  //             Banco Santander
+  //           </Text>
+
+  //           {/* Location and job details */}
+  //           <View style={styles.infoRow}>
+  //             <IconButton icon="map-marker" size={16} style={styles.icon} />
+  //             <Text>Argentina</Text>
+  //           </View>
+
+  //           <View style={styles.tagsRow}>
+  //             <Chip compact>REMOTO</Chip>
+  //             <Chip compact>Full-Time</Chip>
+  //             <Chip compact>Inmediato</Chip>
+  //           </View>
+
+  //           {/* Job description */}
+  //           <Text variant="titleSmall" style={styles.sectionTitle}>
+  //             Acerca del empleo:
+  //           </Text>
+  //           <Text variant="bodyMedium" style={styles.paragraph}>
+  //             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+  //             eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+  //             enim ad minim veniam, quis nostrud exercitation ullamco laboris
+  //             nisi ut aliquip ex ea commodo consequat.
+  //           </Text>
+  //           <Text variant="bodyMedium" style={styles.paragraph}>
+  //             Duis aute irure dolor in reprehenderit in voluptate velit esse
+  //             cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+  //             cupidatat non proident, sunt in culpa qui officia deserunt mollit
+  //             anim id est laborum.
+  //           </Text>
+
+  //           {/* Tools */}
+  //           <Text variant="titleSmall" style={styles.sectionTitle}>
+  //             Herramientas:
+  //           </Text>
+  //           <View style={styles.chipsRow}>
+  //             <Chip
+  //               mode="flat"
+  //               style={styles.darkChip}
+  //               textStyle={styles.whiteText}
+  //             >
+  //               Figma
+  //             </Chip>
+  //             <Chip
+  //               mode="flat"
+  //               style={styles.darkChip}
+  //               textStyle={styles.whiteText}
+  //             >
+  //               Illustrator
+  //             </Chip>
+  //             <Chip
+  //               mode="flat"
+  //               style={styles.darkChip}
+  //               textStyle={styles.whiteText}
+  //             >
+  //               Whimsical
+  //             </Chip>
+  //           </View>
+
+  //           {/* Skills */}
+  //           <Text variant="titleSmall" style={styles.sectionTitle}>
+  //             Habilidades:
+  //           </Text>
+  //           <View style={styles.chipsRow}>
+  //             <Chip
+  //               mode="flat"
+  //               style={styles.darkChip}
+  //               textStyle={styles.whiteText}
+  //             >
+  //               Creatividad
+  //             </Chip>
+  //             <Chip
+  //               mode="flat"
+  //               style={styles.darkChip}
+  //               textStyle={styles.whiteText}
+  //             >
+  //               Organización
+  //             </Chip>
+  //           </View>
+
+  //           {/* Languages */}
+  //           <Text variant="titleSmall" style={styles.sectionTitle}>
+  //             Idiomas:
+  //           </Text>
+  //           <View style={styles.languageRow}>
+  //             <IconButton icon="flag" size={20} />
+  //             <Text style={styles.flex}>Español</Text>
+  //             <Text>Nativo</Text>
+  //           </View>
+  //           <View style={styles.languageRow}>
+  //             <IconButton icon="flag" size={20} />
+  //             <Text style={styles.flex}>Inglés</Text>
+  //             <Text>B2</Text>
+  //           </View>
+
+  //           {/* Benefits */}
+  //           <Text variant="titleSmall" style={styles.sectionTitle}>
+  //             Beneficios:
+  //           </Text>
+  //           <Text>• Obra social</Text>
+  //           <Text>• Vacaciones pagas 15 días</Text>
+  //           <Text>• Día de cumpleaños libre</Text>
+  //           <Text>• 2 días libres al mes</Text>
+  //           <Text>• Pase gym</Text>
+  //           <Text>• Bonificación Wifi</Text>
+  //         </Card.Content>
+  //       </Card>
+  //     </ScrollView>
+
+  //   </View>
+  // );
 };
 
 const styles = StyleSheet.create({

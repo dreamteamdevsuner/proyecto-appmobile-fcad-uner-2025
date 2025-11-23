@@ -30,6 +30,7 @@ export const getJobOffer = async (
         `
         *,
         iddireccion(*),
+        idcontratacion(nombre),
         idmodalidad(*),
         idpublicacion(fechacreacion , idusuario(nombre , apellido , fotoperfil  , rol, iddireccion( pais , ciudad ,direccion  ))),
         idtipojornada (nombre)  ,
@@ -52,7 +53,7 @@ export const getJobOffer = async (
     }
     const { data: skills, error: skillsError } = await supabase
       .from('ofertatrabajoskill')
-      .select('idskill(nombre)')
+      .select('idskill(nombre ,idtiposkill )')
       .eq('idofertatrabajo', jobOfferId);
 
     if (skillsError) {

@@ -9,7 +9,9 @@ export interface JobOfferFullDescription {
   idmodalidad: Idmodalidad;
   idtipojornada: Idarea;
   idestadooferta: number;
-  idcontratacion: number;
+  idcontratacion: {
+    nombre: 'Inmediata';
+  };
   iddepartamento: null;
   activo: boolean;
   idarea: Idarea;
@@ -19,6 +21,7 @@ export interface JobOfferFullDescription {
 
 export interface Idarea {
   nombre: string;
+  idtiposkill: number;
 }
 
 export interface JobOfferFullDescriptionIddireccion {
