@@ -16,7 +16,7 @@ import { getEmpresas } from '@services/EmpresaService';
 
 const ofertaSchema = Yup.object().shape({
   titulo: Yup.string().required('El título es obligatorio'),
-  institucion: Yup.string().required('La institución es obligatoria'),
+  idinstitucion: Yup.string().required('La institución es obligatoria'),
   localizacion: Yup.string().required('La localización es obligatoria'),
   modalidad: Yup.string().required('La modalidad es obligatoria'),
   jornada: Yup.string().required('La jornada es obligatoria'),
@@ -443,7 +443,9 @@ const CrearOferta = ({ navigation, editing = false, data = null }: any) => {
                   style={styles.multilineTextInput}
                 />
                 <Button
-                  onPress={handleSubmit as any}
+                  onPress={() => {
+                    handleSubmit();
+                  }}
                   mode="contained"
                   style={styles.boton}
                   icon={() => (

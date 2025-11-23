@@ -1,7 +1,6 @@
-import { FlatList, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { OfertaItem } from '../../../../../types';
 import { UserItemInfo } from '@models/index';
 import { PrivateStackParamList } from '../../navigator/types';
 import { UserList } from '../../../../../components/listas';
