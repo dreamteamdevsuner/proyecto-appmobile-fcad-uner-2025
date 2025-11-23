@@ -1,8 +1,6 @@
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 
-// Configura cómo se muestran las notificaciones
-
 Notifications.setNotificationHandler({
   handleNotification: async () => {
     return {
@@ -14,7 +12,6 @@ Notifications.setNotificationHandler({
   },
 });
 
-// Función base para pedir permisos (la usamos en ambas notificaciones)
 const ensureNotificationPermissions = async () => {
   if (!Device.isDevice) return false;
 
@@ -34,7 +31,6 @@ const ensureNotificationPermissions = async () => {
   return true;
 };
 
-// Notificación para profesional
 export const scheduleDailyNotificationProfesional = async (): Promise<void> => {
   const hasPermission = await ensureNotificationPermissions();
   if (!hasPermission) return;
@@ -57,7 +53,6 @@ export const scheduleDailyNotificationProfesional = async (): Promise<void> => {
   });
 };
 
-// Notificación para reclutador
 export const scheduleDailyNotificationReclutador = async (): Promise<void> => {
   const hasPermission = await ensureNotificationPermissions();
   if (!hasPermission) return;

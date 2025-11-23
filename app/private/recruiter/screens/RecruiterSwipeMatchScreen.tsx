@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -6,6 +6,7 @@ import {
   Text,
   StyleSheet,
 } from 'react-native';
+import { IconButton } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import SwipeMatch from '@app/private/shared/swipe_match/SwipeMatch';
 import CandidateCard from '../../../../components/ui/CandidateCard';
@@ -15,7 +16,7 @@ import { CandidatePreview } from '@database/DBCandidatePreview';
 import ROUTES from '../navigator/routes';
 import { RootStackParams } from '../navigator/SwipeStack';
 import { useAuth } from '@appContext/authContext';
-import { IconButton } from 'react-native-paper'; // Agrega IconButton
+import MatchModal from '../../../../components/MatchModal';
 
 interface RecruiterSwipeMatchScreenProps
   extends NativeStackScreenProps<
@@ -30,6 +31,9 @@ const RecruiterSwipeMatchScreen = ({
     state: { user },
   } = useAuth();
 
+  const [matchModalVisible, setMatchModalVisible] = useState(false);
+  const [matchedCandidateName, setMatchedCandidateName] = useState('');
+
   const {
     data: { data: professionals },
     loading,
@@ -41,7 +45,7 @@ const RecruiterSwipeMatchScreen = ({
   if (loading && (!professionals || professionals.length === 0)) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#ffffff" />
+        <ActivityIndicator size="large" color="#000" />
       </View>
     );
   }
@@ -59,6 +63,10 @@ const RecruiterSwipeMatchScreen = ({
       <SwipeMatch<CandidatePreview>
         data={professionals}
         handleScrollEnd={setNextPage}
+        onMatchSuccess={(name) => {
+          setMatchedCandidateName(name);
+          setMatchModalVisible(true);
+        }}
         renderItem={({ item, handleScrollEnabled }) => (
           <CandidateCard item={item} {...{ handleScrollEnabled }}>
             <TouchableOpacity
@@ -94,6 +102,17 @@ const RecruiterSwipeMatchScreen = ({
                       },
                     )
                   }
+                />
+                <MatchModal
+                  visible={matchModalVisible}
+                  candidateName={matchedCandidateName}
+                  onDismiss={() => setMatchModalVisible(false)}
+                  onChatPress={() => {
+                    setMatchModalVisible(false);
+                    (navigation as any).navigate(
+                      ROUTES.RECRUITER_MENSAJERIA_TAB,
+                    );
+                  }}
                 />
               </View>
             </TouchableOpacity>
