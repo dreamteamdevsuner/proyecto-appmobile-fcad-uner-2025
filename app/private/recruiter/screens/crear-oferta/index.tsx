@@ -82,6 +82,7 @@ const CrearOferta = ({ navigation, editing = false, data = null }: any) => {
   };
 
   const handleSubmit = async (values: OfertaValues) => {
+    console.log('VALUES', values);
     try {
       if (user) {
         if (editing) {
@@ -112,7 +113,7 @@ const CrearOferta = ({ navigation, editing = false, data = null }: any) => {
             titulo: values.titulo,
             descripcion: values.descripcion,
             idusuario: user.id,
-            idempresa: values.institucion,
+            idempresa: values.idinstitucion,
             idmodalidad: values.modalidad,
             idtipojornada: values.jornada,
             idcontratacion: values.contrato,
