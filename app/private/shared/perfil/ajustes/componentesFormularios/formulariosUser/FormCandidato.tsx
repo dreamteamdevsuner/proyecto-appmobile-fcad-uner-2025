@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Text, TextInput, Button, Checkbox, Chip } from 'react-native-paper';
-import { FormikProps, FieldArray, FormikErrors, FormikTouched } from 'formik';
+import { FormikProps } from 'formik';
 import FormField from '../FormField';
 import FormDropdown from '../FormDropdown';
+import ArrayEditor from '../ArrayEditor';
 import { CandidatoValues } from '../../../../../../../interfaces/EditarPerfil';
 import { DropdownItem } from '@services/perfilService';
 import MapSearch from '@components/mapas/buscador-mapa';
@@ -40,14 +41,16 @@ const FormularioCandidato = ({
   const [modalVisible, setModalVisible] = useState(false);
   const [fechaActual, setFechaActual] = useState<{
     index: number;
-    fieldName: 'fechainicio' | 'fechafin';
+    fieldName: string;
+    arrayName: string;
   } | null>(null);
 
   const abrirCalendario = (
     index: number,
-    fieldName: 'fechainicio' | 'fechafin',
+    fieldName: string,
+    arrayName: string,
   ) => {
-    setFechaActual({ index, fieldName });
+    setFechaActual({ index, fieldName, arrayName });
     setModalVisible(true);
   };
 
@@ -58,9 +61,9 @@ const FormularioCandidato = ({
 
   const onConfirm = ({ date }: { date: Date | undefined }) => {
     if (date && fechaActual) {
-      const { index, fieldName } = fechaActual;
+      const { index, fieldName, arrayName } = fechaActual;
       const formattedDate = date.toISOString().split('T')[0];
-      formik.setFieldValue(`estudios[${index}].${fieldName}`, formattedDate);
+      formik.setFieldValue(`${arrayName}[${index}].${fieldName}`, formattedDate);
     }
     onDismiss();
   };
@@ -77,18 +80,10 @@ const FormularioCandidato = ({
 
   const getInitialDateForModal = () => {
     if (!fechaActual) return new Date();
-    const { index, fieldName } = fechaActual;
-    const fecha = formik.values.estudios[index]?.[fieldName];
+    const { index, fieldName,  arrayName } = fechaActual;
+    const arrayData = (formik.values as any)[arrayName];    
+    const fecha = arrayData?.[index]?.[fieldName];
     return fecha ? new Date(fecha) : new Date();
-  };
-
-  const removeSkill = (
-    fieldName: 'herramientas' | 'idiomasSeleccionados',
-    idskillToRemove: string,
-  ) => {
-    const currentValues = formik.values[fieldName] as string[];
-    const newValues = currentValues.filter((v) => v !== idskillToRemove);
-    formik.setFieldValue(fieldName, newValues);
   };
 
   return (
@@ -145,6 +140,8 @@ const FormularioCandidato = ({
           formik.setFieldValue('lng', newLng);
         }}
       />
+
+      <View style={{ height: 20 }} />
       <Text style={styles.titulo}>Sobre mí</Text>
       <FormField
         name="aboutMe"
@@ -152,6 +149,8 @@ const FormularioCandidato = ({
         placeholder="Cuéntanos sobre ti"
         multiline
       />
+
+      <View style={{ height: 20 }} />
       <SectionTitle>Perfil Profesional</SectionTitle>
       <Text style={styles.titulo}>Herramientas</Text>
       <FormDropdown
@@ -172,113 +171,7 @@ const FormularioCandidato = ({
         multiple
         isSkill
       />
-      <SectionTitle>Formación</SectionTitle>
-      <FieldArray name="estudios">
-        {(arrayHelpers) => (
-          <View>
-            {formik.values.estudios && formik.values.estudios.length > 0 ? (
-              formik.values.estudios.map((estudio, index) => {
-                const fechaInicioDisplay = getFechaDisplay(estudio.fechainicio);
-                const fechaFinDisplay = getFechaDisplay(estudio.fechafin);
 
-                return (
-                  <View key={index} style={styles.estudioContainer}>
-                    <Text style={styles.estudioTitulo}>
-                      Estudio #{index + 1}
-                    </Text>
-                    <FormField
-                      name={`estudios[${index}].titulo`}
-                      formik={formik}
-                      placeholder="Título (Ej: Licenciatura en Diseño)"
-                      style={{ marginBottom: 10 }}
-                    />
-                    <FormField
-                      name={`estudios[${index}].nombreinstitucion`}
-                      formik={formik}
-                      placeholder="Institución"
-                      style={{ marginBottom: 10 }}
-                    />
-
-                    <TouchableOpacity
-                      style={styles.datePickerButton}
-                      onPress={() => abrirCalendario(index, 'fechainicio')}
-                    >
-                      <Text style={styles.datePickerButtonText}>
-                        {fechaInicioDisplay || 'Fecha Inicio'}
-                      </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                      style={styles.datePickerButton}
-                      onPress={() => abrirCalendario(index, 'fechafin')}
-                      disabled={estudio.activo}
-                    >
-                      <Text
-                        style={[
-                          styles.datePickerButtonText,
-                          estudio.activo && styles.datePickerButtonTextDisabled,
-                        ]}
-                      >
-                        {estudio.activo
-                          ? 'En curso'
-                          : fechaFinDisplay || 'Fecha Fin'}
-                      </Text>
-                    </TouchableOpacity>
-
-                    <View style={styles.checkboxContainer}>
-                      <Checkbox.Android
-                        status={estudio.activo ? 'checked' : 'unchecked'}
-                        onPress={() => {
-                          const nuevoEstado = !estudio.activo;
-                          formik.setFieldValue(
-                            `estudios[${index}].activo`,
-                            nuevoEstado,
-                          );
-                          if (nuevoEstado) {
-                            formik.setFieldValue(
-                              `estudios[${index}].fechafin`,
-                              null,
-                            );
-                          }
-                        }}
-                      />
-                      <Text style={{ color: 'white' }}>Estudio en curso</Text>
-                    </View>
-                    <Button
-                      mode="outlined"
-                      color="#b58df1"
-                      onPress={() => arrayHelpers.remove(index)}
-                    >
-                      Quitar Estudio
-                    </Button>
-                  </View>
-                );
-              })
-            ) : (
-              <Text style={{ marginVertical: 10, color: 'gray' }}>
-                No has añadido ningún estudio.
-              </Text>
-            )}
-
-            <Button
-              mode="contained"
-              style={{ marginTop: 10 }}
-              onPress={() =>
-                arrayHelpers.push({
-                  titulo: '',
-                  nombreinstitucion: '',
-                  fechainicio: '',
-                  fechafin: '',
-                  activo: false,
-                })
-              }
-            >
-              Añadir Estudio
-            </Button>
-          </View>
-        )}
-      </FieldArray>
-      <View style={{ height: 20 }} />
       <Text style={styles.titulo}>Idiomas</Text>
       <FormDropdown
         name="idiomasSeleccionados"
@@ -289,6 +182,34 @@ const FormularioCandidato = ({
         isSkill
       />
 
+      <SectionTitle>Formación</SectionTitle>
+        <ArrayEditor
+          name="estudios"
+          title="Formación"
+          itemTitleLabel="Título (Ej: Licenciatura en Diseño)"
+          itemSubtitleLabel="Institución"
+          fieldMap={{ titulo: 'titulo', subtitulo: 'nombreinstitucion' }}
+          formik={formik}
+          onOpenCalendar={abrirCalendario}
+          getFechaDisplay={getFechaDisplay}
+          styles={styles}
+        />
+
+      <View style={{ marginTop: 20 }} />
+      <SectionTitle>Experiencia Laboral</SectionTitle>
+        <ArrayEditor
+          name="trabajos" 
+          title="Experiencia Laboral"
+          itemTitleLabel="Puesto / Posición"
+          itemSubtitleLabel="Nombre de la Empresa"
+          fieldMap={{ titulo: 'posicion', subtitulo: 'nombreempresa' }}
+          formik={formik}
+          onOpenCalendar={abrirCalendario}
+          getFechaDisplay={getFechaDisplay}
+          styles={styles}
+        />
+
+      <View style={{ height: 20 }} />
       <SectionTitle>Mis preferencias</SectionTitle>
       <Text style={styles.titulo}>Modalidad</Text>
       <FormDropdown
@@ -468,6 +389,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: '#EAEAEA',
   },
   checkboxContainer: {
     flexDirection: 'row',

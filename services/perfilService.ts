@@ -1,6 +1,6 @@
 import { supabase } from "../supabase/supabaseClient";
 import { CandidatoValues, ReclutadorValues } from "@interfaces/EditarPerfil";
-import { DBUsuario, DBEstudio, DBModalidad, DBTipoJornada } from "@database/index";
+import { DBUsuario, DBEstudio, DBModalidad, DBTipoJornada, DBTrabajo } from "@database/index";
 
 export interface DropdownItem {
   label: string;
@@ -113,11 +113,7 @@ export const cargarListasParaFormularios = async () => {
     const listasAreas: DropdownItem[] = (areasResult && (areasResult as any).data)
       ? (areasResult as any).data.map((a: any) => ({ label: a.nombre, value: String(a.id) }))
       : [];
-    // areasResult puede ser undefined si algo falló en Promise.all, revisamos error
-    // (no tipamos DBArea para evitar import extra)
-    // @ts-ignore
     if (areasResult?.error) {
-      // @ts-ignore
       console.error('Error al cargar areas: ', areasResult.error);
     }
 
@@ -182,8 +178,10 @@ export const cargarDatosInicialesPerfil = async (
 
     //Obtener skills del profesional
     const profesionalId = prof?.id;
+
     let habilidades: string[] = [], herramientas: string[] = [], idiomas: string[] = [];
     let estudios: DBEstudio[] = [];
+    let trabajos: DBTrabajo[] = [];
 
     if (profesionalId) {
       const { data: skillsBD } = await supabase
@@ -217,6 +215,26 @@ export const cargarDatosInicialesPerfil = async (
         }));
       }
     }
+
+   //Carga trabajos
+    const { data: trabajosBD } = await supabase
+      .from('trabajo')
+      .select('*')
+      .eq('idusuario', userId);
+
+
+    if (trabajosBD && trabajosBD.length > 0) {
+      trabajos = trabajosBD.map(t => {
+        return {
+          ...t,
+          nombreempresa: t.nombreempresa || '',
+          fechainicio: String(t.fechainicio || ''),
+          fechafin: String(t.fechafin || ''),
+        };
+      });
+    } 
+    console.log("Trabajos limpios :", JSON.stringify(trabajos, null, 2));
+
     //Obtener enlaces redes
     const { data: enlacesBD } = await supabase
       .from('enlace')
@@ -244,6 +262,7 @@ export const cargarDatosInicialesPerfil = async (
       herramientas,
       idiomasSeleccionados: idiomas,
       estudios: estudios,
+      trabajos: trabajos,
       redes,
       redSeleccionada: '',
       aboutMe: usuario.bio || '',
@@ -320,7 +339,6 @@ export const guardarPerfilProfesional = async (
       idusuario: userId,
       idmodalidad: values.modalidadSeleccionada ? Number(values.modalidadSeleccionada) : null,
       idtipojornada: values.jornadaSeleccionada ? Number(values.jornadaSeleccionada) : null,
-      // Manejar idarea: puede venir como string numérico o uuid; detectamos si es entero
       idarea: values.areaSeleccionada
         ? (/^\d+$/.test(values.areaSeleccionada) ? Number(values.areaSeleccionada) : values.areaSeleccionada)
         : null,
@@ -369,6 +387,26 @@ export const guardarPerfilProfesional = async (
     if (estudiosPararInsertar.length > 0) {
       await supabase.from('estudio').insert(estudiosPararInsertar).throwOnError();
     }
+
+    //Manejar trabajos (Borrar e insertar)
+    await supabase.from('trabajo').delete().eq('idusuario', userId);
+
+    const trabajosParaInsertar = values.trabajos.map((trab: DBTrabajo) => {
+      return {
+        validado: true,
+        idusuario: userId,
+        posicion: trab.posicion,
+        nombreempresa: trab.nombreempresa,
+        fechainicio: trab.fechainicio || null,
+        fechafin: trab.fechafin || null,
+        activo: trab.activo || false,
+      };
+    });
+    
+    if (trabajosParaInsertar.length > 0) {
+      await supabase.from('trabajo').insert(trabajosParaInsertar).throwOnError();
+    }
+
 
     //Borrar e insertar enlaces
     await supabase.from('enlace').delete().eq('idusuario', userId);

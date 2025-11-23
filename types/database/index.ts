@@ -13,3 +13,4 @@ export * from './DBTipoJornada';
 export * from './DBContratacion';
 export * from './DBOfertaTrabajoSkill';
 export * from './DBReclutador';
+export * from './DBTrabajo';
