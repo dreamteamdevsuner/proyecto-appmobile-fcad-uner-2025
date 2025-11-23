@@ -216,7 +216,7 @@ function JobOfferCard({ item }: JobOfferCardProps) {
             <Button
               onPress={() =>
                 navigation.navigate(ROUTES.CANDIDATE_JOB_OFFER_SCREEN, {
-                  jobOfferId: '1',
+                  jobOfferId: item.id,
                 })
               }
               style={{ width: 24 }}

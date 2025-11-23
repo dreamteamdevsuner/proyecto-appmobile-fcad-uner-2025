@@ -95,11 +95,6 @@ const CrearOferta = ({ navigation }: any) => {
   const [contratoOpen, setContratoOpen] = useState(false);
   const [softSkillsOpen, setSoftSkillsOpen] = useState(false);
   const [hardSkillsOpen, setHardSkillsOpen] = useState(false);
-  // const [idiomasOpen, setIdiomasOpen] = useState<boolean[]>([false]);
-  // const [nivelesOpen, setNivelesOpen] = useState<boolean[]>([false]);
-  // const [idiomasNivelesPickers, setIdiomasNivelesPickers] = useState<
-  //   IdiomaNivel[]
-  // >([{ idioma: '', nivel: '' }]);
 
   const [hardSkillsValue, setHardSkillsValue] = useState<string[]>([]);
   const [softSkillsValue, setSoftSkillsValue] = useState<string[]>([]);

@@ -34,7 +34,6 @@ import {
 } from './validacion';
 import { verificarImagenSegura } from '@services/SeguridadImagenService';
 
-
 const EditarPerfilScreen = () => {
   const { state } = useAuth();
   const navigation = useNavigation();
@@ -112,6 +111,7 @@ const EditarPerfilScreen = () => {
     values: CandidatoValues | ReclutadorValues,
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
   ) => {
+    console.log('here');
     const userId = String(state.user?.id);
     if (!userId || userId === 'undefined') {
       setDialogMessage({
@@ -131,21 +131,22 @@ const EditarPerfilScreen = () => {
         setDialogVisible(true);
 
         const esSegura = await verificarImagenSegura(uriParaAnalizar);
-        
+
         if (!esSegura) {
           setDialogMessage({
-            message: 'La imagen seleccionada tiene contenido inapropiado. Por favor elige otra.',
+            message:
+              'La imagen seleccionada tiene contenido inapropiado. Por favor elige otra.',
             type: 'error',
           });
           setDialogVisible(true);
           setSubmitting(false);
           return; // <--- AQUÍ SE DETIENE TODO SI ES OBSCENA
         }
-        
+
         // Si es segura, cerramos el dialog para seguir
-        setDialogVisible(false); 
+        setDialogVisible(false);
       }
-      
+
       let resultado;
       if (esReclutador) {
         resultado = await guardarPerfilReclutador(
@@ -286,6 +287,7 @@ const EditarPerfilScreen = () => {
                         listasTiposJornada={listasDropdown.tiposJornada}
                         listasAreas={listasDropdown.listasAreas}
                       />
+
                       <Button
                         onPress={async () => {
                           formik.validateForm().then((errors) => {

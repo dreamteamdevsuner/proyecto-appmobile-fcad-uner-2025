@@ -1,6 +1,7 @@
 import SwipeMatchButtons from '@app/private/shared/swipe_match/SwipeMatchButtons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
+
 import {
   Appbar,
   Avatar,
@@ -13,8 +14,26 @@ import {
   FAB,
 } from 'react-native-paper';
 
-const JobPostingScreen = () => {
+import { CandidateSwipeStackRootParams } from '../../navigator/SwipeStack';
+import ROUTES from '../../navigator/routes';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { getJobOffer } from '@services/jobOffer/JobOffer.service';
+
+interface JobPostingScreenProps
+  extends NativeStackScreenProps<
+    CandidateSwipeStackRootParams,
+    ROUTES.CANDIDATE_JOB_OFFER_SCREEN
+  > {}
+const JobPostingScreen = ({ route }: JobPostingScreenProps) => {
   const [showActions, setShowActions] = useState(false);
+  console.log(route.params.jobOfferId);
+  const handleJobOffer = async () => {
+    const jobOffer = await getJobOffer(route.params.jobOfferId);
+    console.log('job offer', jobOffer);
+  };
+  useEffect(() => {
+    handleJobOffer();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -151,29 +170,6 @@ const JobPostingScreen = () => {
         </Card>
       </ScrollView>
 
-      {/* Bottom action bar */}
-      {/* <View style={styles.fabContainer}>
-        <FAB
-          icon="account-group"
-          style={styles.fab}
-          onPress={() => {}}
-          color="#fff"
-        />
-        <FAB
-          icon="heart-outline"
-          style={[styles.fab, styles.fabLarge]}
-          onPress={() => setShowActions(!showActions)}
-          size="large"
-          color="#fff"
-        />
-        <FAB
-          icon="account"
-          style={styles.fab}
-          onPress={() => {}}
-          color="#fff"
-        />
-      </View> */}
-
       <SwipeMatchButtons
         styles={{ ...styles.fabContainer }}
         handleLike={(like = false) => {
@@ -189,30 +185,6 @@ const JobPostingScreen = () => {
     </View>
   );
 };
-{
-  /*   <Portal>
-        <Modal
-          visible={showActions}
-          onDismiss={() => setShowActions(false)}
-          contentContainerStyle={styles.modal}
-        >
-          <View style={styles.modalContent}>
-            <IconButton
-              icon="close"
-              size={30}
-              onPress={() => setShowActions(false)}
-              style={styles.closeBtn}
-            />
-            <FAB
-              icon="heart"
-              style={styles.heartBtn}
-              onPress={() => {}}
-              size="large"
-            />
-          </View>
-        </Modal>
-      </Portal> */
-}
 
 const styles = StyleSheet.create({
   container: {

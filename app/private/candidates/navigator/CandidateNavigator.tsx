@@ -8,12 +8,9 @@ import ProfileNavigator from '../screens/perfil/ProfileNavigator';
 import FavoritosNavigator from '../screens/favoritos/FavoritosNavigator';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import JobsyHeader from '../../../../components/ui/JobsyHeader';
 
 import { Image } from 'react-native';
-import { LOGO } from '../../../../constants/ui/logo';
-import CandidateSwipeMatchScreen from '../screens/CandidateHomeScreen';
-import SwipeMatch from '@app/private/shared/swipe_match/SwipeMatch';
+
 import SwipeStack from './SwipeStack';
 
 const Tab = createBottomTabNavigator();
