@@ -5,13 +5,12 @@ export type AppNotification = {
   texto: string;
   tipo: string;
   created_at: string;
-  idestadonotificacion: number; // 1 pendiente, 2 enviado, 3 leído
+  idestadonotificacion: number;
   activo: boolean;
   idofertatrabajo?: string | null;
   ofertatrabajo?: { titulo?: string } | null;
 };
 
-// Obtener las notificaciones del usuario logueado
 export async function getUserNotifications(userId: string) {
   const { data, error } = await supabase
     .from('notificacion')
@@ -34,14 +33,13 @@ export async function getUserNotifications(userId: string) {
     .order('created_at', { ascending: false });
 
   if (error) {
-    console.error('Error trayendo notificaciones:', error);
+    console.error('Error trayendo notificaciones');
     return [];
   }
 
   return data as AppNotification[];
 }
 
-// Marcar como leída
 export async function markNotificationAsRead(notificationId: string) {
   const { error } = await supabase
     .from('notificacion')
@@ -49,6 +47,6 @@ export async function markNotificationAsRead(notificationId: string) {
     .eq('id', notificationId);
 
   if (error) {
-    console.error('Error marcando como leída:', error);
+    console.error('Error marcando como leída');
   }
 }
