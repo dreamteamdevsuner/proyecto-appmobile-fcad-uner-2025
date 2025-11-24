@@ -9,6 +9,9 @@ import { Ionicons } from '@expo/vector-icons';
 import NotificationsProfile from '../notificaciones/NotificationsProfile';
 import FavoritosOferta from '../favoritos-oferta';
 import CrearOfertaNavigator from '../crear-oferta/CrearOfertaNavigator';
+import CrearOferta from '../crear-oferta';
+import EditarOferta from '../editar-oferta';
+import OfertaScreen from '../oferta';
 
 const ProfileStack = createNativeStackNavigator<PrivateStackParamList>();
 
@@ -65,11 +68,26 @@ const ProfileNavigator = () => (
       options={{ title: 'Favoritos' }}
     />
     <ProfileStack.Screen
-      name={ROUTES.RECRUITER_CREAR_OFERTA}
+      name={ROUTES.RECRUITER_CREAR_OFERTA_TAB}
       component={CrearOfertaNavigator}
       options={{
         headerShown: false,
       }}
+    />
+    <ProfileStack.Screen
+      name={ROUTES.RECRUITER_CREAR_OFERTA}
+      component={CrearOferta}
+      options={{ title: 'Crear Oferta', headerShown: true }}
+    />
+    <ProfileStack.Screen
+      name={ROUTES.RECRUITER_EDITAR_OFERTA}
+      component={EditarOferta}
+      options={{ title: 'Editar Oferta', headerShown: true }}
+    />
+    <ProfileStack.Screen
+      name={ROUTES.RECRUITER_CREAR_OFERTA_PREVIEW}
+      component={OfertaScreen}
+      options={{ title: 'Oferta', headerShown: true }}
     />
   </ProfileStack.Navigator>
 );

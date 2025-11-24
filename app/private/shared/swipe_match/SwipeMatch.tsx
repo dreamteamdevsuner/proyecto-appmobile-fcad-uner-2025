@@ -21,11 +21,13 @@ const SwipeMatch = <
   data,
   handleScrollEnd,
   renderItem,
+  onMatchSuccess,
 }: {
   data: T[];
   onScrollEnd?: (val: number) => void;
   handleScrollEnd: () => void;
   renderItem: (props: CarouselItemProps<T>) => React.JSX.Element;
+  onMatchSuccess?: (candidateName: string) => void;
 }): React.JSX.Element => {
   const ref = React.useRef<ICarouselInstance>(null);
   const progress = useSharedValue<number>(0);
@@ -34,6 +36,7 @@ const SwipeMatch = <
 
   const { enabledScroll, handleLike, handleScrollEnabled } = useSwipeMatch({
     ref,
+    onMatchSuccess,
   });
 
   useEffect(() => {
@@ -48,7 +51,7 @@ const SwipeMatch = <
         <Text style={styles.emptyEmoji}>✅</Text>
         <Text style={styles.emptyTitle}>¡Estás al día!</Text>
         <Text style={styles.emptySubtitle}>
-          No hay más perfiles para revisar por el momento.
+          No hay más novedades por el momento.
         </Text>
       </View>
     );
@@ -70,24 +73,23 @@ const SwipeMatch = <
             handleScrollEnabled,
             renderItem,
             handleLike,
-
             onSnapToItem: (index: number) => setCurrentIndex(index),
           }}
         />
       </View>
 
       <SwipeMatchButtons
-        handleLike={(like) => {
+        handleLike={async (like) => {
           const currentItem = data[currentIndex];
 
           if (!currentItem) return;
 
-          console.log('❤️ LIKE BTN PRESSED:', like);
+          console.log('❤️ LIKE BTN PRESSED');
 
           const currentOfferId = currentItem?.ofertaId || currentItem?.id;
           const targetProfesionalId = currentItem?.profesionalId;
 
-          handleLike(like, currentOfferId, targetProfesionalId);
+          await handleLike(like, currentOfferId, targetProfesionalId);
 
           setCurrentIndex((prev) => prev + 1);
         }}

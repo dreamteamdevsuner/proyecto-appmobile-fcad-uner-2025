@@ -1,25 +1,24 @@
-import {
-  View,
-  StyleProp,
-  ViewStyle,
-  StyleSheet,
-  FlatList,
-  Image,
-} from 'react-native';
-import React, { PropsWithChildren, useEffect, useState } from 'react';
-import { Paths } from 'expo-file-system';
+import { View, StyleProp, ViewStyle, StyleSheet } from 'react-native';
+import React, { PropsWithChildren } from 'react';
+
 import { JobOffer } from '../../interfaces/JobOffer';
 import { Button, Card, Chip, Icon, Text } from 'react-native-paper';
-import { lightBlue400 } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
-import { recruiterPhotos } from '../../assets/recruiterPhotos';
-import { red } from 'react-native-reanimated/lib/typescript/Colors';
-import { HorizontalChips } from '../../components/ui/HorizontalChips';
-import { DBJobPreview } from '@database/DBJobPreview';
-import { Idusuario } from '../../types/database/DBJobPreview';
-import moment from 'moment';
-import { date } from 'yup';
-import useImageSourceFallback from '../../hooks/useImageSourceFallback';
 
+import { DBJobPreview } from '@database/DBJobPreview';
+
+import moment from 'moment';
+
+import useImageSourceFallback from '../../hooks/useImageSourceFallback';
+import { useNavigation } from '@react-navigation/native';
+
+import { CandidateSwipeStackRootParams } from '@app/private/candidates/navigator/SwipeStack';
+import ROUTES from '@app/private/candidates/navigator/routes';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+const cuentaRegresivaDisplay = (cuentaRegresiva: string) => {
+  if (cuentaRegresiva === '0') return 'Hoy';
+  if (cuentaRegresiva === '1') return `${cuentaRegresiva} día`;
+  return `${cuentaRegresiva} días`;
+};
 const HrAbout = ({
   firstName,
   lastName,
@@ -98,7 +97,9 @@ const HrAbout = ({
           <Text style={hrStyles.subtitle}>{recruiterLocation}</Text>
         </View>
         <View style={{ flexDirection: 'column', marginLeft: 2 }}>
-          <Text style={hrStyles.subtitle}>{cuentaRegresiva} días</Text>
+          <Text style={{ ...hrStyles.subtitle }}>
+            {cuentaRegresiva && cuentaRegresivaDisplay(cuentaRegresiva)}
+          </Text>
         </View>
       </View>
     </View>
@@ -116,7 +117,14 @@ function JobOfferCard({ item }: JobOfferCardProps) {
   );
   const today = moment();
   const rangeDate = today.diff(jobOfferDate, 'days');
-
+  //  const navigation = useNavigation<NativeStackNavigatorProps<CandidateSwipeStackRootParams > , ROUTES.CANDIDATE_SWIPE_MATCH_SCREEN>()
+  const navigation =
+    useNavigation<
+      NativeStackNavigationProp<
+        CandidateSwipeStackRootParams,
+        ROUTES.CANDIDATE_SWIPE_MATCH_SCREEN
+      >
+    >();
   return (
     <Card style={styles.card}>
       <View style={styles.recruiter}>
@@ -126,10 +134,6 @@ function JobOfferCard({ item }: JobOfferCardProps) {
           lastName={item.idpublicacion.idusuario.nombre}
           photoKey={item.idpublicacion.idusuario.fotoperfil}
           cuentaRegresiva={rangeDate.toString()}
-          /*  cuentaRegresiva={dateTimeFormat.formatRange(
-            new Date(Date.UTC(2025, 10, 1)),
-            new Date(),
-          )} */
           recruiterProfession={item.idpublicacion.idusuario.rol}
           recruiterLocation={item.idpublicacion.idusuario.ciudad}
         ></HrAbout>
@@ -210,6 +214,11 @@ function JobOfferCard({ item }: JobOfferCardProps) {
             }}
           >
             <Button
+              onPress={() =>
+                navigation.navigate(ROUTES.CANDIDATE_JOB_OFFER_SCREEN, {
+                  jobOfferId: item.id,
+                })
+              }
               style={{ width: 24 }}
               children
               buttonColor="transparent"
@@ -219,15 +228,6 @@ function JobOfferCard({ item }: JobOfferCardProps) {
             ></Button>
           </View>
         </Card.Content>
-        <View
-          style={{
-            alignItems: 'flex-end',
-            marginRight: 40,
-            marginTop: 6,
-          }}
-        >
-          <Text variant="labelSmall">{'item.cuentaRegresiva'}</Text>
-        </View>
       </View>
     </Card>
   );
@@ -342,7 +342,7 @@ export function JobOfferCardHardCoded({ item }: JobOfferCardPropsHardCoded) {
             marginTop: 6,
           }}
         >
-          <Text variant="labelSmall">{item.cuentaRegresiva}</Text>
+          <Text variant="labelSmall">{item.cuentaRegresiva} </Text>
         </View>
       </View>
     </Card>

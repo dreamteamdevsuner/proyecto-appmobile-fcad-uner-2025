@@ -21,7 +21,6 @@ export async function getEntityPreview<T>(
     .select(select, { count: 'exact' })
     .range((page - 1) * itemsPerPage, page * itemsPerPage - 1);
 
-  // Aplica filtros si existen
   if (options?.filters) {
     for (const [key, value] of Object.entries(options.filters)) {
       query = query.eq(key, value);
@@ -42,7 +41,6 @@ export async function getEntityPreview<T>(
     };
   }
 
-  // Cálculo de páginas
   const totalPages = count ? Math.ceil(count / itemsPerPage) : 1;
 
   return {

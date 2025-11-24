@@ -60,7 +60,7 @@ export const getJobOffersPreview = async (
       .range(from, to);
 
     if (error) {
-      console.error('Error fetching job offers:', error);
+      console.error('Error fetching job offers');
       return emptyPagination();
     }
 
@@ -76,7 +76,7 @@ export const getJobOffersPreview = async (
       prevPage: page > 1 ? page - 1 : null,
     };
   } catch (err) {
-    console.error('Exception en getJobOffersPreview:', err);
+    console.error('Exception en getJobOffersPreview.');
     return emptyPagination();
   }
 };

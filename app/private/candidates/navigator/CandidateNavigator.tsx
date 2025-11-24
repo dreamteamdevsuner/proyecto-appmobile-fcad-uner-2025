@@ -2,16 +2,16 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import ROUTES from './routes';
-import CandidateHomeScreen from '../screens/CandidateHomeScreen';
+
 import MensajeriaNavigator from '../screens/mensajeria/MensajeriaNavigator';
 import ProfileNavigator from '../screens/perfil/ProfileNavigator';
 import FavoritosNavigator from '../screens/favoritos/FavoritosNavigator';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import JobsyHeader from '../../../../components/ui/JobsyHeader';
 
 import { Image } from 'react-native';
-import { LOGO } from '../../../../constants/ui/logo';
+
+import SwipeStack from './SwipeStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -26,9 +26,9 @@ const CandidateNavigator = () => {
     >
       <Tab.Screen
         name={ROUTES.CANDIDATE_HOME_TAB}
-        component={CandidateHomeScreen}
+        component={SwipeStack}
         options={{
-          headerTitle: 'Jobsy',
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Image
               source={require('../../../../assets/icons/icon-job-13.png')}
@@ -38,15 +38,6 @@ const CandidateNavigator = () => {
                 tintColor: color, // así respeta el color activo/inactivo
               }}
             />
-          ),
-
-          header: ({ options }) => (
-            <JobsyHeader
-              headerTitle={
-                options.headerTitle?.toString() ?? 'placeholder title'
-              }
-              propStyles={{ logo: { width: 45, height: 45 } }}
-            ></JobsyHeader>
           ),
         }}
       />
