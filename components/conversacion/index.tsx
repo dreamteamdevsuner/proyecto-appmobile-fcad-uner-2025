@@ -24,6 +24,7 @@ import { IUser } from '@services/interfaces/User.interface';
 import { detectBadWords } from '@services/BadWordsAPI';
 import { Emoji } from '@components/emojis/Emoji';
 import sanitizeText from '@utils/sanitize';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 type ConversacionProps = {
   title: string;

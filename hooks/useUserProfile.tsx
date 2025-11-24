@@ -107,7 +107,6 @@ export const useUserProfile = (userId?: string) => {
   );
 
   useEffect(() => {
-    console.log('RENDERING');
     fetchProfile();
   }, [userId]);
 
