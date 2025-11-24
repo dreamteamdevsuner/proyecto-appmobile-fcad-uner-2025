@@ -411,3 +411,61 @@ export async function getOferta(ofertaId: string): Promise<OfertaValues> {
   };
   return ofertaMapped;
 }
+
+export async function getOfertasPorEstadoProfesional(
+  userId: string,
+  idEstadoMatch: number,
+) {
+  try {
+    const { data, error } = await supabase
+      .from('ofertatrabajomatch')
+      .select(
+        `
+        id,
+        fechacreacion,
+        idestadomatch,
+        profesional!inner ( idusuario ),
+        ofertatrabajo!inner (
+          id,
+          titulo,
+          descripcion,
+          idmodalidad,
+          idtipojornada,
+          empresa:idempresa ( nombre ),
+          direccion:iddireccion ( direccion )
+        )
+      `,
+      )
+      .eq('profesional.idusuario', userId)
+      .eq('idestadomatch', idEstadoMatch)
+      .eq('activo', true)
+      .order('fechacreacion', { ascending: false });
+
+    if (error) throw new Error(error.message);
+
+    return data.map((item: any) => {
+      const oferta = Array.isArray(item.ofertatrabajo)
+        ? item.ofertatrabajo[0]
+        : item.ofertatrabajo;
+      const empresa = Array.isArray(oferta?.empresa)
+        ? oferta.empresa[0]
+        : oferta?.empresa;
+      const direccion = Array.isArray(oferta?.direccion)
+        ? oferta.direccion[0]
+        : oferta?.direccion;
+
+      return {
+        matchId: item.id,
+        ofertaId: oferta.id,
+        titulo: oferta.titulo,
+        descripcion: oferta.descripcion,
+        empresa: empresa?.nombre || 'Empresa',
+        ubicacion: direccion?.direccion || 'Remoto / A confirmar',
+        fechaMatch: item.fechacreacion,
+      };
+    });
+  } catch (error: any) {
+    console.error('Error fetching ofertas profesional:', error);
+    return [];
+  }
+}

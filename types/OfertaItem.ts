@@ -3,4 +3,5 @@ export type OfertaItem = {
   title: string;
   subtitle?: string;
   time?: string;
+  read?: boolean;
 };
