@@ -90,7 +90,7 @@ const RecruiterSwipeMatchScreen = ({
               >
                 <IconButton
                   icon="plus-circle-outline"
-                  iconColor="black"
+                  iconColor="#e0e0e0ff"
                   size={24}
                   onPress={() =>
                     navigation.navigate(
