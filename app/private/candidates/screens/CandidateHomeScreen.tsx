@@ -8,7 +8,7 @@ import { DBJobPreview } from '@database/DBJobPreview';
 
 import { useAuth } from '@appContext/authContext';
 
-const CandidateHomeScreen = () => {
+const CandidateSwipeMatchScreen = () => {
   const {
     state: { user },
   } = useAuth();
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CandidateHomeScreen;
+export default CandidateSwipeMatchScreen;
 
 /* Código anterior
 import React from 'react';
@@ -60,7 +60,7 @@ import { getJobOffersPreview } from '@services/jobOffer/JobOfferPreview.service'
 import usePaginatedData from '../../../../hooks/usePaginatedData';
 import { DBJobPreview } from '@database/DBJobPreview';
 
-const CandidateHomeScreen = () => {
+const CandidateSwipeMatchScreen = () => {
   const {
     data: { data },
     loading,
@@ -78,5 +78,5 @@ const CandidateHomeScreen = () => {
   );
 };
 
-export default CandidateHomeScreen;
+export default CandidateSwipeMatchScreen;
 */

@@ -41,7 +41,7 @@ const UserListHorizontal: React.FC<Props> = ({ users, onSelectUser }) => {
     <FlatList<UserItemInfo>
       data={users}
       renderItem={renderItem}
-      keyExtractor={(item) => item.id.toString() + item.name}
+      keyExtractor={(item, index) => item.id.toString() + index}
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.container}

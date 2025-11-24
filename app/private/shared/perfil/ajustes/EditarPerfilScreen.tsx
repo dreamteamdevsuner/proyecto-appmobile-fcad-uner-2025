@@ -112,6 +112,7 @@ const EditarPerfilScreen = () => {
     values: CandidatoValues | ReclutadorValues,
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
   ) => {
+    console.log('here');
     const userId = String(state.user?.id);
     if (!userId || userId === 'undefined') {
       setDialogMessage({
@@ -287,6 +288,7 @@ const EditarPerfilScreen = () => {
                         listasTiposJornada={listasDropdown.tiposJornada}
                         listasAreas={listasDropdown.listasAreas}
                       />
+
                       <Button
                         onPress={async () => {
                           formik.validateForm().then((errors) => {

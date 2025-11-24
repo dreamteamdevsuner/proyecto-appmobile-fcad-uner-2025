@@ -25,20 +25,16 @@ export const getCandidatePreview = async (
       };
     }
 
-    // Obtener ofertas activas del reclutador
-    // ⚠️ CAMBIO REALIZADO: Agregamos "!inner" a la relación 'publicacion'
-    // Esto obliga a que la oferta SÍ O SÍ pertenezca al usuario filtrado abajo.
     const { data: ofertas, error: ofertasError } = await supabase
       .from('ofertatrabajo')
       .select(
         'id, titulo, activo, idestadooferta, publicacion!inner(id, idusuario)',
-      ) // <--- AQUÍ ESTABA EL DETALLE
+      )
       .eq('activo', true)
       .eq('idestadooferta', 1)
       .eq('publicacion.idusuario', idUsuarioReclutador);
-
     if (ofertasError) {
-      console.error('Error obteniendo ofertas:', ofertasError);
+      console.error('Error obteniendo ofertas');
       return {
         data: [],
         count: 0,
@@ -62,7 +58,6 @@ export const getCandidatePreview = async (
 
     const ofertaIds = ofertas.map((o) => o.id);
 
-    // Obtener likes pendientes (idestadomatch = 1)
     const { data: matches, error: matchError } = await supabase
       .from('ofertatrabajomatch')
       .select('idprofesional, idofertatrabajo')
@@ -71,7 +66,7 @@ export const getCandidatePreview = async (
       .eq('idestadomatch', 1);
 
     if (matchError) {
-      console.error('Error obteniendo matches:', matchError);
+      console.error('Error obteniendo matches');
       return {
         data: [],
         count: 0,
@@ -93,7 +88,6 @@ export const getCandidatePreview = async (
       };
     }
 
-    // Traer info de profesionales
     const idsProfesionales = matches.map((m) => m.idprofesional);
     const { data: profesionalesDB, error: usuariosError } = await supabase
       .from('profesional')
@@ -102,7 +96,7 @@ export const getCandidatePreview = async (
 
     if (usuariosError || !profesionalesDB || profesionalesDB.length === 0) {
       console.error(
-        'Error obteniendo profesionales en tabla profesional:',
+        'Error obteniendo profesionales en tabla profesional',
         usuariosError,
       );
       return {
@@ -115,21 +109,19 @@ export const getCandidatePreview = async (
       };
     }
 
-    // Mapear idprofesional => idusuario
     const profesionalIdToUsuarioId = Object.fromEntries(
       profesionalesDB.map((p) => [p.id, p.idusuario]),
     );
 
     const idsUsuarios = [...new Set(profesionalesDB.map((p) => p.idusuario))];
 
-    // 4️⃣ Traer info de usuario (profesionales)
     const { data: usuarios, error: usuariosInfoError } = await supabase
       .from('usuario')
       .select('id, nombre, apellido, fotoperfil, bio, iddireccion(ciudad)')
       .in('id', idsUsuarios);
 
     if (usuariosInfoError || !usuarios) {
-      console.error('Error obteniendo info de usuarios:', usuariosInfoError);
+      console.error('Error obteniendo info de usuarios');
       return {
         data: [],
         count: 0,
@@ -139,46 +131,62 @@ export const getCandidatePreview = async (
         prevPage: null,
       };
     }
+    type SkillRow = {
+      idprofesional: string;
+      idskill: { nombre: string }; // single object, not array
+    };
+    const { data: skillsList, error: skillsListError } = (await supabase
+      .from('profesionalskill')
+      .select('idskill(nombre) , idprofesional')
+      .in('idprofesional', idsProfesionales)) as {
+      data: SkillRow[] | null;
+      error: any;
+    };
 
-    // Construir array profesional+oferta (una fila por like)
+    if (skillsListError) {
+      console.log(skillsListError);
+      throw Error('error fetching skills list');
+    }
+
+    const parsedSkillLists = skillsList?.reduce(
+      (
+        acc: {
+          [key: string]: { nombre: any }[];
+        },
+        curr,
+      ) => {
+        if (!acc?.[curr.idprofesional]) {
+          acc[curr.idprofesional] = [curr.idskill];
+        } else {
+          acc[curr.idprofesional].push(curr.idskill);
+        }
+        return acc;
+      },
+      {},
+    );
+
     const result: CandidateWithOffer[] = matches
       .map((m) => {
-        // console.log('➡️ Procesando match:', m);
-
         const usuarioId = profesionalIdToUsuarioId[m.idprofesional];
-        // console.log('   🔵 usuarioId obtenido:', usuarioId);
-
         const usuario = usuarios.find((u) => u.id === usuarioId);
-        // console.log('   🟢 usuario encontrado:', usuario);
-
         const oferta = ofertas.find((o) => o.id === m.idofertatrabajo);
-        // console.log('   🟣 oferta encontrada:', oferta);
 
         if (!usuario || !oferta) {
-          // console.log(
-          //   '   ⚠️ usuario u oferta no encontrada → devolviendo null',
-          // );
           return null;
         }
 
         const fila = {
           ...usuario,
+          skills: parsedSkillLists?.[m.idprofesional],
           profesionalId: m.idprofesional,
           ofertaId: oferta.id,
           ofertaTitulo: oferta.titulo || 'Oferta',
         };
-
-        // console.log('   ✅ fila generada:', fila);
+        console.log('FILa', fila);
         return fila;
       })
-      .filter(Boolean) as CandidateWithOffer[];
+      .filter(Boolean) as unknown as CandidateWithOffer[];
 
-    // console.log(
-    //   '🟩 RESULT FINAL:',
-    //   result.map((r) => (r ? `${r.nombre} ${r.apellido}` : null)),
-    // );
-
-    // Paginación simple
     const totalCount = result.length;
     const start = (page - 1) * itemsPerPage;
     const end = start + itemsPerPage;
@@ -195,7 +203,8 @@ export const getCandidatePreview = async (
       prevPage: page > 1 ? page - 1 : null,
     };
   } catch (err) {
-    console.error('Error interno en getCandidatePreview:', err);
+    console.log('ERR', err);
+    console.error('Error interno en getCandidatePreview');
     return {
       data: [],
       count: 0,

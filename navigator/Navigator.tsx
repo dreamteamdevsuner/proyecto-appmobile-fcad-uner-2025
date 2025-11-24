@@ -17,7 +17,7 @@ const Stack = createNativeStackNavigator();
 const Navigator = () => {
   const { state, logout, restoreToken, login } = useAuth();
   const [loadSession, setLoadSession] = useState(false);
-  const {  onRefresh } = useUserProfile(state.user?.id)
+  const { onRefresh } = useUserProfile(state.user?.id);
   useEffect(() => {
     setLoadSession(true);
     const { data: onAuthStateSubscription } = supabase.auth.onAuthStateChange(
