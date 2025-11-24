@@ -23,6 +23,7 @@ const FavoritosMatchsScreen: React.FC<Props> = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
 
   const loadMatches = async () => {
+    console.log('Loadingggg');
     if (!user?.id) return;
     try {
       setLoading(true);
@@ -45,7 +46,7 @@ const FavoritosMatchsScreen: React.FC<Props> = ({ navigation }) => {
   useFocusEffect(
     useCallback(() => {
       loadMatches();
-    }, [user]),
+    }, [user?.id]),
   );
 
   const handleSelectMatch = (match: OfertaItem) => {
@@ -65,7 +66,7 @@ const FavoritosMatchsScreen: React.FC<Props> = ({ navigation }) => {
     <View style={styles.container}>
       <View style={[styles.listContainer, styles.section]}>
         <View style={[styles.titleContainer, { backgroundColor: '#A06FA6' }]}>
-          <Text style={styles.title}>Mis matchs</Text>
+          <Text style={styles.title}>Mis matchs </Text>
         </View>
 
         {loading ? (
