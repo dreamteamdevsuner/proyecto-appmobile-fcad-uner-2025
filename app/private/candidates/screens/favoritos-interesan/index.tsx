@@ -1,109 +1,82 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { Text } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useFocusEffect } from '@react-navigation/native';
+
 import ROUTES from '../../../candidates/navigator/routes';
 import { PrivateStackParamList } from '../../../candidates/navigator/types';
 import { OfertaItem } from '../../../../../types/OfertaItem';
-import { OfertasList } from '../../../../../components/listas';
-import OfertasList2 from '../../../../../components/listas/ofertas-list/OfertasList2';
 import OfertasList3 from '../../../../../components/listas/ofertas-list/OfertasList3';
+
+import { useAuth } from '../../../../../appContext/authContext';
+import { getOfertasPorEstadoProfesional } from '../../../../../services/OfertaService';
 
 type Props = NativeStackScreenProps<
   PrivateStackParamList,
   ROUTES.CANDIDATE_FAVORITOS_INTERESANTES
 >;
 
-// Datos de ejemplo para ofertas interesantes
-const ofertasInteresantes: OfertaItem[] = [
-  {
-    id: 1,
-    title: 'UI Designer - Lovelace Agency',
-    subtitle: 'Publicado por Ann Lynn Parker',
-  },
-  {
-    id: 2,
-    title: 'Visual Designer - Lovelace Agency',
-    subtitle: 'Publicado por Ann Lynn Parker',
-  },
-  {
-    id: 3,
-    title: 'Product Designer - Creative Studio',
-    subtitle: 'Publicado por María González',
-  },
-  {
-    id: 4,
-    title: 'UX Researcher - TechStart',
-    subtitle: 'Publicado por Carlos Ruiz',
-  },
-  {
-    id: 5,
-    title: 'Graphic Designer - Brand Agency',
-    subtitle: 'Publicado por Laura Martínez',
-  },
-  {
-    id: 6,
-    title: 'Frontend Designer - WebStudio',
-    subtitle: 'Publicado por Diego López',
-  },
-  {
-    id: 7,
-    title: 'Digital Designer - MediaCorp',
-    subtitle: 'Publicado por Ana Fernández',
-  },
-  {
-    id: 8,
-    title: 'Brand Designer - DesignLab',
-    subtitle: 'Publicado por Roberto Silva',
-  },
-];
+const FavoritosInteresantesScreen: React.FC<Props> = ({ navigation }) => {
+  const {
+    state: { user },
+  } = useAuth();
+  const [ofertasInteresantes, setOfertasInteresantes] = useState<OfertaItem[]>(
+    [],
+  );
+  const [loading, setLoading] = useState(true);
 
-const FavoritosInteresantesScreen: React.FC<Props> = ({
-  route,
-  navigation,
-}) => {
-  const { title } = route.params;
+  const loadInteresan = async () => {
+    if (!user?.id) return;
+    try {
+      setLoading(true);
+      const data = await getOfertasPorEstadoProfesional(user.id, 1);
 
-  const handleSelectOferta = (oferta: OfertaItem) => {
-    navigation.navigate(ROUTES.CANDIDATE_TEST, {
-      title: oferta.title,
-      company: oferta.subtitle || 'Empresa',
-    });
+      const formateados: OfertaItem[] = data.map((item) => ({
+        id: Number(item.ofertaId),
+        title: item.titulo,
+        subtitle: `En ${item.empresa}`,
+      }));
+
+      setOfertasInteresantes(formateados);
+    } catch (e) {
+      console.error('Error cargando interesantes:', e);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDeleteOferta = (oferta: OfertaItem) => {
-    console.log('Eliminar oferta:', oferta);
-    // Aquí podrías implementar la lógica para eliminar la oferta de favoritos
+  useFocusEffect(
+    useCallback(() => {
+      loadInteresan();
+    }, [user]),
+  );
+
+  const handleSelectOferta = (oferta: OfertaItem) => {
+    console.log('Ver oferta pendiente:', oferta.id);
   };
 
   return (
     <View style={styles.container}>
       <View style={[styles.listContainer, styles.section]}>
-        <View
-          style={
-            (styles.titleContainer,
-            {
-              backgroundColor: '#76BBC0',
-              height: 48,
-              width: '100%',
-              borderTopStartRadius: 15,
-              borderTopEndRadius: 15,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: 10,
-              paddingHorizontal: 10,
-              paddingVertical: 5,
-            })
-          }
-        >
+        <View style={[styles.titleContainer, { backgroundColor: '#76BBC0' }]}>
           <Text style={styles.title}>Me interesan</Text>
         </View>
-        <OfertasList3
-          ofertas={ofertasInteresantes}
-          onSelectOferta={handleSelectOferta}
-          onDeleteOferta={handleDeleteOferta}
-        />
+
+        {loading ? (
+          <View style={styles.centerContent}>
+            <ActivityIndicator size="large" color="#76BBC0" />
+          </View>
+        ) : ofertasInteresantes.length > 0 ? (
+          <OfertasList3
+            ofertas={ofertasInteresantes}
+            onSelectOferta={handleSelectOferta}
+          />
+        ) : (
+          <View style={styles.centerContent}>
+            <Text style={styles.emptyText}>No tienes likes pendientes.</Text>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -114,31 +87,38 @@ const styles = StyleSheet.create({
     backgroundColor: '#1D1C21',
     borderRadius: 15,
     padding: 0,
+    flex: 1,
+    overflow: 'hidden',
   },
   container: {
     padding: 10,
     flex: 1,
-    gap: 5,
+    backgroundColor: '#000',
   },
   listContainer: {
     flex: 1,
-    gap: 5,
   },
   titleContainer: {
-    fontSize: 25,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 10,
-    borderTopEndRadius: 15,
-    borderTopStartRadius: 15,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
+    marginBottom: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
     width: '100%',
-    height: 48,
     backgroundColor: '#DA79AE',
   },
-  title: { fontWeight: 'bold', fontSize: 18, marginLeft: 15, color: '#1D1C21' },
+  title: { fontWeight: 'bold', fontSize: 18, color: '#1D1C21' },
+  centerContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    color: 'white',
+    fontSize: 16,
+    opacity: 0.7,
+  },
 });
 
 export default FavoritosInteresantesScreen;
