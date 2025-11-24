@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../../../../appContext/authContext';
 import { Role } from '../../../../../services/interfaces/TipoUsuario.interface';
 import { supabase } from '../../../../../supabase/supabaseClient';
+import { profileUpdateEmitter } from '../../../../../services/profileUpdateEmitter';
 
 import FormularioCandidato from '../ajustes/componentesFormularios/formulariosUser/FormCandidato';
 import FormularioReclutador from '../ajustes/componentesFormularios/formulariosUser/FormReclutador';
@@ -33,7 +34,6 @@ import {
   reclutadorValidacionSchema,
 } from './validacion';
 import { verificarImagenSegura } from '@services/SeguridadImagenService';
-
 
 const EditarPerfilScreen = () => {
   const { state } = useAuth();
@@ -131,21 +131,22 @@ const EditarPerfilScreen = () => {
         setDialogVisible(true);
 
         const esSegura = await verificarImagenSegura(uriParaAnalizar);
-        
+
         if (!esSegura) {
           setDialogMessage({
-            message: 'La imagen seleccionada tiene contenido inapropiado. Por favor elige otra.',
+            message:
+              'La imagen seleccionada tiene contenido inapropiado. Por favor elige otra.',
             type: 'error',
           });
           setDialogVisible(true);
           setSubmitting(false);
           return; // <--- AQUÍ SE DETIENE TODO SI ES OBSCENA
         }
-        
+
         // Si es segura, cerramos el dialog para seguir
-        setDialogVisible(false); 
+        setDialogVisible(false);
       }
-      
+
       let resultado;
       if (esReclutador) {
         resultado = await guardarPerfilReclutador(
@@ -344,6 +345,12 @@ const EditarPerfilScreen = () => {
               onPress={() => {
                 setDialogVisible(false);
                 if (dialogMessage.type === 'success') {
+                  // Emit profile update event before navigating back
+                  const userId = String(state.user?.id);
+                  if (userId && userId !== 'undefined') {
+                    profileUpdateEmitter.emit(userId);
+                  }
+                  // Navigate back
                   navigation.goBack();
                 }
               }}

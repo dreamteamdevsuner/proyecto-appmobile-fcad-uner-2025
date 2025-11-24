@@ -110,7 +110,7 @@ export const useUserProfile = (userId?: string) => {
   useEffect(() => {
     console.log('RENDERING');
     fetchProfile();
-  }, [refreshing === false]);
+  }, [userId]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);

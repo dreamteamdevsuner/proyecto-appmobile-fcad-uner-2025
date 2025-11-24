@@ -34,6 +34,7 @@ import { PerfilView } from '@models/PerfilView';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { supabase } from '../../../../supabase/supabaseClient';
 import CurriculumPDF from '@components/curriculum/CurriculumPDF';
+import { profileUpdateEmitter } from '../../../../services/profileUpdateEmitter';
 
 type Props = NativeStackScreenProps<
   ProfileStackParams,
@@ -73,14 +74,48 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
     onRefreshRef.current = onRefresh;
   }, [onRefresh]);
 
+  // Listen for profile update events from EditarPerfilScreen
+  useEffect(() => {
+    if (!isOwnProfile || !state.user) return;
+
+    const unsubscribe = profileUpdateEmitter.subscribe((userId: string) => {
+      if (userId === state.user?.id) {
+        console.log('Profile update event received, refreshing...');
+        onRefreshRef.current();
+      }
+    });
+
+    return unsubscribe;
+  }, [isOwnProfile, state.user?.id]);
+
+  // Refresh profile only if it was successfully edited
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      const params = route.params as any;
+      console.log('Profile screen focused, params:', params);
+
+      if (params?.profileUpdated === true && isOwnProfile) {
+        console.log('Profile was updated, refreshing...');
+        onRefreshRef.current();
+        // Clear the flag by updating route params
+        if (navigation.setParams) {
+          navigation.setParams({ profileUpdated: false } as any);
+        }
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation, route, isOwnProfile]);
+
+  // Listen for realtime updates when focused and it's own profile
   useEffect(() => {
     let loggedUserUpdatesListener: RealtimeChannel;
-    if (state.user) {
-      console.log('listening');
 
-      // Assuming a 'profiles' table with user-specific data
+    if (isFocused && isOwnProfile && state.user) {
+      console.log('Setting up realtime listener for own profile');
+
       loggedUserUpdatesListener = supabase
-        .channel('public:usuario')
+        .channel(`public:usuario:${state.user.id}`)
         .on(
           'postgres_changes',
           {
@@ -90,22 +125,20 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
             filter: `id=eq.${state.user.id}`,
           },
           async (payload) => {
-            console.log('Profile updated:', payload.new);
-            console.log('UPDATING ');
+            console.log('Profile updated from realtime:', payload.new);
             await onRefreshRef.current();
-            // Update UI or application state with new profile data
           },
         )
         .subscribe();
     }
+
     return () => {
-      console.log('LISTENDER', loggedUserUpdatesListener);
       if (loggedUserUpdatesListener) {
-        console.log('LISTENDER', loggedUserUpdatesListener);
+        console.log('Unsubscribing from realtime listener');
         loggedUserUpdatesListener.unsubscribe();
       }
     };
-  }, [state.user?.id]);
+  }, [state.user?.id, isFocused, isOwnProfile]);
   const [fabState, setFabState] = useState({ open: false });
   const onStateChange = ({ open }: any) => setFabState({ open });
   const { open } = fabState;
@@ -217,36 +250,6 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
   );
   console.log('RENDERINGGGGG');
 
-  useEffect(() => {
-    let loggedUserUpdatesListener: RealtimeChannel;
-    if (state.user) {
-      console.log('listening');
-
-      // Assuming a 'profiles' table with user-specific data
-      loggedUserUpdatesListener = supabase
-        .channel('public:usuario')
-        .on(
-          'postgres_changes',
-          {
-            event: 'UPDATE',
-            schema: 'public',
-            table: 'usuario',
-            filter: `id=eq.${state.user.id}`,
-          },
-          async (payload) => {
-            console.log('Profile updated:', payload.new);
-            await onRefresh();
-            // Update UI or application state with new profile data
-          },
-        )
-        .subscribe();
-    }
-    return () => {
-      if (loggedUserUpdatesListener) {
-        loggedUserUpdatesListener.unsubscribe();
-      }
-    };
-  }, []);
   if (loading) {
     return (
       <View

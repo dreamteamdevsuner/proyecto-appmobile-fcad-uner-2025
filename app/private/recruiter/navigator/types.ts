@@ -16,7 +16,11 @@ export type PrivateStackParamList = {
     idOfertaTrabajoMatch?: string;
     idUsuarioProfesional?: string;
   };
-  [ROUTES.RECRUITER_PROFILE]: { userId?: number; title?: string };
+  [ROUTES.RECRUITER_PROFILE]: {
+    userId?: number;
+    title?: string;
+    profileUpdated?: boolean;
+  };
   [ROUTES.RECRUITER_SETTINGS]: undefined;
   [ROUTES.RECRUITER_NOTIFICATIONS]: undefined;
 
