@@ -11,10 +11,7 @@ export type CandidateSwipeStackRootParams = {
     jobOfferId: string;
   };
 };
-//  <Appbar.Header>
-//         <Appbar.BackAction onPress={() => {}} />
-//         <Appbar.Content title="Descubrir ofertas" />
-//       </Appbar.Header>
+
 const Stack = createStackNavigator<CandidateSwipeStackRootParams>();
 const SwipeStack = () => {
   return (

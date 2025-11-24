@@ -97,11 +97,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
         .subscribe();
     }
     return () => {
-      console.log('LISTENDER', loggedUserUpdatesListener);
-      if (loggedUserUpdatesListener) {
-        console.log('LISTENDER', loggedUserUpdatesListener);
-        loggedUserUpdatesListener.unsubscribe();
-      }
+      loggedUserUpdatesListener?.unsubscribe();
     };
   }, [state.user?.id]);
   const [fabState, setFabState] = useState({ open: false });
