@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { TextInput, Button, ActivityIndicator, Text } from 'react-native-paper';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { MapPressEvent, Marker } from 'react-native-maps';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LOCATIONIQ_API_KEY } from '@env';
 import axios from 'axios';
 import * as Location from '@utils/location';
-
+import * as ExpoLocation from 'expo-location';
 interface MapSearchProps {
   value: string;
   lat?: number;
@@ -117,6 +117,17 @@ const MapSearch: React.FC<MapSearchProps> = ({
         latitud: lat,
         longitud: lng,
       });
+      if (mapRef.current) {
+        mapRef.current.animateToRegion(
+          {
+            latitude: lat,
+            longitude: lng,
+            latitudeDelta: 0.0922, // Adjust for desired zoom
+            longitudeDelta: 0.0421, // Adjust for desired zoom
+          },
+          1000,
+        );
+      }
     }
   }, [lat, lng]);
 
@@ -132,11 +143,19 @@ const MapSearch: React.FC<MapSearchProps> = ({
       onCoordsChange(latitude, longitude);
 
       onChange(direccion);
+      if (mapRef.current) {
+        mapRef.current.animateToRegion({
+          latitude: latitude,
+          longitude: longitude,
+          latitudeDelta: 5,
+          longitudeDelta: 5,
+        });
+      }
     } else {
       Location.getPermissions(() => setTienePermiso(true));
     }
   };
-
+  const mapRef = useRef<MapView>(null);
   return (
     <View>
       <TextInput
@@ -188,12 +207,38 @@ const MapSearch: React.FC<MapSearchProps> = ({
       )}
 
       <MapView
+        ref={mapRef}
         style={styles.map}
         region={{
           latitude: coords.latitud,
           longitude: coords.longitud,
           latitudeDelta: 5,
           longitudeDelta: 5,
+        }}
+        toolbarEnabled={true}
+        zoomEnabled={true}
+        scrollEnabled={true}
+        zoomControlEnabled={true}
+        showsMyLocationButton={true}
+        showsCompass={true}
+        onDoublePress={async (e: MapPressEvent) => {
+          const { latitude, longitude } = e.nativeEvent.coordinate;
+          setCoords({ latitud: latitude, longitud: longitude });
+          onCoordsChange(latitude, longitude);
+          try {
+            const [address] = await ExpoLocation.reverseGeocodeAsync({
+              latitude,
+              longitude,
+            });
+            const formattedAddress = `${address?.formattedAddress}`;
+            if (!formattedAddress) {
+              console.log('error obteniendo direccion reversed geo');
+              throw Error('error obteniendo direccion reversed geo');
+            }
+            onChange(formattedAddress);
+          } catch (error) {
+            console.log('error getting reversed geo');
+          }
         }}
       >
         <Marker

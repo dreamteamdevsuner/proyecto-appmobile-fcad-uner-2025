@@ -182,7 +182,7 @@ export const getCandidatePreview = async (
           ofertaId: oferta.id,
           ofertaTitulo: oferta.titulo || 'Oferta',
         };
-        console.log('FILa', fila);
+
         return fila;
       })
       .filter(Boolean) as unknown as CandidateWithOffer[];
