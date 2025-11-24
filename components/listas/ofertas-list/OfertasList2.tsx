@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, FlatList, StyleSheet, ListRenderItem } from 'react-native';
 import { List, IconButton } from 'react-native-paper';
 import { OfertaItem } from '../../../types/OfertaItem';
+import { Item } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
 
 type Props = {
   ofertas: OfertaItem[];
@@ -47,7 +48,7 @@ const OfertasList2: React.FC<Props> = ({
       <FlatList<OfertaItem>
         data={ofertas}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString() + item.title}
+        keyExtractor={(item) => item.id.toString()}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <List.Item
