@@ -1,4 +1,4 @@
-import { DBEstudio } from "@database/DBEstudio";
+import { DBEstudio, DBTrabajo } from "@database/index";
 
 export interface CandidatoValues {
   nombre: string;
@@ -11,6 +11,7 @@ export interface CandidatoValues {
   habilidades: string[];
   aboutMe: string;
   estudios: DBEstudio[];
+  trabajos: DBTrabajo[];
   idiomasSeleccionados: string[];
   modalidadSeleccionada: string;
   jornadaSeleccionada: string;

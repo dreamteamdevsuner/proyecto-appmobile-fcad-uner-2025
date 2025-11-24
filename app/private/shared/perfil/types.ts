@@ -17,16 +17,19 @@ export type ProfileStackParams = {
     userId?: string;
     title?: string;
     initialRouteName?: keyof ProfileTopTabParamList;
+    profileUpdated?: boolean;
   };
   [CAND_ROUTES.CANDIDATE_PROFILE]: {
     userId?: string;
     title?: string;
     initialRouteName?: keyof ProfileTopTabParamList;
+    profileUpdated?: boolean;
   };
   [ROUTES.RECRUITER_CANDIDATE_PROFILE]: {
     userId?: string;
     title?: string;
     initialRouteName?: keyof ProfileTopTabParamList;
+    profileUpdated?: boolean;
   };
 };
 

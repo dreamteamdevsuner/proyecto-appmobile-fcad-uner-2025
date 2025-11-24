@@ -15,3 +15,4 @@ export * from './DBOfertaTrabajoSkill';
 export * from './DBReclutador';
 export * from './DBSkill';
 export * from './DBArea';
+export * from './DBTrabajo';
