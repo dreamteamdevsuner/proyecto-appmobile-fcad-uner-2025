@@ -193,7 +193,7 @@ export const getCandidatePreview = async (
     const paginatedData = result.slice(start, end);
 
     const totalPages = Math.ceil(totalCount / itemsPerPage);
-    console.log('paginated Data', JSON.stringify(paginatedData, null, 3));
+
     return {
       data: paginatedData,
       count: totalCount,
