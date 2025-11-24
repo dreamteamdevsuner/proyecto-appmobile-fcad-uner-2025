@@ -80,7 +80,7 @@ const FavoritosOferta: React.FC = () => {
         title: user.name,
         myName: usuarioLogueado?.nombre,
         otherAvatarUrl: user.avatarUrl,
-        myAvatarUrl: undefined,
+        myAvatarUrl: usuarioLogueado.fotoperfil || undefined,
         idOfertaTrabajoMatch: user.idOfertaTrabajoMatch,
         idUsuarioProfesional: user.idProfesional,
       });

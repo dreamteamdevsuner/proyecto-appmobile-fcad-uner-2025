@@ -27,13 +27,17 @@ const SwipeMatch = <
   onScrollEnd?: (val: number) => void;
   handleScrollEnd: () => void;
   renderItem: (props: CarouselItemProps<T>) => React.JSX.Element;
-  onMatchSuccess?: (candidateName: string) => void;
+  onMatchSuccess?: (
+    candidateName: string,
+    candidateId: string,
+    candidateFotoPerfil: string,
+    idMatch: string,
+  ) => void;
 }): React.JSX.Element => {
   const ref = React.useRef<ICarouselInstance>(null);
   const progress = useSharedValue<number>(0);
 
   const [currentIndex, setCurrentIndex] = useState(0);
-
   const { enabledScroll, handleLike, handleScrollEnabled } = useSwipeMatch({
     ref,
     onMatchSuccess,
