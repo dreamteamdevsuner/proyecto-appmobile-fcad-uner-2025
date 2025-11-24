@@ -28,8 +28,6 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
   const [meInteresan, setMeInteresan] = useState<OfertaItem[]>([]);
 
   const fetchDatos = async () => {
-    console.log('LOG USER ID', user?.id);
-
     if (!user || !user.id) {
       console.log('Usuario no cargado aún, esperando...');
       return;
@@ -42,11 +40,13 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
 
       const dataMatches = await getOfertasPorEstadoProfesional(user.id, 2);
 
-      const matchesFormateados: OfertaItem[] = dataMatches.map((m) => ({
-        id: Number(m.ofertaId),
-        title: m.titulo,
-        subtitle: `En ${m.empresa}`,
-      }));
+      const matchesFormateados: OfertaItem[] = dataMatches.map((m) => {
+        return {
+          id: m.ofertaId,
+          title: m.titulo,
+          subtitle: `En ${m.empresa}`,
+        };
+      });
       setMisMatchs(matchesFormateados);
 
       const burbujasFormateadas: UserItem[] = dataMatches.map((m, index) => ({
@@ -63,7 +63,7 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
       setMatchsRecientes(burbujasFormateadas);
 
       const interesanFormateados: OfertaItem[] = dataInteresan.map((m) => ({
-        id: Number(m.ofertaId),
+        id: m.ofertaId,
         title: m.titulo,
         subtitle: `En ${m.empresa}`,
       }));
