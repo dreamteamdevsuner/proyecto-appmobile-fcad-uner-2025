@@ -98,7 +98,7 @@ function CandidateCard({
             {item.rol}
           </Text>
           <FlatList
-            data={['1', '2', '3']}
+            data={item.skills}
             scrollEnabled={false}
             onTouchStart={(e) => {
               e.preventDefault();
@@ -127,7 +127,7 @@ function CandidateCard({
                   handleScrollEnabled && handleScrollEnabled(false)
                 }
               >
-                <Text>{item}</Text>
+                <Text>{item.nombre}</Text>
               </Chip>
             )}
           ></FlatList>
