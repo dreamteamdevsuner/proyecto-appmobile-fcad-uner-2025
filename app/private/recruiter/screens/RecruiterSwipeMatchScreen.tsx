@@ -103,21 +103,19 @@ const RecruiterSwipeMatchScreen = ({
                     )
                   }
                 />
-                <MatchModal
-                  visible={matchModalVisible}
-                  candidateName={matchedCandidateName}
-                  onDismiss={() => setMatchModalVisible(false)}
-                  onChatPress={() => {
-                    setMatchModalVisible(false);
-                    (navigation as any).navigate(
-                      ROUTES.RECRUITER_MENSAJERIA_TAB,
-                    );
-                  }}
-                />
               </View>
             </TouchableOpacity>
           </CandidateCard>
         )}
+      />
+      <MatchModal
+        visible={matchModalVisible}
+        candidateName={matchedCandidateName}
+        onDismiss={() => setMatchModalVisible(false)}
+        onChatPress={() => {
+          setMatchModalVisible(false);
+          (navigation as any).navigate(ROUTES.RECRUITER_MENSAJERIA_TAB);
+        }}
       />
     </View>
   );
