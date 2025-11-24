@@ -133,9 +133,11 @@ const MapSearch: React.FC<MapSearchProps> = ({
 
   const handleGetCurrentLocation = async () => {
     if (tienePermiso) {
+      setLoading(true);
       const ubicacion = await Location.getCurrentLocation();
       console.log(ubicacion);
       if (!ubicacion) {
+        setLoading(false);
         return;
       }
       const { latitude, longitude, direccion } = ubicacion;
@@ -143,6 +145,7 @@ const MapSearch: React.FC<MapSearchProps> = ({
       onCoordsChange(latitude, longitude);
 
       onChange(direccion);
+      setLoading(false);
       if (mapRef.current) {
         mapRef.current.animateToRegion({
           latitude: latitude,

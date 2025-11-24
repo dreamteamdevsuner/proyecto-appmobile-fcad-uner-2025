@@ -17,10 +17,13 @@ import ROUTES from '../navigator/routes';
 import { RootStackParams } from '../navigator/SwipeStack';
 import { useAuth } from '@appContext/authContext';
 import MatchModal from '../../../../components/MatchModal';
+import { PrivateStackParamList } from '../navigator/types';
+
+type CombinedParams = RootStackParams & PrivateStackParamList;
 
 interface RecruiterSwipeMatchScreenProps
   extends NativeStackScreenProps<
-    RootStackParams,
+    CombinedParams,
     ROUTES.RECRUITER_SWIPE_MATCH_SCREEN
   > {}
 
@@ -33,6 +36,10 @@ const RecruiterSwipeMatchScreen = ({
 
   const [matchModalVisible, setMatchModalVisible] = useState(false);
   const [matchedCandidateName, setMatchedCandidateName] = useState('');
+  const [matchedCandidateId, setMatchedCandidateId] = useState('');
+  const [matchedCandidateFotoPerfil, setMatchedCandidateFotoPerfil] =
+    useState('');
+  const [idMatch, setIdMatch] = useState('');
 
   const {
     data: { data: professionals },
@@ -63,8 +70,11 @@ const RecruiterSwipeMatchScreen = ({
       <SwipeMatch<CandidatePreview>
         data={professionals}
         handleScrollEnd={setNextPage}
-        onMatchSuccess={(name) => {
+        onMatchSuccess={(name, id, fotoperfil, idMatch) => {
           setMatchedCandidateName(name);
+          setMatchedCandidateId(id);
+          setMatchedCandidateFotoPerfil(fotoperfil);
+          setIdMatch(idMatch);
           setMatchModalVisible(true);
         }}
         renderItem={({ item, handleScrollEnabled }) => (
@@ -108,13 +118,24 @@ const RecruiterSwipeMatchScreen = ({
           </CandidateCard>
         )}
       />
+
       <MatchModal
         visible={matchModalVisible}
         candidateName={matchedCandidateName}
         onDismiss={() => setMatchModalVisible(false)}
         onChatPress={() => {
           setMatchModalVisible(false);
-          (navigation as any).navigate(ROUTES.RECRUITER_MENSAJERIA_TAB);
+          (navigation as any).navigate(ROUTES.RECRUITER_MENSAJERIA_TAB, {
+            screen: ROUTES.RECRUITER_CONVERSACION,
+            params: {
+              title: matchedCandidateName,
+              myName: user?.nombre,
+              myAvatarUrl: user?.fotoperfil,
+              otherAvatarUrl: matchedCandidateFotoPerfil,
+              idOfertaTrabajoMatch: idMatch,
+              idUsuarioProfesional: matchedCandidateId,
+            },
+          });
         }}
       />
     </View>
