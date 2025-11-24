@@ -21,6 +21,7 @@ const Mensajeria: React.FC<Props> = ({ navigation }) => {
   } = useAuth();
   const [loading, setLoading] = useState(false);
   const [ofertasChats, setOfertasChats] = useState<OfertasUsuariosChat[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   const fetchOfertasUsuariosChat = async () => {
     try {
@@ -40,6 +41,11 @@ const Mensajeria: React.FC<Props> = ({ navigation }) => {
     fetchOfertasUsuariosChat();
   }, []);
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchOfertasUsuariosChat();
+    setRefreshing(false);
+  };
   const handleSelectUser = (user: UserItemInfo) => {
     if (usuarioLogueado) {
       navigation.navigate(ROUTES.RECRUITER_CONVERSACION, {
@@ -100,6 +106,8 @@ const Mensajeria: React.FC<Props> = ({ navigation }) => {
           );
         }}
         ListEmptyComponent={<Text>No hay chats aún</Text>}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
       />
     </View>
   );

@@ -10,7 +10,12 @@ const useSwipeMatch = ({
   onMatchSuccess,
 }: {
   ref: React.RefObject<ICarouselInstance | null>;
-  onMatchSuccess?: (candidateName: string) => void;
+  onMatchSuccess?: (
+    candidateName: string,
+    candidateId: string,
+    candidateFotoPerfil: string,
+    idMatch: string,
+  ) => void;
 }) => {
   const [enabledScroll, setEnabledScroll] = useState(true);
   const {
@@ -58,12 +63,13 @@ const useSwipeMatch = ({
     recruiterUserId: string,
     profesionalId: string,
     ofertaId: string,
+    idMatch: string,
   ) => {
     try {
       const { data: profData } = await supabase
         .from('profesional')
         .select(
-          'idusuario, usuario!inner(id, nombre, apellido, expo_push_token)',
+          'idusuario, usuario!inner(id, nombre, apellido, fotoperfil, expo_push_token)',
         )
         .eq('id', profesionalId)
         .single();
@@ -133,7 +139,12 @@ const useSwipeMatch = ({
       }
 
       if (onMatchSuccess) {
-        onMatchSuccess(nombrePro || 'el candidato');
+        onMatchSuccess(
+          nombrePro || 'el candidato',
+          idUserPro,
+          usuarioPro.fotopefil,
+          idMatch,
+        );
       }
     } catch (error) {
       console.error('Error en handleMatchSuccess:', error);
@@ -161,7 +172,8 @@ const useSwipeMatch = ({
           })
           .eq('idofertatrabajo', currentOfferId)
           .eq('idprofesional', targetProfesionalId)
-          .select();
+          .select('id')
+          .single();
 
         if (error) {
           console.error('❌ Error actualizando match (Reclutador)');
@@ -173,6 +185,7 @@ const useSwipeMatch = ({
               user.id,
               targetProfesionalId,
               currentOfferId,
+              data.id,
             );
           }
         }
