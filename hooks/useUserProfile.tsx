@@ -24,7 +24,6 @@ export const useUserProfile = (userId?: string) => {
 
   const fetchProfile = useCallback(
     async (silent = false) => {
-      console.log('USER ID', userId);
       if (!userId) {
         setNotFound(true);
         return;

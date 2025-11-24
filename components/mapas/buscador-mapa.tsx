@@ -111,6 +111,15 @@ const MapSearch: React.FC<MapSearchProps> = ({
     Location.getPermissions(() => setTienePermiso(true));
   }, []);
 
+  useEffect(() => {
+    if (lat !== undefined && lng !== undefined) {
+      setCoords({
+        latitud: lat,
+        longitud: lng,
+      });
+    }
+  }, [lat, lng]);
+
   const handleGetCurrentLocation = async () => {
     if (tienePermiso) {
       const ubicacion = await Location.getCurrentLocation();

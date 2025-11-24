@@ -6,7 +6,6 @@ import {
   Modal,
   Dimensions,
   StyleSheet,
-  StatusBar,
   Text,
   ActivityIndicator,
   Alert,

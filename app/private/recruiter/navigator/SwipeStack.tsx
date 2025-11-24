@@ -60,6 +60,8 @@ const SwipeStack = () => {
                     paddingHorizontal: 20,
                     paddingVertical: 15,
                     flexDirection: 'row',
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
                   }}
                 >
                   <Text>{options.headerTitle?.toString() ?? 'fallback'} </Text>
@@ -89,17 +91,40 @@ const SwipeStack = () => {
       ></Stack.Screen>
 
       <Stack.Screen
-        options={{
-          headerShown: true,
-
-          headerTitle: 'Jobsy',
-          header: ({ options }) => (
-            <JobsyHeader
-              headerTitle={
-                options.headerTitle?.toString() ?? 'placeholder title'
-              }
-            ></JobsyHeader>
-          ),
+        options={function ({ navigation, route }) {
+          return {
+            headerShown: true,
+            headerTitle: 'Descubrir profesionales ',
+            header: function ({ options }) {
+              return (
+                <View
+                  style={{
+                    paddingHorizontal: 20,
+                    paddingVertical: 15,
+                    flexDirection: 'row',
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                    gap: 10,
+                  }}
+                >
+                  <View>
+                    <Pressable
+                      onPress={() => {
+                        navigation.popToTop();
+                      }}
+                    >
+                      <Icon
+                        size={15}
+                        color="white"
+                        source={'chevron-left'}
+                      ></Icon>
+                    </Pressable>
+                  </View>
+                  <Text>{options.headerTitle?.toString() ?? 'fallback'} </Text>
+                </View>
+              );
+            },
+          };
         }}
         name={ROUTES.RECRUITER_CANDIDATE_PROFILE}
         component={ProfileScreen}

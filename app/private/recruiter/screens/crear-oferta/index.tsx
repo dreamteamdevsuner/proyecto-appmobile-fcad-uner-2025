@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
 import { Formik } from 'formik';
@@ -7,56 +7,22 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import ROUTES from '../../navigator/routes';
 import * as Yup from 'yup';
 import MapSearch from '@components/mapas/buscador-mapa';
-import { crearOferta } from '@services/OfertaService';
+import { crearOferta, editarOferta } from '@services/OfertaService';
 import { useContext } from 'react';
 import { DataContext } from '@providers/DataContext';
 import { useAuth } from '@appContext/authContext';
-
-const idioma = [
-  { label: 'Inglés', value: 'Inglés' },
-  { label: 'Español', value: 'Español' },
-  { label: 'Francés', value: 'Francés' },
-  { label: 'Alemán', value: 'Alemán' },
-];
-
-const nivel = [
-  { label: 'Principiante A1', value: 'A1' },
-  { label: 'Elemental A2', value: 'A2' },
-  { label: 'Intermedio B1', value: 'B1' },
-  { label: 'Intermedio Superior B2', value: 'B2' },
-  { label: 'Avanzado C1', value: 'C1' },
-  { label: 'Experto C2', value: 'C2' },
-  { label: 'Nativo', value: 'Nativo' },
-];
+import { OfertaValues, Empresa } from '@models/index';
+import { getEmpresas } from '@services/EmpresaService';
 
 const ofertaSchema = Yup.object().shape({
   titulo: Yup.string().required('El título es obligatorio'),
-  institucion: Yup.string().required('La institución es obligatoria'),
+  idinstitucion: Yup.string().required('La institución es obligatoria'),
   localizacion: Yup.string().required('La localización es obligatoria'),
   modalidad: Yup.string().required('La modalidad es obligatoria'),
   jornada: Yup.string().required('La jornada es obligatoria'),
   contrato: Yup.string().required('El contrato es obligatorio'),
   descripcion: Yup.string().required('Acerca del empleo es obligatorio'),
 });
-interface OfertaValues {
-  titulo: string;
-  institucion: string;
-  localizacion: string;
-  lat: number;
-  lng: number;
-  modalidad: number | null;
-  jornada: number | null;
-  contrato: number | null;
-  descripcion: string;
-  beneficios: string;
-  salario: string;
-  foto: string;
-  idiomasNiveles: IdiomaNivel[];
-  softSkills: string[];
-  hardSkills: string[];
-}
-
-type IdiomaNivel = { idioma: string; nivel: string };
 
 const initialValues: OfertaValues = {
   titulo: '',
@@ -64,6 +30,7 @@ const initialValues: OfertaValues = {
   localizacion: '',
   lat: -34.9964963,
   lng: -64.9672817,
+  area: null,
   modalidad: null,
   jornada: null,
   contrato: null,
@@ -76,13 +43,14 @@ const initialValues: OfertaValues = {
   hardSkills: [],
 };
 
-const CrearOferta = ({ navigation }: any) => {
+const CrearOferta = ({ navigation, editing = false, data = null }: any) => {
   const {
     modalidad: modalidadList,
     tipoJornada: jornadaList,
     contratacion: contratoList,
     softSkills,
     hardSkills,
+    areas: areasList,
   } = useContext(DataContext);
   const softSkillsList = softSkills.map((x) => {
     return { label: x.nombre, value: x.id };
@@ -90,16 +58,15 @@ const CrearOferta = ({ navigation }: any) => {
   const hardSkillsList = hardSkills.map((x) => {
     return { label: x.nombre, value: x.id };
   });
+  const [empresasList, setEmpresasList] = useState<Empresa[]>([]);
+
+  const [empresasOpen, setEmpresasOpen] = useState(false);
+  const [areaOpen, setAreaOpen] = useState(false);
   const [modalidadOpen, setModalidadOpen] = useState(false);
   const [jornadaOpen, setJornadaOpen] = useState(false);
   const [contratoOpen, setContratoOpen] = useState(false);
   const [softSkillsOpen, setSoftSkillsOpen] = useState(false);
   const [hardSkillsOpen, setHardSkillsOpen] = useState(false);
-  // const [idiomasOpen, setIdiomasOpen] = useState<boolean[]>([false]);
-  // const [nivelesOpen, setNivelesOpen] = useState<boolean[]>([false]);
-  // const [idiomasNivelesPickers, setIdiomasNivelesPickers] = useState<
-  //   IdiomaNivel[]
-  // >([{ idioma: '', nivel: '' }]);
 
   const [hardSkillsValue, setHardSkillsValue] = useState<string[]>([]);
   const [softSkillsValue, setSoftSkillsValue] = useState<string[]>([]);
@@ -109,30 +76,78 @@ const CrearOferta = ({ navigation }: any) => {
   } = useAuth();
   const formikRef = useRef<any>(null);
 
+  const fetchEmpresas = async () => {
+    const res = await getEmpresas();
+    setEmpresasList(res);
+  };
+
   const handleSubmit = async (values: OfertaValues) => {
+    console.log('VALUES', values);
     try {
       if (user) {
-        const nuevaOferta = await crearOferta({
-          titulo: values.titulo,
-          descripcion: values.descripcion,
-          idusuario: user.id,
-          idmodalidad: values.modalidad,
-          idtipojornada: values.jornada,
-          idcontratacion: values.contrato,
-          idsoftskills: values.softSkills,
-          idhardskills: values.hardSkills,
-          latitud: values.lat.toString(),
-          longitud: values.lng.toString(),
-          direccion: values.localizacion,
-        });
+        if (editing) {
+          const ofertaEditada = await editarOferta({
+            id: data.id,
+            titulo: values.titulo,
+            descripcion: values.descripcion,
+            idusuario: user.id,
+            idempresa: values.idinstitucion,
+            idmodalidad: values.modalidad,
+            idtipojornada: values.jornada,
+            idcontratacion: values.contrato,
+            idsoftskills: values.softSkills,
+            idhardskills: values.hardSkills,
+            latitud: values.lat.toString(),
+            longitud: values.lng.toString(),
+            direccion: values.localizacion,
+            iddireccion: data.iddireccion,
+            idarea: values.area,
+            beneficios: values.beneficios,
+          });
+          if (ofertaEditada) {
+            alert('Oferta editada con éxito 🎉');
+            navigation.goBack();
+          }
+        } else {
+          const nuevaOferta = await crearOferta({
+            titulo: values.titulo,
+            descripcion: values.descripcion,
+            idusuario: user.id,
+            idempresa: values.idinstitucion,
+            idmodalidad: values.modalidad,
+            idtipojornada: values.jornada,
+            idcontratacion: values.contrato,
+            idsoftskills: values.softSkills,
+            idhardskills: values.hardSkills,
+            latitud: values.lat.toString(),
+            longitud: values.lng.toString(),
+            direccion: values.localizacion,
+            idarea: values.area,
+            beneficios: values.beneficios,
+          });
 
-        if (nuevaOferta) alert('Oferta publicada con éxito 🎉');
+          if (nuevaOferta) {
+            alert('Oferta publicada con éxito 🎉');
+            navigation.goBack();
+          }
+        }
       }
     } catch (error: any) {
       console.error(error);
       alert('Error al crear la oferta');
     }
   };
+
+  useEffect(() => {
+    fetchEmpresas();
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      setSoftSkillsValue(data.softSkills || []);
+      setHardSkillsValue(data.hardSkills || []);
+    }
+  }, [data]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -162,66 +177,6 @@ const CrearOferta = ({ navigation }: any) => {
     });
   }, [navigation]);
 
-  // const IdiomaNivelPicker = ({
-  //   item,
-  //   index,
-  // }: {
-  //   item: IdiomaNivel;
-  //   index: number;
-  // }) => {
-  //   const handleOpenIdiomas: React.Dispatch<React.SetStateAction<boolean>> = (
-  //     value,
-  //   ) => {
-  //     const isOpen =
-  //       typeof value === 'function' ? value(idiomasOpen[index]) : value;
-  //     setIdiomasOpen((prev) => prev.map((v, i) => (i === index ? isOpen : v)));
-  //   };
-  //   const handleOpenNiveles: React.Dispatch<React.SetStateAction<boolean>> = (
-  //     value,
-  //   ) => {
-  //     const isOpen =
-  //       typeof value === 'function' ? value(nivelesOpen[index]) : value;
-  //     setNivelesOpen((prev) => prev.map((v, i) => (i === index ? isOpen : v)));
-  //   };
-
-  // return (
-  //   <View>
-  //     <DropDownPicker
-  //       key={`idioma_${index}`}
-  //       open={idiomasOpen[index]}
-  //       setOpen={handleOpenIdiomas}
-  //       value={formValues.idiomasNiveles[index].idioma}
-  //       setValue={(callback) => {
-  //         setFormValues((prev) => ({
-  //           ...prev,
-  //           idiomasNiveles: callback(prev.idiomasNiveles),
-  //         }));
-  //       }}
-  //       items={idioma}
-  //       placeholder="Selecciona idioma"
-  //       style={styles.dropdown}
-  //       zIndex={index === 0 ? 1000 : 0}
-  //     />
-  //     <DropDownPicker
-  //       key={`nivel_${index}`}
-  //       open={nivelesOpen[index]}
-  //       setOpen={handleOpenNiveles}
-  //       value={formValues.idiomasNiveles[index].nivel}
-  //       setValue={(callback) => {
-  //         setFormValues((prev) => ({
-  //           ...prev,
-  //           idiomasNiveles: callback(prev.idiomasNiveles),
-  //         }));
-  //       }}
-  //       items={nivel}
-  //       placeholder="Selecciona nivel"
-  //       style={styles.dropdown}
-  //       zIndex={index === 0 ? 900 : 0}
-  //     />
-  //   </View>
-  // );
-  // };
-
   return (
     <View style={styles.container}>
       <ScrollView
@@ -230,7 +185,8 @@ const CrearOferta = ({ navigation }: any) => {
       >
         <Formik
           innerRef={formikRef}
-          initialValues={initialValues}
+          initialValues={data ? data : initialValues}
+          enableReinitialize={true}
           onSubmit={handleSubmit}
           validationSchema={ofertaSchema}
         >
@@ -260,6 +216,30 @@ const CrearOferta = ({ navigation }: any) => {
                   </Text>
                 )}
                 <Text style={styles.titulo}>Institución</Text>
+
+                <DropDownPicker
+                  open={empresasOpen}
+                  setOpen={setEmpresasOpen}
+                  theme="DARK"
+                  value={values.idinstitucion || null}
+                  setValue={(callback) =>
+                    setFieldValue(
+                      'idinstitucion',
+                      callback(values.idinstitucion),
+                    )
+                  }
+                  items={[
+                    { label: 'Ninguna', value: undefined },
+                    ...empresasList.map((x) => ({
+                      label: x.nombre,
+                      value: x.id,
+                    })),
+                  ]}
+                  placeholder="Selecciona institución"
+                  zIndex={6000}
+                  listMode="MODAL"
+                />
+                {/* 
                 <TextInput
                   mode="outlined"
                   onChangeText={handleChange('institucion')}
@@ -267,14 +247,14 @@ const CrearOferta = ({ navigation }: any) => {
                   value={values.institucion}
                   placeholder="Empresa"
                   style={styles.input}
-                />
-                {errors.institucion && touched.institucion && (
+                /> */}
+                {errors.idinstitucion && touched.idinstitucion && (
                   <Text style={{ color: 'red', marginBottom: 5 }}>
-                    {errors.institucion}
+                    {errors.idinstitucion}
                   </Text>
                 )}
-                <Text style={styles.titulo}>Localización</Text>
 
+                <Text style={styles.titulo}>Localización</Text>
                 <MapSearch
                   value={values.localizacion}
                   errors={
@@ -290,6 +270,30 @@ const CrearOferta = ({ navigation }: any) => {
                     setFieldValue('lng', lng);
                   }}
                 />
+
+                <Text style={styles.titulo}>Área</Text>
+
+                <DropDownPicker
+                  open={areaOpen}
+                  setOpen={setAreaOpen}
+                  theme="DARK"
+                  value={values.area}
+                  setValue={(callback) =>
+                    setFieldValue('area', callback(values.area))
+                  }
+                  items={areasList.map((a) => ({
+                    label: a.nombre,
+                    value: a.id,
+                  }))}
+                  placeholder="Selecciona área"
+                  zIndex={6000}
+                  listMode="MODAL"
+                />
+                {errors.area && touched.area && (
+                  <Text style={{ color: 'red', marginBottom: 5 }}>
+                    {errors.area}
+                  </Text>
+                )}
 
                 <Text style={styles.titulo}>Modalidad</Text>
 
@@ -440,7 +444,9 @@ const CrearOferta = ({ navigation }: any) => {
                   style={styles.multilineTextInput}
                 />
                 <Button
-                  onPress={handleSubmit as any}
+                  onPress={() => {
+                    handleSubmit();
+                  }}
                   mode="contained"
                   style={styles.boton}
                   icon={() => (

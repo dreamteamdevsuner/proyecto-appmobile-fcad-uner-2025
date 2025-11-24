@@ -1,19 +1,14 @@
 import React, { useState } from 'react';
 import { View, FlatList, StyleSheet, Text } from 'react-native';
-import { List, IconButton } from 'react-native-paper';
+import { List } from 'react-native-paper';
 import { OfertaItem } from '../../../types/OfertaItem';
 
 type Props = {
   ofertas: OfertaItem[];
   onSelectOferta: (oferta: OfertaItem) => void;
-  onDeleteOferta?: (oferta: OfertaItem) => void;
 };
 
-const OfertasList3: React.FC<Props> = ({
-  ofertas,
-  onSelectOferta,
-  onDeleteOferta,
-}) => {
+const OfertasList3: React.FC<Props> = ({ ofertas, onSelectOferta }) => {
   const [pressedId, setPressedId] = useState<number | string | null>(null);
 
   const renderItem = ({ item }: { item: OfertaItem }) => {
@@ -32,35 +27,19 @@ const OfertasList3: React.FC<Props> = ({
             )}
           </View>
         )}
-        // 👉 Si la notificación está leída, se aplica un fondo más suave
         style={[
           styles.item,
           pressedId === item.id && styles.selectedItem,
-          item.read && styles.readItem, // 💜 Agregado
+          item.read && styles.readItem,
         ]}
         titleStyle={[
           styles.title,
           pressedId === item.id ? styles.selectedTitle : undefined,
-          item.read && styles.readText, // 💜 texto del título más clarito si ya fue leída
+          item.read && styles.readText,
         ]}
         onPress={() => onSelectOferta(item)}
         onPressIn={() => setPressedId(item.id)}
         onPressOut={() => setPressedId(null)}
-        right={() =>
-          onDeleteOferta ? (
-            <View style={styles.actions}>
-              <IconButton
-                icon="delete"
-                size={20}
-                iconColor="#B0B0B0"
-                style={{ margin: 0 }}
-                onPress={() => {
-                  if (onDeleteOferta) onDeleteOferta(item);
-                }}
-              />
-            </View>
-          ) : null
-        }
       />
     );
   };
@@ -118,15 +97,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   item: {
-    backgroundColor: '#1D1C21', // fondo base
+    backgroundColor: '#1D1C21',
   },
 
   readItem: {
-    backgroundColor: '#1d1c214d', // gris muy suave de fondo para "leídas"
+    backgroundColor: '#1d1c214d',
   },
 
   readText: {
-    color: '#585959ff', // texto gris claro para indicar que ya fue leída
+    color: '#585959ff',
   },
 });
 

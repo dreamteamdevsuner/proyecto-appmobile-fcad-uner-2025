@@ -7,16 +7,14 @@ type Props = {
   ofertas: OfertaItem[];
   onSelectOferta: (oferta: OfertaItem) => void;
   onMessageOferta?: (oferta: OfertaItem) => void;
-  onDeleteOferta?: (oferta: OfertaItem) => void;
 };
 
 const OfertasList2: React.FC<Props> = ({
   ofertas,
   onSelectOferta,
   onMessageOferta,
-  onDeleteOferta,
 }) => {
-  const [pressedId, setPressedId] = useState<number | null>(null);
+  const [pressedId, setPressedId] = useState<number | string | null>(null);
 
   const renderItem: ListRenderItem<OfertaItem> = ({ item }) => {
     return (
@@ -36,13 +34,6 @@ const OfertasList2: React.FC<Props> = ({
               size={20}
               onPress={() => {
                 if (onMessageOferta) onMessageOferta(item);
-              }}
-            />
-            <IconButton
-              icon="delete"
-              size={20}
-              onPress={() => {
-                if (onDeleteOferta) onDeleteOferta(item);
               }}
             />
           </View>

@@ -23,7 +23,7 @@ import {
   ProfileStackParams,
   ProfileTopTabParamList,
 } from './types';
-import { FAB, Portal } from 'react-native-paper';
+import { Button, FAB, Portal } from 'react-native-paper';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuth } from '../../../../appContext/authContext';
@@ -33,7 +33,7 @@ import { ProfileContext } from '@appContext/ProfileContext';
 import { PerfilView } from '@models/PerfilView';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { supabase } from '../../../../supabase/supabaseClient';
-import CurriculumPDF from '@components/curriculum/CurriculumPDF';
+import { generarPDF } from '@components/curriculum/CurriculumPDF';
 import { profileUpdateEmitter } from '../../../../services/profileUpdateEmitter';
 
 type Props = NativeStackScreenProps<
@@ -248,7 +248,6 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
       closedOffers,
     ],
   );
-  console.log('RENDERINGGGGG');
 
   if (loading) {
     return (
@@ -295,7 +294,14 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
                 : ProfileScreenType.OTHER_PROFILE
             }
           />
-          <CurriculumPDF profileUser={profileUser} />
+
+          <Button
+            style={styles.botonDescargar}
+            mode="contained"
+            onPress={() => generarPDF(profileUser)}
+          >
+            Descargar CV PDF
+          </Button>
           {isProfesional(profileUser) && horizontalChipsSkills.length > 0 && (
             <HorizontalChips skills={horizontalChipsSkills} />
           )}
@@ -419,6 +425,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     left: 0,
     right: 0,
+  },
+  botonDescargar: {
+    marginHorizontal: 20,
+    marginTop: 10,
+    marginBottom: 10,
   },
 });
 

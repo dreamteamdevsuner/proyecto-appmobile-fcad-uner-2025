@@ -2,7 +2,6 @@ import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import { supabase } from '../../supabase/supabaseClient';
 
-// Función para registrar push token en Expo
 export async function registerForPushNotifications(): Promise<string | null> {
   if (!Device.isDevice) {
     return null;
@@ -25,7 +24,6 @@ export async function registerForPushNotifications(): Promise<string | null> {
   return tokenData.data;
 }
 
-// Función para guardar token en Supabase
 export async function savePushTokenToDatabase(userId: string, token: string) {
   const { data, error } = await supabase
     .from('usuario')
@@ -33,9 +31,40 @@ export async function savePushTokenToDatabase(userId: string, token: string) {
     .eq('id', userId);
 
   if (error) {
-    console.error('Error guardando push token en BD:', error);
+    console.error('Error guardando push token en BD');
     return null;
   }
 
   return data;
+}
+
+export async function sendPushNotification(
+  expoPushToken: string,
+  title: string,
+  body: string,
+  data: Record<string, any> = {},
+) {
+  const message = {
+    to: expoPushToken,
+    sound: 'default',
+    title: title,
+    body: body,
+    data: data,
+  };
+
+  try {
+    const response = await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+
+    console.log('🔔 Push enviado');
+  } catch (error) {
+    console.error('Error enviando push notification');
+  }
 }

@@ -8,7 +8,12 @@ export interface CandidatePreview {
   activo: boolean;
   idtipousuario: number;
   fotoperfil: null | string;
+  skills: Skill[];
   rol: null | string;
   expo_push_token: null | string;
   bio: null | string;
+}
+
+export interface Skill {
+  nombre: string;
 }
