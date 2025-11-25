@@ -89,7 +89,6 @@ const CrearOferta = ({ navigation, editing = false, data = null }: any) => {
   };
 
   const handleSubmit = async (values: OfertaValues) => {
-    console.log('VALUES', values);
     try {
       if (user) {
         if (editing) {

@@ -61,9 +61,6 @@ const SwipeMatch = <
     );
   }
 
-  console.log('🔵 SWIPE RENDER — data.length:', data?.length);
-  console.log('🟣 currentIndex:', currentIndex);
-
   return (
     <View style={styles.container}>
       <View style={styles.carouselContainer}>
@@ -88,7 +85,7 @@ const SwipeMatch = <
 
           if (!currentItem) return;
 
-          console.log('❤️ LIKE BTN PRESSED');
+          // console.log('❤️ LIKE BTN PRESSED');
 
           const currentOfferId = currentItem?.ofertaId || currentItem?.id;
           const targetProfesionalId = currentItem?.profesionalId;

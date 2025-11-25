@@ -23,7 +23,6 @@ const FavoritosMatchsScreen: React.FC<Props> = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
 
   const loadMatches = async () => {
-    console.log('Loadingggg');
     if (!user?.id) return;
     try {
       setLoading(true);
