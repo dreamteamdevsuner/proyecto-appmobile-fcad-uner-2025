@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, ActivityIndicator, Text, StyleSheet } from 'react-native';
 import SwipeMatch from '@app/private/shared/swipe_match/SwipeMatch';
 import JobOfferCard from '../../../../components/ui/JobOfferCard';
@@ -7,6 +7,7 @@ import usePaginatedData from '../../../../hooks/usePaginatedData';
 import { DBJobPreview } from '@database/DBJobPreview';
 
 import { useAuth } from '@appContext/authContext';
+import { ProfessionalContext } from '@appContext/ProfessionalContext';
 
 const CandidateSwipeMatchScreen = () => {
   const {
@@ -14,15 +15,10 @@ const CandidateSwipeMatchScreen = () => {
   } = useAuth();
 
   const {
-    data: { data: offers },
-    loading,
+    offers,
+    loadingJobOffers: loading,
     setNextPage,
-  } = usePaginatedData<DBJobPreview>(5, getJobOffersPreview);
-
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const currentOffer = offers?.[currentIndex];
-
+  } = useContext(ProfessionalContext);
   if (loading) return <ActivityIndicator size="large" color="#000" />;
 
   if (!offers || offers.length === 0)
@@ -50,33 +46,3 @@ const styles = StyleSheet.create({
 });
 
 export default CandidateSwipeMatchScreen;
-
-/* Código anterior
-import React from 'react';
-import SwipeMatch from '../../shared/swipe_match/SwipeMatch';
-
-import JobOfferCard from '../../../../components/ui/JobOfferCard';
-import { getJobOffersPreview } from '@services/jobOffer/JobOfferPreview.service';
-import usePaginatedData from '../../../../hooks/usePaginatedData';
-import { DBJobPreview } from '@database/DBJobPreview';
-
-const CandidateSwipeMatchScreen = () => {
-  const {
-    data: { data },
-    loading,
-
-    setNextPage,
-  } = usePaginatedData<DBJobPreview>(5, getJobOffersPreview);
-  return (
-    <SwipeMatch<DBJobPreview>
-      data={data}
-      handleScrollEnd={setNextPage}
-      renderItem={({ item }) => {
-        return <JobOfferCard {...{ item }}></JobOfferCard>;
-      }}
-    ></SwipeMatch>
-  );
-};
-
-export default CandidateSwipeMatchScreen;
-*/

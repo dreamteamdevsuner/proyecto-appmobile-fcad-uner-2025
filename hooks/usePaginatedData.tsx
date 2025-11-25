@@ -38,6 +38,10 @@ const usePaginatedData = <T,>(
     if (result.nextPage) setPage(result.nextPage);
   };
 
+  const loadNewDataFromSubscription = (newEntity: T) => {
+    setPaginatedData((prev) => ({ ...prev, data: [newEntity, ...prev.data] }));
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -48,7 +52,13 @@ const usePaginatedData = <T,>(
     fetchData();
   }, [page]);
 
-  return { data: paginatedData, loading, page, setNextPage };
+  return {
+    data: paginatedData,
+    loading,
+    page,
+    setNextPage,
+    loadNewDataFromSubscription,
+  };
 };
 
 export default usePaginatedData;

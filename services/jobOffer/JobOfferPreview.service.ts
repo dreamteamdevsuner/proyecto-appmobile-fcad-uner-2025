@@ -60,6 +60,7 @@ export const getJobOffersPreview = async (
       .range(from, to);
 
     if (error) {
+      console.log('err', error);
       console.error('Error fetching job offers');
       return emptyPagination();
     }
