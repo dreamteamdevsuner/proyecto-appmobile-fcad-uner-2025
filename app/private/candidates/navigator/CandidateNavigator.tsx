@@ -12,8 +12,23 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'react-native';
 
 import SwipeStack from './SwipeStack';
+import { NavigatorScreenParams } from '@react-navigation/native';
 
-const Tab = createBottomTabNavigator();
+type CandidateSwipeStackRootParams = {
+  [ROUTES.CANDIDATE_SWIPE_MATCH_SCREEN]: {};
+  [ROUTES.CANDIDATE_JOB_OFFER_SCREEN]: {
+    jobOfferId: string;
+  };
+};
+export type CandidateTabParamList = {
+  // We use the helper here to "link" the types
+  [ROUTES.CANDIDATE_HOME_TAB]: NavigatorScreenParams<CandidateSwipeStackRootParams>;
+
+  [ROUTES.CANDIDATE_FAVORITOS_TAB]: undefined;
+  [ROUTES.CANDIDATE_PROFILE_TAB]: undefined;
+  [ROUTES.CANDIDATE_MENSAJERIA_TAB]: undefined;
+};
+const Tab = createBottomTabNavigator<CandidateTabParamList>();
 
 const CandidateNavigator = () => {
   return (
@@ -22,6 +37,9 @@ const CandidateNavigator = () => {
       screenOptions={{
         tabBarActiveTintColor: '#BEB52C',
         tabBarInactiveTintColor: 'gray',
+        tabBarStyle: {
+          height: 70,
+        },
       }}
     >
       <Tab.Screen
@@ -30,13 +48,10 @@ const CandidateNavigator = () => {
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <Image
-              source={require('../../../../assets/icons/icon-job-13.png')}
-              style={{
-                width: size,
-                height: size,
-                tintColor: color, // así respeta el color activo/inactivo
-              }}
+            <MaterialCommunityIcons
+              name="briefcase-search-outline"
+              size={size}
+              color={color}
             />
           ),
         }}

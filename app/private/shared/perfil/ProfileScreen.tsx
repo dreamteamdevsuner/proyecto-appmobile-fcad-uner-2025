@@ -91,15 +91,13 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
   // Refresh profile only if it was successfully edited
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      const params = route.params as any;
-      console.log('Profile screen focused, params:', params);
-
+      const params = route.params;
       if (params?.profileUpdated === true && isOwnProfile) {
         console.log('Profile was updated, refreshing...');
         onRefreshRef.current();
         // Clear the flag by updating route params
         if (navigation.setParams) {
-          navigation.setParams({ profileUpdated: false } as any);
+          navigation.setParams({ profileUpdated: false });
         }
       }
     });
@@ -112,8 +110,6 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
     let loggedUserUpdatesListener: RealtimeChannel;
 
     if (isFocused && isOwnProfile && state.user) {
-      console.log('Setting up realtime listener for own profile');
-
       loggedUserUpdatesListener = supabase
         .channel(`public:usuario:${state.user.id}`)
         .on(
@@ -134,7 +130,6 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
 
     return () => {
       if (loggedUserUpdatesListener) {
-        console.log('Unsubscribing from realtime listener');
         loggedUserUpdatesListener.unsubscribe();
       }
     };

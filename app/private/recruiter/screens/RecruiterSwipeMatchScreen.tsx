@@ -33,6 +33,10 @@ const RecruiterSwipeMatchScreen = ({
 
   const [matchModalVisible, setMatchModalVisible] = useState(false);
   const [matchedCandidateName, setMatchedCandidateName] = useState('');
+  const [matchedCandidateId, setMatchedCandidateId] = useState('');
+  const [matchedCandidateFotoPerfil, setMatchedCandidateFotoPerfil] =
+    useState('');
+  const [idMatch, setIdMatch] = useState('');
 
   const {
     data: { data: professionals },
@@ -63,8 +67,11 @@ const RecruiterSwipeMatchScreen = ({
       <SwipeMatch<CandidatePreview>
         data={professionals}
         handleScrollEnd={setNextPage}
-        onMatchSuccess={(name) => {
+        onMatchSuccess={(name, id, fotoperfil, idMatch) => {
           setMatchedCandidateName(name);
+          setMatchedCandidateId(id);
+          setMatchedCandidateFotoPerfil(fotoperfil);
+          setIdMatch(idMatch);
           setMatchModalVisible(true);
         }}
         renderItem={({ item, handleScrollEnabled }) => (
@@ -108,13 +115,22 @@ const RecruiterSwipeMatchScreen = ({
           </CandidateCard>
         )}
       />
+
       <MatchModal
         visible={matchModalVisible}
         candidateName={matchedCandidateName}
         onDismiss={() => setMatchModalVisible(false)}
         onChatPress={() => {
           setMatchModalVisible(false);
-          (navigation as any).navigate(ROUTES.RECRUITER_MENSAJERIA_TAB);
+
+          navigation.navigate(ROUTES.RECRUITER_CONVERSACION, {
+            title: matchedCandidateName,
+            myName: user?.nombre || '',
+            myAvatarUrl: user?.fotoperfil || '',
+            otherAvatarUrl: matchedCandidateFotoPerfil,
+            idOfertaTrabajoMatch: idMatch,
+            idUsuarioProfesional: matchedCandidateId,
+          });
         }}
       />
     </View>

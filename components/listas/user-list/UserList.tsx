@@ -100,7 +100,7 @@ const UserList: React.FC<Props> = ({
       <FlatList<UserItemInfo>
         data={users}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString() + item.name}
+        keyExtractor={(item, index) => `${item.id.toString()}_${index}`}
         showsVerticalScrollIndicator={false}
         scrollEnabled={true}
         ListEmptyComponent={<List.Item title="No hay usuarios" />}

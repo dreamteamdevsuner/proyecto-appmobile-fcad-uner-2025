@@ -2,7 +2,6 @@ import {
   View,
   StyleSheet,
   TouchableWithoutFeedback,
-  KeyboardAvoidingView,
   Keyboard,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
@@ -20,6 +19,7 @@ import candidateService from '../services/users/Candidate';
 
 import { signIn } from '@services/apiAuth';
 import PUBLIC_NAVIGATOR_ROUTES from '@app/public/PUBLIC_NAVIGATOR_ROUTES';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 interface AuthFormProps {
   navigation: any;
@@ -101,113 +101,108 @@ const AuthForm = ({ navigation }: AuthFormProps) => {
         message="Login Error"
         handleHideSnackBar={handleHideSnackbar}
       ></AppSnackBar>
-      <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={30}>
-        <Formik
-          initialValues={loginForm}
-          onSubmit={(values) => handleLogin(values)}
-          validationSchema={formValidationSchema}
-          validateOnChange={true}
-        >
-          {({
-            handleChange,
-            handleBlur,
-            handleSubmit,
 
-            setFieldTouched,
-            values,
-            errors,
-            isValid,
-            dirty,
-            touched,
-            initialTouched,
-          }) => {
-            const handleTextInputBlur = (key: keyof LoginForm) => {
-              handleBlur(key);
-              Keyboard.dismiss();
-            };
+      <Formik
+        initialValues={loginForm}
+        onSubmit={(values) => handleLogin(values)}
+        validationSchema={formValidationSchema}
+        validateOnChange={true}
+      >
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
 
-            return (
-              <View style={authStyles.container}>
-                <FormInputWithHelper<LoginForm>
-                  formKey="email"
-                  value={values.email}
-                  placeholder="Escribí tu correo electrónico"
-                  key={'email'}
-                  label="Correo electrónico"
-                  onBlur={() => handleTextInputBlur('email')}
-                  onFocus={() => setFieldTouched('email', true)}
-                  onChangeText={handleChange('email')}
-                  keyboardType="email-address"
-                  errorCondition={
-                    Boolean(touched.email && errors.email) || false
+          setFieldTouched,
+          values,
+          errors,
+          isValid,
+          dirty,
+          touched,
+          initialTouched,
+        }) => {
+          const handleTextInputBlur = (key: keyof LoginForm) => {
+            handleBlur(key);
+            Keyboard.dismiss();
+          };
+
+          return (
+            <View style={authStyles.container}>
+              <FormInputWithHelper<LoginForm>
+                formKey="email"
+                value={values.email}
+                placeholder="Escribí tu correo electrónico"
+                key={'email'}
+                label="Correo electrónico"
+                onBlur={() => handleTextInputBlur('email')}
+                onFocus={() => setFieldTouched('email', true)}
+                onChangeText={handleChange('email')}
+                keyboardType="email-address"
+                errorCondition={Boolean(touched.email && errors.email) || false}
+                errorMessage={errors.email ?? ''}
+              ></FormInputWithHelper>
+              <FormInputWithHelper<LoginForm>
+                formKey="password"
+                value={values.password}
+                placeholder="Escribí tu contraseña"
+                secureTextEntry={!passwordVisible}
+                right={
+                  <TextInput.Icon
+                    icon={passwordVisible ? 'eye-off-outline' : 'eye-outline'}
+                    onPress={() => setPasswordVisible(!passwordVisible)}
+                  />
+                }
+                key={'password'}
+                label="Contraseña"
+                onBlur={() => handleTextInputBlur('password')}
+                onFocus={() => setFieldTouched('password', true)}
+                onChangeText={handleChange('password')}
+                errorCondition={
+                  Boolean(touched.password && errors.password) || false
+                }
+                errorMessage={errors.password ?? ''}
+              ></FormInputWithHelper>
+
+              <View style={authStyles.forgotPasswordContainer}>
+                <TouchableWithoutFeedback
+                  style={authStyles.forgotPassword}
+                  onPress={() =>
+                    navigation.navigate(PUBLIC_NAVIGATOR_ROUTES.RESET_PASSWORD)
                   }
-                  errorMessage={errors.email ?? ''}
-                ></FormInputWithHelper>
-                <FormInputWithHelper<LoginForm>
-                  formKey="password"
-                  value={values.password}
-                  placeholder="Escribí tu contraseña"
-                  secureTextEntry={!passwordVisible} 
-                  right={
-                    <TextInput.Icon 
-                      icon={passwordVisible ? "eye-off-outline" : "eye-outline"}
-                      onPress={() => setPasswordVisible(!passwordVisible)}
-                    />
-                  }
-                  key={'password'}
-                  label="Contraseña"
-                  onBlur={() => handleTextInputBlur('password')}
-                  onFocus={() => setFieldTouched('password', true)}
-                  onChangeText={handleChange('password')}
-                  errorCondition={
-                    Boolean(touched.password && errors.password) || false
-                  }
-                  errorMessage={errors.password ?? ''}
-                ></FormInputWithHelper>
-
-                <View style={authStyles.forgotPasswordContainer}>
-                  <TouchableWithoutFeedback
-                    style={authStyles.forgotPassword}
-                    onPress={() =>
-                      navigation.navigate(
-                        PUBLIC_NAVIGATOR_ROUTES.RESET_PASSWORD,
-                      )
-                    }
-                  >
-                    <Text
-                      variant="labelMedium"
-                      style={{
-                        // borderBottomColor: 'black',
-                        borderBottomWidth: 1,
-                        color: '#b58df1',
-                        fontWeight: 'bold',
-                        top: -10,
-                      }}
-                    >
-                      ¿Olvidaste tu contraseña ?
-                    </Text>
-                  </TouchableWithoutFeedback>
-                </View>
-
-                <Button
-                  mode="contained"
-                  style={{
-                    backgroundColor: '#BEB52C',
-                    opacity: (dirty && !isValid) || !dirty ? 0.5 : 1,
-                  }}
-                  onPress={() => {
-                    Keyboard.dismiss();
-                    handleSubmit();
-                  }}
-                  disabled={(dirty && !isValid) || !dirty}
                 >
-                  <Text style={{ color: '#1D1C21' }}>Iniciar sesión</Text>
-                </Button>
+                  <Text
+                    variant="labelMedium"
+                    style={{
+                      // borderBottomColor: 'black',
+                      borderBottomWidth: 1,
+                      color: '#b58df1',
+                      fontWeight: 'bold',
+                      top: -10,
+                    }}
+                  >
+                    ¿Olvidaste tu contraseña ?
+                  </Text>
+                </TouchableWithoutFeedback>
               </View>
-            );
-          }}
-        </Formik>
-      </KeyboardAvoidingView>
+
+              <Button
+                mode="contained"
+                style={{
+                  backgroundColor: '#BEB52C',
+                  opacity: (dirty && !isValid) || !dirty ? 0.5 : 1,
+                }}
+                onPress={() => {
+                  Keyboard.dismiss();
+                  handleSubmit();
+                }}
+                disabled={(dirty && !isValid) || !dirty}
+              >
+                <Text style={{ color: '#1D1C21' }}>Iniciar sesión</Text>
+              </Button>
+            </View>
+          );
+        }}
+      </Formik>
     </>
   );
 };
