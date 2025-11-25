@@ -13,6 +13,7 @@ import { DataContext } from '@providers/DataContext';
 import { useAuth } from '@appContext/authContext';
 import { OfertaValues, Empresa } from '@models/index';
 import { getEmpresas } from '@services/EmpresaService';
+import { useKeyboardHandler } from 'react-native-keyboard-controller';
 
 const ofertaSchema = Yup.object().shape({
   titulo: Yup.string().required('El título es obligatorio'),
@@ -45,6 +46,11 @@ const initialValues: OfertaValues = {
 };
 
 const CrearOferta = ({ navigation, editing = false, data = null }: any) => {
+  useKeyboardHandler({
+    onMove: (e) => {},
+    onStart: (e) => {},
+    onEnd: (e) => {},
+  });
   const {
     modalidad: modalidadList,
     tipoJornada: jornadaList,

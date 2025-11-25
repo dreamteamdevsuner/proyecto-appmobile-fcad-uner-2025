@@ -37,6 +37,9 @@ const CandidateNavigator = () => {
       screenOptions={{
         tabBarActiveTintColor: '#BEB52C',
         tabBarInactiveTintColor: 'gray',
+        tabBarStyle: {
+          height: 70,
+        },
       }}
     >
       <Tab.Screen
@@ -45,13 +48,10 @@ const CandidateNavigator = () => {
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <Image
-              source={require('../../../../assets/icons/icon-job-13.png')}
-              style={{
-                width: size,
-                height: size,
-                tintColor: color, // así respeta el color activo/inactivo
-              }}
+            <MaterialCommunityIcons
+              name="briefcase-search-outline"
+              size={size}
+              color={color}
             />
           ),
         }}
