@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_KEY = process.env.EXPO_PUBLIC_API_KEY_DE_CLOUDMERSIVE;
+const API_KEY = process.env.API_KEY_DE_CLOUDMERSIVE;
 const API_URL = 'https://api.cloudmersive.com/image/nsfw/classify';
 
 
