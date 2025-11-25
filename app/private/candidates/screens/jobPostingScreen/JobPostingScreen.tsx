@@ -37,10 +37,7 @@ interface JobPostingScreenProps {
   route: RouteProp<ParamListBase> & { params: JobOfferRequiredParams };
 }
 
-function JobPostingScreen<
-  T extends ParamListBase = CandidateSwipeStackRootParams,
-  K extends keyof T = ROUTES.CANDIDATE_JOB_OFFER_SCREEN,
->({ route }: JobPostingScreenProps) {
+function JobPostingScreen({ route }: JobPostingScreenProps) {
   const [showActions, setShowActions] = useState(false);
 
   const [loading, setLoading] = useState(false);
