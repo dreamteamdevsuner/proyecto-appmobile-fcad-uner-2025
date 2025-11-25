@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native';
-import React from 'react';
+import React, { useContext } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import ROUTES from './routes';
@@ -14,10 +14,12 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { PrivateStackParamList } from './types';
 import SwipeStack from './SwipeStack';
 import { Badge } from 'react-native-paper';
+import { RecruiterContext } from '@appContext/RecruiterContext';
 
 const Tab = createBottomTabNavigator<PrivateStackParamList>();
 
 const RecruiterNavigator = () => {
+  const { updated } = useContext(RecruiterContext);
   return (
     <Tab.Navigator
       screenOptions={{
@@ -32,6 +34,16 @@ const RecruiterNavigator = () => {
               size={size}
               color={color}
             ></MaterialCommunityIcons>
+            {updated && (
+              <Badge
+                style={{
+                  backgroundColor: color,
+                  position: 'absolute',
+                  top: -3,
+                }}
+                size={10}
+              ></Badge>
+            )}
           </>
         ),
       }}

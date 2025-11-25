@@ -33,7 +33,7 @@ export type CandidateTabParamList = {
 const Tab = createBottomTabNavigator<CandidateTabParamList>();
 
 const CandidateNavigator = () => {
-  const { updated, seenUpdate } = useContext(ProfessionalContext);
+  const { updated } = useContext(ProfessionalContext);
   return (
     <Tab.Navigator
       initialRouteName={ROUTES.CANDIDATE_HOME_TAB}

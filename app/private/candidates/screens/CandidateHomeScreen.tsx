@@ -18,7 +18,7 @@ const CandidateSwipeMatchScreen = () => {
   const {
     offers,
     loadingJobOffers: loading,
-    updated,
+
     seenUpdate,
     setNextPage,
   } = useContext(ProfessionalContext);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -17,6 +17,8 @@ import ROUTES from '../navigator/routes';
 import { RootStackParams } from '../navigator/SwipeStack';
 import { useAuth } from '@appContext/authContext';
 import MatchModal from '../../../../components/MatchModal';
+import { RecruiterContext } from '@appContext/RecruiterContext';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface RecruiterSwipeMatchScreenProps
   extends NativeStackScreenProps<
@@ -38,13 +40,24 @@ const RecruiterSwipeMatchScreen = ({
     useState('');
   const [idMatch, setIdMatch] = useState('');
 
+  // const {
+  //   data: { data: professionals },
+  //   loading,
+  //   setNextPage,
+  // } = usePaginatedData<CandidatePreview>(5, (page, itemsPerPage) =>
+  //   getCandidatesPreview(page, itemsPerPage, user?.id),
+  // );
+
   const {
-    data: { data: professionals },
-    loading,
+    professionals,
+    loadingProfessionals: loading,
+
+    seenUpdate,
     setNextPage,
-  } = usePaginatedData<CandidatePreview>(5, (page, itemsPerPage) =>
-    getCandidatesPreview(page, itemsPerPage, user?.id),
-  );
+  } = useContext(RecruiterContext);
+  useFocusEffect(() => {
+    seenUpdate();
+  });
 
   if (loading && (!professionals || professionals.length === 0)) {
     return (
