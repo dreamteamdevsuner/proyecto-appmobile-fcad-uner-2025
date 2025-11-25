@@ -306,7 +306,7 @@ const CrearOferta = ({ navigation, editing = false, data = null }: any) => {
                   }))}
                   placeholder="Selecciona modalidad"
                   zIndex={5000}
-                  listMode="MODAL"
+                  listMode="SCROLLVIEW"
                 />
                 {errors.modalidad && touched.modalidad && (
                   <Text style={{ color: 'red', marginBottom: 5 }}>
@@ -328,7 +328,7 @@ const CrearOferta = ({ navigation, editing = false, data = null }: any) => {
                   }))}
                   placeholder="Selecciona jornada"
                   zIndex={4000}
-                  listMode="MODAL"
+                  listMode="SCROLLVIEW"
                 />
                 {errors.jornada && touched.jornada && (
                   <Text style={{ color: 'red', marginBottom: 5 }}>
@@ -350,7 +350,7 @@ const CrearOferta = ({ navigation, editing = false, data = null }: any) => {
                   }))}
                   placeholder="Selecciona contrato"
                   zIndex={3000}
-                  listMode="MODAL"
+                  listMode="SCROLLVIEW"
                 />
                 {errors.contrato && touched.contrato && (
                   <Text style={{ color: 'red', marginBottom: 5 }}>
