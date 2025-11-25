@@ -7,6 +7,7 @@ import RecruiterNavigator from './recruiter/navigator/RecruiterNavigator';
 import { Role } from '@services/interfaces/TipoUsuario.interface';
 import { ProfessionalContextProvider } from '@appContext/ProfessionalContext';
 import { RecruiterContextProvider } from '@appContext/RecruiterContext';
+import { ProfileContext } from '../../appContext/ProfileContext';
 
 const PrivateHomeScreen = () => {
   const {

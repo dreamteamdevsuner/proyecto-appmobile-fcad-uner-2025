@@ -221,26 +221,26 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
     return [];
   }, [profileUser, navigator]);
 
-  const contextValue = useMemo(
-    () => ({
-      user: profileUser,
-      refreshing,
-      onRefresh,
-      isOwnProfile,
-      activeOffers,
-      pausedOffers,
-      closedOffers,
-    }),
-    [
-      profileUser,
-      refreshing,
-      onRefresh,
-      isOwnProfile,
-      activeOffers,
-      pausedOffers,
-      closedOffers,
-    ],
-  );
+  // const contextValue = useMemo(
+  //   () => ({
+  //     user: profileUser,
+  //     refreshing,
+  //     onRefresh,
+  //     isOwnProfile,
+  //     activeOffers,
+  //     pausedOffers,
+  //     closedOffers,
+  //   }),
+  //   [
+  //     profileUser,
+  //     refreshing,
+  //     onRefresh,
+  //     isOwnProfile,
+  //     activeOffers,
+  //     pausedOffers,
+  //     closedOffers,
+  //   ],
+  // );
 
   if (loading) {
     return (
@@ -272,135 +272,131 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
   }
 
   return (
-    <ProfileContext.Provider value={contextValue}>
-      <View style={styles.container}>
-        <View style={{ paddingVertical: 8 }}>
-          <ProfileHeader
-            key={profileUser.id + refreshing}
-            nombre={profileUser.nombre ?? ''}
-            rol={profileUser.rol ?? ''}
-            fotoperfil={profileUser.fotoPerfil ?? ''}
-            ciudad={profileUser.direccion?.ciudad ?? ''}
-            profileScreenType={
-              isOwnProfile
-                ? ProfileScreenType.RECRUITER_HOME_PROFILE // Asume un tipo, ajustar si es necesario
-                : ProfileScreenType.OTHER_PROFILE
-            }
-          />
+    // <ProfileContext.Provider value={contextValue}>
+    <View style={styles.container}>
+      <View style={{ paddingVertical: 8 }}>
+        <ProfileHeader
+          key={profileUser.id + refreshing}
+          nombre={profileUser.nombre ?? ''}
+          rol={profileUser.rol ?? ''}
+          fotoperfil={profileUser.fotoPerfil ?? ''}
+          ciudad={profileUser.direccion?.ciudad ?? ''}
+          profileScreenType={
+            isOwnProfile
+              ? ProfileScreenType.RECRUITER_HOME_PROFILE // Asume un tipo, ajustar si es necesario
+              : ProfileScreenType.OTHER_PROFILE
+          }
+        />
 
-          <Button
-            style={styles.botonDescargar}
-            mode="contained"
-            onPress={() => generarPDF(profileUser)}
-          >
-            Descargar CV PDF
-          </Button>
-          {isProfesional(profileUser) && horizontalChipsSkills.length > 0 && (
-            <HorizontalChips skills={horizontalChipsSkills} />
-          )}
-        </View>
-
-        <Tab.Navigator
-          style={{
-            flex: 1,
-            marginHorizontal: 8,
-            marginBottom: 16,
-            borderRadius: 30,
-          }}
-          initialRouteName={initialRouteName}
-          screenOptions={{
-            tabBarIndicatorStyle: {
-              height: 0,
-              backgroundColor: 'transparent',
-            },
-            tabBarLabel: ({ focused, children, color }) => (
-              <View style={{ position: 'relative', alignItems: 'center' }}>
-                <Text style={{ color }}>{children}</Text>
-                {focused && <View style={styles.customTabIndicator} />}
-              </View>
-            ),
-          }}
+        <Button
+          style={styles.botonDescargar}
+          mode="contained"
+          onPress={() => generarPDF(profileUser)}
         >
-          {isProfesional(profileUser) ? (
-            <>
-              <Tab.Screen
-                name={PROFILE_ROUTES.ABOUT_ME}
-                component={AboutMe}
-                options={{ title: 'Quien soy' }}
-              ></Tab.Screen>
-              <Tab.Screen
-                name={PROFILE_ROUTES.WHAT_I_DO}
-                component={WhatIDo}
-                options={{ title: 'Lo que hago' }}
-              ></Tab.Screen>
-            </>
-          ) : (
-            <>
-              <Tab.Screen
-                name={PROFILE_ROUTES.ACTIVE_OFFERS}
-                options={{ title: 'Activas' }}
-                component={OffersTab}
-                initialParams={{ type: 'published' }}
-              ></Tab.Screen>
-              <Tab.Screen
-                name={PROFILE_ROUTES.PAUSED_OFFERS}
-                options={{ title: 'Pausadas' }}
-                component={OffersTab}
-                initialParams={{ type: 'paused' }}
-              ></Tab.Screen>
-              <Tab.Screen
-                name={PROFILE_ROUTES.CLOSED_OFFERS}
-                options={{ title: 'Cerradas' }}
-                component={OffersTab}
-                initialParams={{ type: 'closed' }}
-              ></Tab.Screen>
-            </>
-          )}
-        </Tab.Navigator>
-
-        {showFab && (
-          <Portal>
-            <FAB.Group
-              open={open}
-              visible
-              icon={({ size, color }) =>
-                open ? (
-                  <MaterialCommunityIcons
-                    name="close"
-                    size={22}
-                    color="#A06FA6"
-                  />
-                ) : (
-                  <MaterialCommunityIcons
-                    name="plus"
-                    size={22}
-                    color="#1D1C21"
-                  />
-                )
-              }
-              backdropColor="#00000056"
-              variant="tertiary"
-              style={{
-                paddingBottom: 100,
-              }}
-              fabStyle={
-                open
-                  ? {
-                      backgroundColor: '#1D1C21',
-                      borderRadius: 36,
-                    }
-                  : {
-                      backgroundColor: '#A06FA6',
-                      borderRadius: 16,
-                    }
-              }
-              actions={fabActions}
-              onStateChange={onStateChange}
-            />
-          </Portal>
+          Descargar CV PDF
+        </Button>
+        {isProfesional(profileUser) && horizontalChipsSkills.length > 0 && (
+          <HorizontalChips skills={horizontalChipsSkills} />
         )}
       </View>
-    </ProfileContext.Provider>
+
+      <Tab.Navigator
+        style={{
+          flex: 1,
+          marginHorizontal: 8,
+          marginBottom: 16,
+          borderRadius: 30,
+        }}
+        initialRouteName={initialRouteName}
+        screenOptions={{
+          tabBarIndicatorStyle: {
+            height: 0,
+            backgroundColor: 'transparent',
+          },
+          tabBarLabel: ({ focused, children, color }) => (
+            <View style={{ position: 'relative', alignItems: 'center' }}>
+              <Text style={{ color }}>{children}</Text>
+              {focused && <View style={styles.customTabIndicator} />}
+            </View>
+          ),
+        }}
+      >
+        {isProfesional(profileUser) ? (
+          <>
+            <Tab.Screen
+              name={PROFILE_ROUTES.ABOUT_ME}
+              component={AboutMe}
+              options={{ title: 'Quien soy' }}
+            ></Tab.Screen>
+            <Tab.Screen
+              name={PROFILE_ROUTES.WHAT_I_DO}
+              component={WhatIDo}
+              options={{ title: 'Lo que hago' }}
+            ></Tab.Screen>
+          </>
+        ) : (
+          <>
+            <Tab.Screen
+              name={PROFILE_ROUTES.ACTIVE_OFFERS}
+              options={{ title: 'Activas' }}
+              component={OffersTab}
+              initialParams={{ type: 'published' }}
+            ></Tab.Screen>
+            <Tab.Screen
+              name={PROFILE_ROUTES.PAUSED_OFFERS}
+              options={{ title: 'Pausadas' }}
+              component={OffersTab}
+              initialParams={{ type: 'paused' }}
+            ></Tab.Screen>
+            <Tab.Screen
+              name={PROFILE_ROUTES.CLOSED_OFFERS}
+              options={{ title: 'Cerradas' }}
+              component={OffersTab}
+              initialParams={{ type: 'closed' }}
+            ></Tab.Screen>
+          </>
+        )}
+      </Tab.Navigator>
+
+      {showFab && (
+        <Portal>
+          <FAB.Group
+            open={open}
+            visible
+            icon={({ size, color }) =>
+              open ? (
+                <MaterialCommunityIcons
+                  name="close"
+                  size={22}
+                  color="#A06FA6"
+                />
+              ) : (
+                <MaterialCommunityIcons name="plus" size={22} color="#1D1C21" />
+              )
+            }
+            backdropColor="#00000056"
+            variant="tertiary"
+            style={{
+              paddingBottom: 100,
+            }}
+            fabStyle={
+              open
+                ? {
+                    backgroundColor: '#1D1C21',
+                    borderRadius: 36,
+                  }
+                : {
+                    backgroundColor: '#A06FA6',
+                    borderRadius: 16,
+                  }
+            }
+            actions={fabActions}
+            onStateChange={onStateChange}
+          />
+        </Portal>
+      )}
+    </View>
+    // </ProfileContext.Provider>
   );
 };
 
