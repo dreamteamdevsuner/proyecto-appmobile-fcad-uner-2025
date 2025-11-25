@@ -54,6 +54,9 @@ const FavoritosInteresantesScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleSelectOferta = (oferta: OfertaItem) => {
     console.log('Ver oferta pendiente:', oferta.id);
+    navigation.navigate(ROUTES.CANDIDATE_TAB_JOB_OFFER_SCREEN, {
+      jobOfferId: oferta.id.toString(),
+    });
   };
 
   return (
