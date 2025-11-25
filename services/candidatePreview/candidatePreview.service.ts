@@ -117,7 +117,7 @@ export const getCandidatePreview = async (
 
     const { data: usuarios, error: usuariosInfoError } = await supabase
       .from('usuario')
-      .select('id, nombre, apellido, fotoperfil, bio, iddireccion(ciudad)')
+      .select('id, nombre, apellido, fotoperfil, bio, rol, iddireccion(ciudad)')
       .in('id', idsUsuarios);
 
     if (usuariosInfoError || !usuarios) {
