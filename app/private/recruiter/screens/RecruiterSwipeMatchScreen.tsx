@@ -75,44 +75,46 @@ const RecruiterSwipeMatchScreen = ({
           setMatchModalVisible(true);
         }}
         renderItem={({ item, handleScrollEnabled }) => (
-          <CandidateCard item={item} {...{ handleScrollEnabled }}>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate(
-                  ROUTES.RECRUITER_CANDIDATE_PROFILE_PREVIEW,
-                  {
-                    userId: item.id,
-                    bio: item.bio,
-                    fotoperfil: item.fotoperfil,
-                  },
-                )
-              }
-            >
-              <View
-                style={{
-                  alignContent: 'center',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <CandidateCard item={item} {...{ handleScrollEnabled }}>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate(
+                    ROUTES.RECRUITER_CANDIDATE_PROFILE_PREVIEW,
+                    {
+                      userId: item.id,
+                      bio: item.bio,
+                      fotoperfil: item.fotoperfil,
+                    },
+                  )
+                }
               >
-                <IconButton
-                  icon="plus-circle-outline"
-                  iconColor="#e0e0e0ff"
-                  size={24}
-                  onPress={() =>
-                    navigation.navigate(
-                      ROUTES.RECRUITER_CANDIDATE_PROFILE_PREVIEW,
-                      {
-                        userId: item.id,
-                        bio: item.bio,
-                        fotoperfil: item.fotoperfil,
-                      },
-                    )
-                  }
-                />
-              </View>
-            </TouchableOpacity>
-          </CandidateCard>
+                <View
+                  style={{
+                    alignContent: 'center',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <IconButton
+                    icon="plus-circle-outline"
+                    iconColor="#e0e0e0ff"
+                    size={24}
+                    onPress={() =>
+                      navigation.navigate(
+                        ROUTES.RECRUITER_CANDIDATE_PROFILE_PREVIEW,
+                        {
+                          userId: item.id,
+                          bio: item.bio,
+                          fotoperfil: item.fotoperfil,
+                        },
+                      )
+                    }
+                  />
+                </View>
+              </TouchableOpacity>
+            </CandidateCard>
+          </View>
         )}
       />
 
