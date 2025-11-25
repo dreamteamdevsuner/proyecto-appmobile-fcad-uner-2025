@@ -17,13 +17,10 @@ import ROUTES from '../navigator/routes';
 import { RootStackParams } from '../navigator/SwipeStack';
 import { useAuth } from '@appContext/authContext';
 import MatchModal from '../../../../components/MatchModal';
-import { PrivateStackParamList } from '../navigator/types';
-
-type CombinedParams = RootStackParams & PrivateStackParamList;
 
 interface RecruiterSwipeMatchScreenProps
   extends NativeStackScreenProps<
-    CombinedParams,
+    RootStackParams,
     ROUTES.RECRUITER_SWIPE_MATCH_SCREEN
   > {}
 
@@ -125,16 +122,14 @@ const RecruiterSwipeMatchScreen = ({
         onDismiss={() => setMatchModalVisible(false)}
         onChatPress={() => {
           setMatchModalVisible(false);
-          (navigation as any).navigate(ROUTES.RECRUITER_MENSAJERIA_TAB, {
-            screen: ROUTES.RECRUITER_CONVERSACION,
-            params: {
-              title: matchedCandidateName,
-              myName: user?.nombre,
-              myAvatarUrl: user?.fotoperfil,
-              otherAvatarUrl: matchedCandidateFotoPerfil,
-              idOfertaTrabajoMatch: idMatch,
-              idUsuarioProfesional: matchedCandidateId,
-            },
+
+          navigation.navigate(ROUTES.RECRUITER_CONVERSACION, {
+            title: matchedCandidateName,
+            myName: user?.nombre || '',
+            myAvatarUrl: user?.fotoperfil || '',
+            otherAvatarUrl: matchedCandidateFotoPerfil,
+            idOfertaTrabajoMatch: idMatch,
+            idUsuarioProfesional: matchedCandidateId,
           });
         }}
       />
