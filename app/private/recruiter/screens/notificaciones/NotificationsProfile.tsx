@@ -35,17 +35,14 @@ export default function NotificationsProfile() {
   }, [state.user?.id]);
 
   const handlePress = async (notif: any) => {
-    // 🔹 Actualizamos visualmente antes de la llamada
     setNotifications((prev) =>
       prev.map((n) =>
         n.id === notif.id ? { ...n, idestadonotificacion: 3 } : n,
       ),
     );
 
-    // 🔹 Marcamos como leída en la base
     await markNotificationAsRead(notif.id);
 
-    // 🔹 Navegamos según tipo
     switch (notif.tipo) {
       case 'match':
         navigation.navigate(ROUTES.RECRUITER_FAVORITOS_OFERTA, {
@@ -103,6 +100,7 @@ export default function NotificationsProfile() {
           time: timeAgo(n.created_at ?? ''),
           tipo: n.tipo,
           read: n.idestadonotificacion === 3,
+          idofertatrabajo: n.idofertatrabajo,
         }))}
         onSelectOferta={handlePress}
         onDeleteOferta={handleDelete}

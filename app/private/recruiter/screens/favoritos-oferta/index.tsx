@@ -65,7 +65,7 @@ const FavoritosOferta: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [route.params?.ofertaId]);
 
   const handleSelectUser = (user: UserItemInfo) => {
     navigation.navigate(CAND_ROUTES.CANDIDATE_PROFILE, {
