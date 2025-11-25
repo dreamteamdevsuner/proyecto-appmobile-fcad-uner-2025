@@ -92,7 +92,7 @@ const useSwipeMatch = ({
       const timestamp = new Date();
 
       if (idUserPro) {
-        const msgPro = `¡Felicitaciones! Tu perfil interesó para el puesto: ${tituloOferta}`;
+        const msgPro = `¡Felicitaciones! 💖💼 Tu perfil interesó para el puesto: ${tituloOferta}`;
 
         notificationsToInsert.push({
           id: uuid.v4().toString(),
@@ -107,7 +107,7 @@ const useSwipeMatch = ({
 
         if (tokenPro) {
           console.log('🚀 Enviando push al Profesional:', tokenPro);
-          await sendPushNotification(tokenPro, '¡Es un Match! 🎉', msgPro, {
+          await sendPushNotification(tokenPro, '¡Es un Match! 💼🎉', msgPro, {
             type: 'match',
             offerId: ofertaId,
           });

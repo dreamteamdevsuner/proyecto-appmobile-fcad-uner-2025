@@ -108,14 +108,20 @@ export default function NotificationsProfile() {
         }))}
         onSelectOferta={handlePress}
         onDeleteOferta={handleDelete}
+        showDivider={true}
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 10, flex: 1 },
-  loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  container: { padding: 10, flex: 1, backgroundColor: '#0A090F' },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#000',
+  },
   noUsers: {
     fontSize: 16,
     marginTop: 20,

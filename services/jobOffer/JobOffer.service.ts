@@ -72,6 +72,38 @@ export const getJobOffer = async (
   }
 };
 
+export const getJobOfferIdsFromUser = async (userId: string) => {
+  if (!userId) throw Error('No user');
+  try {
+    const { data: publicacionesFromUser, error: publicacionesFromUserError } =
+      await supabase.from('publicacion').select('id').eq('idusuario', userId);
+
+    if (publicacionesFromUserError) {
+      console.log('Error getting publicaciones');
+      throw Error('Error getting publicaciones');
+    }
+    const formattedPublicacionesId = publicacionesFromUser.map<string[]>(
+      (pub) => pub.id,
+    );
+
+    const { data: ofertasTrabajoFromUser, error: errorOfertasTrabajoFromUser } =
+      await supabase
+        .from('ofertatrabajo')
+        .select('id')
+        .in('idpublicacion', formattedPublicacionesId);
+    if (errorOfertasTrabajoFromUser) {
+      console.log('Error getting ofertas de trabajo');
+      throw Error('Error getting ofertas de trabajo');
+    }
+
+    return ofertasTrabajoFromUser.map((el) => el.id);
+  } catch (err) {
+    const parsedError = err as unknown as PostgrestError;
+
+    throw Error(parsedError.message);
+  }
+};
+
 /* Código anterior
 import { DBJobPreview } from '@database/DBJobPreview';
 import { supabase } from '../../supabase/supabaseClient';

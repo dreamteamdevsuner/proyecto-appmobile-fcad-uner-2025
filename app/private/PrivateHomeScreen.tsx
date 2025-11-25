@@ -5,6 +5,8 @@ import { useAuth } from '../../appContext/authContext';
 import CandidateNavigator from './candidates/navigator/CandidateNavigator';
 import RecruiterNavigator from './recruiter/navigator/RecruiterNavigator';
 import { Role } from '@services/interfaces/TipoUsuario.interface';
+import { ProfessionalContextProvider } from '@appContext/ProfessionalContext';
+import { RecruiterContextProvider } from '@appContext/RecruiterContext';
 
 const PrivateHomeScreen = () => {
   const {
@@ -23,9 +25,13 @@ const PrivateHomeScreen = () => {
   }
 
   return user?.tipousuario.nombre === Role.PROFESIONAL ? (
-    <CandidateNavigator></CandidateNavigator>
+    <ProfessionalContextProvider>
+      <CandidateNavigator></CandidateNavigator>
+    </ProfessionalContextProvider>
   ) : (
-    <RecruiterNavigator></RecruiterNavigator>
+    <RecruiterContextProvider>
+      <RecruiterNavigator></RecruiterNavigator>
+    </RecruiterContextProvider>
   );
 };
 

@@ -89,7 +89,7 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
   useFocusEffect(
     useCallback(() => {
       fetchDatos();
-    }, [user]),
+    }, [user?.id]),
   );
 
   const handleSelectOferta = (oferta: OfertaItem) => {

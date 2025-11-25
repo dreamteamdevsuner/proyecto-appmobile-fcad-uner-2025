@@ -65,9 +65,7 @@ const ProfileScreenShared: React.FC<Props> = ({ route, navigation }) => {
     onRefresh,
     refreshing,
   } = useUserProfile(searchId);
-  useEffect(() => {
-    console.log('profileUser updated in screen:', profileUser);
-  }, [profileUser]);
+  useEffect(() => {}, [profileUser]);
 
   const onRefreshRef = useRef(onRefresh);
   useEffect(() => {
