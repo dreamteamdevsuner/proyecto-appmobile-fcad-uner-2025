@@ -12,9 +12,27 @@ import { StyleSheet } from 'react-native';
 import { Surface, Avatar, Divider } from 'react-native-paper';
 import { useProfileContext } from '@appContext/ProfileContext';
 import { toTitleCase } from '@utils/titleCase';
+import { getMonthName } from '@utils/getMonthName';
 
 export const AboutMe = () => {
   const { user, refreshing, onRefresh } = useProfileContext();
+
+  /**
+   * Formatea una fecha en formato AAAA-MM-DD a "Mes. AAAA"
+   * @param dateString fecha en formato AAAA-MM-DD o similar
+   * @returns string formateado como "Sep. 2023" o cadena vacía si es inválida
+   */
+  const formatDate = (dateString: string): string => {
+    if (!dateString) return '';
+    try {
+      const date = new Date(dateString);
+      const month = getMonthName(date.getMonth());
+      const year = date.getFullYear();
+      return `${month} ${year}`;
+    } catch {
+      return dateString;
+    }
+  };
 
   if (!user) {
     return <ActivityIndicator />;
@@ -48,9 +66,9 @@ export const AboutMe = () => {
         <Text style={styles.title}>Estudios formales:</Text>
         {user!.estudios?.map((study, idx) => (
           <Text key={idx} style={styles.textContent}>
-            {study.fechainicio ? `${study.fechainicio} - ` : ''}
-            {study.fechafin ?? 'Act.'}: {study.titulo} (
-            {study.nombreinstitucion ?? ''})
+            {study.fechainicio ? `${formatDate(study.fechainicio)} - ` : ''}
+            {study.fechafin ? formatDate(study.fechafin) : 'Act.'}:{' '}
+            {study.titulo} ({study.nombreinstitucion ?? ''})
           </Text>
         ))}
       </Surface>
@@ -72,7 +90,10 @@ export const AboutMe = () => {
             <Text style={styles.title}>Experiencia laboral:</Text>
             {user!.experiencia?.map((exp, idx) => (
               <Text key={idx} style={styles.textContent}>
-                {exp}
+                {exp.fechainicio ? `${formatDate(exp.fechainicio)} - ` : ''}
+                {exp.fechafin ? formatDate(exp.fechafin) : 'Act.'}:{' '}
+                {exp.posicion} en
+                {exp.nombreempresa ? ` ${exp.nombreempresa}` : ''}
               </Text>
             ))}
           </Surface>

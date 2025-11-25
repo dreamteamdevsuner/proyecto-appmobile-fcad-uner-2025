@@ -8,9 +8,10 @@ import {
   ImageStyle,
 } from 'react-native';
 import React from 'react';
+import { Text } from 'react-native-paper';
 
 interface JobsyHeaderProps {
-  headerTitle: string;
+  headerTitle?: string;
   propStyles?: {
     [key: string]: StyleProp<ViewStyle>;
     logo?: StyleProp<ImageStyle>;

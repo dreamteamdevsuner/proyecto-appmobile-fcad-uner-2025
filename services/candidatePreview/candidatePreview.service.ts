@@ -33,7 +33,6 @@ export const getCandidatePreview = async (
       .eq('activo', true)
       .eq('idestadooferta', 1)
       .eq('publicacion.idusuario', idUsuarioReclutador);
-
     if (ofertasError) {
       console.error('Error obteniendo ofertas');
       return {
@@ -132,6 +131,39 @@ export const getCandidatePreview = async (
         prevPage: null,
       };
     }
+    type SkillRow = {
+      idprofesional: string;
+      idskill: { nombre: string }; // single object, not array
+    };
+    const { data: skillsList, error: skillsListError } = (await supabase
+      .from('profesionalskill')
+      .select('idskill(nombre) , idprofesional')
+      .in('idprofesional', idsProfesionales)) as {
+      data: SkillRow[] | null;
+      error: any;
+    };
+
+    if (skillsListError) {
+      console.log(skillsListError);
+      throw Error('error fetching skills list');
+    }
+
+    const parsedSkillLists = skillsList?.reduce(
+      (
+        acc: {
+          [key: string]: { nombre: any }[];
+        },
+        curr,
+      ) => {
+        if (!acc?.[curr.idprofesional]) {
+          acc[curr.idprofesional] = [curr.idskill];
+        } else {
+          acc[curr.idprofesional].push(curr.idskill);
+        }
+        return acc;
+      },
+      {},
+    );
 
     const result: CandidateWithOffer[] = matches
       .map((m) => {
@@ -145,6 +177,7 @@ export const getCandidatePreview = async (
 
         const fila = {
           ...usuario,
+          skills: parsedSkillLists?.[m.idprofesional],
           profesionalId: m.idprofesional,
           ofertaId: oferta.id,
           ofertaTitulo: oferta.titulo || 'Oferta',
@@ -170,6 +203,7 @@ export const getCandidatePreview = async (
       prevPage: page > 1 ? page - 1 : null,
     };
   } catch (err) {
+    console.log('ERR', err);
     console.error('Error interno en getCandidatePreview');
     return {
       data: [],

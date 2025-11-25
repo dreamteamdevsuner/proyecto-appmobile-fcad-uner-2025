@@ -131,7 +131,7 @@ function JobOfferCard({ item }: JobOfferCardProps) {
         <HrAbout
           firstName={item.idpublicacion.idusuario.nombre}
           location={item.id}
-          lastName={item.idpublicacion.idusuario.nombre}
+          lastName={item.idpublicacion.idusuario.apellido}
           photoKey={item.idpublicacion.idusuario.fotoperfil}
           cuentaRegresiva={rangeDate.toString()}
           recruiterProfession={item.idpublicacion.idusuario.rol}
