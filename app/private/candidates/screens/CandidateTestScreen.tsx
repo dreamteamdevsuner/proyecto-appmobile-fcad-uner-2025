@@ -14,7 +14,7 @@ const CandidateTestScreen: React.FC<Props> = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Oferta de empleo</Text>
+      <Text style={styles.title}>Oferta de empleo here</Text>
     </View>
   );
 };
