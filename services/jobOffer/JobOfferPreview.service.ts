@@ -90,23 +90,41 @@ const emptyPagination = () => ({
   prevPage: null,
 });
 
-/* Código anterior
-import { DBJobPreview } from '@database/DBJobPreview';
-import { supabase } from '../../supabase/supabaseClient';
-import {
-  getEntityPreview,
-  Pagination,
-} from '@services/shared/entityPreviewService';
+export const getJobOfferPreview = async (
+  idJobOffer: string,
+): Promise<DBJobPreview> => {
+  try {
+    // No usamos getEntityPreview para tener control total del filtro .not()
+    let { data, error } = await supabase
+      .from('ofertatrabajo')
+      .select(
+        `
+        *,
+        idempresa(nombre),
+        iddireccion(ciudad),
+        idtipojornada(nombre),
+        idmodalidad(nombre),
+        idpublicacion(
+          fechacreacion, 
+          idusuario(nombre, apellido, fotoperfil, rol, iddireccion(ciudad))
+        )
+      `,
+        { count: 'exact' },
+      )
+      .eq('id', idJobOffer)
+      .eq('activo', true)
+      .single();
 
-export const getJobOffersPreview = async (
-  page = 1,
-  itemsPerPage = 5,
-): Promise<Pagination<DBJobPreview>> => {
-  return getEntityPreview<DBJobPreview>(
-    page,
-    itemsPerPage,
-    'ofertatrabajo',
-    '* , idempresa(nombre) , iddireccion(ciudad)   , idtipojornada(nombre) , idmodalidad(nombre) , idpublicacion(fechacreacion , idusuario(nombre , apellido ,fotoperfil , rol ,  iddireccion( ciudad)))',
-  );
+    if (error) {
+      throw Error('Error fetching job offer');
+    }
+    if (!data) {
+      throw Error('Job offer not found');
+    }
+    return data as DBJobPreview;
+  } catch (err) {
+    console.error('Exception en getJobOfferPreview.');
+    const errorParsed = err as unknown as Error;
+    throw Error(errorParsed.message);
+  }
 };
-*/
