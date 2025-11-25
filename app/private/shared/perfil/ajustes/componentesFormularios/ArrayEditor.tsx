@@ -2,26 +2,23 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { FieldArray, FormikProps } from 'formik';
 import { Button, Checkbox } from 'react-native-paper';
-// Asegúrate de que esta ruta sea correcta según tu estructura
 import FormField from './FormField'; 
 
-// Definimos la estructura del mapa de campos
 interface FieldMap {
   titulo: string;
   subtitulo: string;
 }
 
-// Definimos los tipos de las props que recibe el componente
 interface ArrayEditorProps {
   formik: FormikProps<any>; 
-  name: string; // 'estudios' o 'trabajos'
-  title: string; // El título de la sección
-  itemTitleLabel: string; // Label para el input 1
-  itemSubtitleLabel: string; // Label para el input 2
-  fieldMap: FieldMap; // Objeto de mapeo { titulo: '...', subtitulo: '...' }
+  name: string; 
+  title: string; 
+  itemTitleLabel: string; 
+  itemSubtitleLabel: string; 
+  fieldMap: FieldMap; 
   onOpenCalendar: (index: number, field: string, arrayName: string) => void;
   getFechaDisplay: (date: any) => string | null;
-  styles: any; // Recibimos los estilos del componente padre
+  styles: any; 
 }
 
 const ArrayEditor: React.FC<ArrayEditorProps> = ({
@@ -36,7 +33,7 @@ const ArrayEditor: React.FC<ArrayEditorProps> = ({
   styles,
 }) => {
 
-  // Función para generar un item vacío dinámicamente
+
   const getEmptyItem = () => ({
     [fieldMap.titulo]: '',
     [fieldMap.subtitulo]: '',
@@ -45,12 +42,11 @@ const ArrayEditor: React.FC<ArrayEditorProps> = ({
     activo: false,
   });
 
-  // Lógica simple para singularizar el nombre (Estudios -> Estudio)
+
   const singularName = name.charAt(0).toUpperCase() + name.slice(1, -1);
 
   return (
     <View>
-      {/* Usamos Text con el estilo pasado por props en lugar de importar un componente externo */}
       
       <FieldArray name={name}>
         {(arrayHelpers) => (
@@ -120,7 +116,6 @@ const ArrayEditor: React.FC<ArrayEditorProps> = ({
                             `${name}[${index}].activo`,
                             nuevoEstado
                           );
-                          // Si se marca como activo, limpiamos la fecha fin
                           if (nuevoEstado) {
                             formik.setFieldValue(
                               `${name}[${index}].fechafin`,

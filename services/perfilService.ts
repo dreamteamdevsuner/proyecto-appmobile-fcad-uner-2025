@@ -233,7 +233,6 @@ export const cargarDatosInicialesPerfil = async (
         };
       });
     } 
-    console.log("Trabajos limpios :", JSON.stringify(trabajos, null, 2));
 
     //Obtener enlaces redes
     const { data: enlacesBD } = await supabase
