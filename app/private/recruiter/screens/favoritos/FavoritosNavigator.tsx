@@ -3,7 +3,6 @@ import Favoritos from '.';
 import FavoritosOferta from '../favoritos-oferta';
 import ROUTES from '../../navigator/routes';
 import CAND_ROUTES from '../../../candidates/navigator/routes';
-import { KeyboardAvoidingView, Platform } from 'react-native';
 import ProfileScreen from '../../../candidates/screens/perfil';
 import { PrivateStackParamList as RecruiterStackParamList } from '../../navigator/types';
 import { PrivateStackParamList as CandidateStackParamList } from '../../../candidates/navigator/types';
@@ -14,41 +13,35 @@ type CombinedStackParamList = RecruiterStackParamList & CandidateStackParamList;
 const FavoritosStack = createNativeStackNavigator<CombinedStackParamList>();
 
 const FavoritosNavigator = () => (
-  <KeyboardAvoidingView
-    style={{ flex: 1 }}
-    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    keyboardVerticalOffset={30}
-  >
-    <FavoritosStack.Navigator>
-      <FavoritosStack.Screen
-        name={ROUTES.RECRUITER_FAVORITOS}
-        component={Favoritos}
-        options={{ title: 'Favoritos' }}
-      />
-      <FavoritosStack.Screen
-        name={ROUTES.RECRUITER_FAVORITOS_OFERTA}
-        component={FavoritosOferta}
-        options={() => ({
-          title: 'Mis Matchs',
-          orientation: 'default',
-        })}
-      />
-      <FavoritosStack.Screen
-        name={ROUTES.RECRUITER_CONVERSACION}
-        component={ConversacionRecruiter}
-        options={({ route }) => ({
-          title: route.params?.title ?? 'Conversación',
-          orientation: 'default',
-        })}
-      />
-      <FavoritosStack.Screen
-        name={CAND_ROUTES.CANDIDATE_PROFILE}
-        component={ProfileScreen}
-        options={{
-          title: 'Favoritos',
-        }}
-      />
-    </FavoritosStack.Navigator>
-  </KeyboardAvoidingView>
+  <FavoritosStack.Navigator>
+    <FavoritosStack.Screen
+      name={ROUTES.RECRUITER_FAVORITOS}
+      component={Favoritos}
+      options={{ title: 'Favoritos' }}
+    />
+    <FavoritosStack.Screen
+      name={ROUTES.RECRUITER_FAVORITOS_OFERTA}
+      component={FavoritosOferta}
+      options={() => ({
+        title: 'Mis Matchs',
+        orientation: 'default',
+      })}
+    />
+    <FavoritosStack.Screen
+      name={ROUTES.RECRUITER_CONVERSACION}
+      component={ConversacionRecruiter}
+      options={({ route }) => ({
+        title: route.params?.title ?? 'Conversación',
+        orientation: 'default',
+      })}
+    />
+    <FavoritosStack.Screen
+      name={CAND_ROUTES.CANDIDATE_PROFILE}
+      component={ProfileScreen}
+      options={{
+        title: 'Favoritos',
+      }}
+    />
+  </FavoritosStack.Navigator>
 );
 export default FavoritosNavigator;

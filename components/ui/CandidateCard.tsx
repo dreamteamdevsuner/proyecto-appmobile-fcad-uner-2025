@@ -5,11 +5,15 @@ import {
   ViewStyle,
   FlatList,
   Image,
+  Dimensions,
 } from 'react-native';
 import React, { PropsWithChildren, useMemo } from 'react';
 import { Card, Chip, Icon, Surface, Text, useTheme } from 'react-native-paper';
 import { CandidatePreview } from '@database/DBCandidatePreview';
 import useImageSourceFallback from '../../hooks/useImageSourceFallback';
+
+
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export interface CandidateCardProps extends PropsWithChildren {
   item: CandidatePreview & { ofertaTitulo?: string }; // Oferta título
@@ -204,14 +208,11 @@ function CandidateCard({
     >
       {item.ofertaTitulo && (
         <View
-          style={{
-            ...localStyles.chipContainer,
-            ...{ position: 'absolute', top: -25 },
-          }}
+          style={localStyles.chipContainer}
         >
           <Chip
             mode="outlined"
-            textStyle={{ color: 'white' }}
+            textStyle={{ color:'#E0E0E0', fontWeight: 'bold', fontSize: 11 }}
             style={localStyles.chip}
           >
             {item.ofertaTitulo}
@@ -222,7 +223,7 @@ function CandidateCard({
       <View style={localStyles.headerRow}>
         <View style={localStyles.locationContainer}>
           <View style={localStyles.locationRow}>
-            <Icon source="map-marker-outline" size={14} color="#666" />
+            <Icon source="map-marker-outline" size={14} color="#888" />
             <Text variant="labelSmall" style={localStyles.locationText}>
               {item?.iddireccion?.ciudad ?? 'Unknown'}
             </Text>
@@ -245,10 +246,10 @@ function CandidateCard({
 
       {/* Info Section: Name & Role */}
       <View style={localStyles.infoSection}>
-        <Text variant="headlineSmall" style={localStyles.nameText}>
+        <Text variant="headlineSmall" style={localStyles.nameText} numberOfLines={1}>
           {item.nombre} {item.apellido}
         </Text>
-        <Text variant="bodyMedium" style={localStyles.roleText}>
+        <Text variant="bodyMedium" style={localStyles.roleText} numberOfLines={1}>
           {item.rol}
         </Text>
       </View>
@@ -257,7 +258,7 @@ function CandidateCard({
       <View style={localStyles.skillsSection}>
         <FlatList
           scrollEnabled={false}
-          data={item.skills}
+          data={item.skills?.slice(0, 3)}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={localStyles.skillsContent}
@@ -298,31 +299,35 @@ function CandidateCard({
 
 const localStyles = StyleSheet.create({
   cardContainer: {
-    backgroundColor: '#1a1a1aff', // Explicitly white to match the reference image
-    borderRadius: 35, // High border radius for that smooth look
+    backgroundColor: '#1D1C21', // Explicitly white to match the reference image
+    borderRadius: 30, // High border radius for that smooth look
     width: '90%',
+    height: SCREEN_HEIGHT * 0.46,
     alignSelf: 'center',
-    paddingVertical: 25,
-    paddingHorizontal: 15,
-    marginTop: 20,
+    marginTop: 30,
     marginBottom: 20,
+    paddingTop: 30, 
+    paddingBottom: 20,
+    paddingHorizontal: 15,    
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
+    position: 'relative', 
+    overflow: 'visible',
   },
   shadow: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+    elevation: 10,
   },
   // --- Header ---
   headerRow: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    marginBottom: 10,
-    paddingRight: 10,
+    marginTop: 20, 
+    paddingRight: 5,
   },
   locationContainer: {
     alignItems: 'flex-end',
@@ -330,28 +335,32 @@ const localStyles = StyleSheet.create({
   locationRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 2,
+    gap: 4,
   },
   locationText: {
     fontWeight: '700',
-    color: '#d3d3d3ff',
+    color: '#999',
+    fontSize: 12,
     textTransform: 'uppercase',
   },
   remoteText: {
     fontWeight: '400',
-    color: '#eeeeeeff',
+    color: '#666',
     fontSize: 10,
+    marginTop: 2,
   },
   // --- Avatar ---
   avatarSection: {
-    position: 'relative',
-    marginBottom: 20,
+    flex: 1, 
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 10,
   },
   avatar: {
-    width: 150,
-    height: 150,
-    borderRadius: 35, // Soft square (Squircle) look
-    backgroundColor: '#f0f0f0',
+    width: SCREEN_WIDTH * 0.43, 
+    height: SCREEN_WIDTH * 0.43,
+    borderRadius: 40, // Soft square (Squircle) look
+    backgroundColor: '#252525',
   },
   matchBadge: {
     position: 'absolute',
@@ -378,53 +387,59 @@ const localStyles = StyleSheet.create({
   // --- Info ---
   infoSection: {
     alignItems: 'center',
-    marginBottom: 20,
+    width: '100%',
+    marginTop: 15,
+    marginBottom: 15,
   },
   nameText: {
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#e0e0e0ff',
-    marginBottom: 2,
+    color: '#e9e9e9',
+    fontSize: 22,
+    marginBottom: -1,
   },
   roleText: {
-    color: '#666',
+    color: '#AAAAAA',
     textAlign: 'center',
     fontSize: 14,
+    fontWeight: '500',
+    marginTop: 2,
   },
   // --- Skills ---
   skillsSection: {
     width: '100%',
-    height: 40,
-    marginBottom: 15,
+    height: 30,
+    justifyContent: 'center',
+    marginBottom: 5,
   },
   skillsContent: {
     paddingHorizontal: 10,
     alignItems: 'center',
-    gap: 8,
+    gap: 3,
   },
   chip: {
-    backgroundColor: '#2c2c2c', // Dark pill background
-    borderRadius: 20,
-    height: 32,
+    backgroundColor: '#2c2c2c', 
+    height: 30,
+    borderWidth: 0,
   },
   chipContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 5,
-    paddingVertical: 8,
-    gap: 8,
-
+    position: 'absolute',
+    top: 10, 
     alignSelf: 'center',
+    zIndex: 99,
   },
-
   chipText: {
-    color: 'white',
-    fontSize: 11,
-    lineHeight: 18, // Adjusts vertical center of text in chip
+    color: '#E0E0E0',
+    fontSize: 10,
+    lineHeight: 18, 
   },
   // --- Footer ---
   actionSection: {
-    marginTop: 5,
-    opacity: 0.6,
+    height: 20, 
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 3,
   },
 });
 

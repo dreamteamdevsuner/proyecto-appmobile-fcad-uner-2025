@@ -1,43 +1,20 @@
 {
   "extends": "expo/tsconfig.base",
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "reactotron-env.d.ts"
-  ],
+  "include": ["**/*.ts", "**/*.tsx", "reactotron-env.d.ts"],
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@components/*": [
-        "./components/*"
-      ],
-      "@utils/*": [
-        "./utils/*"
-      ],
-      "@app/*": [
-        "./app/*"
-      ],
-      "@assets/*": [
-        "./assets/*"
-      ],
-      "@interfaces/*": [
-        "./interfaces/*"
-      ],
-      "@database/*": [
-        "./types/database/*"
-      ],
-      "@models/*": [
-        "./types/models/*"
-      ],
-      "@services/*": [
-        "./services/*"
-      ],
-      "@providers/*": [
-        "./providers/*"
-      ],
-      "@appContext/*": [
-        "./appContext/*"
-      ]
+      "@components/*": ["./components/*"],
+      "@utils/*": ["./utils/*"],
+      "@app/*": ["./app/*"],
+      "@assets/*": ["./assets/*"],
+      "@interfaces/*": ["./interfaces/*"],
+      "@database/*": ["./types/database/*"],
+      "@models/*": ["./types/models/*"],
+      "@services/*": ["./services/*"],
+      "@providers/*": ["./providers/*"],
+      "@appContext/*": ["./appContext/*"],
+      "@hooks/*": ["./hooks/*"]
     }
   }
 }
