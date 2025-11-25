@@ -20,7 +20,7 @@ const Tab = createBottomTabNavigator<PrivateStackParamList>();
 
 const RecruiterNavigator = () => {
   const { updated } = useContext(RecruiterContext);
-  console.log('RecruiterNavigator render. Updated is:', updated);
+
   return (
     <Tab.Navigator
       screenOptions={{

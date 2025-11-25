@@ -3,6 +3,7 @@ enum ROUTES {
   CANDIDATE_FAVORITOS_TAB = 'Favoritos',
   CANDIDATE_FAVORITOS = 'CandidateFavoritos',
   CANDIDATE_FAVORITOS_MATCHS = 'CandidateFavoritosMatchs',
+  CANDIDATE_TAB_JOB_OFFER_SCREEN = 'CandidateTabJobOfferScreen',
   CANDIDATE_FAVORITOS_INTERESANTES = 'CandidateFavoritosInteresantes',
   CANDIDATE_TEST = 'CandidateTest',
   CANDIDATE_PROFILE_TAB = 'CandidateProfileTab',
