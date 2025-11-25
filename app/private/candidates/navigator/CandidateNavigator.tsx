@@ -41,6 +41,9 @@ const CandidateNavigator = () => {
       screenOptions={{
         tabBarActiveTintColor: '#BEB52C',
         tabBarInactiveTintColor: 'gray',
+        tabBarStyle: {
+          height: 70,
+        },
       }}
     >
       <Tab.Screen
