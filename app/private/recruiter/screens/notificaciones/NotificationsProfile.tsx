@@ -103,6 +103,7 @@ export default function NotificationsProfile() {
           time: timeAgo(n.created_at ?? ''),
           tipo: n.tipo,
           read: n.idestadonotificacion === 3,
+          idofertatrabajo: n.idofertatrabajo,
         }))}
         onSelectOferta={handlePress}
         onDeleteOferta={handleDelete}
