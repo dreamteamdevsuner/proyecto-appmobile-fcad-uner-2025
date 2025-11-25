@@ -27,9 +27,8 @@ const FavoritosMatchsScreen: React.FC<Props> = ({ navigation }) => {
     try {
       setLoading(true);
       const data = await getOfertasPorEstadoProfesional(user.id, 2);
-
       const formateados: OfertaItem[] = data.map((item) => ({
-        id: Number(item.ofertaId),
+        id: item.ofertaId.toString(),
         title: item.titulo,
         subtitle: `Match con ${item.empresa}`,
       }));

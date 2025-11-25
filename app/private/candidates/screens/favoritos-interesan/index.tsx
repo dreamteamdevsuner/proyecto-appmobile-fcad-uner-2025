@@ -33,7 +33,7 @@ const FavoritosInteresantesScreen: React.FC<Props> = ({ navigation }) => {
       const data = await getOfertasPorEstadoProfesional(user.id, 1);
 
       const formateados: OfertaItem[] = data.map((item) => ({
-        id: Number(item.ofertaId),
+        id: item.ofertaId.toString(),
         title: item.titulo,
         subtitle: `En ${item.empresa}`,
       }));
