@@ -34,6 +34,7 @@ const Tab = createBottomTabNavigator<CandidateTabParamList>();
 
 const CandidateNavigator = () => {
   const { updated } = useContext(ProfessionalContext);
+
   return (
     <Tab.Navigator
       initialRouteName={ROUTES.CANDIDATE_HOME_TAB}

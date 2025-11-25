@@ -1,4 +1,10 @@
-import { createContext, PropsWithChildren, useEffect, useState } from 'react';
+import {
+  createContext,
+  PropsWithChildren,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { supabase } from '../supabase/supabaseClient';
 import { Idarea } from '../types/JobOfferFullDescription';
 import { RealtimeChannel, User } from '@supabase/supabase-js';
@@ -25,9 +31,7 @@ export const ProfessionalContextProvider = (
   props: ProfessionalContextProviderProps,
 ) => {
   const { currentUserId } = useGetCurrentUser();
-  const [subscription, setSubscription] = useState<RealtimeChannel | null>(
-    null,
-  );
+
   const {
     data: { data: offers },
     loading,
@@ -35,7 +39,11 @@ export const ProfessionalContextProvider = (
     loadNewDataFromSubscription,
   } = usePaginatedData<DBJobPreview>(5, getJobOffersPreview);
   const [updated, setUpdated] = useState<boolean>(false);
-
+  const loadNewDataFromSubscriptionRef = useRef(loadNewDataFromSubscription);
+  useEffect(() => {
+    loadNewDataFromSubscriptionRef.current = loadNewDataFromSubscription;
+  }, [loadNewDataFromSubscription]);
+  const channelRef = useRef<RealtimeChannel | null>(null);
   const subscribeToJobOffersUserArea = async (currentUserId: string) => {
     const { data: areaOfInterestUser, error: errorAreaOfInterestUser } =
       await supabase
@@ -58,17 +66,16 @@ export const ProfessionalContextProvider = (
           filter: `idarea=eq.${areaOfInterestUser.idarea}`,
         },
         async (payload) => {
-          console.log('published new offer');
           const newJobOfferPreview: DBJobPreview = await getJobOfferPreview(
             payload.new.id,
           );
-
-          loadNewDataFromSubscription(newJobOfferPreview);
           setUpdated(true);
+          loadNewDataFromSubscriptionRef.current(newJobOfferPreview);
+          // loadNewDataFromSubscription(newJobOfferPreview);
         },
       )
       .subscribe((status) => console.log('subscription', status));
-    setSubscription(channel);
+    channelRef.current = channel;
   };
 
   useEffect(() => {
@@ -76,9 +83,10 @@ export const ProfessionalContextProvider = (
       return;
     }
     subscribeToJobOffersUserArea(currentUserId);
+
     return () => {
-      if (subscription) {
-        subscription.unsubscribe();
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
       }
     };
   }, [currentUserId]);

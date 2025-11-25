@@ -1,4 +1,10 @@
-import { createContext, PropsWithChildren, useEffect, useState } from 'react';
+import {
+  createContext,
+  PropsWithChildren,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import useGetCurrentUser from '../hooks/useGetCurrentUser';
 
 import { supabase } from '../supabase/supabaseClient';
@@ -27,7 +33,6 @@ export const RecruiterContextProvider = (
   props: RecruiterContextProviderProps,
 ) => {
   const { currentUserId } = useGetCurrentUser();
-  const [subscription, setSubscription] = useState<RealtimeChannel>();
 
   const {
     state: { user },
@@ -41,10 +46,14 @@ export const RecruiterContextProvider = (
     getCandidatesPreview(page, itemsPerPage, user?.id),
   );
   const [updated, setUpdated] = useState<boolean>(false);
-
+  const loadNewDataFromSubscriptionRef = useRef(loadNewDataFromSubscription);
+  useEffect(() => {
+    loadNewDataFromSubscriptionRef.current = loadNewDataFromSubscription;
+  }, [loadNewDataFromSubscription]);
+  const channelRef = useRef<RealtimeChannel | null>(null);
   const subscribeToMatches = async (currentUserId: string) => {
     const jobOffersIds = await getJobOfferIdsFromUser(currentUserId);
-
+    console.log(jobOffersIds);
     const channel = supabase
       .channel('ofertatrabajomatch')
       .on(
@@ -56,6 +65,7 @@ export const RecruiterContextProvider = (
           filter: `idofertatrabajo=in.(${jobOffersIds.map((id) => `"${id}"`).join(',')})`,
         },
         async (payload) => {
+          console.log('PAYLOADDD');
           try {
             console.log('PAYLOAD');
             console.log('PAYLOAD', payload);
@@ -64,8 +74,10 @@ export const RecruiterContextProvider = (
               payload.new.idofertatrabajo,
             );
             if (profesional) {
-              loadNewDataFromSubscription(profesional);
+              console.log('proffff', profesional);
+              console.log('updating ');
               setUpdated(true);
+              loadNewDataFromSubscriptionRef.current(profesional);
             }
           } catch (error) {
             console.log(error);
@@ -76,7 +88,7 @@ export const RecruiterContextProvider = (
       .subscribe((status) => {
         console.log('subs on', status);
       });
-    setSubscription(channel);
+    channelRef.current = channel;
   };
   useEffect(() => {
     if (!currentUserId) {
@@ -84,8 +96,8 @@ export const RecruiterContextProvider = (
     }
     subscribeToMatches(currentUserId);
     return () => {
-      if (subscription) {
-        subscription.unsubscribe();
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
       }
     };
   }, [currentUserId]);

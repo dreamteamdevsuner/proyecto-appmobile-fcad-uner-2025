@@ -38,10 +38,6 @@ export const AboutMe = () => {
     return <ActivityIndicator />;
   }
 
-  console.log(user);
-  console.log('Estudios: ', user.estudios);
-  console.log('Exp: ', user.experiencia);
-
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}

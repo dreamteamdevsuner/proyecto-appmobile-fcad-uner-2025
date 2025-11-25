@@ -56,7 +56,9 @@ const RecruiterSwipeMatchScreen = ({
     setNextPage,
   } = useContext(RecruiterContext);
   useFocusEffect(() => {
-    seenUpdate();
+    setTimeout(() => {
+      seenUpdate();
+    }, 2000);
   });
 
   if (loading && (!professionals || professionals.length === 0)) {

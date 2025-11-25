@@ -85,7 +85,7 @@ const SwipeMatch = <
 
           if (!currentItem) return;
 
-          console.log('❤️ LIKE BTN PRESSED');
+          // console.log('❤️ LIKE BTN PRESSED');
 
           const currentOfferId = currentItem?.ofertaId || currentItem?.id;
           const targetProfesionalId = currentItem?.profesionalId;

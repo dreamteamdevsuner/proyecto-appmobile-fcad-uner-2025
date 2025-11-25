@@ -23,7 +23,9 @@ const CandidateSwipeMatchScreen = () => {
     setNextPage,
   } = useContext(ProfessionalContext);
   useFocusEffect(() => {
-    seenUpdate();
+    setTimeout(() => {
+      return seenUpdate();
+    }, 2500);
   });
 
   if (loading) return <ActivityIndicator size="large" color="#000" />;
