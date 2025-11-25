@@ -11,7 +11,9 @@ export type PrivateStackParamList = {
   [ROUTES.CANDIDATE_HOME_TAB]: NavigatorScreenParams<CandidateSwipeStackRootParams>;
   [ROUTES.CANDIDATE_SETTING]: undefined;
   [ROUTES.CANDIDATE_PROFILE_TAB]: undefined;
-
+  [ROUTES.CANDIDATE_TAB_JOB_OFFER_SCREEN]: {
+    jobOfferId: string;
+  };
   [ROUTES.CANDIDATE_FAVORITOS_TAB]: {
     screen?: keyof CandidateFavoritosTabParamList;
     params?: CandidateFavoritosTabParamList[keyof CandidateFavoritosTabParamList];

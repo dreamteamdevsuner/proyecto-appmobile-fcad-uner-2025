@@ -8,6 +8,7 @@ import CandidateTestScreen from '../CandidateTestScreen';
 import Conversacion from '../conversacionProfesional';
 import { PrivateStackParamList } from '../../../candidates/navigator/types';
 import JobsyHeader from '../../../../../components/ui/JobsyHeader';
+import JobPostingScreen from '../jobPostingScreen/JobPostingScreen';
 
 const FavoritosStack = createNativeStackNavigator<PrivateStackParamList>();
 
@@ -42,6 +43,11 @@ const FavoritosNavigator = () => (
         name={ROUTES.CANDIDATE_CONVERSACION}
         component={Conversacion}
         options={{ title: 'Conversación' }}
+      />
+      <FavoritosStack.Screen
+        options={{ headerTitle: 'Descubrir ofertas' }}
+        name={ROUTES.CANDIDATE_TAB_JOB_OFFER_SCREEN}
+        component={JobPostingScreen}
       />
     </FavoritosStack.Navigator>
   </KeyboardAvoidingView>
