@@ -1,7 +1,15 @@
-import { AuthError, Session, User, WeakPassword, AuthResponse } from '@supabase/supabase-js';
+import {
+  AuthError,
+  Session,
+  User,
+  WeakPassword,
+  AuthResponse,
+} from '@supabase/supabase-js';
 // import supabase from '../supabase/supabase';
 import { UserDTO } from './interfaces/UserDTO';
 import { supabase } from '../supabase/supabaseClient';
+import { Role } from '../mockup/userEditarPerfil';
+import { Roles } from '../components/SignUpForm';
 
 export const signIn = async (
   user: UserDTO,
@@ -36,6 +44,7 @@ export const signUp = async (user: UserDTO, extras: Record<string, any>) => {
       data: extras,
     },
   });
+
   if (error) {
     console.log(error);
     throw Error(error.message);
@@ -47,7 +56,7 @@ export const signUp = async (user: UserDTO, extras: Record<string, any>) => {
 export const verifySignUpOtp = async (
   email: string,
   token: string,
-) : Promise<AuthResponse['data']> => {
+): Promise<AuthResponse['data']> => {
   const { data, error } = await supabase.auth.verifyOtp({
     email: email,
     token: token,
@@ -89,14 +98,14 @@ export const updatePassword = async (newPassword: string) => {
 export const resetPasswordWithToken = async (
   email: string,
   token: string,
-  newPassword: string
+  newPassword: string,
 ) => {
   // Verificar el token y el email.
   const { data: verifyData, error: verifyError } =
     await supabase.auth.verifyOtp({
       email: email,
       token: token,
-      type: 'recovery', 
+      type: 'recovery',
     });
 
   if (verifyError) {

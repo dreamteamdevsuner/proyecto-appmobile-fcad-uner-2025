@@ -111,6 +111,7 @@ export const getEnlaces = async (
 export const getProfesional = async (
   userId: string,
 ): Promise<ProfesionalConPrefs | null> => {
+  console.log('userId', userId);
   const { data, error } = await supabase
     .from('profesional')
     .select(
@@ -120,9 +121,11 @@ export const getProfesional = async (
       tipojornada(*)
     `,
     )
-    .eq('idusuario', userId)
-    .single();
+    .eq('idusuario', userId);
 
+  if (data) {
+    return data.at(0);
+  }
   if (error) {
     console.error('Error en getProfesional:', error);
     return null;
