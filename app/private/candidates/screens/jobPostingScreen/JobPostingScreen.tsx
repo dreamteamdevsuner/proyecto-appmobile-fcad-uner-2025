@@ -30,7 +30,6 @@ interface JobPostingScreenProps
   > {}
 const JobPostingScreen = ({ route }: JobPostingScreenProps) => {
   const [showActions, setShowActions] = useState(false);
-  console.log(route.params.jobOfferId);
 
   const [loading, setLoading] = useState(false);
   const [jobOffer, setJobOffer] = useState<JobOfferFullDescription>();
