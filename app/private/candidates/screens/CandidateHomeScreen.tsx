@@ -23,7 +23,6 @@ const CandidateSwipeMatchScreen = () => {
     setNextPage,
   } = useContext(ProfessionalContext);
   useFocusEffect(() => {
-    console.log('updated state', updated);
     seenUpdate();
   });
 

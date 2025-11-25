@@ -22,7 +22,7 @@ const useGetCurrentUser = () => {
   };
   useEffect(() => {
     getCurrentUser();
-  }, []);
+  }, [currentUserId]);
   return { currentUserId };
 };
 

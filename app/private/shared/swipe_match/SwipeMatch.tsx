@@ -61,9 +61,6 @@ const SwipeMatch = <
     );
   }
 
-  console.log('🔵 SWIPE RENDER — data.length:', data?.length);
-  console.log('🟣 currentIndex:', currentIndex);
-
   return (
     <View style={styles.container}>
       <View style={styles.carouselContainer}>
