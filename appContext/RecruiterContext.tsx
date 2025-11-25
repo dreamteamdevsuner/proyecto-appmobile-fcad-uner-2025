@@ -53,7 +53,7 @@ export const RecruiterContextProvider = (
   const channelRef = useRef<RealtimeChannel | null>(null);
   const subscribeToMatches = async (currentUserId: string) => {
     const jobOffersIds = await getJobOfferIdsFromUser(currentUserId);
-    console.log(jobOffersIds);
+
     const channel = supabase
       .channel('ofertatrabajomatch')
       .on(
@@ -65,17 +65,12 @@ export const RecruiterContextProvider = (
           filter: `idofertatrabajo=in.(${jobOffersIds.map((id) => `"${id}"`).join(',')})`,
         },
         async (payload) => {
-          console.log('PAYLOADDD');
           try {
-            console.log('PAYLOAD');
-            console.log('PAYLOAD', payload);
             const profesional = await getCandidatePreview(
               payload.new.idprofesional,
               payload.new.idofertatrabajo,
             );
             if (profesional) {
-              console.log('proffff', profesional);
-              console.log('updating ');
               setUpdated(true);
               loadNewDataFromSubscriptionRef.current(profesional);
             }
