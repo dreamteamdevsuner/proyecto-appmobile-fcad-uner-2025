@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import ROUTES from './routes';
@@ -9,10 +9,12 @@ import FavoritosNavigator from '../screens/favoritos/FavoritosNavigator';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import { Image } from 'react-native';
+import { Image, TouchableWithoutFeedback, View } from 'react-native';
 
 import SwipeStack from './SwipeStack';
 import { NavigatorScreenParams } from '@react-navigation/native';
+import { ProfessionalContext } from '@appContext/ProfessionalContext';
+import { Badge, Text } from 'react-native-paper';
 
 type CandidateSwipeStackRootParams = {
   [ROUTES.CANDIDATE_SWIPE_MATCH_SCREEN]: {};
@@ -31,6 +33,7 @@ export type CandidateTabParamList = {
 const Tab = createBottomTabNavigator<CandidateTabParamList>();
 
 const CandidateNavigator = () => {
+  const { updated, seenUpdate } = useContext(ProfessionalContext);
   return (
     <Tab.Navigator
       initialRouteName={ROUTES.CANDIDATE_HOME_TAB}
@@ -45,14 +48,27 @@ const CandidateNavigator = () => {
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <Image
-              source={require('../../../../assets/icons/icon-job-13.png')}
-              style={{
-                width: size,
-                height: size,
-                tintColor: color, // así respeta el color activo/inactivo
-              }}
-            />
+            <View>
+              <Image
+                source={require('../../../../assets/icons/icon-job-13.png')}
+                style={{
+                  width: size,
+                  height: size,
+                  tintColor: color, // así respeta el color activo/inactivo
+                }}
+              />
+
+              {updated && (
+                <Badge
+                  style={{
+                    backgroundColor: color,
+                    position: 'absolute',
+                    top: -3,
+                  }}
+                  size={10}
+                ></Badge>
+              )}
+            </View>
           ),
         }}
       />

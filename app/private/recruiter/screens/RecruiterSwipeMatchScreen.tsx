@@ -11,7 +11,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import SwipeMatch from '@app/private/shared/swipe_match/SwipeMatch';
 import CandidateCard from '../../../../components/ui/CandidateCard';
 import usePaginatedData from '../../../../hooks/usePaginatedData';
-import { getCandidatePreview } from '@services/candidatePreview/candidatePreview.service';
+import { getCandidatesPreview } from '@services/candidatePreview/candidatePreview.service';
 import { CandidatePreview } from '@database/DBCandidatePreview';
 import ROUTES from '../navigator/routes';
 import { RootStackParams } from '../navigator/SwipeStack';
@@ -43,7 +43,7 @@ const RecruiterSwipeMatchScreen = ({
     loading,
     setNextPage,
   } = usePaginatedData<CandidatePreview>(5, (page, itemsPerPage) =>
-    getCandidatePreview(page, itemsPerPage, user?.id),
+    getCandidatesPreview(page, itemsPerPage, user?.id),
   );
 
   if (loading && (!professionals || professionals.length === 0)) {

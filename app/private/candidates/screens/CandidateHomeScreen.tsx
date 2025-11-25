@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, ActivityIndicator, Text, StyleSheet } from 'react-native';
 import SwipeMatch from '@app/private/shared/swipe_match/SwipeMatch';
 import JobOfferCard from '../../../../components/ui/JobOfferCard';
@@ -8,6 +8,7 @@ import { DBJobPreview } from '@database/DBJobPreview';
 
 import { useAuth } from '@appContext/authContext';
 import { ProfessionalContext } from '@appContext/ProfessionalContext';
+import { useFocusEffect } from '@react-navigation/native';
 
 const CandidateSwipeMatchScreen = () => {
   const {
@@ -17,8 +18,15 @@ const CandidateSwipeMatchScreen = () => {
   const {
     offers,
     loadingJobOffers: loading,
+    updated,
+    seenUpdate,
     setNextPage,
   } = useContext(ProfessionalContext);
+  useFocusEffect(() => {
+    console.log('updated state', updated);
+    seenUpdate();
+  });
+
   if (loading) return <ActivityIndicator size="large" color="#000" />;
 
   if (!offers || offers.length === 0)

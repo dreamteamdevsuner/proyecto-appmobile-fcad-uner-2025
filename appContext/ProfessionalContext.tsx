@@ -8,10 +8,13 @@ import {
   getJobOfferPreview,
   getJobOffersPreview,
 } from '@services/jobOffer/JobOfferPreview.service';
+import useGetCurrentUser from '../hooks/useGetCurrentUser';
 interface ProfessionContextProps {
   loadingJobOffers: boolean;
   offers: DBJobPreview[];
   setNextPage: () => Promise<void>;
+  updated: boolean;
+  seenUpdate: () => void;
 }
 export const ProfessionalContext = createContext<ProfessionContextProps>(
   {} as ProfessionContextProps,
@@ -21,7 +24,7 @@ interface ProfessionalContextProviderProps extends PropsWithChildren {}
 export const ProfessionalContextProvider = (
   props: ProfessionalContextProviderProps,
 ) => {
-  const [currentUserId, setCurrentUserId] = useState<string>();
+  const { currentUserId } = useGetCurrentUser();
   const [subscription, setSubscription] = useState<RealtimeChannel | null>(
     null,
   );
@@ -31,23 +34,8 @@ export const ProfessionalContextProvider = (
     setNextPage,
     loadNewDataFromSubscription,
   } = usePaginatedData<DBJobPreview>(5, getJobOffersPreview);
-  const getCurrentUser = async () => {
-    try {
-      const { data, error } = await supabase.auth.getUser();
-      if (error) {
-        console.log('error getting current user');
-        throw Error('error getting current user');
-      }
-      if (!data) {
-        console.log('user not foud');
-        throw Error('user not foud');
-      }
-      setCurrentUserId(data.user.id);
-    } catch (error) {
-      console.log('error getting current user');
-      throw Error('error getting current user');
-    }
-  };
+  const [updated, setUpdated] = useState<boolean>(false);
+
   const subscribeToJobOffersUserArea = async (currentUserId: string) => {
     const { data: areaOfInterestUser, error: errorAreaOfInterestUser } =
       await supabase
@@ -59,7 +47,6 @@ export const ProfessionalContextProvider = (
       throw Error('error getting area of interest user');
     }
 
-    console.log('area of interest', areaOfInterestUser);
     const channel = supabase
       .channel('ofertatrabajo')
       .on(
@@ -75,16 +62,14 @@ export const ProfessionalContextProvider = (
           const newJobOfferPreview: DBJobPreview = await getJobOfferPreview(
             payload.new.id,
           );
-          console.log('new offer', newJobOfferPreview);
+
           loadNewDataFromSubscription(newJobOfferPreview);
+          setUpdated(true);
         },
       )
       .subscribe((status) => console.log('subscription', status));
     setSubscription(channel);
   };
-  useEffect(() => {
-    getCurrentUser();
-  }, []);
 
   useEffect(() => {
     if (!currentUserId) {
@@ -97,11 +82,18 @@ export const ProfessionalContextProvider = (
       }
     };
   }, [currentUserId]);
-
-  console.log('user', setCurrentUserId);
+  const seenUpdate = () => {
+    return setUpdated(false);
+  };
   return (
     <ProfessionalContext.Provider
-      value={{ loadingJobOffers: loading, offers, setNextPage }}
+      value={{
+        loadingJobOffers: loading,
+        offers,
+        setNextPage,
+        updated,
+        seenUpdate,
+      }}
     >
       {props.children}
     </ProfessionalContext.Provider>

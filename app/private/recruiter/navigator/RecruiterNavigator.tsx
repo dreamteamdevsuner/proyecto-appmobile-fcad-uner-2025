@@ -13,6 +13,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { PrivateStackParamList } from './types';
 import SwipeStack from './SwipeStack';
+import { Badge } from 'react-native-paper';
 
 const Tab = createBottomTabNavigator<PrivateStackParamList>();
 
@@ -25,11 +26,13 @@ const RecruiterNavigator = () => {
         tabBarActiveTintColor: '#6750A4',
         tabBarInactiveTintColor: 'gray',
         tabBarIcon: ({ color, size }) => (
-          <MaterialCommunityIcons
-            name="account-group-outline"
-            size={size}
-            color={color}
-          />
+          <>
+            <MaterialCommunityIcons
+              name="account-group-outline"
+              size={size}
+              color={color}
+            ></MaterialCommunityIcons>
+          </>
         ),
       }}
       initialRouteName={ROUTES.RECRUITER_SWIPE_MATCH}
