@@ -49,6 +49,9 @@ const FavoritosMatchsScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleSelectMatch = (match: OfertaItem) => {
     console.log('Ver oferta:', match.title);
+    navigation.navigate(ROUTES.CANDIDATE_TAB_JOB_OFFER_SCREEN, {
+      jobOfferId: match.id.toString(),
+    });
   };
 
   const handleMessage = (oferta: OfertaItem) => {
