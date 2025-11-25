@@ -5,13 +5,24 @@ import OfertasList2 from '../../../../../components/listas/ofertas-list/OfertasL
 import OfertasList3 from '../../../../../components/listas/ofertas-list/OfertasList3';
 import { UserItem } from '../../../../../types';
 import { OfertaItem } from '../../../../../types/OfertaItem';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import {
+  NativeStackNavigationProp,
+  NativeStackNavigatorProps,
+  NativeStackScreenProps,
+} from '@react-navigation/native-stack';
 import ROUTES from '../../../candidates/navigator/routes';
 import { PrivateStackParamList } from '../../../candidates/navigator/types';
 import { useAuth } from '../../../../../appContext/authContext';
 import { getOfertasPorEstadoProfesional } from '../../../../../services/OfertaService';
 import { useEffect, useState, useCallback } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
+import {
+  CompositeScreenProps,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
+import { CandidateSwipeStackRootParams } from '../../navigator/SwipeStack';
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { CandidateTabParamList } from '../../navigator/CandidateNavigator';
 
 type Props = NativeStackScreenProps<
   PrivateStackParamList,
@@ -82,7 +93,10 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
   );
 
   const handleSelectOferta = (oferta: OfertaItem) => {
-    console.log('Ver oferta', oferta.id);
+    navigation.navigate(ROUTES.CANDIDATE_HOME_TAB, {
+      screen: ROUTES.CANDIDATE_JOB_OFFER_SCREEN,
+      params: { jobOfferId: oferta.id.toString() },
+    });
   };
 
   const handleMessage = (oferta: OfertaItem) => {
@@ -102,7 +116,12 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
         </View>
         <UserListHorizontal
           users={matchsRecientes}
-          onSelectUser={(u) => console.log('Ver oferta')}
+          onSelectUser={(u) => {
+            navigation.navigate(ROUTES.CANDIDATE_HOME_TAB, {
+              screen: ROUTES.CANDIDATE_JOB_OFFER_SCREEN,
+              params: { jobOfferId: u.id.toString() },
+            });
+          }}
         />
       </View>
 

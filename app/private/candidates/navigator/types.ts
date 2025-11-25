@@ -1,7 +1,14 @@
+import { NavigatorScreenParams } from '@react-navigation/native';
 import ROUTES from './routes';
+export type CandidateSwipeStackRootParams = {
+  [ROUTES.CANDIDATE_SWIPE_MATCH_SCREEN]: {};
+  [ROUTES.CANDIDATE_JOB_OFFER_SCREEN]: {
+    jobOfferId: string;
+  };
+};
 
 export type PrivateStackParamList = {
-  [ROUTES.CANDIDATE_HOME_TAB]: undefined;
+  [ROUTES.CANDIDATE_HOME_TAB]: NavigatorScreenParams<CandidateSwipeStackRootParams>;
   [ROUTES.CANDIDATE_SETTING]: undefined;
   [ROUTES.CANDIDATE_PROFILE_TAB]: undefined;
 
