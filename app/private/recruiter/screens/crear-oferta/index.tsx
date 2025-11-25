@@ -13,7 +13,10 @@ import { DataContext } from '@providers/DataContext';
 import { useAuth } from '@appContext/authContext';
 import { OfertaValues, Empresa } from '@models/index';
 import { getEmpresas } from '@services/EmpresaService';
-import { useKeyboardHandler } from 'react-native-keyboard-controller';
+import {
+  KeyboardAwareScrollView,
+  useKeyboardHandler,
+} from 'react-native-keyboard-controller';
 
 const ofertaSchema = Yup.object().shape({
   titulo: Yup.string().required('El título es obligatorio'),
@@ -46,11 +49,6 @@ const initialValues: OfertaValues = {
 };
 
 const CrearOferta = ({ navigation, editing = false, data = null }: any) => {
-  useKeyboardHandler({
-    onMove: (e) => {},
-    onStart: (e) => {},
-    onEnd: (e) => {},
-  });
   const {
     modalidad: modalidadList,
     tipoJornada: jornadaList,
@@ -162,11 +160,13 @@ const CrearOferta = ({ navigation, editing = false, data = null }: any) => {
           <TouchableOpacity
             style={{ marginRight: 20 }}
             onPress={() => {
-              navigation.navigate(ROUTES.RECRUITER_CREAR_OFERTA_PREVIEW, {
-                data: {
-                  ...formikRef.current?.values,
-                },
-              });
+              if (formikRef.current) {
+                navigation.navigate(ROUTES.RECRUITER_CREAR_OFERTA_PREVIEW, {
+                  data: {
+                    ...formikRef.current?.values,
+                  },
+                });
+              }
             }}
           >
             <Ionicons name="eye" size={24} color="#F1F1F1" />
@@ -184,11 +184,8 @@ const CrearOferta = ({ navigation, editing = false, data = null }: any) => {
   }, [navigation]);
 
   return (
-    <View style={styles.container}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-      >
+    <KeyboardAwareScrollView bottomOffset={50}>
+      <View style={styles.container}>
         <Formik
           innerRef={formikRef}
           initialValues={data ? data : initialValues}
@@ -245,15 +242,7 @@ const CrearOferta = ({ navigation, editing = false, data = null }: any) => {
                   zIndex={6000}
                   listMode="MODAL"
                 />
-                {/* 
-                <TextInput
-                  mode="outlined"
-                  onChangeText={handleChange('institucion')}
-                  onBlur={handleBlur('institucion')}
-                  value={values.institucion}
-                  placeholder="Empresa"
-                  style={styles.input}
-                /> */}
+
                 {errors.idinstitucion && touched.idinstitucion && (
                   <Text style={{ color: 'red', marginBottom: 5 }}>
                     {errors.idinstitucion}
@@ -317,7 +306,7 @@ const CrearOferta = ({ navigation, editing = false, data = null }: any) => {
                   }))}
                   placeholder="Selecciona modalidad"
                   zIndex={5000}
-                  listMode="SCROLLVIEW"
+                  listMode="MODAL"
                 />
                 {errors.modalidad && touched.modalidad && (
                   <Text style={{ color: 'red', marginBottom: 5 }}>
@@ -339,7 +328,7 @@ const CrearOferta = ({ navigation, editing = false, data = null }: any) => {
                   }))}
                   placeholder="Selecciona jornada"
                   zIndex={4000}
-                  listMode="SCROLLVIEW"
+                  listMode="MODAL"
                 />
                 {errors.jornada && touched.jornada && (
                   <Text style={{ color: 'red', marginBottom: 5 }}>
@@ -361,7 +350,7 @@ const CrearOferta = ({ navigation, editing = false, data = null }: any) => {
                   }))}
                   placeholder="Selecciona contrato"
                   zIndex={3000}
-                  listMode="SCROLLVIEW"
+                  listMode="MODAL"
                 />
                 {errors.contrato && touched.contrato && (
                   <Text style={{ color: 'red', marginBottom: 5 }}>
@@ -469,8 +458,8 @@ const CrearOferta = ({ navigation, editing = false, data = null }: any) => {
             );
           }}
         </Formik>
-      </ScrollView>
-    </View>
+      </View>
+    </KeyboardAwareScrollView>
   );
 };
 
