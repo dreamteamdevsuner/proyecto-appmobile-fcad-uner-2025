@@ -13,7 +13,7 @@ export const verificarImagenSegura = async (imageUri: string) => {
 
   console.log("--- DEBUG CLOUDMERSIVE ---");
   console.log("Intentando conectar a:", API_URL);
-  console.log("Mi API Key es:", API_KEY); // ¿Sale la clave o sale undefined?
+  console.log("Mi API Key es:", API_KEY); 
   console.log("URI de imagen:", imageUri);
 
   if (!MODERACION_ACTIVA) {

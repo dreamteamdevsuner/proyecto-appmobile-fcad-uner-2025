@@ -28,6 +28,10 @@ const RecruiterNavigator = () => {
 
         tabBarActiveTintColor: '#6750A4',
         tabBarInactiveTintColor: 'gray',
+        tabBarStyle: {
+          height: 70,
+        },
+
         tabBarIcon: ({ color, size }) => (
           <>
             <MaterialCommunityIcons

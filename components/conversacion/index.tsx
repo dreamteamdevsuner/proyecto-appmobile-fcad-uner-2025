@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { FlatList, View } from 'react-native';
 import { Avatar, Button, IconButton, Text } from 'react-native-paper';
 import { TextInput } from 'react-native';
-
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useKeyboardHandler } from 'react-native-keyboard-controller';
 import {
-  Container,
   MessageRow,
   Bubble,
   MessageText,
@@ -24,7 +24,6 @@ import { IUser } from '@services/interfaces/User.interface';
 import { detectBadWords } from '@services/BadWordsAPI';
 import { Emoji } from '@components/emojis/Emoji';
 import sanitizeText from '@utils/sanitize';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 type ConversacionProps = {
   title: string;
@@ -44,6 +43,11 @@ const Conversacion: React.FC<ConversacionProps> = ({
   idOfertaTrabajoMatch,
   usuarioLogueado,
 }) => {
+  useKeyboardHandler({
+    onMove: (e) => {},
+    onStart: (e) => {},
+    onEnd: (e) => {},
+  });
   const [inputText, setInputText] = useState('');
   const [chatID, setChatID] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -267,7 +271,7 @@ const Conversacion: React.FC<ConversacionProps> = ({
   };
 
   return (
-    <Container>
+    <SafeAreaView style={{ flex: 1 }}>
       <FlatList
         ref={flatListRef}
         data={messages}
@@ -350,7 +354,7 @@ const Conversacion: React.FC<ConversacionProps> = ({
         showEmojiBar={showEmojiBar}
         setShowEmojiBar={setShowEmojiBar}
       />
-    </Container>
+    </SafeAreaView>
   );
 };
 
