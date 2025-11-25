@@ -2,21 +2,20 @@ import React, { useState } from 'react';
 import { View, FlatList, StyleSheet, ListRenderItem } from 'react-native';
 import { List, IconButton } from 'react-native-paper';
 import { OfertaItem } from '../../../types/OfertaItem';
+import { Item } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
 
 type Props = {
   ofertas: OfertaItem[];
   onSelectOferta: (oferta: OfertaItem) => void;
   onMessageOferta?: (oferta: OfertaItem) => void;
-  onDeleteOferta?: (oferta: OfertaItem) => void;
 };
 
 const OfertasList2: React.FC<Props> = ({
   ofertas,
   onSelectOferta,
   onMessageOferta,
-  onDeleteOferta,
 }) => {
-  const [pressedId, setPressedId] = useState<number | null>(null);
+  const [pressedId, setPressedId] = useState<number | string | null>(null);
 
   const renderItem: ListRenderItem<OfertaItem> = ({ item }) => {
     return (
@@ -38,13 +37,6 @@ const OfertasList2: React.FC<Props> = ({
                 if (onMessageOferta) onMessageOferta(item);
               }}
             />
-            <IconButton
-              icon="delete"
-              size={20}
-              onPress={() => {
-                if (onDeleteOferta) onDeleteOferta(item);
-              }}
-            />
           </View>
         )}
       />
@@ -56,7 +48,7 @@ const OfertasList2: React.FC<Props> = ({
       <FlatList<OfertaItem>
         data={ofertas}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString() + item.title}
+        keyExtractor={(item) => item.id.toString()}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <List.Item

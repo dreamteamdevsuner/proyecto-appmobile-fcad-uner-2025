@@ -2,6 +2,9 @@ import axios from 'axios';
 import { BAD_WORDS_API_KEY } from '@env';
 
 export async function detectBadWords(text: string) {
+  if (!BAD_WORDS_API_KEY) {
+    return text;
+  }
   const options = {
     method: 'GET',
     url: 'https://community-purgomalum.p.rapidapi.com/json',

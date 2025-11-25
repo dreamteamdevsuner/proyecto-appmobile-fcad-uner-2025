@@ -27,7 +27,17 @@ export type PerfilView = {
     nombreinstitucion: string | null;
     titulo: string;
   }[];
-  experiencia?: any[];
+  experiencia?: {
+    id: string;
+    idempresa?: string | null;
+    idusuario: string;
+    nombreempresa?: string | null;
+    fechafin?: string | null;
+    fechainicio?: string | null;
+    posicion: string;
+    activo: boolean;
+    validado?: boolean;
+  }[];
   skills?: {
     habilidades?: { nombre?: string }[];
     herramientas?: { nombre?: string }[];

@@ -1,117 +1,17 @@
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
-import { useState } from 'react';
-import { Text, Icon } from 'react-native-paper';
-import {
-  UserListHorizontal,
-  OfertasList,
-} from '../../../../../components/listas';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Text, Icon } from 'react-native-paper';
+import { UserListHorizontal } from '../../../../../components/listas';
+import OfertasList2 from '../../../../../components/listas/ofertas-list/OfertasList2';
+import OfertasList3 from '../../../../../components/listas/ofertas-list/OfertasList3';
 import { UserItem } from '../../../../../types';
 import { OfertaItem } from '../../../../../types/OfertaItem';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import ROUTES from '../../../candidates/navigator/routes';
 import { PrivateStackParamList } from '../../../candidates/navigator/types';
-import OfertasList2 from '../../../../../components/listas/ofertas-list/OfertasList2';
-import OfertasList3 from '../../../../../components/listas/ofertas-list/OfertasList3';
-import JobsyHeader from '../../../../../components/ui/JobsyHeader';
-import { blue } from 'react-native-reanimated/lib/typescript/Colors';
-import { setStatusBarBackgroundColor } from 'expo-status-bar';
-
-type NativeStackNavigationProp = NativeStackScreenProps<
-  PrivateStackParamList,
-  ROUTES.CANDIDATE_FAVORITOS
->;
-
-// Matchs recientes
-const matchs: UserItem[] = [
-  {
-    id: 10, // id de la oferta
-    name: 'Diseñador UX/UI',
-    subtitle: 'Banco Santander',
-    avatarBgColor: '#F2766C',
-  },
-  {
-    id: 9,
-    name: 'Diseñador UX/UI',
-    subtitle: 'Mercado Libre',
-    avatarBgColor: '#F2A25D',
-  },
-  {
-    id: 8,
-    name: 'Puesto en oferta',
-    subtitle: 'Empresa',
-    avatarBgColor: '#F1BA53',
-  },
-  {
-    id: 7,
-    name: 'Puesto en oferta',
-    subtitle: 'Empresa',
-    avatarBgColor: '#FFD482',
-  },
-  {
-    id: 6,
-    name: 'Puesto en oferta',
-    subtitle: 'Empresa',
-    avatarBgColor: '#F2766C',
-  },
-  {
-    id: 5,
-    name: 'Puesto en oferta',
-    subtitle: 'Empresa',
-    avatarBgColor: '#F2A25D',
-  },
-  {
-    id: 4,
-    name: 'Puesto en oferta',
-    subtitle: 'Empresa',
-    avatarBgColor: '#F1BA53',
-  },
-  {
-    id: 3,
-    name: 'Puesto en oferta',
-    subtitle: 'Empresa',
-    avatarBgColor: '#FFD482',
-  },
-  {
-    id: 2,
-    name: 'Puesto en oferta',
-    subtitle: 'Empresa',
-    avatarBgColor: '#F2766C',
-  },
-  {
-    id: 1,
-    name: 'Puesto en oferta',
-    subtitle: 'Empresa',
-    avatarBgColor: '#F2A25D',
-  },
-];
-
-// Mis matchs
-const ofertas: OfertaItem[] = [
-  {
-    id: 10, // id de la oferta
-    title: 'Diseñador UX/UI - Banco Santander',
-    subtitle: 'Publicado por Renata Schenider',
-  },
-  {
-    id: 9,
-    title: 'Diseñador UX/UI Senior - Mercado Libre',
-    subtitle: 'Publicado por Mayra Roa',
-  },
-];
-
-// Me interesa
-const ofertasInteresantes: OfertaItem[] = [
-  {
-    id: 12, // id de la oferta
-    title: 'UI Designer - Lovelace Agency',
-    subtitle: 'Publicado por Ann Lynn Parker',
-  },
-  {
-    id: 11,
-    title: 'Visual Designer - Lovelace Agency',
-    subtitle: 'Publicado por Ann Lynn Parker',
-  },
-];
+import { useAuth } from '../../../../../appContext/authContext';
+import { getOfertasPorEstadoProfesional } from '../../../../../services/OfertaService';
+import { useEffect, useState, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 
 type Props = NativeStackScreenProps<
   PrivateStackParamList,
@@ -119,129 +19,149 @@ type Props = NativeStackScreenProps<
 >;
 
 const Favoritos: React.FC<Props> = ({ navigation }) => {
-  const handleSelectUser = (user: UserItem) => {
-    navigation.navigate(ROUTES.CANDIDATE_TEST, {
-      title: user.name,
-      company: user.subtitle || 'Empresa',
-    });
+  const { state } = useAuth();
+  const user = state?.user;
+
+  const [loading, setLoading] = useState(false);
+  const [matchsRecientes, setMatchsRecientes] = useState<UserItem[]>([]);
+  const [misMatchs, setMisMatchs] = useState<OfertaItem[]>([]);
+  const [meInteresan, setMeInteresan] = useState<OfertaItem[]>([]);
+
+  const fetchDatos = async () => {
+    if (!user || !user.id) {
+      console.log('Usuario no cargado aún, esperando...');
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const dataInteresan = await getOfertasPorEstadoProfesional(user.id, 1);
+
+      const dataMatches = await getOfertasPorEstadoProfesional(user.id, 2);
+
+      const matchesFormateados: OfertaItem[] = dataMatches.map((m) => {
+        return {
+          id: m.ofertaId,
+          title: m.titulo,
+          subtitle: `En ${m.empresa}`,
+        };
+      });
+      setMisMatchs(matchesFormateados);
+
+      const burbujasFormateadas: UserItem[] = dataMatches.map((m, index) => ({
+        id: m.ofertaId.toString(),
+        name:
+          m.titulo.length > 10 ? m.titulo.substring(0, 10) + '...' : m.titulo,
+        subtitle:
+          m.empresa.length > 10
+            ? m.empresa.substring(0, 10) + '...'
+            : m.empresa,
+
+        avatarBgColor: ['#F2766C', '#F2A25D', '#F1BA53', '#FFD482'][index % 4],
+      }));
+      setMatchsRecientes(burbujasFormateadas);
+
+      const interesanFormateados: OfertaItem[] = dataInteresan.map((m) => ({
+        id: m.ofertaId,
+        title: m.titulo,
+        subtitle: `En ${m.empresa}`,
+      }));
+      setMeInteresan(interesanFormateados);
+    } catch (error) {
+      console.error('Error cargando favoritos candidato:', error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchDatos();
+    }, [user]),
+  );
 
   const handleSelectOferta = (oferta: OfertaItem) => {
-    navigation.navigate(ROUTES.CANDIDATE_TEST, {
-      title: oferta.title,
-      company: oferta.subtitle || 'Empresa',
-    });
-  };
-
-  const handleViewAllMatchs = () => {
-    navigation.navigate(ROUTES.CANDIDATE_FAVORITOS_MATCHS, {
-      title: 'Mis matchs',
-    });
-  };
-
-  const handleViewAllInteresantes = () => {
-    navigation.navigate(ROUTES.CANDIDATE_FAVORITOS_INTERESANTES, {
-      title: 'Me interesan',
-    });
-  };
-
-  const handleSelectOfertaInteresante = (oferta: OfertaItem) => {
-    navigation.navigate(ROUTES.CANDIDATE_TEST, {
-      title: oferta.title,
-      company: oferta.subtitle || 'Empresa',
-    });
+    console.log('Ver oferta', oferta.id);
   };
 
   const handleMessage = (oferta: OfertaItem) => {
     navigation.navigate(ROUTES.CANDIDATE_CONVERSACION, {
       title: oferta.title,
-      myName: 'Juana',
+      myName: user?.nombre || 'Yo',
       otherAvatarUrl: undefined,
       myAvatarUrl: undefined,
     });
   };
 
-  const handleDeleteInteresante = (oferta: OfertaItem) => {
-    // Aquí implementarías la lógica para eliminar de interesantes
-    console.log('Eliminando de interesantes:', oferta.title);
-    // TODO: Implementar eliminación de la lista de interesantes
-  };
-
   return (
     <View style={styles.container}>
-      <View style={(styles.listContainer, styles.section)}>
+      <View style={styles.section}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Matchs recientes</Text>
         </View>
-        <UserListHorizontal users={matchs} onSelectUser={handleSelectUser} />
+        <UserListHorizontal
+          users={matchsRecientes}
+          onSelectUser={(u) => console.log('Ver oferta')}
+        />
       </View>
 
       <View style={[styles.listContainer, styles.section]}>
-        <View
-          style={
-            (styles.titleContainer,
-            {
-              backgroundColor: '#A06FA6',
-              height: 48,
-              width: '100%',
-              borderTopStartRadius: 15,
-              borderTopEndRadius: 15,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: 10,
-              paddingHorizontal: 10,
-              paddingVertical: 5,
-            })
-          }
-        >
+        <View style={[styles.titleContainer, { backgroundColor: '#A06FA6' }]}>
           <Text style={styles.title}>Mis matchs</Text>
           <TouchableOpacity
-            onPress={handleViewAllMatchs}
+            onPress={() =>
+              navigation.navigate(ROUTES.CANDIDATE_FAVORITOS_MATCHS, {
+                title: 'Mis matchs',
+              })
+            }
             style={styles.moreButton}
           >
             <Icon source="plus-circle" size={24} color="#1D1C21" />
           </TouchableOpacity>
         </View>
-        <OfertasList2
-          ofertas={ofertas}
-          onSelectOferta={handleSelectOferta}
-          onMessageOferta={handleMessage}
-        />
+
+        {misMatchs.length > 0 ? (
+          <OfertasList2
+            ofertas={misMatchs}
+            onSelectOferta={handleSelectOferta}
+            onMessageOferta={handleMessage}
+          />
+        ) : (
+          !loading && (
+            <Text style={styles.emptyText}>
+              Aún no tienes matches confirmados.
+            </Text>
+          )
+        )}
       </View>
 
       <View style={[styles.listContainer, styles.section]}>
-        <View
-          style={
-            (styles.titleContainer,
-            {
-              backgroundColor: '#76BBC0',
-              height: 48,
-              width: '100%',
-              borderTopStartRadius: 15,
-              borderTopEndRadius: 15,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: 10,
-              paddingHorizontal: 10,
-              paddingVertical: 5,
-            })
-          }
-        >
+        <View style={[styles.titleContainer, { backgroundColor: '#76BBC0' }]}>
           <Text style={styles.title}>Me interesan</Text>
           <TouchableOpacity
-            onPress={handleViewAllInteresantes}
+            onPress={() =>
+              navigation.navigate(ROUTES.CANDIDATE_FAVORITOS_INTERESANTES, {
+                title: 'Me interesan',
+              })
+            }
             style={styles.moreButton}
           >
             <Icon source="plus-circle" size={24} color="#1D1C21" />
           </TouchableOpacity>
         </View>
-        <OfertasList3
-          ofertas={ofertasInteresantes}
-          onSelectOferta={handleSelectOfertaInteresante}
-          onDeleteOferta={handleDeleteInteresante}
-        />
+        {meInteresan.length > 0 ? (
+          <OfertasList3
+            ofertas={meInteresan}
+            onSelectOferta={handleSelectOferta}
+          />
+        ) : (
+          !loading && (
+            <Text style={styles.emptyText}>
+              No has dado like a ninguna oferta aún.
+            </Text>
+          )
+        )}
       </View>
     </View>
   );
@@ -251,9 +171,10 @@ const styles = StyleSheet.create({
   section: {
     backgroundColor: '#1D1C21',
     borderRadius: 15,
+    paddingBottom: 10,
+    marginBottom: 10,
   },
   titleContainer: {
-    fontSize: 25,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -264,15 +185,32 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     width: '100%',
     height: 48,
-    backgroundColor: '#DA79AE',
+    backgroundColor: '#F294AC',
   },
-  title: { fontWeight: 'bold', fontSize: 18, marginLeft: 15, color: '#1D1C21' },
+  title: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    marginLeft: 15,
+    color: '#1D1C21',
+  },
+  container: {
+    padding: 10,
+    flex: 1,
+    backgroundColor: '#000',
+  },
+  listContainer: {
+    flex: 1,
+  },
+  emptyText: {
+    color: 'white',
+    textAlign: 'center',
+    marginTop: 20,
+    opacity: 0.7,
+  },
   moreButton: {
     padding: 8,
-    marginRight: 15,
+    marginRight: 5,
   },
-  container: { padding: 10, flex: 1, gap: 20 },
-  listContainer: { flex: 1, gap: 5 },
 });
 
 export default Favoritos;

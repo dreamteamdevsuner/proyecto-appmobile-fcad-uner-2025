@@ -17,10 +17,13 @@ import ROUTES from '../navigator/routes';
 import { RootStackParams } from '../navigator/SwipeStack';
 import { useAuth } from '@appContext/authContext';
 import MatchModal from '../../../../components/MatchModal';
+import { PrivateStackParamList } from '../navigator/types';
+
+type CombinedParams = RootStackParams & PrivateStackParamList;
 
 interface RecruiterSwipeMatchScreenProps
   extends NativeStackScreenProps<
-    RootStackParams,
+    CombinedParams,
     ROUTES.RECRUITER_SWIPE_MATCH_SCREEN
   > {}
 
@@ -33,6 +36,10 @@ const RecruiterSwipeMatchScreen = ({
 
   const [matchModalVisible, setMatchModalVisible] = useState(false);
   const [matchedCandidateName, setMatchedCandidateName] = useState('');
+  const [matchedCandidateId, setMatchedCandidateId] = useState('');
+  const [matchedCandidateFotoPerfil, setMatchedCandidateFotoPerfil] =
+    useState('');
+  const [idMatch, setIdMatch] = useState('');
 
   const {
     data: { data: professionals },
@@ -63,8 +70,11 @@ const RecruiterSwipeMatchScreen = ({
       <SwipeMatch<CandidatePreview>
         data={professionals}
         handleScrollEnd={setNextPage}
-        onMatchSuccess={(name) => {
+        onMatchSuccess={(name, id, fotoperfil, idMatch) => {
           setMatchedCandidateName(name);
+          setMatchedCandidateId(id);
+          setMatchedCandidateFotoPerfil(fotoperfil);
+          setIdMatch(idMatch);
           setMatchModalVisible(true);
         }}
         renderItem={({ item, handleScrollEnabled }) => (
@@ -90,7 +100,7 @@ const RecruiterSwipeMatchScreen = ({
               >
                 <IconButton
                   icon="plus-circle-outline"
-                  iconColor="black"
+                  iconColor="#e0e0e0ff"
                   size={24}
                   onPress={() =>
                     navigation.navigate(
@@ -103,21 +113,30 @@ const RecruiterSwipeMatchScreen = ({
                     )
                   }
                 />
-                <MatchModal
-                  visible={matchModalVisible}
-                  candidateName={matchedCandidateName}
-                  onDismiss={() => setMatchModalVisible(false)}
-                  onChatPress={() => {
-                    setMatchModalVisible(false);
-                    (navigation as any).navigate(
-                      ROUTES.RECRUITER_MENSAJERIA_TAB,
-                    );
-                  }}
-                />
               </View>
             </TouchableOpacity>
           </CandidateCard>
         )}
+      />
+
+      <MatchModal
+        visible={matchModalVisible}
+        candidateName={matchedCandidateName}
+        onDismiss={() => setMatchModalVisible(false)}
+        onChatPress={() => {
+          setMatchModalVisible(false);
+          (navigation as any).navigate(ROUTES.RECRUITER_MENSAJERIA_TAB, {
+            screen: ROUTES.RECRUITER_CONVERSACION,
+            params: {
+              title: matchedCandidateName,
+              myName: user?.nombre,
+              myAvatarUrl: user?.fotoperfil,
+              otherAvatarUrl: matchedCandidateFotoPerfil,
+              idOfertaTrabajoMatch: idMatch,
+              idUsuarioProfesional: matchedCandidateId,
+            },
+          });
+        }}
       />
     </View>
   );
@@ -135,88 +154,3 @@ const styles = StyleSheet.create({
 });
 
 export default RecruiterSwipeMatchScreen;
-
-/* Código anterior
-import { View } from 'react-native';
-import React, {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useState,
-} from 'react';
-import { candidates2 } from '../../../../mockup/candidates';
-import CandidateCard from '../../../../components/ui/CandidateCard';
-import SwipeMatch from '../../shared/swipe_match/SwipeMatch';
-import { Candidate } from '../../../../interfaces/Candidate';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Button, Text } from 'react-native-paper';
-import ROUTES from '../navigator/routes';
-import { TouchableOpacity } from 'react-native';
-import { RootStackParams } from '../navigator/SwipeStack';
-import usePaginatedData from '../../../../hooks/usePaginatedData';
-import { getCandidatePreview } from '@services/candidatePreview/candidatePreview.service';
-import { CandidatePreview } from '@database/DBCandidatePreview';
-
-//TODO move to own component
-const dataHardCoded = candidates2;
-
-interface RecruiterSwipeMatchScreen
-  extends NativeStackScreenProps<
-    RootStackParams,
-    ROUTES.RECRUITER_SWIPE_MATCH_SCREEN
-  > {}
-const RecruiterSwipeMatchScreen = ({
-  navigation,
-}: RecruiterSwipeMatchScreen) => {
-  const {
-    data: { data },
-    loading,
-    page,
-    setNextPage,
-  } = usePaginatedData(1, getCandidatePreview);
-
-  return (
-    <SwipeMatch<CandidatePreview>
-      data={data}
-      handleScrollEnd={setNextPage}
-      renderItem={({ item, handleScrollEnabled }) => {
-        return (
-          <CandidateCard item={item} {...{ handleScrollEnabled }}>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate(
-                  ROUTES.RECRUITER_CANDIDATE_PROFILE_PREVIEW,
-                  {
-                    userId: item.id,
-                    bio: item.bio,
-                    fotoperfil: item.fotoperfil,
-                  },
-                )
-              }
-            >
-              <View
-                style={{
-                  alignContent: 'center',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Button
-                  style={{ width: 24 }}
-                  children
-                  buttonColor="transparent"
-                  textColor="black"
-                  icon="plus-circle-outline"
-                  mode="contained"
-                ></Button>
-              </View>
-            </TouchableOpacity>
-          </CandidateCard>
-        );
-      }}
-    ></SwipeMatch>
-  );
-};
-
-export default RecruiterSwipeMatchScreen;
-*/

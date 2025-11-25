@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../../../../appContext/authContext';
 import { Role } from '../../../../../services/interfaces/TipoUsuario.interface';
 import { supabase } from '../../../../../supabase/supabaseClient';
+import { profileUpdateEmitter } from '../../../../../services/profileUpdateEmitter';
 
 import FormularioCandidato from '../ajustes/componentesFormularios/formulariosUser/FormCandidato';
 import FormularioReclutador from '../ajustes/componentesFormularios/formulariosUser/FormReclutador';
@@ -346,6 +347,12 @@ const EditarPerfilScreen = () => {
               onPress={() => {
                 setDialogVisible(false);
                 if (dialogMessage.type === 'success') {
+                  // Emit profile update event before navigating back
+                  const userId = String(state.user?.id);
+                  if (userId && userId !== 'undefined') {
+                    profileUpdateEmitter.emit(userId);
+                  }
+                  // Navigate back
                   navigation.goBack();
                 }
               }}

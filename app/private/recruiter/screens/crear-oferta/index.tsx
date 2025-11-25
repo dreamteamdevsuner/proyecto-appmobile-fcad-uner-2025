@@ -27,6 +27,7 @@ const ofertaSchema = Yup.object().shape({
 const initialValues: OfertaValues = {
   titulo: '',
   institucion: '',
+  idinstitucion: null,
   localizacion: '',
   lat: -34.9964963,
   lng: -64.9672817,
@@ -457,7 +458,7 @@ const CrearOferta = ({ navigation, editing = false, data = null }: any) => {
                     />
                   )}
                 >
-                  Publicar
+                  {editing ? 'Guardar' : 'Publicar'}
                 </Button>
               </View>
             );
