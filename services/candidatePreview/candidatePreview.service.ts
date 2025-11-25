@@ -1,4 +1,4 @@
-import { CandidatePreview } from '@database/DBCandidatePreview';
+import { CandidatePreview, Skill } from '@database/DBCandidatePreview';
 import { supabase } from '../../supabase/supabaseClient';
 import { Pagination } from '@services/shared/entityPreviewService';
 
@@ -7,7 +7,7 @@ interface CandidateWithOffer extends CandidatePreview {
   ofertaTitulo: string;
 }
 
-export const getCandidatePreview = async (
+export const getCandidatesPreview = async (
   page = 1,
   itemsPerPage = 5,
   idUsuarioReclutador?: string,
@@ -204,7 +204,7 @@ export const getCandidatePreview = async (
     };
   } catch (err) {
     console.log('ERR', err);
-    console.error('Error interno en getCandidatePreview');
+    console.error('Error interno en getCandidatesPreview');
     return {
       data: [],
       count: 0,
@@ -216,11 +216,92 @@ export const getCandidatePreview = async (
   }
 };
 
+export const getCandidatePreview = async (
+  idProfessional: string,
+  idOferta: string,
+) =>
+  // : Promise<CandidateWithOffer>
+  {
+    try {
+      const { data: profesionalDB, error: usuariosError } = await supabase
+        .from('profesional')
+        .select('idusuario, id')
+        .eq('id', idProfessional)
+        .single();
+
+      if (usuariosError || !profesionalDB) {
+        console.error('Error obteniendo profesional', usuariosError);
+      }
+
+      const { data: usuario, error: usuarioInfoError } = await supabase
+        .from('usuario')
+        .select('id, nombre, apellido, fotoperfil, bio, iddireccion(ciudad)')
+        .eq('id', profesionalDB?.idusuario)
+        .single();
+
+      if (usuarioInfoError || !usuario) {
+        console.error('Error obteniendo info de usuario');
+        throw Error('Error obteniendo info de usuario');
+      }
+      type SkillRow = {
+        idprofesional: string;
+        idskill: { nombre: string }; // single object, not array
+      };
+      const { data: skillsList, error: skillsListError } = (await supabase
+        .from('profesionalskill')
+        .select('idskill(nombre) , idprofesional')
+        .eq('idprofesional', idProfessional)) as {
+        data: SkillRow[] | null;
+        error: any;
+      };
+
+      if (skillsListError) {
+        console.log(skillsListError);
+        throw Error('error fetching skills list');
+      }
+
+      const parsedSkillLists: Skill[] | undefined = skillsList?.reduce(
+        (acc: Array<Skill>, curr) => {
+          acc.push({ nombre: curr.idskill.nombre });
+          return acc;
+        },
+        [],
+      );
+      console.log('ID OFERTA', idOferta);
+      const { data: oferta, error: ofertaError } = await supabase
+        .from('ofertatrabajo')
+        .select(
+          'id, titulo, activo, idestadooferta, publicacion!inner(id, idusuario)',
+        )
+        .eq('activo', true)
+        .eq('idestadooferta', 1)
+        .eq('id', idOferta)
+        .single();
+      if (ofertaError) {
+        console.log('oferta error', ofertaError);
+        console.error('Error obteniendo oferta');
+        throw Error('Error obteniendo oferta');
+      }
+      const result = {
+        ...usuario,
+        skills: parsedSkillLists ?? [],
+        profesionalId: idProfessional,
+        ofertaId: idOferta,
+        ofertaTitulo: oferta.titulo,
+      } as unknown as CandidateWithOffer;
+
+      return result;
+    } catch (err) {
+      console.log('ERR', err);
+      console.error('Error interno en getCandidatePreview');
+    }
+  };
+
 /* Código anterior
 import { CandidatePreview } from '@database/DBCandidatePreview';
 import { getEntityPreview } from '@services/shared/entityPreviewService';
 
-export const getCandidatePreview = async (page = 1, itemsPerPage = 5) => {
+export const getCandidatesPreview = async (page = 1, itemsPerPage = 5) => {
   return getEntityPreview<CandidatePreview>(
     page,
     itemsPerPage,

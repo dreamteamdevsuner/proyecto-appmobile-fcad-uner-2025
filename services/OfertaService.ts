@@ -153,7 +153,7 @@ export async function crearOferta(data: OfertaTrabajoData) {
       }));
     }
     const registros = [...registrosHard, ...registrosSoft];
-    console.log('registros', registros);
+
     if (registros.length > 0) {
       const { data: ofertatrabajoskill, error } = await supabase
         .from('ofertatrabajoskill')
@@ -161,7 +161,6 @@ export async function crearOferta(data: OfertaTrabajoData) {
         .select();
 
       if (error) throw error;
-      console.log('save result', ofertatrabajoskill);
     }
 
     console.log('OFERTA', oferta);
