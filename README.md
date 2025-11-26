@@ -288,3 +288,10 @@ El sistema implementa un manejo robusto de los permisos nativos del dispositivo,
     </td>
   </tr>
 </table>
+
+## APIs utilizadas
+
+- locationiq API geocodificación.
+- emojihub API Emoticones.
+- community-purgomalum API Malas palabras.
+- Cloudmersive API Imágenes nsfw - moderación de contenido. 
