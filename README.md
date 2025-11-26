@@ -81,12 +81,12 @@ Explorar las funcionalidades principales.
 
 <table>
   <tr>
-    <td><img src="./public/img/swipe-recruiter.jpeg" width="100%"/></td>
+    <td><img src="./public/img/swipe-recruiter.jpg" width="100%"/></td>
     <td><img src="./public/img/PopupMatch.png" width="100%"/></td>
    <td><img src="./public/img/FinDescubrirProfesionales.png" width="100%"/></td>   
    </tr>
    <tr>
-    <td colspan="3" align="center">
+    <td colspan="4" align="center">
      Permite al reclutador evaluar perfiles y matchear con los postulantes que le interesan 
     </td>
   </tr>
@@ -101,7 +101,7 @@ Explorar las funcionalidades principales.
    <td><img src="./public/img/EstasAldia.png" width="100%"/></td>
    </tr>
    <tr>
-    <td colspan="3" align="center">
+    <td colspan="4" align="center">
      Permite al profesional evaluar propuestas  y matchear con las ofertas que le interesan 
     </td>
   </tr>
@@ -121,7 +121,7 @@ Explorar las funcionalidades principales.
     <td><img src="./public/img/Perfil-ajeno-profesional-2.png" width="100%"/></td>
   </tr>
   <tr>
-    <td colspan="3" align="center">
+    <td colspan="4" align="center">
      En la sección de perfil, los usuarios profesionales pueden brindar una breve descripción de sí mismos, sus habilidades, experiencia laboral, estudios realizados e información de contacto. Además pueden compartir imágenes de su portfolio mostrando sus trabajos realizados, intereses o capturas de su día a día. En cuanto a los usuarios reclutadores mostráran un resumen de las ofertas laborales que hayan disponibilizado en la plataforma, tanto búsquedas activas como cerradas a modo de historial.
     </td>
   </tr>
@@ -219,6 +219,72 @@ Explorar las funcionalidades principales.
   <tr>
     <td colspan="4" align="center">
       En la pantalla "Ajustes" se encuentran las opciones "Cerrar sesión", "Editar perfil" y "Seguridad". Estas últimas dos opciones se despliegan en nuevas pantallas donde el usuario se encuentra con un formulario para editar su perfil(imagen datos) y en seguridad tenien los datos de cuenta y cambio de contraseña en sus respectivas pantallas.
+    </td>
+  </tr>
+</table>
+
+### Notificaciones locales
+
+<table>
+  <tr>
+    <td><img src="./public/img/notiLocalProf.jpg" width="100%"/></td>
+    <td><img src="./public/img/notiLocalProf_2.png" width="100%"/></td>
+    <td><img src="./public/img/notiLocalRecru_3.jpg" width="100%"/></td>
+
+  </tr>
+  <tr>
+    <td colspan="4" align="center">
+      Notificaciones Locales: Implementación mediante expo-notifications para agendar tareas en segundo plano (scheduleNotificationAsync). Configura triggers recurrentes diarios y gestiona los permisos del dispositivo para mostrar alertas incluso si la app está cerrada, sin depender del backend.  Todos los días a las 10:00 AM se envía una notificación local que incentiva a los usuarios a volver a la app con mensajes personalizados: "¿Ya viste las nuevas ofertas?" para candidatos y "¿Ya viste los nuevos profesionales?" para reclutadores.
+    </td>
+  </tr>
+</table>
+
+### Notificaciones push
+
+<table>
+  <tr>
+    <td><img src="./public/img/notiProfePush.jpg" width="100%"/></td>
+    <td><img src="./public/img/notiPshProf_2.jpg" width="100%"/></td>
+    <td><img src="./public/img/notiPushRecru_1.jpg" width="100%"/></td>
+    <td><img src="./public/img/notiPushRecru_2.jpg" width="100%"/></td>
+  </tr>
+  <tr>
+    <td colspan="4" align="center">
+      Notificaciones Push: Sistema de alertas en tiempo real implementado con Expo Notifications. Notifica automáticamente a los candidatos cuando una oferta (mediante un usuario reclutador) hace "Match" con su perfil, asegurando una interacción inmediata. Esta notificación también es enviada al reclutador, pero se aloja en la sección notificaciones sin mostrarse el banner en pantalla debido a que el usuario se encuentra usando la aplicación en el momento del match
+    </td>
+  </tr>
+</table>
+
+### Permisos
+
+<table>
+  <tr>
+    <td><img src="./public/img/PermisoCamara.png" width="100%"/></td>
+    <td><img src="./public/img/PublicaImagen.png" width="100%"/></td>
+    <td><img src="./public/img/PermisoUbicacion.jpg" width="70%"/></td>
+    <td><img src="./public/img/PermisoUbicacionPerfil.png" width="100%"/></td>
+  </tr>
+  <tr>
+    <td colspan="4" align="center">
+      Gestión de Permisos y Privacidad
+El sistema implementa un manejo robusto de los permisos nativos del dispositivo, solicitando autorización al usuario únicamente cuando es necesario y respetando su decisión de aceptarlos o denegarlos.<br>
+<strong>Cámara y Galería:</strong> Integración mediante expo-image-picker y expo-camera para permitir a los usuarios personalizar su perfil (foto de avatar) y adjuntar contenido visual en sus publicaciones o portafolios.<br>
+<strong>Geolocalización:</strong> Uso de expo-location para validar la ubicación en tiempo real, facilitando el "match" basado en cercanía y la creación de ofertas geolocalizadas.<br>
+<strong>Validación de Estado:</strong> La aplicación verifica el estado de los permisos antes de ejecutar tareas críticas y ofrece feedback o alternativas si el usuario decide denegar el acceso.
+    </td>
+  </tr>
+</table>
+
+### Descargar y compartir CV
+
+<table>
+  <tr>
+    <td><img src="./public/img/DescargaCV.png" width="50%"/></td>
+    <td><img src="./public/img/CompartirCV.png" width="50%"/></td>
+  </tr>
+  <tr>
+    <td colspan="4" align="center">
+      En el perfil del profesional se puede acceder a la hoja de vida creada apartir de los datos que el usuario cargó. Esto hace más fluido, sencillo y organizado la labor del recruiter al tener la información al alcance de la mano. Por otro lado al profesional le permite tener la hoja de vida de manera fácil, agil y actualizada para su proxima entrevista.
     </td>
   </tr>
 </table>
