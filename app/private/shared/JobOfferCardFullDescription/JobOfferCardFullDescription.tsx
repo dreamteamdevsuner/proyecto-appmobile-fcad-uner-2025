@@ -48,7 +48,7 @@ const JobOfferCardFullDescription = ({
           />
           <View style={styles.textContainer}>
             <Text style={[styles.title, styles.text]}>
-              {user.nombre + ' ' + user.apellido}
+              {user?.nombre + ' ' + user.apellido}
             </Text>
             <Text style={styles.text}>{user.rol}</Text>
             {direccion.ciudad && direccion.pais && (
@@ -60,7 +60,7 @@ const JobOfferCardFullDescription = ({
         </View>
 
         <Text style={[styles.subtitle, styles.text]}>{jobOffer.titulo}</Text>
-        <Text style={styles.text}>{jobOffer.idempresa.nombre}</Text>
+        <Text style={styles.text}>{jobOffer.idempresa?.nombre}</Text>
         {localizacion.latitud && localizacion.longitud && (
           <View style={styles.mapContainer}>
             <Text style={styles.text}>
@@ -91,13 +91,13 @@ const JobOfferCardFullDescription = ({
         )}
         <DataTable.Row>
           <DataTable.Cell style={[styles.styleTable]}>
-            {modalidad.nombre}
+            {modalidad?.nombre}
           </DataTable.Cell>
           <DataTable.Cell style={[styles.styleTable]}>
-            {jornada.nombre}
+            {jornada?.nombre}
           </DataTable.Cell>
           <DataTable.Cell style={[styles.styleTable]}>
-            {contrato.nombre}
+            {contrato?.nombre}
           </DataTable.Cell>
         </DataTable.Row>
 
