@@ -72,7 +72,7 @@ export const getUsuarioBase = async (
     `,
     )
     .eq('id', userId)
-    .single();
+    .maybeSingle();
 
   if (error) {
     console.error('Error en getUsuarioBase:', error);
@@ -121,7 +121,7 @@ export const getProfesional = async (
     `,
     )
     .eq('idusuario', userId)
-    .single();
+    .maybeSingle();
 
   if (error) {
     console.error('Error en getProfesional:', error);
@@ -205,7 +205,7 @@ export const getReclutador = async (
     .from('reclutador')
     .select('*')
     .eq('idusuario', userId)
-    .single();
+    .maybeSingle();
 
   if (error) {
     console.error('Error en getReclutador:', error);

@@ -93,9 +93,8 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
   );
 
   const handleSelectOferta = (oferta: OfertaItem) => {
-    navigation.navigate(ROUTES.CANDIDATE_HOME_TAB, {
-      screen: ROUTES.CANDIDATE_JOB_OFFER_SCREEN,
-      params: { jobOfferId: oferta.id.toString() },
+    navigation.navigate(ROUTES.CANDIDATE_TAB_JOB_OFFER_SCREEN, {
+      jobOfferId: oferta.id.toString(),
     });
   };
 
@@ -104,7 +103,8 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
       title: oferta.title,
       myName: user?.nombre || 'Yo',
       otherAvatarUrl: undefined,
-      myAvatarUrl: undefined,
+      myAvatarUrl: user?.fotoperfil || '',
+      idOfertaTrabajoMatch: oferta.idMatch,
     });
   };
 
@@ -117,9 +117,8 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
         <UserListHorizontal
           users={matchsRecientes}
           onSelectUser={(u) => {
-            navigation.navigate(ROUTES.CANDIDATE_HOME_TAB, {
-              screen: ROUTES.CANDIDATE_JOB_OFFER_SCREEN,
-              params: { jobOfferId: u.id.toString() },
+            navigation.navigate(ROUTES.CANDIDATE_TAB_JOB_OFFER_SCREEN, {
+              jobOfferId: u.id.toString(),
             });
           }}
         />
