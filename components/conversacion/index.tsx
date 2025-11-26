@@ -3,7 +3,6 @@ import { FlatList, View } from 'react-native';
 import { Avatar, Button, IconButton, Text } from 'react-native-paper';
 import { TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useKeyboardHandler } from 'react-native-keyboard-controller';
 import {
   MessageRow,
   Bubble,
@@ -43,11 +42,6 @@ const Conversacion: React.FC<ConversacionProps> = ({
   idOfertaTrabajoMatch,
   usuarioLogueado,
 }) => {
-  useKeyboardHandler({
-    onMove: (e) => {},
-    onStart: (e) => {},
-    onEnd: (e) => {},
-  });
   const [inputText, setInputText] = useState('');
   const [chatID, setChatID] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
