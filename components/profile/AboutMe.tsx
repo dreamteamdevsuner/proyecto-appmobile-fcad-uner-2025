@@ -15,7 +15,7 @@ import { toTitleCase } from '@utils/titleCase';
 import { getMonthName } from '@utils/getMonthName';
 
 export const AboutMe = () => {
-  const { user, refreshing, onRefresh } = useProfileContext();
+  const { user, refreshing, onRefresh, isOwnProfile } = useProfileContext();
 
   /**
    * Formatea una fecha en formato AAAA-MM-DD a "Mes. AAAA"
@@ -38,6 +38,12 @@ export const AboutMe = () => {
     return <ActivityIndicator />;
   }
 
+  const hasAnyData =
+    (user.bio && user.bio.trim().length > 0) ||
+    (user.estudios && user.estudios.length > 0) ||
+    (user.experiencia && user.experiencia.length > 0) ||
+    (user.enlaces && user.enlaces.length > 0);
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -51,33 +57,49 @@ export const AboutMe = () => {
         />
       }
     >
-      <Surface mode="flat" elevation={2} style={styles.surfaceDescription}>
-        <Text style={styles.title}>Sobre mí:</Text>
-        <Text style={styles.textContent}>{user!.bio}</Text>
-      </Surface>
+      {!hasAnyData && isOwnProfile && (
+        <>
+          <Surface mode="flat" elevation={2} style={styles.surfaceDescription}>
+            <Text style={[styles.textContent, styles.noDataText]}>
+              ¡Agrega información para que los reclutadores conozcan más sobre
+              ti!
+            </Text>
+          </Surface>
+        </>
+      )}
 
-      <CustomDivider />
+      {!hasAnyData && !isOwnProfile && (
+        <>
+          <Surface mode="flat" elevation={2} style={styles.surfaceDescription}>
+            <Text style={[styles.textContent, styles.noDataText]}>
+              Aún no hay información para mostrar. Vuelve pronto ;)
+            </Text>
+          </Surface>
+        </>
+      )}
 
-      <Surface mode="flat" elevation={2} style={styles.surfaceDescription}>
-        <Text style={styles.title}>Estudios formales:</Text>
-        {user!.estudios?.map((study, idx) => (
-          <Text key={idx} style={styles.textContent}>
-            {study.fechainicio ? `${formatDate(study.fechainicio)} - ` : ''}
-            {study.fechafin ? formatDate(study.fechafin) : 'Act.'}:{' '}
-            {study.titulo} ({study.nombreinstitucion ?? ''})
-          </Text>
-        ))}
-      </Surface>
+      {user!.bio && user.bio.trim().length > 0 && (
+        <>
+          <Surface mode="flat" elevation={2} style={styles.surfaceDescription}>
+            <Text style={styles.title}>Sobre mí:</Text>
+            <Text style={styles.textContent}>{user!.bio}</Text>
+          </Surface>
+          <CustomDivider />
+        </>
+      )}
 
-      {/* Creo que otros estudios no está en bd */}
-      {/* <Surface mode="flat" elevation={2} style={styles.surfaceDescription}>
-        <Text style={styles.title}>Otros estudios:</Text>
-        {user!.otherStudies?.map((study, idx) => (
-          <Text key={idx} style={styles.textContent}>
-            {study}
-          </Text>
-        ))}
-      </Surface> */}
+      {user!.estudios && user.estudios.length > 0 && (
+        <Surface mode="flat" elevation={2} style={styles.surfaceDescription}>
+          <Text style={styles.title}>Estudios formales:</Text>
+          {user!.estudios?.map((study, idx) => (
+            <Text key={idx} style={styles.textContent}>
+              {study.fechainicio ? `${formatDate(study.fechainicio)} - ` : ''}
+              {study.fechafin ? formatDate(study.fechafin) : 'Act.'}:{' '}
+              {study.titulo} ({study.nombreinstitucion ?? ''})
+            </Text>
+          ))}
+        </Surface>
+      )}
 
       {user!.experiencia && user.experiencia.length > 0 && (
         <>
@@ -156,6 +178,11 @@ const styles = StyleSheet.create({
   },
   divider: {
     backgroundColor: '#0A090F',
+  },
+  noDataText: {
+    fontSize: 16,
+    color: '#999',
+    textAlign: 'center',
   },
 });
 
