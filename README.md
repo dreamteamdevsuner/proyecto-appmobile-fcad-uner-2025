@@ -28,13 +28,13 @@ Los reclutadores publican una oferta de trabajo, los profesionales swipean la of
 
 ### Inicio de sesión como reclutador
 
-- mail: renata.reclutadora@gmail.com
+- mail: renata.reclutadora@gmail.com <br>
   contraseña: 123456ReSc@
 
 ### Inicio de sesión como profesional
 
 - mail: juana.profesional.ux@gmail.com
-- mail: analia.profesiona.dev@gmail.com
+- mail: analia.profesiona.dev@gmail.com <br>
   contraseña: 123456
 
 Navegar por las distintas secciones de la app.
