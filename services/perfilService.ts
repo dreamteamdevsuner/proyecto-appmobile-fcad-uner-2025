@@ -9,7 +9,7 @@ export interface DropdownItem {
 
 export const uploadAvatar = async (base64Data: string, userId: string): Promise<string> => {
   try {
-    const filePath = `${userId}/avatar.png`;
+    const filePath = `${userId}/avatar_${Date.now()}.png`;
 
     const rawBinary = atob(base64Data);
 

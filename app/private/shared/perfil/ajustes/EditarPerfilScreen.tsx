@@ -127,8 +127,8 @@ const EditarPerfilScreen = () => {
       const uriParaAnalizar = (values as any)['uri_temporal_seguridad'];
 
       if (uriParaAnalizar) {
-        // Mostramos un mensajito opcional de "Analizando..."
-        setDialogMessage({ message: 'Verificando imagen...', type: 'info' });
+        // Mostramos un mensajito 
+        setDialogMessage({ message: 'Jobsy verificará que el contenido de tu imagen sea apropiado. ¿Estás de acuerdo?', type: 'info' });
         setDialogVisible(true);
 
         const esSegura = await verificarImagenSegura(uriParaAnalizar);
@@ -141,7 +141,7 @@ const EditarPerfilScreen = () => {
           });
           setDialogVisible(true);
           setSubmitting(false);
-          return; // <--- AQUÍ SE DETIENE TODO SI ES OBSCENA
+          return; // <--- SE DETIENE TODO SI ES OBSCENA
         }
 
         // Si es segura, cerramos el dialog para seguir
