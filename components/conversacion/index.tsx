@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { Avatar, Button, IconButton, Text } from 'react-native-paper';
 import { TextInput } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   MessageRow,
   Bubble,
@@ -265,90 +264,95 @@ const Conversacion: React.FC<ConversacionProps> = ({
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <FlatList
-        ref={flatListRef}
-        data={messages}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        inverted={false}
-        contentContainerStyle={{
-          padding: 10,
-          flexGrow: 1,
-        }}
-        style={{ flex: 1 }}
-        ListHeaderComponent={
-          !noMasMensajes ? (
-            <View style={{ padding: 10, alignItems: 'center' }}>
-              <Button onPress={loadMore} disabled={loadingMore} mode="outlined">
-                {loadingMore ? 'Cargando...' : 'Cargar mensajes más antiguos'}
-              </Button>
-            </View>
-          ) : messages.length > 0 ? (
-            <View style={{ padding: 10, alignItems: 'center' }}>
-              <Text style={{ color: 'gray' }}>
-                No hay mensajes más antiguos
-              </Text>
-            </View>
-          ) : null
-        }
-        ListEmptyComponent={
-          !loadingMore ? (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: 20,
-              }}
-            >
-              <Text>No hay mensajes aún</Text>
-            </View>
-          ) : null
-        }
-        onContentSizeChange={() => {
-          if (!loadingMore && isInitialLoad) {
-            flatListRef.current?.scrollToEnd({ animated: false });
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <View style={{ flex: 1 }}>
+        <FlatList
+          ref={flatListRef}
+          data={messages}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+          inverted={false}
+          contentContainerStyle={{
+            flex: 1,
+          }}
+          ListHeaderComponent={
+            !noMasMensajes ? (
+              <View style={{ padding: 10, alignItems: 'center' }}>
+                <Button
+                  onPress={loadMore}
+                  disabled={loadingMore}
+                  mode="outlined"
+                >
+                  {loadingMore ? 'Cargando...' : 'Cargar mensajes más antiguos'}
+                </Button>
+              </View>
+            ) : messages.length > 0 ? (
+              <View style={{ padding: 10, alignItems: 'center' }}>
+                <Text style={{ color: 'gray' }}>
+                  No hay mensajes más antiguos
+                </Text>
+              </View>
+            ) : null
           }
-        }}
-      />
-
-      <InputContainer>
-        <IconButton
-          icon={showEmojiBar ? 'keyboard-outline' : 'emoticon-outline'}
-          onPress={() => {
-            setShowEmojiBar((prev) => {
-              if (prev) {
-                setTimeout(() => inputRef.current?.focus(), 50);
-              }
-              return !prev;
-            });
+          ListEmptyComponent={
+            !loadingMore ? (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  padding: 20,
+                }}
+              >
+                <Text>No hay mensajes aún</Text>
+              </View>
+            ) : null
+          }
+          onContentSizeChange={() => {
+            if (!loadingMore && isInitialLoad) {
+              flatListRef.current?.scrollToEnd({ animated: false });
+            }
           }}
         />
+        <InputContainer>
+          <IconButton
+            icon={showEmojiBar ? 'keyboard-outline' : 'emoticon-outline'}
+            onPress={() => {
+              setShowEmojiBar((prev) => {
+                if (prev) {
+                  setTimeout(() => inputRef.current?.focus(), 50);
+                }
+                return !prev;
+              });
+            }}
+          />
 
-        <StyledTextInput
-          ref={inputRef}
-          placeholder="Escribe un mensaje..."
-          value={inputText}
-          onChangeText={setInputText}
-          onFocus={() => setShowEmojiBar(false)}
-          onSubmitEditing={handleSend}
-          multiline
+          <StyledTextInput
+            ref={inputRef}
+            placeholder="Escribe un mensaje..."
+            value={inputText}
+            onChangeText={setInputText}
+            onFocus={() => setShowEmojiBar(false)}
+            onSubmitEditing={handleSend}
+            multiline
+          />
+
+          <IconButton
+            icon="send"
+            onPress={handleSend}
+            disabled={!inputText.trim()}
+          />
+        </InputContainer>
+        <Emoji
+          setInputText={setInputText}
+          showEmojiBar={showEmojiBar}
+          setShowEmojiBar={setShowEmojiBar}
         />
-
-        <IconButton
-          icon="send"
-          onPress={handleSend}
-          disabled={!inputText.trim()}
-        />
-      </InputContainer>
-
-      <Emoji
-        setInputText={setInputText}
-        showEmojiBar={showEmojiBar}
-        setShowEmojiBar={setShowEmojiBar}
-      />
-    </SafeAreaView>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 

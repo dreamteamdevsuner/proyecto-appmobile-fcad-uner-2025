@@ -8,6 +8,7 @@ import ROUTES from '../../navigator/routes';
 import { useAuth } from '@appContext/authContext';
 import { useEffect, useState } from 'react';
 import { getProfesionalChat } from '@services/ChatService';
+import { FlatList } from 'react-native';
 
 type Props = NativeStackScreenProps<
   PrivateStackParamList,
@@ -19,6 +20,7 @@ const Mensajeria: React.FC<Props> = ({ navigation }) => {
     state: { user: usuarioLogueado },
   } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const [chats, setChats] = useState<UserItemInfo[]>([]);
   const fetchOfertasUsuariosChat = async () => {
@@ -38,6 +40,12 @@ const Mensajeria: React.FC<Props> = ({ navigation }) => {
   useEffect(() => {
     fetchOfertasUsuariosChat();
   }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchOfertasUsuariosChat();
+    setRefreshing(false);
+  };
   const handleSelectUser = (user: UserItemInfo) => {
     if (usuarioLogueado) {
       navigation.navigate(ROUTES.CANDIDATE_CONVERSACION, {
@@ -52,31 +60,45 @@ const Mensajeria: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View
-        style={
-          (styles.titleContainer,
-          {
-            backgroundColor: '#F1836A',
-            height: 48,
-            width: '100%',
-            borderTopStartRadius: 15,
-            borderTopEndRadius: 15,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: 10,
-            paddingHorizontal: 10,
-            paddingVertical: 5,
-          })
-        }
-      >
-        <Text style={styles.title}>Todos mis chats</Text>
-      </View>
-      <UserList
-        showOferta={true}
-        users={chats}
-        showMessageIcon={false}
-        onUserPress={handleSelectUser}
+      <FlatList
+        data={['chats']}
+        keyExtractor={(item) => item}
+        showsVerticalScrollIndicator={false}
+        renderItem={() => {
+          return (
+            <View>
+              <View
+                style={[
+                  styles.titleContainer,
+                  {
+                    backgroundColor: '#F1836A',
+                    height: 48,
+                    width: '100%',
+                    borderTopStartRadius: 15,
+                    borderTopEndRadius: 15,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: 10,
+                    paddingHorizontal: 10,
+                    paddingVertical: 5,
+                  },
+                ]}
+              >
+                <Text style={styles.title}>Todos mis chats</Text>
+              </View>
+              <UserList
+                showOferta={true}
+                users={chats}
+                showMessageIcon={false}
+                onUserPress={handleSelectUser}
+              />
+            </View>
+          );
+        }}
+        ListEmptyComponent={<Text>No hay chats aún</Text>}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
       />
     </View>
   );

@@ -53,13 +53,10 @@ const CandidateNavigator = () => {
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <View>
-              <Image
-                source={require('../../../../assets/icons/icon-job-13.png')}
-                style={{
-                  width: size,
-                  height: size,
-                  tintColor: color, // así respeta el color activo/inactivo
-                }}
+              <MaterialCommunityIcons
+                name="briefcase-search-outline"
+                size={size}
+                color={color}
               />
 
               {updated && (
