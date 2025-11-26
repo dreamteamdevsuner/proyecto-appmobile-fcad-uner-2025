@@ -12,7 +12,7 @@ interface AppCarouselProps<T> extends PropsWithChildren {
   loop?: boolean;
   data: T[];
   enabledScroll: boolean;
-
+  onSnapToItem?: (index: number) => void;
   handleScrollEnd?: () => void;
   handleScrollEnabled?: (val: boolean) => void;
   renderItem: (props: CarouselItemProps<T>) => React.JSX.Element;
@@ -27,6 +27,7 @@ const AppCarousel = <T,>(props: AppCarouselProps<T>) => {
     renderItem,
     handleScrollEnd,
     handleScrollEnabled,
+    onSnapToItem,
   } = props;
   const progress = useSharedValue<number>(0);
   const width = screenWidth;
@@ -40,6 +41,7 @@ const AppCarousel = <T,>(props: AppCarouselProps<T>) => {
       style={props.styles}
       onProgressChange={progress}
       enabled={enabledScroll}
+      onSnapToItem={onSnapToItem}
       {...(handleScrollEnd
         ? {
             onScrollEnd: (i) => {

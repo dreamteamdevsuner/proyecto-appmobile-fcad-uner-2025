@@ -232,7 +232,7 @@ const CrearOferta = ({ navigation, editing = false, data = null }: any) => {
                     )
                   }
                   items={[
-                    { label: 'Ninguna', value: undefined },
+                    { label: 'Selecciona institución', value: '' },
                     ...empresasList.map((x) => ({
                       label: x.nombre,
                       value: x.id,
