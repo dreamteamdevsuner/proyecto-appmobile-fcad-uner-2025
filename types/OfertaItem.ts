@@ -4,4 +4,5 @@ export type OfertaItem = {
   subtitle?: string;
   time?: string;
   read?: boolean;
+  idMatch?: string;
 };

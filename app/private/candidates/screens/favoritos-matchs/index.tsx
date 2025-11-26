@@ -31,6 +31,7 @@ const FavoritosMatchsScreen: React.FC<Props> = ({ navigation }) => {
         id: item.ofertaId.toString(),
         title: item.titulo,
         subtitle: `Match con ${item.empresa}`,
+        idMatch: item.matchId,
       }));
 
       setAllMatchs(formateados);
@@ -59,7 +60,8 @@ const FavoritosMatchsScreen: React.FC<Props> = ({ navigation }) => {
       title: oferta.title,
       myName: user?.nombre || 'Yo',
       otherAvatarUrl: undefined,
-      myAvatarUrl: undefined, // Acá va la foto del usuario
+      myAvatarUrl: user?.fotoperfil || '',
+      idOfertaTrabajoMatch: oferta.idMatch,
     });
   };
 

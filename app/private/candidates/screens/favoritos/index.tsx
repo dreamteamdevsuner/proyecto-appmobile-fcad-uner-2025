@@ -103,7 +103,8 @@ const Favoritos: React.FC<Props> = ({ navigation }) => {
       title: oferta.title,
       myName: user?.nombre || 'Yo',
       otherAvatarUrl: undefined,
-      myAvatarUrl: undefined,
+      myAvatarUrl: user?.fotoperfil || '',
+      idOfertaTrabajoMatch: oferta.idMatch,
     });
   };
 
