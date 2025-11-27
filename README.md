@@ -28,12 +28,13 @@ Los reclutadores publican una oferta de trabajo, los profesionales swipean la of
 
 ### Inicio de sesión como reclutador
 
-- mail: renata.reclutadora@gmail.com
-  contraseña: 123456
+- mail: renata.reclutadora@gmail.com <br>
+  contraseña: 123456ReSc@
 
 ### Inicio de sesión como profesional
 
 - mail: juana.profesional.ux@gmail.com
+- mail: analia.profesiona.dev@gmail.com <br>
   contraseña: 123456
 
 Navegar por las distintas secciones de la app.
@@ -97,7 +98,7 @@ Explorar las funcionalidades principales.
 <table>
   <tr>
     <td><img src="./public/img/swipe-candidate.jpg" width="68%"/></td>
-    <td><img src="./public/img/PopupMatch.png" width="100%"/></td>
+    
    <td><img src="./public/img/EstasAldia.png" width="100%"/></td>
    </tr>
    <tr>
@@ -227,14 +228,13 @@ Explorar las funcionalidades principales.
 
 <table>
   <tr>
-    <td><img src="./public/img/notiLocalProf.jpg" width="100%"/></td>
-    <td><img src="./public/img/notiLocalProf_2.png" width="100%"/></td>
+    <td><img src="./public/img/notiLocalProf.jpg" width="80%"/></td>
     <td><img src="./public/img/notiLocalRecru_3.jpg" width="100%"/></td>
 
   </tr>
   <tr>
     <td colspan="4" align="center">
-      Notificaciones Locales: Implementación mediante expo-notifications para agendar tareas en segundo plano (scheduleNotificationAsync). Configura triggers recurrentes diarios y gestiona los permisos del dispositivo para mostrar alertas incluso si la app está cerrada, sin depender del backend.  Todos los días a las 10:00 AM se envía una notificación local que incentiva a los usuarios a volver a la app con mensajes personalizados: "¿Ya viste las nuevas ofertas?" para candidatos y "¿Ya viste los nuevos profesionales?" para reclutadores.
+      Implementación mediante expo-notifications para agendar tareas en segundo plano (scheduleNotificationAsync). Configura triggers recurrentes diarios y gestiona los permisos del dispositivo para mostrar alertas incluso si la app está cerrada, sin depender del backend.  Todos los días a las 10:00 AM se envía una notificación local que incentiva a los usuarios a volver a la app con mensajes personalizados: "¿Ya viste las nuevas ofertas?" para candidatos y "¿Ya viste los nuevos profesionales?" para reclutadores.
     </td>
   </tr>
 </table>
@@ -246,16 +246,16 @@ Explorar las funcionalidades principales.
     <td><img src="./public/img/notiProfePush.jpg" width="100%"/></td>
     <td><img src="./public/img/notiPshProf_2.jpg" width="100%"/></td>
     <td><img src="./public/img/notiPushRecru_1.jpg" width="100%"/></td>
-    <td><img src="./public/img/notiPushRecru_2.jpg" width="100%"/></td>
+    <td><img src="./public/img/notiLocalProf_2.png" width="100%"/></td>
   </tr>
   <tr>
     <td colspan="4" align="center">
-      Notificaciones Push: Sistema de alertas en tiempo real implementado con Expo Notifications. Notifica automáticamente a los candidatos cuando una oferta (mediante un usuario reclutador) hace "Match" con su perfil, asegurando una interacción inmediata. Esta notificación también es enviada al reclutador, pero se aloja en la sección notificaciones sin mostrarse el banner en pantalla debido a que el usuario se encuentra usando la aplicación en el momento del match
+      Sistema de alertas en tiempo real implementado con Expo Notifications. Notifica automáticamente a los candidatos cuando una oferta (mediante un usuario reclutador) hace "Match" con su perfil, asegurando una interacción inmediata. Esta notificación también es enviada al reclutador, pero se aloja en la sección notificaciones sin mostrarse el banner en pantalla debido a que el usuario se encuentra usando la aplicación en el momento del match
     </td>
   </tr>
 </table>
 
-### Permisos
+### Gestión de Permisos y Privacidad
 
 <table>
   <tr>
@@ -265,12 +265,11 @@ Explorar las funcionalidades principales.
     <td><img src="./public/img/PermisoUbicacionPerfil.png" width="100%"/></td>
   </tr>
   <tr>
-    <td colspan="4" align="center">
-      Gestión de Permisos y Privacidad
-El sistema implementa un manejo robusto de los permisos nativos del dispositivo, solicitando autorización al usuario únicamente cuando es necesario y respetando su decisión de aceptarlos o denegarlos.<br>
-<strong>Cámara y Galería:</strong> Integración mediante expo-image-picker y expo-camera para permitir a los usuarios personalizar su perfil (foto de avatar) y adjuntar contenido visual en sus publicaciones o portafolios.<br>
-<strong>Geolocalización:</strong> Uso de expo-location para validar la ubicación en tiempo real, facilitando el "match" basado en cercanía y la creación de ofertas geolocalizadas.<br>
-<strong>Validación de Estado:</strong> La aplicación verifica el estado de los permisos antes de ejecutar tareas críticas y ofrece feedback o alternativas si el usuario decide denegar el acceso.
+    <td colspan="4" align="center">      
+    El sistema implementa un manejo robusto de los permisos nativos del dispositivo, solicitando autorización al usuario únicamente cuando es necesario y respetando su decisión de aceptarlos o denegarlos.<br>
+    <strong>Cámara y Galería:</strong> Integración mediante expo-image-picker y expo-camera para permitir a los usuarios personalizar su perfil (foto de avatar) y adjuntar contenido visual en sus publicaciones o portafolios.<br>
+    <strong>Geolocalización:</strong> Uso de expo-location para validar la ubicación en tiempo real, facilitando el "match" basado en cercanía y la creación de ofertas geolocalizadas.<br>
+    <strong>Validación de Estado:</strong> La aplicación verifica el estado de los permisos antes de ejecutar tareas críticas y ofrece feedback o alternativas si el usuario decide denegar el acceso.
     </td>
   </tr>
 </table>
@@ -295,3 +294,14 @@ El sistema implementa un manejo robusto de los permisos nativos del dispositivo,
 - emojihub API Emoticones.
 - community-purgomalum API Malas palabras.
 - Cloudmersive API Imágenes nsfw - moderación de contenido. 
+
+### Autores ✒️📖
+> Angeli, Leandro
+>  
+> Durruty, Denise
+> 
+> Orellana Lopez, Nahir
+> 
+> Rivas Aguirre, Noelia
+> 
+> Rosas, Alejo Leonardo
