@@ -2,12 +2,14 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { Avatar, Button, IconButton, Text } from 'react-native-paper';
 import { TextInput } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   MessageRow,
   Bubble,
   MessageText,
   InputContainer,
   StyledTextInput,
+  Container,
 } from './styles';
 
 import { Message } from '@models/Message';
@@ -268,7 +270,7 @@ const Conversacion: React.FC<ConversacionProps> = ({
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <View style={{ flex: 1 }}>
+      <Container>
         <FlatList
           ref={flatListRef}
           data={messages}
@@ -276,8 +278,10 @@ const Conversacion: React.FC<ConversacionProps> = ({
           renderItem={renderItem}
           inverted={false}
           contentContainerStyle={{
-            flex: 1,
+            padding: 10,
+            flexGrow: 1,
           }}
+          style={{ flex: 1 }}
           ListHeaderComponent={
             !noMasMensajes ? (
               <View style={{ padding: 10, alignItems: 'center' }}>
@@ -317,6 +321,7 @@ const Conversacion: React.FC<ConversacionProps> = ({
             }
           }}
         />
+
         <InputContainer>
           <IconButton
             icon={showEmojiBar ? 'keyboard-outline' : 'emoticon-outline'}
@@ -346,12 +351,13 @@ const Conversacion: React.FC<ConversacionProps> = ({
             disabled={!inputText.trim()}
           />
         </InputContainer>
+
         <Emoji
           setInputText={setInputText}
           showEmojiBar={showEmojiBar}
           setShowEmojiBar={setShowEmojiBar}
         />
-      </View>
+      </Container>
     </KeyboardAvoidingView>
   );
 };
